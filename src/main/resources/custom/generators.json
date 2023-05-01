@@ -1,0 +1,139 @@
+{
+  "default_drop_rate": 20,
+  "default_max_items": 25,
+  "generators": {
+    "iron": {
+      "show_time_tag": false,
+      "color": 11184810,
+      "dropped_token": "iron",
+      "levels": [
+        {
+          "upgrade_price": {
+            "token": "iron",
+            "amount": 10
+          },
+          "drop_rate": 20,
+          "max_items": 20
+        },
+        {
+          "upgrade_price": {
+            "token": "iron",
+            "amount": 20
+          },
+          "drop_rate": 15,
+          "max_items": 20
+        },
+        {
+          "upgrade_price": {
+            "token": "gold",
+            "amount": 20
+          },
+          "drop_rate": 10,
+          "max_items": 25
+        },
+        {
+          "upgrade_price": {
+            "token": "gold",
+            "amount": 50
+          },
+          "drop_rate": 5,
+          "max_items": 30
+        }
+      ]
+    },
+    "gold": {
+      "show_time_tag": false,
+      "color": 16755200,
+      "dropped_token": "gold",
+      "levels": [
+        {
+          "upgrade_price": {
+            "token": "gold",
+            "amount": 5
+          },
+          "drop_rate": 100,
+          "max_items": 5
+        },
+        {
+          "upgrade_price": {
+            "token": "gold",
+            "amount": 10
+          },
+          "drop_rate": 70,
+          "max_items": 10
+        },
+        {
+          "upgrade_price": {
+            "token": "diamond",
+            "amount": 10
+          },
+          "drop_rate": 40,
+          "max_items": 15
+        },
+        {
+          "upgrade_price": {
+            "token": "diamond",
+            "amount": 25
+          },
+          "drop_rate": 20,
+          "max_items": 20
+        }
+      ]
+    },
+    "diamond": {
+      "show_time_tag": false,
+      "color": 5636095,
+      "dropped_token": "diamond",
+      "levels": [
+        {
+          "upgrade_price": {
+            "token": "diamond",
+            "amount": 5
+          },
+          "drop_rate": 200,
+          "max_items": 3
+        },
+        {
+          "upgrade_price": {
+            "token": "diamond",
+            "amount": 10
+          },
+          "drop_rate": 100,
+          "max_items": 5
+        },
+        {
+          "upgrade_price": {
+            "token": "diamond",
+            "amount": 25
+          },
+          "drop_rate": 50,
+          "max_items": 10
+        }
+      ]
+    },
+    "emerald": {
+      "show_time_tag": true,
+      "requires_nearby_players": true,
+      "color": 5635925,
+      "dropped_token": "emerald",
+      "levels": [
+        {
+          "upgrade_price": {
+            "token": "diamond",
+            "amount": 40
+          },
+          "drop_rate": 300,
+          "max_items": 1
+        },
+        {
+          "upgrade_price": {
+            "token": "emerald",
+            "amount": 8
+          },
+          "drop_rate": 160,
+          "max_items": 1
+        }
+      ]
+    }
+  }
+}

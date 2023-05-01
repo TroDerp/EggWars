@@ -1,0 +1,84 @@
+main: me.rosillogames.eggwars.EggWars
+name: EggWars
+version: "6.0.1"
+description: Play the EggWars game!
+api-version: 1.13
+load: POSTWORLD
+authors: [rosillogames, gaelitoelquesito]
+website: spigotmc.org/members/rosillogames.826451/
+softdepend: [Vault, PlaceholderAPI]
+commands:
+  ews:
+    description: Setup commands for EggWars; type "/ews help" for more
+    usage: /ews {args}
+  ew:
+    description: Commands for EggWars; type "/ew help" for more
+    usage: /ew {args}
+  leave:
+    description: Command for leaving the current EggWars arena
+    usage: /leave
+permissions:
+    eggwars.admin:
+        description: Gives access to all EggWars permissions.
+        children:
+            eggwars.sign.place: true
+            eggwars.sign.break: true
+            eggwars.gen.place: true
+            eggwars.gen.break: true
+            eggwars.setup: true
+            eggwars.command.forcestart: true
+            eggwars.command.join: true
+            eggwars.command.leave: true
+            eggwars.command.lobby: true
+            eggwars.command.menu: true
+            eggwars.command.reload: true
+            eggwars.chatcolor: true
+        default: op
+    eggwars.sign.place:
+        description: Gives access to place signs.
+        default: op
+    eggwars.sign.break:
+        description: Gives access to break sign.
+        default: op
+    eggwars.gen.place:
+        description: Gives access to place generators.
+        default: op
+    eggwars.gen.break:
+        description: Gives access to break generators.
+        default: op
+    eggwars.setup:
+        description: Gives access to "/ews" commands and other setup features.
+        default: op
+    eggwars.command.leave:
+        description: Gives access to the "/leave" command.
+        default: true
+    eggwars.command.lobby:
+        description: Gives access to the "/ew lobby" command.
+        default: true
+    eggwars.command.forcestart:
+        description: Gives access to the "/ew forcestart" command.
+        default: op
+    eggwars.command.menu:
+        description: Gives access to the "/ew menu" command.
+        default: true
+    eggwars.command.join:
+        description: Gives access to the "/ew join" command.
+        default: true
+    eggwars.command.reload:
+        description: Gives access to the "/ew reload" command.
+        default: op
+    eggwars.chatcolor:
+        description: Gives access to format ingame chat.
+        default: op
+    eggwars.shop:
+        description: Gives access to use eggwars' villager shop.
+        default: true
+    eggwars.kits:
+        description: Gives access to select kits.
+        default: true
+    eggwars.freekits:
+        description: Makes all kits turn free when buying them.
+        default: op
+    eggwars.multpoints:
+        description: Permission to apply multipliers for rewarded points.
+        default: true

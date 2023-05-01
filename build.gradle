@@ -1,0 +1,96 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id 'java-library'
+    id 'idea'
+    id 'maven-publish'
+    id "com.github.johnrengelman.shadow" version "7.0.0"
+}
+
+//Fixes issues related to special characters being used
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+
+group = "me.rosillogames"
+version = "6.0.1"
+description = "EggWars Remastered"
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+
+    maven {
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+
+        // As of Gradle 5.1, you can limit this to only those
+        // dependencies you expect from it
+        content {
+            includeGroup 'org.bukkit'
+            includeGroup 'org.spigotmc'
+        }
+    }
+
+    //Bstats API & PermissionsEx
+    maven { url = 'https://repo.codemc.org/repository/maven-public' }
+
+    //Vault
+    maven { url = 'https://jitpack.io' }
+
+    //PlaceholderAPI
+    maven { url = 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
+}
+
+dependencies {
+    implementation 'org.jetbrains:annotations:23.0.0'
+
+    //Spigot API
+    compileOnly "org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT"
+
+    //BStats API
+    implementation group: 'org.bstats', name: 'bstats-bukkit', version: '2.2.1'
+
+    //Vault
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
+        exclude group: 'org.bukkit', module: 'bukkit'
+    }
+
+    //PlaceholderAPI
+    compileOnly group: 'me.clip', name: 'placeholderapi', version: '2.10.9'
+
+    //PermissionsEx
+    implementation group: 'ru.tehkode', name: 'PermissionsEx', version: '1.23.5-SNAPSHOT'
+}
+
+artifacts { // task 'build' runs generates uberjar
+    archives shadowJar
+}
+
+jar {
+    archiveClassifier.set('min') // we want the Uberjar to be distributed, this is the minified version
+}
+
+String packagePath = 'com.magmaguy.shaded'
+
+// Relocating a Package
+shadowJar {
+    dependencies {
+        relocate('org.bstats', packagePath + '.bstats')
+    }
+    archiveClassifier.set(null)
+    archiveFileName.set(project.name + ".jar")
+    destinationDirectory.set(new File("output"))
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+ext {
+    resourceTokens = [
+            'Version': version
+    ]
+}
+
+processResources {
+    filter ReplaceTokens, tokens: resourceTokens
+}

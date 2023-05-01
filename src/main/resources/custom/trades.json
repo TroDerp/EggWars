@@ -1,0 +1,3513 @@
+{
+  "shop": {
+    "building_blocks": {
+      "translation_key": "shop.building_blocks",
+      "display_item": {
+        "id": "minecraft:white_terracotta",
+        "Count": 1
+      },
+      "types": {
+        "default": {
+          "menu_size": "big"
+        },
+        "hardcore": {
+          "offers": [
+            {
+              "slot": 11,
+              "price": {
+                "token": "iron",
+                "amount": 1
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:terracotta",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 20,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 32
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:terracotta",
+                  "Count": 32
+                }
+              }
+            },
+            {
+              "slot": 29,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 64
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:terracotta",
+                  "Count": 64
+                }
+              }
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "iron",
+                "amount": 2
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:glass",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 21,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 16
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:glass",
+                  "Count": 8
+                }
+              }
+            },
+            {
+              "slot": 30,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 64
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:glass",
+                  "Count": 32
+                }
+              }
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "iron",
+                "amount": 20
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:hay_block",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 23,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 80
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:hay_block",
+                  "Count": 4
+                }
+              }
+            },
+            {
+              "slot": 32,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 160
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:hay_block",
+                  "Count": 8
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "gold",
+                "amount": 20
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:obsidian",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 24,
+              "is_duplicate": true,
+              "price": {
+                "token": "gold",
+                "amount": 60
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:obsidian",
+                  "Count": 3
+                }
+              }
+            },
+            {
+              "slot": 33,
+              "is_duplicate": true,
+              "price": {
+                "token": "gold",
+                "amount": 100
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:obsidian",
+                  "Count": 5
+                }
+              }
+            }
+          ]
+        },
+        "normal": {
+          "offers": [
+            {
+              "slot": 11,
+              "price": {
+                "token": "iron",
+                "amount": 1
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:terracotta",
+                  "Count": 2
+                }
+              }
+            },
+            {
+              "slot": 20,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 16
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:terracotta",
+                  "Count": 32
+                }
+              }
+            },
+            {
+              "slot": 29,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 32
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:terracotta",
+                  "Count": 64
+                }
+              }
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "iron",
+                "amount": 1
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:glass",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 21,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 8
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:glass",
+                  "Count": 8
+                }
+              }
+            },
+            {
+              "slot": 30,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 32
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:glass",
+                  "Count": 32
+                }
+              }
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "iron",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:hay_block",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 23,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 40
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:hay_block",
+                  "Count": 4
+                }
+              }
+            },
+            {
+              "slot": 32,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 80
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:hay_block",
+                  "Count": 8
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "gold",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:obsidian",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 24,
+              "is_duplicate": true,
+              "price": {
+                "token": "gold",
+                "amount": 30
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:obsidian",
+                  "Count": 3
+                }
+              }
+            },
+            {
+              "slot": 33,
+              "is_duplicate": true,
+              "price": {
+                "token": "gold",
+                "amount": 50
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:obsidian",
+                  "Count": 5
+                }
+              }
+            }
+          ]
+        },
+        "overpowered": {
+          "offers": [
+            {
+              "slot": 11,
+              "price": {
+                "token": "iron",
+                "amount": 1
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:terracotta",
+                  "Count": 3
+                }
+              }
+            },
+            {
+              "slot": 20,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 11
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:terracotta",
+                  "Count": 33
+                }
+              }
+            },
+            {
+              "slot": 29,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 21
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:terracotta",
+                  "Count": 63
+                }
+              }
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "iron",
+                "amount": 1
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:glass",
+                  "Count": 2
+                }
+              }
+            },
+            {
+              "slot": 21,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 16
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:glass",
+                  "Count": 32
+                }
+              }
+            },
+            {
+              "slot": 30,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 32
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:glass",
+                  "Count": 64
+                }
+              }
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "iron",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:hay_block",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 23,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 20
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:hay_block",
+                  "Count": 4
+                }
+              }
+            },
+            {
+              "slot": 32,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 40
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:hay_block",
+                  "Count": 8
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "gold",
+                "amount": 3
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:obsidian",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 24,
+              "is_duplicate": true,
+              "price": {
+                "token": "gold",
+                "amount": 9
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:obsidian",
+                  "Count": 3
+                }
+              }
+            },
+            {
+              "slot": 33,
+              "is_duplicate": true,
+              "price": {
+                "token": "gold",
+                "amount": 15
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:obsidian",
+                  "Count": 5
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "weapons": {
+      "translation_key": "shop.weapons",
+      "display_item": {
+        "id": "minecraft:golden_sword",
+        "Count": 1
+      },
+      "types": {
+        "default": {
+          "menu_size": "medium"
+        },
+        "hardcore": {
+          "offers": [
+            {
+              "slot": 11,
+              "price": {
+                "token": "iron",
+                "amount": 32
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:wooden_sword",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 20,
+              "price": {
+                "token": "iron",
+                "amount": 64
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:wooden_axe",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 13,
+              "price": {
+                "token": "gold",
+                "amount": 16
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:stone_sword",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 22,
+              "price": {
+                "token": "gold",
+                "amount": 28
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:stone_axe",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "diamond",
+                "amount": 12
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_sword",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 24,
+              "price": {
+                "token": "diamond",
+                "amount": 20
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_axe",
+                  "Count": 1
+                }
+              }
+            }
+          ]
+        },
+        "normal": {
+          "offers": [
+            {
+              "slot": 11,
+              "price": {
+                "token": "iron",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:wooden_sword",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 20,
+              "price": {
+                "token": "iron",
+                "amount": 8
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:wooden_axe",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "iron",
+                "amount": 32
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:stone_sword",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 21,
+              "price": {
+                "token": "iron",
+                "amount": 48
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:stone_axe",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "gold",
+                "amount": 16
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_sword",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 23,
+              "price": {
+                "token": "gold",
+                "amount": 24
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_axe",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "diamond",
+                "amount": 12
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_sword",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 24,
+              "price": {
+                "token": "diamond",
+                "amount": 20
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_axe",
+                  "Count": 1
+                }
+              }
+            }
+          ]
+        },
+        "overpowered": {
+          "offers": [
+            {
+              "slot": 11,
+              "price": {
+                "token": "iron",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:wooden_sword",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 2
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 20,
+              "price": {
+                "token": "iron",
+                "amount": 8
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:wooden_axe",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 2
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "iron",
+                "amount": 32
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:stone_sword",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 2
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 21,
+              "price": {
+                "token": "iron",
+                "amount": 48
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:stone_axe",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 2
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 13,
+              "price": {
+                "token": "gold",
+                "amount": 16
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_sword",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 2
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "diamond",
+                "amount": 12
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_sword",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 2
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 23,
+              "price": {
+                "token": "gold",
+                "amount": 24
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_axe",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 2
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "diamond",
+                "amount": 64
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_sword",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 24,
+              "price": {
+                "token": "diamond",
+                "amount": 20
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_axe",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 2
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "armor": {
+      "translation_key": "shop.armor",
+      "display_item": {
+        "id": "minecraft:iron_chestplate",
+        "Count": 1
+      },
+      "types": {
+        "default": {
+          "menu_size": "full",
+          "armor_slots": [ 9, 18, 27, 36 ]
+        },
+        "hardcore": {
+          "offers": [
+            {
+              "slot": 12,
+              "price": {
+                "token": "iron",
+                "amount": 20
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:leather_helmet",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 21,
+              "price": {
+                "token": "iron",
+                "amount": 20
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:leather_chestplate",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 30,
+              "price": {
+                "token": "iron",
+                "amount": 20
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:leather_leggings",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 39,
+              "price": {
+                "token": "iron",
+                "amount": 20
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:leather_boots",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 3,
+              "name": "Leather Armour Set",
+              "price": {
+                "token": "iron",
+                "amount": 80
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:leather",
+                  "Count": 1
+                }
+              },
+              "multi_results": [
+                {
+                  "use_team_color": true,
+                  "item": {
+                    "id": "minecraft:leather_helmet",
+                    "Count": 1
+                  }
+                },
+                {
+                  "use_team_color": true,
+                  "item": {
+                    "id": "minecraft:leather_chestplate",
+                    "Count": 1
+                  }
+                },
+                {
+                  "use_team_color": true,
+                  "item": {
+                    "id": "minecraft:leather_leggings",
+                    "Count": 1
+                  }
+                },
+                {
+                  "use_team_color": true,
+                  "item": {
+                    "id": "minecraft:leather_boots",
+                    "Count": 1
+                  }
+                }
+              ]
+            },
+            {
+              "slot": 13,
+              "price": {
+                "token": "gold",
+                "amount": 30
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:chainmail_helmet",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 22,
+              "price": {
+                "token": "gold",
+                "amount": 30
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:chainmail_chestplate",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 31,
+              "price": {
+                "token": "gold",
+                "amount": 30
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:chainmail_leggings",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 40,
+              "price": {
+                "token": "gold",
+                "amount": 30
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:chainmail_boots",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 4,
+              "name": "Chainmail Armour Set",
+              "price": {
+                "token": "gold",
+                "amount": 120
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_bars",
+                  "Count": 1
+                }
+              },
+              "multi_results": [
+                {
+                  "item": {
+                    "id": "minecraft:chainmail_helmet",
+                    "Count": 1
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:chainmail_chestplate",
+                    "Count": 1
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:chainmail_leggings",
+                    "Count": 1
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:chainmail_boots",
+                    "Count": 1
+                  }
+                }
+              ]
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "diamond",
+                "amount": 20
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_helmet",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 23,
+              "price": {
+                "token": "diamond",
+                "amount": 20
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_chestplate",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 32,
+              "price": {
+                "token": "diamond",
+                "amount": 20
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_leggings",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 41,
+              "price": {
+                "token": "diamond",
+                "amount": 20
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_boots",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 5,
+              "name": "Iron Armour Set",
+              "price": {
+                "token": "diamond",
+                "amount": 80
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_ingot",
+                  "Count": 1
+                }
+              },
+              "multi_results": [
+                {
+                  "item": {
+                    "id": "minecraft:iron_helmet",
+                    "Count": 1
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:iron_chestplate",
+                    "Count": 1
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:iron_leggings",
+                    "Count": 1
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:iron_boots",
+                    "Count": 1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "normal": {
+          "offers": [
+            {
+              "slot": 12,
+              "price": {
+                "token": "iron",
+                "amount": 1
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:leather_helmet",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 21,
+              "price": {
+                "token": "iron",
+                "amount": 1
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:leather_chestplate",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 30,
+              "price": {
+                "token": "iron",
+                "amount": 1
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:leather_leggings",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 39,
+              "price": {
+                "token": "iron",
+                "amount": 1
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:leather_boots",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 3,
+              "name": "Leather Armour Set",
+              "price": {
+                "token": "iron",
+                "amount": 4
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:leather",
+                  "Count": 1
+                }
+              },
+              "multi_results": [
+                {
+                  "use_team_color": true,
+                  "item": {
+                    "id": "minecraft:leather_helmet",
+                    "Count": 1
+                  }
+                },
+                {
+                  "use_team_color": true,
+                  "item": {
+                    "id": "minecraft:leather_chestplate",
+                    "Count": 1
+                  }
+                },
+                {
+                  "use_team_color": true,
+                  "item": {
+                    "id": "minecraft:leather_leggings",
+                    "Count": 1
+                  }
+                },
+                {
+                  "use_team_color": true,
+                  "item": {
+                    "id": "minecraft:leather_boots",
+                    "Count": 1
+                  }
+                }
+              ]
+            },
+            {
+              "slot": 13,
+              "price": {
+                "token": "gold",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:chainmail_helmet",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 22,
+              "price": {
+                "token": "gold",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:chainmail_chestplate",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 31,
+              "price": {
+                "token": "gold",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:chainmail_leggings",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 40,
+              "price": {
+                "token": "gold",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:chainmail_boots",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 4,
+              "name": "Chainmail Armour Set",
+              "price": {
+                "token": "gold",
+                "amount": 40
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_bars",
+                  "Count": 1
+                }
+              },
+              "multi_results": [
+                {
+                  "item": {
+                    "id": "minecraft:chainmail_helmet",
+                    "Count": 1
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:chainmail_chestplate",
+                    "Count": 1
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:chainmail_leggings",
+                    "Count": 1
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:chainmail_boots",
+                    "Count": 1
+                  }
+                }
+              ]
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "diamond",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_helmet",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 23,
+              "price": {
+                "token": "diamond",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_chestplate",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 32,
+              "price": {
+                "token": "diamond",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_leggings",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 41,
+              "price": {
+                "token": "diamond",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_boots",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 5,
+              "name": "Iron Armour Set",
+              "price": {
+                "token": "diamond",
+                "amount": 20
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_ingot",
+                  "Count": 1
+                }
+              },
+              "multi_results": [
+                {
+                  "item": {
+                    "id": "minecraft:iron_helmet",
+                    "Count": 1
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:iron_chestplate",
+                    "Count": 1
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:iron_leggings",
+                    "Count": 1
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:iron_boots",
+                    "Count": 1
+                  }
+                }
+              ]
+            },
+            {
+              "slot": 25,
+              "price": {
+                "token": "diamond",
+                "amount": 30
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:shield",
+                  "Count": 1
+                }
+              }
+            }
+          ]
+        },
+        "overpowered": {
+          "offers": [
+            {
+              "slot": 11,
+              "price": {
+                "token": "iron",
+                "amount": 1
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:leather_helmet",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 20,
+              "price": {
+                "token": "iron",
+                "amount": 1
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:leather_chestplate",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 29,
+              "price": {
+                "token": "iron",
+                "amount": 1
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:leather_leggings",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 38,
+              "price": {
+                "token": "iron",
+                "amount": 1
+              },
+              "result": {
+                "use_team_color": true,
+                "item": {
+                  "id": "minecraft:leather_boots",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 2,
+              "name": "Leather Armour Set",
+              "price": {
+                "token": "iron",
+                "amount": 4
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:leather",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              },
+              "multi_results": [
+                {
+                  "use_team_color": true,
+                  "item": {
+                    "id": "minecraft:leather_helmet",
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "use_team_color": true,
+                  "item": {
+                    "id": "minecraft:leather_chestplate",
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "use_team_color": true,
+                  "item": {
+                    "id": "minecraft:leather_leggings",
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "use_team_color": true,
+                  "item": {
+                    "id": "minecraft:leather_boots",
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "gold",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:chainmail_helmet",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 21,
+              "price": {
+                "token": "gold",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:chainmail_chestplate",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 30,
+              "price": {
+                "token": "gold",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:chainmail_leggings",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 39,
+              "price": {
+                "token": "gold",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:chainmail_boots",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 3,
+              "name": "Chainmail Armour Set",
+              "price": {
+                "token": "gold",
+                "amount": 40
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_bars",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              },
+              "multi_results": [
+                {
+                  "item": {
+                    "id": "minecraft:chainmail_helmet",
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:chainmail_chestplate",
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:chainmail_leggings",
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:chainmail_boots",
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "slot": 13,
+              "price": {
+                "token": "diamond",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_helmet",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 22,
+              "price": {
+                "token": "diamond",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_chestplate",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 31,
+              "price": {
+                "token": "diamond",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_leggings",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 40,
+              "price": {
+                "token": "diamond",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_boots",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 4,
+              "name": "Iron Armour Set",
+              "price": {
+                "token": "diamond",
+                "amount": 20
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_ingot",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              },
+              "multi_results": [
+                {
+                  "item": {
+                    "id": "minecraft:iron_helmet",
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:iron_chestplate",
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:iron_leggings",
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:iron_boots",
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "diamond",
+                "amount": 32
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_helmet",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 23,
+              "price": {
+                "token": "diamond",
+                "amount": 32
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_chestplate",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 32,
+              "price": {
+                "token": "diamond",
+                "amount": 32
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_leggings",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 41,
+              "price": {
+                "token": "diamond",
+                "amount": 32
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_boots",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "slot": 5,
+              "name": "Diamond Armour Set",
+              "price": {
+                "token": "diamond",
+                "amount": 128
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
+                  }
+                }
+              },
+              "multi_results": [
+                {
+                  "item": {
+                    "id": "minecraft:diamond_helmet",
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:diamond_chestplate",
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:diamond_leggings",
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "item": {
+                    "id": "minecraft:diamond_boots",
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "slot": 25,
+              "price": {
+                "token": "diamond",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:shield",
+                  "Count": 1
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "food": {
+      "translation_key": "shop.food",
+      "display_item": {
+        "id": "minecraft:cake",
+        "Count": 1
+      },
+      "types": {
+        "default": {
+          "menu_size": "medium"
+        },
+        "hardcore": {
+          "offers": [
+            {
+              "slot": 11,
+              "price": {
+                "token": "iron",
+                "amount": 3
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:carrot",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 20,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 48
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:carrot",
+                  "Count": 16
+                }
+              }
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "iron",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:cooked_beef",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 21,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 60
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:cooked_beef",
+                  "Count": 6
+                }
+              }
+            },
+            {
+              "slot": 13,
+              "price": {
+                "token": "iron",
+                "amount": 15
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:golden_carrot",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 22,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 45
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:golden_carrot",
+                  "Count": 3
+                }
+              }
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "gold",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:golden_apple",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "iron",
+                "amount": 50
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:cake",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 23,
+              "price": {
+                "token": "gold",
+                "amount": 25
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:milk_bucket",
+                  "Count": 1
+                }
+              }
+            }
+          ]
+        },
+        "normal": {
+          "offers": [
+            {
+              "slot": 11,
+              "price": {
+                "token": "iron",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:carrot",
+                  "Count": 5
+                }
+              }
+            },
+            {
+              "slot": 20,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 60
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:carrot",
+                  "Count": 60
+                }
+              }
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "iron",
+                "amount": 3
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:cooked_beef",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 21,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 36
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:cooked_beef",
+                  "Count": 12
+                }
+              }
+            },
+            {
+              "slot": 13,
+              "price": {
+                "token": "iron",
+                "amount": 8
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:golden_carrot",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 22,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 40
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:golden_carrot",
+                  "Count": 5
+                }
+              }
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "gold",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:golden_apple",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "diamond",
+                "amount": 32
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:enchanted_golden_apple",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 23,
+              "price": {
+                "token": "iron",
+                "amount": 12
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:cake",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 24,
+              "price": {
+                "token": "gold",
+                "amount": 16
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:milk_bucket",
+                  "Count": 1
+                }
+              }
+            }
+          ]
+        },
+        "overpowered": {
+          "offers": [
+            {
+              "slot": 11,
+              "price": {
+                "token": "iron",
+                "amount": 1
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:carrot",
+                  "Count": 5
+                }
+              }
+            },
+            {
+              "slot": 20,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:carrot",
+                  "Count": 25
+                }
+              }
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "iron",
+                "amount": 1
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:cooked_beef",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 21,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 12
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:cooked_beef",
+                  "Count": 12
+                }
+              }
+            },
+            {
+              "slot": 13,
+              "price": {
+                "token": "iron",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:golden_carrot",
+                  "Count": 3
+                }
+              }
+            },
+            {
+              "slot": 22,
+              "is_duplicate": true,
+              "price": {
+                "token": "iron",
+                "amount": 15
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:golden_carrot",
+                  "Count": 9
+                }
+              }
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "gold",
+                "amount": 3
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:golden_apple",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "diamond",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:enchanted_golden_apple",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 23,
+              "price": {
+                "token": "iron",
+                "amount": 4
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:cake",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 24,
+              "price": {
+                "token": "gold",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:milk_bucket",
+                  "Count": 1
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "tools": {
+      "translation_key": "shop.tools",
+      "display_item": {
+        "id": "minecraft:diamond_pickaxe",
+        "Count": 1
+      },
+      "types": {
+        "default": {
+          "menu_size": "normal"
+        },
+        "hardcore": {
+          "offers": [
+            {
+              "slot": 11,
+              "price": {
+                "token": "iron",
+                "amount": 15
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:stone_pickaxe",
+                  "Count": 1,
+                  "tag": {
+                    "Unbreakable": true
+                  }
+                }
+              }
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "gold",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_pickaxe",
+                  "Count": 1,
+                  "tag": {
+                    "Unbreakable": true
+                  }
+                }
+              }
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "gold",
+                "amount": 15
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_pickaxe",
+                  "Count": 1,
+                  "tag": {
+                    "Unbreakable": true
+                  }
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "diamond",
+                "amount": 15
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_pickaxe",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 2
+                      }
+                    ],
+                    "Unbreakable": true
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "normal": {
+          "offers": [
+            {
+              "slot": 11,
+              "price": {
+                "token": "iron",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:stone_pickaxe",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 1
+                      }
+                    ],
+                    "Unbreakable": true
+                  }
+                }
+              }
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "gold",
+                "amount": 3
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_pickaxe",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 1
+                      }
+                    ],
+                    "Unbreakable": true
+                  }
+                }
+              }
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "gold",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_pickaxe",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 1
+                      }
+                    ],
+                    "Unbreakable": true
+                  }
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "diamond",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_pickaxe",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 3
+                      }
+                    ],
+                    "Unbreakable": true
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "overpowered": {
+          "offers": [
+            {
+              "slot": 10,
+              "price": {
+                "token": "iron",
+                "amount": 1
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:stone_pickaxe",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 2
+                      }
+                    ],
+                    "Unbreakable": true
+                  }
+                }
+              }
+            },
+            {
+              "slot": 11,
+              "price": {
+                "token": "iron",
+                "amount": 32
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:iron_pickaxe",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 3
+                      }
+                    ],
+                    "Unbreakable": true
+                  }
+                }
+              }
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "gold",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_pickaxe",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 2
+                      }
+                    ],
+                    "Unbreakable": true
+                  }
+                }
+              }
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "diamond",
+                "amount": 12
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_pickaxe",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 4
+                      }
+                    ],
+                    "Unbreakable": true
+                  }
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "diamond",
+                "amount": 25
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_pickaxe",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 6
+                      }
+                    ],
+                    "Unbreakable": true
+                  }
+                }
+              }
+            },
+            {
+              "slot": 16,
+              "price": {
+                "token": "diamond",
+                "amount": 40
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:diamond_pickaxe",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 8
+                      }
+                    ],
+                    "Unbreakable": true
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "archery": {
+      "translation_key": "shop.archery",
+      "display_item": {
+        "id": "minecraft:bow",
+        "Count": 1
+      },
+      "types": {
+        "default": {
+          "menu_size": "medium"
+        },
+        "hardcore": {
+          "menu_size": "normal",
+          "offers": [
+            {
+              "slot": 11,
+              "price": {
+                "token": "diamond",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:bow",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "gold",
+                "amount": 4
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:arrow",
+                  "Count": 5
+                }
+              }
+            }
+          ]
+        },
+        "normal": {
+          "offers": [
+            {
+              "slot": 10,
+              "price": {
+                "token": "diamond",
+                "amount": 8
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:bow",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 11,
+              "price": {
+                "token": "diamond",
+                "amount": 15
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:bow",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:power",
+                        "lvl": 1
+                      }
+                    ],
+                    "Unbreakable": true
+                  }
+                }
+              }
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "diamond",
+                "amount": 25
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:bow",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:punch",
+                        "lvl": 1
+                      }
+                    ],
+                    "Unbreakable": true
+                  }
+                }
+              }
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "gold",
+                "amount": 1
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:arrow",
+                  "Count": 5
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "gold",
+                "amount": 2
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:tipped_arrow",
+                  "Count": 1,
+                  "tag": {
+                    "Potion": "minecraft:slowness"
+                  }
+                }
+              }
+            },
+            {
+              "slot": 16,
+              "price": {
+                "token": "gold",
+                "amount": 3
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:tipped_arrow",
+                  "Count": 1,
+                  "tag": {
+                    "Potion": "minecraft:weakness"
+                  }
+                }
+              }
+            },
+            {
+              "slot": 23,
+              "price": {
+                "token": "gold",
+                "amount": 1
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:spectral_arrow",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 24,
+              "price": {
+                "token": "gold",
+                "amount": 32
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:tipped_arrow",
+                  "Count": 16,
+                  "tag": {
+                    "Potion": "minecraft:slowness"
+                  }
+                }
+              }
+            },
+            {
+              "slot": 25,
+              "price": {
+                "token": "gold",
+                "amount": 48
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:tipped_arrow",
+                  "Count": 16,
+                  "tag": {
+                    "Potion": "minecraft:weakness"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "overpowered": {
+          "offers": [
+            {
+              "slot": 10,
+              "price": {
+                "token": "diamond",
+                "amount": 12
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:bow",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:power",
+                        "lvl": 3
+                      }
+                    ],
+                    "Unbreakable": true
+                  }
+                }
+              }
+            },
+            {
+              "slot": 11,
+              "price": {
+                "token": "diamond",
+                "amount": 25
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:bow",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:power",
+                        "lvl": 5
+                      }
+                    ],
+                    "Unbreakable": true
+                  }
+                }
+              }
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "diamond",
+                "amount": 25
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:bow",
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:punch",
+                        "lvl": 1
+                      }
+                    ],
+                    "Unbreakable": true
+                  }
+                }
+              }
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "gold",
+                "amount": 2
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:arrow",
+                  "Count": 5
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "gold",
+                "amount": 1
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:tipped_arrow",
+                  "Count": 1,
+                  "tag": {
+                    "Potion": "minecraft:slowness"
+                  }
+                }
+              }
+            },
+            {
+              "slot": 16,
+              "price": {
+                "token": "gold",
+                "amount": 2
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:tipped_arrow",
+                  "Count": 1,
+                  "tag": {
+                    "Potion": "minecraft:weakness"
+                  }
+                }
+              }
+            },
+            {
+              "slot": 23,
+              "price": {
+                "token": "gold",
+                "amount": 1
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:spectral_arrow",
+                  "Count": 2
+                }
+              }
+            },
+            {
+              "slot": 24,
+              "price": {
+                "token": "gold",
+                "amount": 16
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:tipped_arrow",
+                  "Count": 16,
+                  "tag": {
+                    "Potion": "minecraft:slowness"
+                  }
+                }
+              }
+            },
+            {
+              "slot": 25,
+              "price": {
+                "token": "gold",
+                "amount": 32
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:tipped_arrow",
+                  "Count": 16,
+                  "tag": {
+                    "Potion": "minecraft:weakness"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "miscellaneous": {
+      "translation_key": "shop.miscellaneous",
+      "display_item": {
+        "id": "minecraft:chest",
+        "Count": 1
+      },
+      "types": {
+        "default": {
+          "menu_size": "normal"
+        },
+        "hardcore": {
+          "offers": [
+            {
+              "slot": 11,
+              "price": {
+                "token": "diamond",
+                "amount": 64
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:ender_pearl",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "gold",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:chest",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 13,
+              "price": {
+                "token": "iron",
+                "amount": 4
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:ladder",
+                  "Count": 2
+                }
+              }
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "gold",
+                "amount": 15
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:tnt",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "diamond",
+                "amount": 22
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:compass",
+                  "Count": 1
+                }
+              }
+            }
+          ]
+        },
+        "normal": {
+          "offers": [
+            {
+              "slot": 11,
+              "price": {
+                "token": "diamond",
+                "amount": 64
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:ender_pearl",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "gold",
+                "amount": 5
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:chest",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 13,
+              "price": {
+                "token": "iron",
+                "amount": 2
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:ladder",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "gold",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:tnt",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "diamond",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:compass",
+                  "Count": 1
+                }
+              }
+            }
+          ]
+        },
+        "overpowered": {
+          "offers": [
+            {
+              "slot": 11,
+              "price": {
+                "token": "diamond",
+                "amount": 64
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:ender_pearl",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 12,
+              "price": {
+                "token": "gold",
+                "amount": 2
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:chest",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 13,
+              "price": {
+                "token": "iron",
+                "amount": 8
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:ladder",
+                  "Count": 16
+                }
+              }
+            },
+            {
+              "slot": 14,
+              "price": {
+                "token": "gold",
+                "amount": 2
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:tnt",
+                  "Count": 1
+                }
+              }
+            },
+            {
+              "slot": 15,
+              "price": {
+                "token": "diamond",
+                "amount": 10
+              },
+              "result": {
+                "item": {
+                  "id": "minecraft:compass",
+                  "Count": 1
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  }
+}

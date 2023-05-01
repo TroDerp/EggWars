@@ -1,0 +1,24 @@
+{
+  "translation_key": "shop.special",
+  "display_item": {
+    "id": "minecraft:nether_star",
+    "Count": 1
+  },
+  "types": {
+    "default": {
+      "menu_size": "normal"
+    },
+    "hardcore": {
+      "offers": [
+      ]
+    },
+    "normal": {
+      "offers": [
+      ]
+    },
+    "overpowered": {
+      "offers": [
+      ]
+    } 
+  }
+}

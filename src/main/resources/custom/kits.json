@@ -1,0 +1,232 @@
+{
+  "kits": {
+    "egg_shell": {
+      "price": 200,
+      "display_item": {
+        "id": "minecraft:end_stone",
+        "Count": 1
+      },
+      "items": [
+        {
+          "item": {
+            "id": "minecraft:end_stone",
+            "Count": 8
+          }
+        }
+      ]
+    },
+    "rabbit": {
+      "price": 250,
+      "display_item": {
+        "id": "minecraft:golden_carrot",
+        "Count": 1
+      },
+      "items": [
+        {
+          "item": {
+            "id": "minecraft:golden_carrot",
+            "Count": 3
+          }
+        },
+        {
+          "item": {
+            "tag": {
+              "Potion": "minecraft:strong_leaping"
+            },
+            "id": "minecraft:potion"
+          }
+        }
+      ]
+    },
+    "money_bags": {
+      "price": 300,
+      "display_item": {
+        "id": "minecraft:iron_ingot",
+        "Count": 1
+      },
+      "items": [
+        {
+          "item": {
+            "id": "minecraft:iron_ingot",
+            "Count": 15
+          }
+        }
+      ]
+    },
+    "buffer": {
+      "price": 450,
+      "display_item": {
+        "id": "minecraft:splash_potion",
+        "Count": 1,
+        "tag": {
+          "Potion": "minecraft:healing"
+        }
+      },
+      "items": [
+        {
+          "item": {
+            "id": "minecraft:splash_potion",
+            "Count": 1,
+            "tag": {
+              "Potion": "minecraft:healing"
+            }
+          }
+        }
+      ]
+    },
+    "debuffer": {
+      "price": 450,
+      "display_item": {
+        "id": "minecraft:splash_potion",
+        "Count": 1,
+        "tag": {
+          "Potion": "minecraft:weakness"
+        }
+      },
+      "items": [
+        {
+          "item": {
+            "id": "minecraft:splash_potion",
+            "Count": 1,
+            "tag": {
+              "Potion": "minecraft:weakness"
+            }
+          }
+        },
+        {
+          "item": {
+            "id": "minecraft:splash_potion",
+            "Count": 1,
+            "tag": {
+              "Potion": "minecraft:slowness"
+            }
+          }
+        }
+      ]
+    },
+    "healer": {
+      "price": 450,
+      "display_item": {
+        "id": "minecraft:golden_apple",
+        "Count": 1
+      },
+      "items": [
+        {
+          "item": {
+            "id": "minecraft:golden_apple",
+            "Count": 2
+          }
+        }
+      ]
+    },
+    "shell_cracker": {
+      "price": 350,
+      "display_item": {
+        "id": "minecraft:golden_pickaxe",
+        "Count": 1
+      },
+      "items": [
+        {
+          "item": {
+            "tag": {
+              "Enchantments": [
+                {
+                  "lvl": 2,
+                  "id": "minecraft:efficiency"
+                }
+              ]
+            },
+            "id": "minecraft:golden_pickaxe",
+            "Count": 1
+          }
+        },
+        {
+          "item": {
+            "id": "minecraft:tnt",
+            "Count": 1
+          }
+        }
+      ]
+    },
+    "egg_armour": {
+      "price": 350,
+      "display_item": {
+        "id": "minecraft:egg",
+        "Count": 1
+      },
+      "items": [
+        {
+          "custom_slot": "head",
+          "item": {
+            "id": "minecraft:leather_helmet",
+            "Count": 1,
+            "tag": {
+              "display": {
+                "color": 16383998
+              }
+            }
+          }
+        },
+        {
+          "custom_slot": "chest",
+          "item": {
+            "id": "minecraft:leather_chestplate",
+            "Count": 1,
+            "tag": {
+              "display": {
+                "color": 16701501
+              }
+            }
+          }
+        },
+        {
+          "custom_slot": "legs",
+          "item": {
+            "id": "minecraft:leather_leggings",
+            "Count": 1,
+            "tag": {
+              "display": {
+                "color": 16383998
+              }
+            }
+          }
+        },
+        {
+          "custom_slot": "feet",
+          "item": {
+            "id": "minecraft:leather_boots",
+            "Count": 1,
+            "tag": {
+              "display": {
+                "color": 16383998
+              }
+            }
+          }
+        }
+      ]
+    },
+    "feather_feet": {
+      "price": 400,
+      "display_item": {
+        "id": "minecraft:feather",
+        "Count": 1
+      },
+      "items": [
+        {
+          "item": {
+            "id": "minecraft:chainmail_boots",
+            "Count": 1,
+            "tag": {
+              "Enchantments": [
+                {
+                  "lvl": 4,
+                  "id": "minecraft:feather_falling"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}
