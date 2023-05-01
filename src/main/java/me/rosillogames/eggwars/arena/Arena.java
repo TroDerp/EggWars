@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
-import org.apache.logging.log4j.LogManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -35,14 +34,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.gson.JsonObject;
-
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.game.Finish;
 import me.rosillogames.eggwars.arena.game.Lobby;
-import me.rosillogames.eggwars.arena.game.Starting;
 import me.rosillogames.eggwars.arena.shop.Category;
-import me.rosillogames.eggwars.arena.shop.Merchant;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.HealthType;
 import me.rosillogames.eggwars.enums.ItemType;
@@ -253,7 +248,7 @@ public class Arena
             }
             catch (Exception ex)
             {
-                LogManager.getLogger().error("Error loading specific trades for arena \"" + this.getName() + "\" from type \": ", ex);
+            	EggWars.instance.getLogger().log(Level.WARNING, "Error loading specific trades for arena \"" + this.getName() + "\" from type \": ", ex);
             }
         }
 
