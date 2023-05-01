@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import org.apache.logging.log4j.LogManager;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import com.google.gson.JsonArray;
@@ -65,7 +64,7 @@ public class TradingLoader
                 }
                 catch (Exception ex1)
                 {
-                    LogManager.getLogger().error("Error loading trade category \"" + name + "\": ", ex1);
+                	EggWars.instance.getLogger().log(Level.WARNING, "Error loading trade category \"" + name + "\": ", ex1);
                 }
             }
 
@@ -73,7 +72,7 @@ public class TradingLoader
         }
         catch (Exception ex2)
         {
-            LogManager.getLogger().error("Error loading main trades: ", ex2);
+        	EggWars.instance.getLogger().log(Level.WARNING, "Error loading main trades: ", ex2);
         }
     }
 
@@ -190,7 +189,7 @@ public class TradingLoader
             }
             catch (Exception ex)
             {
-                LogManager.getLogger().error("Error loading offer " + i + ": ", ex);
+            	EggWars.instance.getLogger().log(Level.WARNING, "Error loading offer " + i + ": ", ex);
                 continue;
             }
         }

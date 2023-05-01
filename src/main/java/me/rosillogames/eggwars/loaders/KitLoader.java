@@ -4,14 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-
 import javax.annotation.Nullable;
-
-import org.apache.logging.log4j.LogManager;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -111,13 +107,13 @@ public class KitLoader
                 }
                 catch (Exception ex)
                 {
-                    LogManager.getLogger().error("Error loading kit \"" + key + "\":", ex);
+                	EggWars.instance.getLogger().log(Level.WARNING, "Error loading kit \"" + key + "\":", ex);
                 }
             }
         }
         catch (Exception ex1)
         {
-            LogManager.getLogger().error("Error loading kits: ", ex1);
+        	EggWars.instance.getLogger().log(Level.WARNING, "Error loading kits: ", ex1);
         }
 
         this.kitsMenu.loadGui();

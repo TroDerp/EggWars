@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
-import org.apache.logging.log4j.LogManager;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import com.google.common.collect.Maps;
@@ -116,13 +115,13 @@ public class GeneratorLoader
                 }
                 catch (Exception ex1)
                 {
-                    LogManager.getLogger().error("Error loading generator \"" + name + "\":", ex1);
+                	EggWars.instance.getLogger().log(Level.WARNING, "Error loading generator \"" + name + "\":", ex1);
                 }
             }
         }
         catch (Exception ex2)
         {
-            LogManager.getLogger().error("Error loading generators: ", ex2);
+        	EggWars.instance.getLogger().log(Level.WARNING, "Error loading generators: ", ex2);
         }
 
         //On plugin load arenas are loaded before so there is no problem.

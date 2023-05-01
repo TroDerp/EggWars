@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
-import org.apache.logging.log4j.LogManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import com.google.gson.JsonElement;
@@ -53,13 +52,13 @@ public class TokenLoader
                 }
                 catch (Exception ex1)
                 {
-                    LogManager.getLogger().error("Error loading token type \"" + name + "\":", ex1);
+                	EggWars.instance.getLogger().log(Level.WARNING, "Error loading token type \"" + name + "\":", ex1);
                 }
             }
         }
         catch (Exception ex2)
         {
-            LogManager.getLogger().error("Error loading token types: ", ex2);
+        	EggWars.instance.getLogger().log(Level.WARNING, "Error loading token types: ", ex2);
         }
     }
 

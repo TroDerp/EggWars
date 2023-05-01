@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 import javax.annotation.Nullable;
-import org.apache.logging.log4j.LogManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,6 +29,8 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.Encoder;
 import com.mojang.serialization.JsonOps;
+
+import me.rosillogames.eggwars.EggWars;
 
 public class Reflections_1_16_R3 implements Reflections
 {
@@ -128,7 +130,7 @@ public class Reflections_1_16_R3 implements Reflections
             helpstack.object = new ItemStack(Material.AIR);
             result.resultOrPartial((s) ->
             {
-                LogManager.getLogger().error(s);
+                EggWars.instance.getLogger().log(Level.WARNING, s);
             }).ifPresent((legacystack) ->
             {
                 try
@@ -187,7 +189,7 @@ public class Reflections_1_16_R3 implements Reflections
             DataResult<JsonObject> result = ((Encoder)cItemStack.getField("a").get(null)).encode(nmsStack, JsonOps.INSTANCE, new JsonObject());
             result.resultOrPartial((s) ->
             {
-                LogManager.getLogger().error(s);
+                EggWars.instance.getLogger().log(Level.WARNING, s);
             }).ifPresent((jsonObj) ->
             {
                 helpjson.object = jsonObj;

@@ -2,7 +2,7 @@ package me.rosillogames.eggwars.utils;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.apache.logging.log4j.LogManager;
+import java.util.logging.Level;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import com.google.gson.JsonObject;
+import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class ItemUtils
@@ -109,7 +110,7 @@ public class ItemUtils
         }
         catch (Exception ex)
         {
-            LogManager.getLogger().error("Error parsing json item \"" + s + "\", returning " + material);
+        	EggWars.instance.getLogger().log(Level.WARNING, "Error parsing json item \"" + s + "\", returning " + material, ex);
             return new ItemStack(material);
         }
 
