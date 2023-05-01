@@ -1392,7 +1392,6 @@ public class Arena
 
     public int hashCode()
     {
-        byte byte0 = 31;
         int i = 1;
         i = 31 * i + (this.name != null ? this.name.hashCode() : 0);
         return i;

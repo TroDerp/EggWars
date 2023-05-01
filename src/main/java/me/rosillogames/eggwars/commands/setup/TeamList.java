@@ -1,18 +1,15 @@
 package me.rosillogames.eggwars.commands.setup;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.commands.CommandArg;
-import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.utils.Locations;
 import me.rosillogames.eggwars.utils.TeamTypes;

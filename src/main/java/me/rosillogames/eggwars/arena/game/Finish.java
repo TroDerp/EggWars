@@ -10,7 +10,6 @@ import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.events.EwArenaFinishEvent;
-import me.rosillogames.eggwars.language.LanguageUtils;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.Fireworks;
@@ -115,7 +114,7 @@ public class Finish
     public static void sendFinishStats(EwPlayer pl)
     {
         pl.getPlayer().sendMessage(ChatColor.GRAY + "------------------------------------");
-        String prefix = ChatColor.DARK_GRAY + "• " + ChatColor.GRAY;
+        String prefix = ChatColor.DARK_GRAY + "ï¿½ " + ChatColor.GRAY;
         pl.getPlayer().sendMessage(prefix + TranslationUtils.getMessage("statistics.game_lenght", pl.getPlayer(), ChatColor.YELLOW + TranslationUtils.translateTime(pl.getPlayer(), pl.getIngameStats().getStat(StatType.TIME_PLAYED), true)));
         pl.getPlayer().sendMessage(prefix + TranslationUtils.getMessage("statistics.kills", pl.getPlayer(), ChatColor.YELLOW + String.valueOf(pl.getIngameStats().getStat(StatType.KILLS))));
         int deaths = pl.getIngameStats().getStat(StatType.DEATHS);

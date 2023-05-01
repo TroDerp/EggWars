@@ -156,7 +156,6 @@ public class ItemUtils
     {
         int count = 0;
         int i = (int)d >= 16 ? ((int)d - (int)d % 16) / 16 : 1;
-        HashSet hashset = new HashSet();
 
         for (int j = 0 - i; j <= i; j++)
         {

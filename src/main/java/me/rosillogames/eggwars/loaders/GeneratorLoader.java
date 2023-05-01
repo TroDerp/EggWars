@@ -67,7 +67,6 @@ public class GeneratorLoader
             int defDropRate = GsonHelper.getAsInt(generatorsjson, "default_drop_rate", 20);
             int defMaxItems = GsonHelper.getAsInt(generatorsjson, "default_max_items", 25);
             JsonObject generatorslist = GsonHelper.getAsJsonObject(generatorsjson, "generators");
-            int generatorscount = 0;
 
             for (Map.Entry<String, JsonElement> entry5 : generatorslist.entrySet())
             {
@@ -111,7 +110,6 @@ public class GeneratorLoader
                     }
 
                     this.generators.put(name, new GeneratorType(maxItems, tickRates, prices, name, droppedToken, showTimeTag, requiresNearbyPlayers, lvls - 1, color));
-                    generatorscount++;
                 }
                 catch (Exception ex1)
                 {
@@ -125,7 +123,7 @@ public class GeneratorLoader
         }
 
         //On plugin load arenas are loaded before so there is no problem.
-        for (Arena arena : EggWars.instance.getArenaManager().getArenas())
+        for (Arena arena : EggWars.getArenaManager().getArenas())
         {
             for (Generator gen : arena.getGenerators().values())
             {

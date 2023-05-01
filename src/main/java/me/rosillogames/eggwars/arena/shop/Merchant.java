@@ -1,25 +1,10 @@
 package me.rosillogames.eggwars.arena.shop;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import me.rosillogames.eggwars.EggWars;
-import me.rosillogames.eggwars.enums.ItemType;
-import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayerMenu;
-import me.rosillogames.eggwars.player.inventory.EwInvType;
-import me.rosillogames.eggwars.player.inventory.InventoryController;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
-import me.rosillogames.eggwars.player.inventory.TranslatableItem;
-import me.rosillogames.eggwars.utils.PlayerUtils;
-import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class Merchant
 {

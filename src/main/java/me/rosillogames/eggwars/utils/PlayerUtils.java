@@ -1,11 +1,8 @@
 package me.rosillogames.eggwars.utils;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -15,7 +12,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.potion.PotionEffectType;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
-
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.language.TranslationUtils;
@@ -75,7 +71,6 @@ public class PlayerUtils
     {
         int count = 0;
         int i = (int)d >= 16 ? ((int)d - (int)d % 16) / 16 : 1;
-        HashSet hashset = new HashSet();
 
         for (int j = 0 - i; j <= i; j++)
         {
@@ -181,7 +176,6 @@ public class PlayerUtils
 
             if (ewplayer.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.COMPASS) || ewplayer.getPlayer().getInventory().getItemInOffHand().getType().equals(Material.COMPASS))
             {
-                String s = TeamUtils.translateTeamType(ewplayer1.getTeam().getType(), ewplayer.getPlayer(), false);
                 ReflectionUtils.sendActionBar(ewplayer.getPlayer(), TranslationUtils.getMessage("gameplay.ingame.compass_target", ewplayer.getPlayer(), new Object[] {
                     TeamUtils.translateTeamType(ewplayer1.getTeam().getType(), ewplayer.getPlayer(), false),
                     ewplayer1.getTeam().getType().colorizeName(ewplayer1.getPlayer().getName()),
@@ -203,7 +197,6 @@ public class PlayerUtils
 
         if (ewplayer.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.COMPASS) || ewplayer.getPlayer().getInventory().getItemInOffHand().getType().equals(Material.COMPASS))
         {
-            String s = TeamUtils.translateTeamType(ewplayer2.getTeam().getType(), ewplayer.getPlayer(), false);
             ReflectionUtils.sendActionBar(ewplayer.getPlayer(), TranslationUtils.getMessage("gameplay.ingame.compass_target", ewplayer.getPlayer(), new Object[] {
                 TeamUtils.translateTeamType(ewplayer2.getTeam().getType(), ewplayer.getPlayer(), false),
                 ewplayer2.getTeam().getType().colorizeName(ewplayer2.getPlayer().getName()),

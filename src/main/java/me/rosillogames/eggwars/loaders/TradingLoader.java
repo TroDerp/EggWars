@@ -169,7 +169,6 @@ public class TradingLoader
                 }
 
                 Offer offer;
-                boolean color = GsonHelper.getAsBoolean(result, "use_team_color", false);
 
                 if (!multiResults.isEmpty())
                 {

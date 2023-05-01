@@ -396,7 +396,6 @@ public class Team
 
     public int hashCode()
     {
-        byte byte0 = 31;
         int i = 1;
         i = 31 * i + (this.arena != null ? this.arena.hashCode() : 0);
         i = 31 * i + this.type.ordinal();

@@ -55,7 +55,6 @@ public class ArenaSign
 
     public int hashCode()
     {
-        byte byte0 = 31;
         int i = 1;
         i = 31 * i + (this.location != null ? this.location.hashCode() : 0);
         return i;

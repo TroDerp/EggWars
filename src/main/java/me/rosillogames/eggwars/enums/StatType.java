@@ -12,10 +12,8 @@ public enum StatType
     BLOCKS_BROKEN(false),
     BLOCKS_WALKED(false),
     TIME_PLAYED(false); //IN SECONDS
-    private boolean forTops;
 
-    private StatType(boolean flag)
+    private StatType(boolean forTops)
     {
-        this.forTops = flag;
     }
 }

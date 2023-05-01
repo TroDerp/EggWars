@@ -4,11 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.commands.CommandArg;
 import me.rosillogames.eggwars.language.TranslationUtils;
-import me.rosillogames.eggwars.utils.Locations;
 
 public class SetMainLobby extends CommandArg
 {

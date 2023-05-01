@@ -19,7 +19,12 @@ public class Bounds
 
     public Location getStart()
     {
-        return this.start.clone();
+        if (this.start != null)
+        {
+            return this.start.clone();
+        }
+
+        return null;
     }
 
     public void setStart(Location s)
@@ -29,7 +34,12 @@ public class Bounds
 
     public Location getEnd()
     {
-        return this.end.clone();
+        if (this.end != null)
+        {
+            return this.end.clone();
+        }
+
+        return null;
     }
 
     public void setEnd(Location e)

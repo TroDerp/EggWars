@@ -17,7 +17,6 @@ import me.rosillogames.eggwars.events.EwPlayerChangeLangEvent;
 import me.rosillogames.eggwars.language.Language;
 import me.rosillogames.eggwars.language.LanguageManager;
 import me.rosillogames.eggwars.language.TranslationUtils;
-import me.rosillogames.eggwars.loaders.KitLoader;
 import me.rosillogames.eggwars.objects.Kit;
 import me.rosillogames.eggwars.player.inventory.EwInventory;
 
