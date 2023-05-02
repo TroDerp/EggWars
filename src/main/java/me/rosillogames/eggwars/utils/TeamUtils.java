@@ -37,7 +37,7 @@ public class TeamUtils implements Listener
     {
         if (PlayerUtils.getEwPlayer(player) != null && PlayerUtils.getEwPlayer(player).getTeam() != null && PlayerUtils.getEwPlayer(player).getTeam().getType() == type)
         {
-            return type.color() + "§l[" + TeamUtils.translateTeamType(type, player, true, true) + type.color() + "§l]";
+            return type.color() + "Â§l[" + TeamUtils.translateTeamType(type, player, true, true) + type.color() + "Â§l]";
         }
         else
         {
@@ -49,12 +49,12 @@ public class TeamUtils implements Listener
     {
         if (type == null)
         {
-            return "§cnull";
+            return "Â§cnull";
         }
 
         if (allowBold && PlayerUtils.getEwPlayer(player) != null && PlayerUtils.getEwPlayer(player).getTeam() != null && PlayerUtils.getEwPlayer(player).getTeam().getType() == type)
         {
-            return TranslationUtils.getMessage("team." + type.id() + (shortv ? ".short" : ""), player, "§l");
+            return TranslationUtils.getMessage("team." + type.id() + (shortv ? ".short" : ""), player, "Â§l");
         }
 
         return TranslationUtils.getMessage("team." + type.id() + (shortv ? ".short" : ""), player);

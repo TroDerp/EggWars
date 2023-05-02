@@ -215,7 +215,7 @@ public class Reflections_1_18 implements Reflections
                 Object nameComponent = cEnchantment.getMethod("d", int.class).invoke(nmsEnch, entry.getValue());
                 Class cIChatBase = this.getNMSClass("network.chat.IChatBaseComponent");
                 Object string = cIChatBase.getMethod("getString").invoke(nameComponent);
-                list.add("ง7" + (String)string);
+                list.add("ยง7" + (String)string);
             }
         }
         catch (Exception exception)

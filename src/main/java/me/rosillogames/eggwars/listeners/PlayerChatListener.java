@@ -81,7 +81,7 @@ public class PlayerChatListener implements Listener
                     /* I decided to make bold name appear in both team and solo, to keep them similar*/
                     if (/*arena.getMaxTeamPlayers() > 1 && */ewplayer2.getTeam() == team)
                     {
-                        TranslationUtils.sendMessagePrefix("gameplay.ingame.global_chat", ewplayer2.getPlayer(), false, new Object[] {TeamUtils.teamPrefix(team.getType(), ewplayer2.getPlayer()), team.getType().color() + "§l" + ewplayer.getPlayer().getName(), msg.get(), PlayerUtils.getPrefix(ewplayer.getPlayer())});
+                        TranslationUtils.sendMessagePrefix("gameplay.ingame.global_chat", ewplayer2.getPlayer(), false, new Object[] {TeamUtils.teamPrefix(team.getType(), ewplayer2.getPlayer()), team.getType().color() + "Â§l" + ewplayer.getPlayer().getName(), msg.get(), PlayerUtils.getPrefix(ewplayer.getPlayer())});
                     }
                     else
                     {

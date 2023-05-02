@@ -246,7 +246,7 @@ public class Reflections_1_16_R3 implements Reflections
                 Object nameComponent = cEnch.getMethod("d", int.class).invoke(nmsEnch, entry.getValue());
                 Class cIChatBase = this.getNMSClass("IChatBaseComponent");
                 Object string = cIChatBase.getMethod("getString").invoke(nameComponent);
-                list.add("ง7" + (String)string);
+                list.add("ยง7" + (String)string);
             }
         }
         catch (Exception exception)

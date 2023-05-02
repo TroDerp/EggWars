@@ -34,7 +34,7 @@ import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class Generator
 {
-    private static final String TAG_PROGRESS_DOT = "|"/* or "¦" */;
+    private static final String TAG_PROGRESS_DOT = "|"/* or "Â¦" */;
     private static final int TAG_PROGRESS_BAR_LENGHT = 30;
     private final Arena arena;
     private final Location block;

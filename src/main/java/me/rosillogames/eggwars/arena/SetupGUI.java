@@ -38,22 +38,22 @@ public class SetupGUI
     public static void openArenaGUI(Player player1, Arena arena)
     {
         TranslatableInventory tInv = new TranslatableInventory(36, (player) -> "Arena Setup Gui");
-        tInv.setItem(11, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.CRAFTING_TABLE, 1), (player) -> "�7Here you can setup some of\n�7the arena's main settings", (player) -> "�e�lMain Setup"));
-        tInv.setItem(13, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.BLACK_BANNER, 1), (player) -> "�7Here you can setup the arena's teams", (player) -> "�e�lTeam Setup"));
-        tInv.setItem(15, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.OAK_SIGN, 1), (player) -> "�7Here you can setup the generators", (player) -> "�e�lGenerator Setup"));
+        tInv.setItem(11, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.CRAFTING_TABLE, 1), (player) -> "§7Here you can setup some of\n§7the arena's main settings", (player) -> "§e§lMain Setup"));
+        tInv.setItem(13, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.BLACK_BANNER, 1), (player) -> "§7Here you can setup the arena's teams", (player) -> "§e§lTeam Setup"));
+        tInv.setItem(15, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.OAK_SIGN, 1), (player) -> "§7Here you can setup the generators", (player) -> "§e§lGenerator Setup"));
         tInv.setItem(31, EwPlayerMenu.getCloseItem());
         InventoryController.openInventory(player1, tInv, EwInvType.ARENA_SETUP);
     }
 
     public static TranslatableItem getSetupGUIItem()
     {
-        return TranslatableItem.translatableNameLore(new ItemStack(Material.ITEM_FRAME), (player) -> "�7Right-Click to open!", (player) -> "�a�lSetup GUI");
+        return TranslatableItem.translatableNameLore(new ItemStack(Material.ITEM_FRAME), (player) -> "§7Right-Click to open!", (player) -> "§a§lSetup GUI");
     }
 
     private static void openMainSetupGUI(Player player1, Arena arena)
     {
         TranslatableInventory tInv = new TranslatableInventory(27, (player) -> "Main Settings");
-        tInv.setItem(4, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.WRITABLE_BOOK, 1), (player) -> "�7Click to show the to-do list on the chat", (player) -> "�a�lTo-Do List"));
+        tInv.setItem(4, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.WRITABLE_BOOK, 1), (player) -> "§7Click to show the to-do list on the chat", (player) -> "§a§lTo-Do List"));
         tInv.setItem(10, getTeamSetting("Lobby Location", arena.getLobby(), Material.SANDSTONE));
         tInv.setItem(12, getTeamSetting("Center Location", arena.getCenter(), Material.RED_SANDSTONE));
 
@@ -66,8 +66,8 @@ public class SetupGUI
         tInv.setItem(14, getTeamSetting("Bounds Start", bounds.getStart(), bounds.getStart() != null ? Material.STRUCTURE_VOID : Material.BARRIER));
         tInv.setItem(15, getTeamSetting("Bounds End", bounds.getEnd(), bounds.getEnd() != null ? Material.STRUCTURE_VOID : Material.BARRIER));
         TranslatableItem boundsItem = new TranslatableItem(new ItemStack(Material.TARGET, 1));
-        boundsItem.setName((player) -> "�a�lArena Bounds");
-        boundsItem.addLoreString("�7Arena Bounds are used to\n�7set the build limits for players" + (bounds.getStart() == null && bounds.getEnd() == null ? "" : "\n\n�4Shift+Click to remove bounds"), false);
+        boundsItem.setName((player) -> "§a§lArena Bounds");
+        boundsItem.addLoreString("§7Arena Bounds are used to\n§7set the build limits for players" + (bounds.getStart() == null && bounds.getEnd() == null ? "" : "\n\n§4Shift+Click to remove bounds"), false);
         tInv.setItem(16, boundsItem);
         tInv.setItem(22, EwPlayerMenu.getCloseItem());
         InventoryController.openInventory(player1, tInv, EwInvType.MAIN_SETUP);
@@ -123,13 +123,13 @@ public class SetupGUI
             });
 
             tItem.setName((player) -> TeamUtils.translateTeamType(teamtype, player, false));
-            tItem.addLoreString("�7Todo:", false);
+            tItem.addLoreString("§7Todo:", false);
 
             if (team == null)
             {
-                tItem.addLoreString("�c - Create team", false);
+                tItem.addLoreString("§c - Create team", false);
                 tItem.addLoreString("", false);
-                tItem.addLoreString("�7Click to create this team!", false);
+                tItem.addLoreString("§7Click to create this team!", false);
             }
             else
             {
@@ -138,35 +138,35 @@ public class SetupGUI
                 if (team.getVillager() == null)
                 {
                     done = false;
-                    tItem.addLoreString("�6 - Set villager", false);
+                    tItem.addLoreString("§6 - Set villager", false);
                 }
 
                 if (team.getCages() == null || team.getCages().size() < arena.getMaxTeamPlayers())
                 {
                     done = false;
-                    tItem.addLoreString("�6 - Add cages", false);
+                    tItem.addLoreString("§6 - Add cages", false);
                 }
 
                 if (team.getRespawn() == null)
                 {
                     done = false;
-                    tItem.addLoreString("�6 - Set respawn", false);
+                    tItem.addLoreString("§6 - Set respawn", false);
                 }
 
                 if (team.getEgg() == null)
                 {
                     done = false;
-                    tItem.addLoreString("�6 - Set egg", false);
+                    tItem.addLoreString("§6 - Set egg", false);
                 }
 
                 if (done)
                 {
-                    tItem.addLoreString("�a - Done!", false);
+                    tItem.addLoreString("§a - Done!", false);
                 }
 
                 tItem.addLoreString("", false);
-                tItem.addLoreString("�7Click to view settings!", false);
-                tItem.addLoreString("�4Shift click to remove this team!", false);
+                tItem.addLoreString("§7Click to view settings!", false);
+                tItem.addLoreString("§4Shift click to remove this team!", false);
             }
 
             int slot = (9 * ((i / 7) + 1)) + ((i % 7) + 1);
@@ -193,22 +193,22 @@ public class SetupGUI
     private static TranslatableItem getTeamSetting(String name, Location setting, Material mat)
     {
         TranslatableItem settingItem = new TranslatableItem(new ItemStack(mat, 1));
-        settingItem.setName((player) -> "�e�l" + name);
+        settingItem.setName((player) -> "§e§l" + name);
 
         if (setting != null)
         {
-            settingItem.addLoreString("�7Position:", false);
-            settingItem.addLoreString("�7- X: " + setting.getBlockX(), false);
-            settingItem.addLoreString("�7- Y: " + setting.getBlockY(), false);
-            settingItem.addLoreString("�7- Z: " + setting.getBlockZ(), false);
+            settingItem.addLoreString("§7Position:", false);
+            settingItem.addLoreString("§7- X: " + setting.getBlockX(), false);
+            settingItem.addLoreString("§7- Y: " + setting.getBlockY(), false);
+            settingItem.addLoreString("§7- Z: " + setting.getBlockZ(), false);
         }
         else
         {
-            settingItem.addLoreString("�cNot set!", false);
+            settingItem.addLoreString("§cNot set!", false);
         }
 
         settingItem.addLoreString("", false);
-        settingItem.addLoreString("�6Click to set location (Your position)", false);
+        settingItem.addLoreString("§6Click to set location (Your position)", false);
         return settingItem;
     }
 
@@ -220,24 +220,24 @@ public class SetupGUI
             return stack;
         });
 
-        settingItem.setName((player) -> "�e�l" + name);
-        settingItem.addLoreString("�7Positions: �e(" + set + "/" + toSet + ")", false);
+        settingItem.setName((player) -> "§e§l" + name);
+        settingItem.addLoreString("§7Positions: §e(" + set + "/" + toSet + ")", false);
 
         if (setting != null && !setting.isEmpty())
         {
             for (Location loc : setting)
             {
-                settingItem.addLoreString("�7- X: " + loc.getBlockX() + ", Y: " + loc.getBlockY() + ", Z: " + loc.getBlockZ(), false);
+                settingItem.addLoreString("§7- X: " + loc.getBlockX() + ", Y: " + loc.getBlockY() + ", Z: " + loc.getBlockZ(), false);
             }
         }
         else
         {
-            settingItem.addLoreString("�cNot set!", false);
+            settingItem.addLoreString("§cNot set!", false);
         }
 
         settingItem.addLoreString("", false);
-        settingItem.addLoreString("�6Click to add location (Your position)", false);
-        settingItem.addLoreString("�4Shift+Click to remove last location", false);
+        settingItem.addLoreString("§6Click to add location (Your position)", false);
+        settingItem.addLoreString("§4Shift+Click to remove last location", false);
         return settingItem;
     }
 
@@ -275,7 +275,7 @@ public class SetupGUI
             if (pages == page)
             {
                 int slot = (9 * ((counter / 7) + 1)) + ((counter % 7) + 1);
-                tInv.setItem(slot, TranslatableItem.translatableNameLore(new ItemStack(entry.getValue().droppedToken().getMaterial(), 1), (player) -> "�7Click to choose level", (player) -> entry.getValue().droppedToken().getColor() + TranslationUtils.getMessage(entry.getValue().droppedToken().getTypeName(), player)));
+                tInv.setItem(slot, TranslatableItem.translatableNameLore(new ItemStack(entry.getValue().droppedToken().getMaterial(), 1), (player) -> "§7Click to choose level", (player) -> entry.getValue().droppedToken().getColor() + TranslationUtils.getMessage(entry.getValue().droppedToken().getTypeName(), player)));
                 typeMap.put(slot, entry.getValue());
             }
 
@@ -326,9 +326,9 @@ public class SetupGUI
                 final int fnl = i;
                 TranslatableItem tItem = new TranslatableItem(itemstack);
                 tItem.setName((player) -> type.droppedToken().getColor() + TranslationUtils.getMessage(type.droppedToken().getTypeName(), player) + " - Level " + fnl);
-                tItem.addLoreString("�7Click to pick level", false);
+                tItem.addLoreString("§7Click to pick level", false);
                 tItem.addLoreString("", false);
-                tItem.addLoreString("�7Right click a sign to apply the level!", false);
+                tItem.addLoreString("§7Right click a sign to apply the level!", false);
                 tInv.setItem(slot, tItem);
                 typeMap.put(slot, i);
             }
