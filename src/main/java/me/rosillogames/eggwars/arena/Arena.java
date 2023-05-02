@@ -70,7 +70,8 @@ public class Arena
     private final String name;
     private final Map<TeamTypes, Team> teams = Maps.newEnumMap(TeamTypes.class);
     private final Map<Location, Generator> generators = Maps.newHashMap();
-    private ArenaStatus status;
+    //Arena status will now always be "Setup" at first, before completing init or when arena is newly created
+    private ArenaStatus status = ArenaStatus.SETTING;
 
     //For game
     private World world;
@@ -125,7 +126,6 @@ public class Arena
         this.lobby = null;
         this.center = null;
         this.boundaries = new Bounds(null, null);
-        this.status = ArenaStatus.SETTING;
         this.maxTeamPlayers = 0;
         this.minPlayers = 0;
         this.defCountdown = -1;
@@ -212,9 +212,8 @@ public class Arena
             }
         }
 
-        this.status = this.isSetup() ? ArenaStatus.LOBBY : ArenaStatus.SETTING;
         this.setWorld(world);
-        this.reset(false);
+        this.reset(!this.isSetup());
     }
 
     private static void loadIfPresent(FileConfiguration config, String key, Consumer<Location> cons)
@@ -781,8 +780,9 @@ public class Arena
     	this.getWorld().setGameRule(GameRule.NATURAL_REGENERATION, Boolean.valueOf(true));
 
     	//If it is entering setup it will regen the world, and if it is exiting it will not.
-    	//The config option works if none of these conditions are met.
-    	if (enterSetup || (this.status != ArenaStatus.SETTING && EggWars.instance.getConfig().getBoolean("plugin.regenerate_worlds")))
+    	//In other words, when the game was not in setup mode, if it is entering setup it will regen the world, if not then the config option must be enabled
+    	//The status check serves to fix an internal issue when an incomplete arena is loaded, be able to set enterSetup=true to correctly set the world to edit mode without regenerating the world again on server startup
+    	if (this.status != ArenaStatus.SETTING && (enterSetup || EggWars.instance.getConfig().getBoolean("plugin.regenerate_worlds")))
     	{
             this.placedBlocks.clear();
             this.brokenBlocks.clear();
