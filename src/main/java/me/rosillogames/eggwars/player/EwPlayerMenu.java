@@ -213,7 +213,6 @@ public class EwPlayerMenu
 
     public static TranslatableItem getKitsItem()
     {
-        //TODO: translations
         return TranslatableItem.translatableNameLore(ItemUtils.hideStackAttributes(new ItemStack(Material.PAPER)), "menu.kits.item_lore", "menu.kits.item_name");
     }
 

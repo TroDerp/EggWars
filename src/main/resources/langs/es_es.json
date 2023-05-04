@@ -283,6 +283,8 @@
   "menu.languages.title": "&8Idiomas",
   "menu.languages.default.item_name": "&e&lPor defecto",
   "menu.languages.default.item_lore": "&7Se seleccionará el idioma\n&7automáticamente.",
+  "menu.kits.item_name": "&e&lKits",
+  "menu.kits.item_lore": "&7Haz clic para abrir\n&7la selección de kits.",
   "menu.kits.menu_title": "&8Kits de EggWars",
   "menu.kits.kit_lore.full": "&7{0}\n{1}\n\n&5Contenido:{2}\n{3}",
   "menu.kits.kit_lore.desc": "&7{0}\n",
