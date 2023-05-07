@@ -18,6 +18,7 @@ import org.bukkit.generator.ChunkGenerator;
 import com.google.common.collect.Lists;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
+import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class WorldController
 {
@@ -205,7 +206,7 @@ public class WorldController
             }
         }
 
-        world.save();
+        ReflectionUtils.saveFullWorld(world);//use this because bukkit method does not save the full world at once, causing file corruption
         copyWorld(new File(EggWars.instance.getServer().getWorldContainer(), formatTmpWorldName(arena.getName())), new File(arena.arenaFolder, "world"));
     }
 

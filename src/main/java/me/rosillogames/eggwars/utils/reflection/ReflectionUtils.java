@@ -82,6 +82,11 @@ public class ReflectionUtils
         currentReflections.disablePhysics(e);
     }
 
+    public static void saveFullWorld(World world)
+    {
+        currentReflections.saveFullWorld(world);
+    }
+
     public static void sendPacket(Player player, Object packetObj)
     {
         currentReflections.sendPacket(player, packetObj);

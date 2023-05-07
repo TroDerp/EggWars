@@ -44,6 +44,8 @@ public interface Reflections
 
     public void disablePhysics(Entity e);
 
+    public void saveFullWorld(World world);
+
     public void sendPacket(Player player, Object packetObj);
 
     public void sendTitle(Player player, Integer fadeInTime, Integer stayTime, Integer fadeOutTime, String title, String subtitle);

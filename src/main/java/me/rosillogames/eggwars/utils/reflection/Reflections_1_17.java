@@ -266,6 +266,28 @@ public class Reflections_1_17 implements Reflections
     }
 
     @Override
+    public void saveFullWorld(World world)
+    {
+        try
+        {
+            Object obj = world.getClass().getMethod("getHandle").invoke(world);
+            Field field = obj.getClass().getField("b");
+            boolean accessible = field.isAccessible();
+            field.setAccessible(true);
+            boolean boolVal = field.getBoolean(obj);
+            field.setAccessible(accessible);
+            obj.getClass().getMethod("save", this.getNMSClass("util.IProgressUpdate"), boolean.class, boolean.class).invoke(obj, null, true, false);
+            field.setAccessible(true);
+            field.set(obj, boolVal);
+            field.setAccessible(accessible);
+        }
+        catch (Exception exception)
+        {
+            exception.printStackTrace();
+        }
+    }
+
+    @Override
     public void sendPacket(Player player, Object packetObj)
     {
         try
