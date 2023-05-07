@@ -1,7 +1,7 @@
 package me.rosillogames.eggwars.arena.game;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
@@ -113,15 +113,21 @@ public class Finish
 
     public static void sendFinishStats(EwPlayer pl)
     {
-        pl.getPlayer().sendMessage(ChatColor.GRAY + "------------------------------------");
-        String prefix = ChatColor.DARK_GRAY + "• " + ChatColor.GRAY;
-        pl.getPlayer().sendMessage(prefix + TranslationUtils.getMessage("statistics.game_lenght", pl.getPlayer(), ChatColor.YELLOW + TranslationUtils.translateTime(pl.getPlayer(), pl.getIngameStats().getStat(StatType.TIME_PLAYED), true)));
-        pl.getPlayer().sendMessage(prefix + TranslationUtils.getMessage("statistics.kills", pl.getPlayer(), ChatColor.YELLOW + String.valueOf(pl.getIngameStats().getStat(StatType.KILLS))));
+        Player ply = pl.getPlayer();
+    	String stripemsg = TranslationUtils.getMessage("stats.endOfGame.stripes", ply);
+    	ply.sendMessage(stripemsg);
+        sendFinishStat(ply, TranslationUtils.getMessage("stats.endOfGame.game_lenght", ply), TranslationUtils.translateTime(ply, pl.getIngameStats().getStat(StatType.TIME_PLAYED), true));
+        sendFinishStat(ply, TranslationUtils.getMessage("stats.kills", ply), String.valueOf(pl.getIngameStats().getStat(StatType.KILLS)));
         int deaths = pl.getIngameStats().getStat(StatType.DEATHS);
-        pl.getPlayer().sendMessage(prefix + TranslationUtils.getMessage("statistics.deaths", pl.getPlayer(), ChatColor.YELLOW + String.valueOf(pl.getIngameStats().getStat(StatType.DEATHS))));
-        deaths = deaths <= 0 ? 1 : deaths;
-        pl.getPlayer().sendMessage(prefix + TranslationUtils.getMessage("statistics.kill_death", pl.getPlayer(), ChatColor.YELLOW + String.format("%.2f", (double)pl.getIngameStats().getStat(StatType.KILLS) / (double)deaths)));
-        pl.getPlayer().sendMessage(prefix + TranslationUtils.getMessage("statistics.eliminations", pl.getPlayer(), ChatColor.YELLOW + String.valueOf(pl.getIngameStats().getStat(StatType.ELIMINATIONS))));
-        pl.getPlayer().sendMessage(ChatColor.GRAY + "------------------------------------");
+        sendFinishStat(ply, TranslationUtils.getMessage("stats.deaths", ply), deaths);
+        sendFinishStat(ply, TranslationUtils.getMessage("stats.endOfGame.kill_death", ply), String.format("%.2f", (double)pl.getIngameStats().getStat(StatType.KILLS) / (double)(deaths <= 0 ? 1 : deaths)));
+        sendFinishStat(ply, TranslationUtils.getMessage("stats.eggs_broken", ply), String.valueOf(pl.getIngameStats().getStat(StatType.EGGS_BROKEN)));
+        sendFinishStat(ply, TranslationUtils.getMessage("stats.eliminations", ply), String.valueOf(pl.getIngameStats().getStat(StatType.ELIMINATIONS)));
+    	ply.sendMessage(stripemsg);
+    }
+
+    private static void sendFinishStat(Player pl, Object... args)
+    {
+        pl.getPlayer().sendMessage(TranslationUtils.getMessage("stats.endOfGame.stat", pl, args));
     }
 }
