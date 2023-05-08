@@ -34,24 +34,27 @@ public class ItemPickupListener implements Listener
         ItemStack stack = pickUpEvent.getItem().getItemStack();
         ItemMeta meta = stack.getItemMeta();
 
-        for (Generator gen : ewplayer.getArena().getGenerators().values())
+        if (meta.getPersistentDataContainer().has(EggWars.apssId, PersistentDataType.STRING))
         {
-        	Generator.APSS apss = gen.getAPSS();
+            for (Generator gen : ewplayer.getArena().getGenerators().values())
+            {
+            	Generator.APSS apss = gen.getAPSS();
 
-        	if (apss.uuid.equals(UUID.fromString(meta.getPersistentDataContainer().get(EggWars.apssId, PersistentDataType.STRING))))
-        	{
-        		if (apss.candidates.size() > 1 && apss.candidates.contains(ewplayer))
-        		{
-        			if (apss.turn != apss.candidates.indexOf(ewplayer))
-        			{
-        				pickUpEvent.setCancelled(true);
-        				return;
-        			}
-        		}
+            	if (apss.uuid.equals(UUID.fromString(meta.getPersistentDataContainer().get(EggWars.apssId, PersistentDataType.STRING))))
+            	{
+            		if (apss.candidates.size() > 1 && apss.candidates.contains(ewplayer))
+            		{
+            			if (apss.turn != apss.candidates.indexOf(ewplayer))
+            			{
+            				pickUpEvent.setCancelled(true);
+            				return;
+            			}
+            		}
 
-        		stack = new ItemStack(stack.getType(), stack.getAmount());
-        		break;
-        	}
+            		stack = new ItemStack(stack.getType(), stack.getAmount());
+            		break;
+            	}
+            }
         }
 
         pickUpEvent.getItem().setItemStack(ItemUtils.tryColorizeByTeam(ewplayer.getTeam().getType(), stack));

@@ -470,6 +470,7 @@ public class Generator
         public List<EwPlayer> candidates = Lists.newArrayList();
         public int turn = 0;
 
+//keep update() and nextTurn() separated because update() is used more often to set Turn to 0 when some player candidates in one Gen leave, for the pickup not be disabled for remaining players in slow generators
         public void update()
         {
             this.candidates.clear();
@@ -484,11 +485,16 @@ public class Generator
                 	this.candidates.add(ewplayer);
             	}
             }
+
+            if (this.turn >= this.candidates.size())
+            {
+            	this.turn = 0;
+            }
         }
 
         public void nextTurn()
         {
-            if (this.turn < this.candidates.size() - 1)
+            if (this.turn < (this.candidates.size() - 1))
             {
             	this.turn++;
             }
