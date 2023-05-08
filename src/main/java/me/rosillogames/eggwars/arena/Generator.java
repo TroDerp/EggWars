@@ -1,6 +1,8 @@
 package me.rosillogames.eggwars.arena;
 
+import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import javax.annotation.Nullable;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -13,9 +15,13 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
+import com.google.common.collect.Lists;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.objects.Price;
@@ -49,6 +55,9 @@ public class Generator
     @Nullable
     private ArmorStand armorStand = null;
     private TranslatableInventory genInv;
+    //Awesome Produce Sharing System as described by CubeCraft
+    //When more than a single player are next to the generator, its product will be given to the player their turn corresponds with.
+    private APSS apss = new APSS();
 
     public Generator(Location loc, int lvl, String typeIn, Arena arenaIn)
     {
@@ -78,6 +87,11 @@ public class Generator
     public String getType()
     {
         return this.type;
+    }
+
+    public APSS getAPSS()
+    {
+        return this.apss;
     }
 
     private boolean isMaxLevel()
@@ -120,7 +134,7 @@ public class Generator
         final int tickRate = this.cachedType.tickRate(this.level);
         this.tickTask = (new BukkitRunnable()
         {
-            public void run()
+        	public void run()
             {
                 if (!Generator.this.cachedType.requiresNearbyPlayer() || PlayerUtils.getNearbyPlayerAmount(Generator.this.block, 3.0, Generator.this.arena) >= 1)
                 {
@@ -131,8 +145,11 @@ public class Generator
                     Generator.this.genTicks--;
                 }
 
+                Generator.this.apss.update();
+
                 if (Generator.this.genTicks >= tickRate)
                 {
+                    Generator.this.apss.nextTurn();
                     Generator.this.generate();
                     Generator.this.genTicks = 0;
                 }
@@ -230,31 +247,11 @@ public class Generator
         }
 
         ItemStack itemstack = stack.clone();
-        double d = (new Random()).nextDouble();
+        ItemMeta meta = itemstack.getItemMeta();
+        meta.getPersistentDataContainer().set(EggWars.apssId, PersistentDataType.STRING, this.apss.uuid.toString());
+        itemstack.setItemMeta(meta);
 
-        if (d > 0.8)
-        {
-            d -= 0.1;
-        }
-
-        if (d < 0.2)
-        {
-            d += 0.1;
-        }
-
-        double d1 = (new Random()).nextDouble();
-
-        if (d1 > 0.8)
-        {
-            d1 -= 0.1;
-        }
-
-        if (d1 < 0.2)
-        {
-            d1 += 0.1;
-        }
-
-        final Item entityitem = this.block.getWorld().dropItem(this.block.clone().add(d, 0.0D, d1), itemstack);
+        final Item entityitem = this.block.getWorld().dropItem(this.getBlock().add(0.5, 0.2, 0.5), itemstack);
         entityitem.setVelocity(new Vector(0, 0, 0));
         entityitem.setPickupDelay(0);
 
@@ -268,24 +265,37 @@ public class Generator
         {
             public void run()
             {
-                if (!entityitem.isDead() && (entityitem.getLocation().getBlockX() != Generator.this.block.getBlockX() || entityitem.getLocation().getBlockZ() != Generator.this.block.getBlockZ()))
+                if (!entityitem.isDead())
                 {
-                    entityitem.teleport(Generator.this.block.clone().add(0.5, 0.0, 0.5));
+                    double dx = (new Random()).nextDouble();
+
+                    if (dx > 0.8)
+                    {
+                        dx -= 0.1;
+                    }
+
+                    if (dx < 0.2)
+                    {
+                        dx += 0.1;
+                    }
+
+                    double dz = (new Random()).nextDouble();
+
+                    if (dz > 0.8)
+                    {
+                        dz -= 0.1;
+                    }
+
+                    if (dz < 0.2)
+                    {
+                        dz += 0.1;
+                    }
+
                     entityitem.setVelocity(new Vector(0, 0, 0));
+                    entityitem.teleport(Generator.this.getBlock().add(dx, 0.0, dz));
                 }
             }
-        }).runTaskLater(EggWars.instance, 20L);
-        (new BukkitRunnable()
-        {
-            public void run()
-            {
-                if (!entityitem.isDead() && (entityitem.getLocation().getBlockX() != Generator.this.block.getBlockX() || entityitem.getLocation().getBlockZ() != Generator.this.block.getBlockZ()))
-                {
-                    entityitem.teleport(Generator.this.block.clone().add(0.5, 0.0, 0.5));
-                    entityitem.setVelocity(new Vector(0, 0, 0));
-                }
-            }
-        }).runTaskLater(EggWars.instance, 40L);
+        }).runTaskLater(EggWars.instance, 15L);
     }
 
     public void updateSign()
@@ -452,5 +462,40 @@ public class Generator
         }
 
         return true;
+    }
+
+    public class APSS
+    {
+        public final UUID uuid = UUID.randomUUID();
+        public List<EwPlayer> candidates = Lists.newArrayList();
+        public int turn = 0;
+
+        public void update()
+        {
+            this.candidates.clear();
+            BoundingBox itembox = new BoundingBox(Generator.this.block.getX() - 0.25, Generator.this.block.getY(), Generator.this.block.getZ() - 0.25, Generator.this.block.getX() + 0.25, Generator.this.block.getY() + 0.45, Generator.this.block.getZ() + 0.25);
+
+            for (EwPlayer ewplayer : Generator.this.arena.getAlivePlayers())
+            {
+            	Player player = ewplayer.getPlayer();
+
+            	if (player.getBoundingBox().clone().expand(1.0, 0.5, 1.0).overlaps(itembox))
+            	{
+                	this.candidates.add(ewplayer);
+            	}
+            }
+        }
+
+        public void nextTurn()
+        {
+            if (this.turn < this.candidates.size() - 1)
+            {
+            	this.turn++;
+            }
+            else
+            {
+            	this.turn = 0;
+            }
+        }
     }
 }

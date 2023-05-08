@@ -111,14 +111,12 @@ public class ReflectionUtils
     {
         switch (v)
         {
+        case V_1_16_R1:
         case V_1_16_R2:
-            currentReflections = new Reflections_1_16_R2();
+            currentReflections = new Reflections_1_16(false);
             return;
         case V_1_16_R3:
-            currentReflections = new Reflections_1_16_R3();
-            return;
-        case V_1_16_R1:
-            currentReflections = new Reflections_1_16_R1();
+            currentReflections = new Reflections_1_16(true);
             return;
         case V_1_17:
             currentReflections = new Reflections_1_17();

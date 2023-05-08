@@ -20,6 +20,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -86,6 +87,9 @@ public class EggWars extends JavaPlugin
     public static Set<ArenaSign> signs;
     public static Config config = new Config();
     public static Versions serverVersion;
+    public static NamespacedKey apssId;
+    public static NamespacedKey genType;
+    public static NamespacedKey genLevel;
     private ArenaLoader arenaLoader;
     private KitLoader kitLoader;
     private TokenLoader tokenLoader;
@@ -166,6 +170,7 @@ public class EggWars extends JavaPlugin
         this.commandRegister();
         DependencyUtils.registerEggWarsPlaceHolders();
         this.loadLoaders();
+        this.loadNamespaces();
         this.loadArenas();
         this.loadSigns();
         TickClock.start();
@@ -188,6 +193,13 @@ public class EggWars extends JavaPlugin
         this.generatorLoader = new GeneratorLoader();
         this.tradingLoader = new TradingLoader();
         this.database = new Database(this);
+    }
+
+    private void loadNamespaces()
+    {
+        apssId = new NamespacedKey(this, "APSS_ID");
+        genType = new NamespacedKey(this, "GEN_TYPE");
+        genLevel = new NamespacedKey(this, "GEN_LEVEL");
     }
 
     private void loadLists()

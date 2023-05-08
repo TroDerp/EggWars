@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Sign;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -320,8 +319,8 @@ public class SetupGUI
                 int slot = (9 * ((counter / 7) + 1)) + ((counter % 7) + 1);
                 ItemStack itemstack = new ItemStack(type.droppedToken().getMaterial(), 1);
                 ItemMeta meta = itemstack.getItemMeta();
-                meta.getPersistentDataContainer().set(new NamespacedKey(EggWars.instance, "GEN_TYPE"), PersistentDataType.STRING, type.getId());
-                meta.getPersistentDataContainer().set(new NamespacedKey(EggWars.instance, "GEN_LEVEL"), PersistentDataType.INTEGER, i);
+                meta.getPersistentDataContainer().set(EggWars.genType, PersistentDataType.STRING, type.getId());
+                meta.getPersistentDataContainer().set(EggWars.genLevel, PersistentDataType.INTEGER, i);
                 itemstack.setItemMeta(meta);
                 final int fnl = i;
                 TranslatableItem tItem = new TranslatableItem(itemstack);
@@ -614,8 +613,8 @@ public class SetupGUI
             try
             {
                 ItemMeta meta = itemstack.getItemMeta();
-                type = meta.getPersistentDataContainer().get(new NamespacedKey(EggWars.instance, "GEN_TYPE"), PersistentDataType.STRING);
-                level = meta.getPersistentDataContainer().get(new NamespacedKey(EggWars.instance, "GEN_LEVEL"), PersistentDataType.INTEGER);
+                type = meta.getPersistentDataContainer().get(EggWars.genType, PersistentDataType.STRING);
+                level = meta.getPersistentDataContainer().get(EggWars.genLevel, PersistentDataType.INTEGER);
             }
             catch (Exception ex) {}
 

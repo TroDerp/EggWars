@@ -20,6 +20,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import com.google.gson.JsonObject;
@@ -31,8 +32,15 @@ import com.mojang.serialization.JsonOps;
 
 import me.rosillogames.eggwars.EggWars;
 
-public class Reflections_1_16_R1 implements Reflections
+public class Reflections_1_16 implements Reflections
 {
+	private final boolean newVersion;
+
+	public Reflections_1_16(boolean newV)
+    {
+        this.newVersion = newV;
+    }
+
     @Nullable
     private final Object toEntityHuman(Player player)
     {
@@ -129,7 +137,7 @@ public class Reflections_1_16_R1 implements Reflections
             helpstack.object = new ItemStack(Material.AIR);
             result.resultOrPartial((s) ->
             {
-            	EggWars.instance.getLogger().log(Level.WARNING, s);
+                EggWars.instance.getLogger().log(Level.WARNING, s);
             }).ifPresent((legacystack) ->
             {
                 try
@@ -188,7 +196,7 @@ public class Reflections_1_16_R1 implements Reflections
             DataResult<JsonObject> result = ((Encoder)cItemStack.getField("a").get(null)).encode(nmsStack, JsonOps.INSTANCE, new JsonObject());
             result.resultOrPartial((s) ->
             {
-            	EggWars.instance.getLogger().log(Level.WARNING, s);
+                EggWars.instance.getLogger().log(Level.WARNING, s);
             }).ifPresent((jsonObj) ->
             {
                 helpjson.object = jsonObj;
@@ -205,6 +213,10 @@ public class Reflections_1_16_R1 implements Reflections
     @Override
     public void hideDyeFlag(LeatherArmorMeta meta)
     {
+    	if (this.newVersion)
+    	{
+            meta.addItemFlags(ItemFlag.HIDE_DYE);
+    	}
     }
 
     @Nullable
@@ -260,10 +272,10 @@ public class Reflections_1_16_R1 implements Reflections
     {
         try
         {
-            Class cBlockPosition = this.getNMSClass("BlockPosition");
+            Class cBlockPos = this.getNMSClass("BlockPosition");
             Object world = loc.getWorld().getClass().getMethod("getHandle").invoke(loc.getWorld());
-            Object blockPos = cBlockPosition.getConstructor(double.class, double.class, double.class).newInstance(loc.getX(), loc.getY(), loc.getZ());
-            Object tileEntity = world.getClass().getMethod("getTileEntity", cBlockPosition).invoke(world, blockPos);
+            Object blockPos = cBlockPos.getConstructor(double.class, double.class, double.class).newInstance(loc.getX(), loc.getY(), loc.getZ());
+            Object tileEntity = world.getClass().getMethod("getTileEntity", cBlockPos).invoke(world, blockPos);
 
             if (tileEntity != null)
             {
