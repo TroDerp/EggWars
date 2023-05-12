@@ -239,7 +239,7 @@
   "commands.setBungeeLobby.success": "&aBungee lobby set! (&e{0}&a)",
   "commands.setBungeeLobby.usage": "&cUsage: /ews setBungeeLobby <???>",
   "stats.endOfGame.stripes": "&7------------------------------------",
-  "stats.endOfGame.stat": "&8• &7{0}: &e{1}",
+  "stats.endOfGame.stat": "&8● &7{0}: &e{1}",
   "stats.endOfGame.game_lenght": "Duración de la Partida",
   "stats.endOfGame.kill_death": "K/D",
   "stats.time_played": "Tiempo Jugado",

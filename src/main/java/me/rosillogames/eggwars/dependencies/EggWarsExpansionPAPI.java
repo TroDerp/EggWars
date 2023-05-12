@@ -1,7 +1,6 @@
 package me.rosillogames.eggwars.dependencies;
 
 import org.bukkit.entity.Player;
-import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.database.PlayerData;
@@ -12,6 +11,7 @@ import me.rosillogames.eggwars.language.Language;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.PlayerUtils;
+import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
 public class EggWarsExpansionPAPI extends PlaceholderExpansion
 {

@@ -90,7 +90,7 @@ public class Kit
 
     public String toString()
     {
-        return "EwKit[Name=" + this.name + ",DisplayItem=" + this.display + ",Items=" + this.items + ",Id=" + this.id + ",CooldownTime=" + this.cooldown + ",Price=" + this.price + ",Description=" + this.desc + "]";
+        return "EwKit[Name=" + this.name + ",DisplayItem=" + this.display.toString() + ",Items=" + this.items.toString() + ",Id=" + this.id + ",CooldownTime=" + this.cooldown + ",Price=" + this.price + ",Description=" + this.desc + "]";
     }
 
     public int hashCode()

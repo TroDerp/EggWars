@@ -240,7 +240,7 @@ public class EwPlayer
     {
         if (EggWars.config.vault)
         {
-            int i = (int)VaultEconomy.getBalance(this.player);
+            int i = VaultEconomy.getBalance(this.player);
             EggWars.getDB().getPlayerData(this.player).setPoints(i);
             return i;
         }

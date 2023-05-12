@@ -3,7 +3,7 @@ package me.rosillogames.eggwars.dependencies;
 import me.rosillogames.eggwars.EggWars;
 
 public class DependencyUtils
-{
+{//Note: be sure to not use these classes without checking first
     public DependencyUtils()
     {
     }

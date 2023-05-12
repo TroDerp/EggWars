@@ -41,7 +41,7 @@ public class Price
     @Override
     public String toString()
     {
-        return "Price[Token=" + this.token + ",Amount=" + this.amount + "]";
+        return "Price[Token=" + this.token.toString() + ",Amount=" + this.amount + "]";
     }
 
     public boolean equals(Object othr)

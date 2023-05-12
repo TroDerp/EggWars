@@ -3,84 +3,43 @@ package me.rosillogames.eggwars.dependencies;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import me.rosillogames.eggwars.EggWars;
+import net.milkbowl.vault.economy.Economy;
 
 public class VaultEconomy
 {
-    private static Object vaultEco;
+    private static Economy vaultEco;
 
     public static boolean loadEconomy()
     {
-        try
-        {
-            Class cEconomy = Class.forName(atMilkbowVaultPackage("economy.Economy"));
-            RegisteredServiceProvider registeredserviceprovider = EggWars.instance.getServer().getServicesManager().getRegistration(cEconomy);
+        RegisteredServiceProvider registeredserviceprovider = EggWars.instance.getServer().getServicesManager().getRegistration(Economy.class);
 
-            if (registeredserviceprovider == null)
-            {
-                return false;
-            }
-            else
-            {
-                vaultEco = registeredserviceprovider.getProvider();
-                return vaultEco != null;
-            }
-        }
-        catch (Exception exception)
+        if (registeredserviceprovider == null)
         {
-            exception.printStackTrace();
+            return false;
         }
 
-        return false;
+        vaultEco = (Economy)registeredserviceprovider.getProvider();
+        return vaultEco != null;
     }
 
-    public static void setPoints(OfflinePlayer offlineplayer, int i)
+    public static void setPoints(OfflinePlayer offPlayer, int amount)
     {
         if (vaultEco == null)
         {
             return;
         }
-        else
-        {
-            try
-            {
-                Class cEconomy = Class.forName(atMilkbowVaultPackage("economy.Economy"));
-                double balance = (Double)cEconomy.getMethod("getBalance", new Class[] {OfflinePlayer.class}).invoke(vaultEco, new Object[] {offlineplayer});
-                cEconomy.getMethod("withdrawPlayer", new Class[] {OfflinePlayer.class, double.class}).invoke(vaultEco, new Object[] {offlineplayer, balance});
-                cEconomy.getMethod("depositPlayer", new Class[] {OfflinePlayer.class, double.class}).invoke(vaultEco, new Object[] {offlineplayer, (double)i});
-            }
-            catch (Exception exception)
-            {
-                exception.printStackTrace();
-            }
 
-            return;
-        }
+    	vaultEco.withdrawPlayer(offPlayer, vaultEco.getBalance(offPlayer));
+    	vaultEco.depositPlayer(offPlayer, (double)amount);
     }
 
-    public static double getBalance(OfflinePlayer offlineplayer)
+    public static int getBalance(OfflinePlayer offPlayer)
     {
         if (vaultEco == null)
         {
             return 0;
         }
-        else
-        {
-            try
-            {
-                Class cEconomy = Class.forName(atMilkbowVaultPackage("economy.Economy"));
-                return (Double)cEconomy.getMethod("getBalance", new Class[] {OfflinePlayer.class}).invoke(vaultEco, new Object[] {offlineplayer});
-            }
-            catch (Exception exception)
-            {
-                exception.printStackTrace();
-            }
 
-            return 0;
-        }
-    }
-
-    public static String atMilkbowVaultPackage(String s)
-    {
-        return "net.milkbowl.vault." + s;
+        return (int)vaultEco.getBalance(offPlayer);
     }
 }

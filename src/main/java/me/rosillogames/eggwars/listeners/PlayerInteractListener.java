@@ -263,4 +263,13 @@ public class PlayerInteractListener implements Listener
             SetupGUI.openArenaGUI(ewplayer.getPlayer(), arena);
         }
     }
+
+    @EventHandler
+    public void logStrip(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getMaterial().toString().contains("_AXE") && e.getClickedBlock() != null) {
+            if (e.getClickedBlock().getType().toString().contains("_LOG") || e.getClickedBlock().getType().toString().contains("_WOOD") || e.getClickedBlock().getType().toString().contains("_HYPAE") || e.getClickedBlock().getType().toString().contains("_STEM")) {
+                e.setCancelled(true);
+            }
+        }
+    }
 }

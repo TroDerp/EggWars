@@ -105,10 +105,10 @@ public class Config
         fileConf.addDefault("gameplay.breakable_blocks", list);
 
         fileConf.addDefault("gameplay.points.multiplier", 1.0D);
-        fileConf.addDefault("gameplay.points.on_kill", 10);
-        fileConf.addDefault("gameplay.points.on_final_kill", 20);
+        fileConf.addDefault("gameplay.points.on_kill", 1);
+        fileConf.addDefault("gameplay.points.on_final_kill", 3);
         fileConf.addDefault("gameplay.points.on_win", 50);
-        fileConf.addDefault("gameplay.points.on_egg", 30);
+        fileConf.addDefault("gameplay.points.on_egg", 6);
 
         fileConf.addDefault("kits.cooldown_time", 120);
 

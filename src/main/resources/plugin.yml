@@ -1,6 +1,6 @@
 main: me.rosillogames.eggwars.EggWars
 name: EggWars
-version: "6.0.1"
+version: "6.0.2"
 description: Play the EggWars game!
 api-version: 1.13
 load: POSTWORLD
