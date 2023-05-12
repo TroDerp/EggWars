@@ -22,6 +22,10 @@ import me.rosillogames.eggwars.utils.PlayerUtils;
 import me.rosillogames.eggwars.utils.TeamUtils;
 import me.rosillogames.eggwars.utils.VoteUtils;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class PlayerInteractListener implements Listener
 {
     @EventHandler
@@ -261,6 +265,22 @@ public class PlayerInteractListener implements Listener
 
             ewplayer.setSettingArena(arena);
             SetupGUI.openArenaGUI(ewplayer.getPlayer(), arena);
+        }
+    }
+
+    @EventHandler
+    public void logStrip(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getMaterial().toString().contains("_AXE") && e.getClickedBlock() != null) {
+            Set<Material> strippableBlocks = Stream.of(
+                    Material.ACACIA_LOG, Material.SPRUCE_WOOD, Material.OAK_LOG, Material.JUNGLE_LOG, Material.BIRCH_LOG,
+                    Material.ACACIA_WOOD, Material.BAMBOO_BLOCK, Material.BIRCH_WOOD, Material.CRIMSON_HYPHAE,
+                    Material.CRIMSON_STEM, Material.DARK_OAK_LOG, Material.DARK_OAK_WOOD, Material.JUNGLE_WOOD,
+                    Material.MANGROVE_LOG, Material.MANGROVE_WOOD, Material.OAK_WOOD, Material.SPRUCE_LOG,
+                    Material.WARPED_HYPHAE, Material.WARPED_STEM, Material.CHERRY_LOG, Material.CHERRY_WOOD
+                ).collect(Collectors.toSet());
+            if (strippableBlocks.contains(e.getClickedBlock().getType())) {
+                e.setCancelled(true);
+            }
         }
     }
 }
