@@ -206,7 +206,7 @@ public class Generator
         this.genInv.setItem(11, tInfoItem);
         this.genInv.setItem(15, tUpgradeItem);
         this.genInv.setItem(22, EwPlayerMenu.getCloseItem());
-        InventoryController.updateInventories((invplayer) -> invplayer.getArena() == this.arena, this.genInv, EwInvType.GENERATOR_INFO);
+        InventoryController.updateInventories((p) -> p.getArena() == this.arena && p.getInv() != null && p.getInv().getExtraData() instanceof Generator && ((Generator)p.getInv().getExtraData()).getBlock() == this.getBlock(), this.genInv, EwInvType.GENERATOR_INFO);
     }
 
     public void stop()
