@@ -33,10 +33,21 @@ public class Token
         return "objects." + this.name;
     }
 
-    public String translateName(Player player, int amount)
+    public String getFormattedName(Player player)
+    {
+        return this.color.toString() + TranslationUtils.getMessage(this.getTypeName(), player);
+    }
+
+    public String translateToken(Player player, int amount)
     {
         String sLetter = amount <= 1 ? "" : "s";
         return TranslationUtils.getMessage("objects." + this.name + "_token" + sLetter, player);
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Token[Material=" + this.material.toString() + ",Color=" + this.color.asBungee().getName() + "]";
     }
 
     public boolean equals(Object othr)

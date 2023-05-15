@@ -90,6 +90,23 @@ public class ItemUtils
         return ReflectionUtils.parseItemStack(GsonHelper.parse("{id:\"" + id + "\",Count:1}}", true)).getType();
     }
 
+    public static ItemStack[] copyContents(ItemStack[] contents)
+    {
+    	ItemStack[] copy = new ItemStack[contents.length];
+
+    	for (int idx = 0; idx < contents.length; ++idx)
+    	{
+    		ItemStack stack = contents[idx];
+
+    		if (stack != null)
+    		{
+        		copy[idx] = stack.clone();
+    		}
+    	}
+
+        return copy;
+    }
+
     public static ItemStack getItemLegacy(JsonObject jsonObject)
     {
         if (!jsonObject.has("Count"))

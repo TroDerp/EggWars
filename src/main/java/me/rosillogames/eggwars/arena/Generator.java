@@ -174,7 +174,7 @@ public class Generator
         {
             Token token = this.cachedType.droppedToken();
             String interval = TranslationUtils.getMessage("generator.info.interval", player, Double.valueOf((double)this.cachedType.tickRate(this.level) / 20.0));
-            String capacity = TranslationUtils.getMessage("generator.info.capacity", player, token.getColor().toString() + this.cachedType.maxItems(this.level), token.getColor().toString() + TranslationUtils.getMessage(token.getTypeName(), player));
+            String capacity = TranslationUtils.getMessage("generator.info.capacity", player, token.getColor().toString() + this.cachedType.maxItems(this.level), token.getFormattedName(player));
             return TranslationUtils.getMessage("generator.info_lore", player, interval, capacity);
         }, (player) -> getName(player, this.cachedType, this.level, true));
         ItemStack upgradeItem = EggWars.getGeneratorManager().getUpgradeItem();
@@ -186,9 +186,9 @@ public class Generator
                 int nextLevel = this.level + 1;
                 Token token = this.cachedType.droppedToken();
                 String interval = TranslationUtils.getMessage("generator.info.interval", player, Double.valueOf((double)this.cachedType.tickRate(nextLevel) / 20.0));
-                String capacity = TranslationUtils.getMessage("generator.info.capacity", player, token.getColor().toString() + this.cachedType.maxItems(nextLevel), token.getColor().toString() + TranslationUtils.getMessage(token.getTypeName(), player));
+                String capacity = TranslationUtils.getMessage("generator.info.capacity", player, token.getColor().toString() + this.cachedType.maxItems(nextLevel), token.getFormattedName(player));
                 Price price = this.cachedType.getPriceFor(nextLevel);
-                String cost = TranslationUtils.getMessage("generator.info.cost", player, price.getToken().getColor().toString() + price.getAmount(), price.getToken().getColor().toString() + TranslationUtils.getMessage(price.getToken().getTypeName(), player));
+                String cost = TranslationUtils.getMessage("generator.info.cost", player, price.getToken().getColor().toString() + price.getAmount(), price.getToken().getFormattedName(player));
                 return TranslationUtils.getMessage("generator.upgrade_lore_normal", player, interval, capacity, cost);
             }
 
@@ -304,7 +304,7 @@ public class Generator
         {
             Sign sign = (Sign)this.block.getBlock().getState();
             Token token = this.cachedType.droppedToken();
-            Object[] args = new Object[] {token.getColor() + TranslationUtils.getMessage(token.getTypeName()), this.level != 0 ? TranslationUtils.getMessage("generator.sign.level", new Object[] {Integer.valueOf(this.level)}) : TranslationUtils.getMessage("generator.sign.broken")};
+            Object[] args = new Object[] {token.getFormattedName((Player)null), this.level != 0 ? TranslationUtils.getMessage("generator.sign.level", new Object[] {Integer.valueOf(this.level)}) : TranslationUtils.getMessage("generator.sign.broken")};
             sign.setLine(0, TranslationUtils.getMessage("generator.sign.line_1", args));
             sign.setLine(1, TranslationUtils.getMessage("generator.sign.line_2", args));
             sign.setLine(2, TranslationUtils.getMessage("generator.sign.line_3", args));
@@ -335,9 +335,7 @@ public class Generator
 
         if (!Price.canAfford(playerIn, price))
         {
-            int leftFor = Price.leftFor(price, playerIn);
-            String tokenType = price.getToken().getColor() + TranslationUtils.getMessage(price.getToken().getTypeName(), playerIn);
-            TranslationUtils.sendMessage("generator.upgrade_cant_afford", playerIn, leftFor, tokenType);
+            TranslationUtils.sendMessage("generator.upgrade_cant_afford", playerIn, Price.leftFor(price, playerIn), price.getToken().getFormattedName(playerIn));
             return false;
         }
 
@@ -345,9 +343,8 @@ public class Generator
 
         for (EwPlayer ewplayer1 : ewplayer.getTeam().getPlayers())
         {
-            Token token = this.cachedType.droppedToken();
-            String name = token.getColor() + TranslationUtils.getMessage(token.getTypeName(), ewplayer1.getPlayer());
-            TranslationUtils.sendMessage("generator.team_upgraded", ewplayer1.getPlayer(), ewplayer.getTeam().getType().colorizeName(ewplayer.getPlayer().getName()), name, this.level + 1);
+        	Player teamPlayer = ewplayer1.getPlayer();
+            TranslationUtils.sendMessage("generator.team_upgraded", teamPlayer, ewplayer.getTeam().getType().colorizeName(playerIn.getName()), this.cachedType.droppedToken().getFormattedName(teamPlayer), this.level + 1);
         }
 
         Price.sellItems(playerIn, price);

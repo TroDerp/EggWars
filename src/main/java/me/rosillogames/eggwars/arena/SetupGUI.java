@@ -240,6 +240,8 @@ public class SetupGUI
         return settingItem;
     }
 
+    //TODO: cache generator inventories
+
     private static void openGeneratorsSetupGUI(Player player1, int page)
     {
         Map<String, GeneratorType> generators = EggWars.getGeneratorManager().getGenerators();
@@ -274,7 +276,7 @@ public class SetupGUI
             if (pages == page)
             {
                 int slot = (9 * ((counter / 7) + 1)) + ((counter % 7) + 1);
-                tInv.setItem(slot, TranslatableItem.translatableNameLore(new ItemStack(entry.getValue().droppedToken().getMaterial(), 1), (player) -> "§7Click to choose level", (player) -> entry.getValue().droppedToken().getColor() + TranslationUtils.getMessage(entry.getValue().droppedToken().getTypeName(), player)));
+                tInv.setItem(slot, TranslatableItem.translatableNameLore(new ItemStack(entry.getValue().droppedToken().getMaterial(), 1), (player) -> "§7Click to choose level", (player) -> entry.getValue().droppedToken().getFormattedName(player)));
                 typeMap.put(slot, entry.getValue());
             }
 
@@ -324,7 +326,7 @@ public class SetupGUI
                 itemstack.setItemMeta(meta);
                 final int fnl = i;
                 TranslatableItem tItem = new TranslatableItem(itemstack);
-                tItem.setName((player) -> type.droppedToken().getColor() + TranslationUtils.getMessage(type.droppedToken().getTypeName(), player) + " - Level " + fnl);
+                tItem.setName((player) -> type.droppedToken().getFormattedName(player) + " - Level " + fnl);
                 tItem.addLoreString("§7Click to pick level", false);
                 tItem.addLoreString("", false);
                 tItem.addLoreString("§7Right click a sign to apply the level!", false);

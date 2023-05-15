@@ -490,6 +490,22 @@ public class Arena
         return true;
     }
 
+    public void closeArena()
+    {
+        for (EwPlayer player : this.getPlayers())
+        {
+            player.getIngameStats().saveAndReset(this.getMode());
+            player.getPlayer().getInventory().clear();
+            PlayerUtils.removePotionEffects(player.getPlayer());
+            player.restoreGameData();
+        }
+
+        if (this.status == ArenaStatus.SETTING)
+        {
+            this.saveArena();
+        }
+    }
+
     public void joinArena(EwPlayer player, boolean silently, boolean toSpectate)
     {
         if (!this.addPlayer(player))

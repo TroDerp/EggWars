@@ -28,6 +28,7 @@ public class Price
         return this.token;
     }
 
+    /** Amount of items required from the price**/
     public int getAmount()
     {
         return this.amount;
@@ -35,7 +36,7 @@ public class Price
 
     public String getReqName(Player player)
     {
-        return this.token.translateName(player, this.amount);
+        return this.token.translateToken(player, this.amount);
     }
 
     @Override

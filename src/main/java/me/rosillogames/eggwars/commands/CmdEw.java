@@ -31,7 +31,7 @@ public class CmdEw implements TabExecutor
         this.mainArgs.put("join", new Join());
         this.mainArgs.put("lobby", new Lobby());
         this.mainArgs.put("menu", new Menu());
-        this.mainArgs.put("randomjoin", new RandomJoin());
+        this.mainArgs.put("randomJoin", new RandomJoin());
         this.mainArgs.put("reload", new Reload());
     }
 

@@ -111,23 +111,15 @@ public class EggWars extends JavaPlugin
             return;
         }
 
+        for (Arena arena : this.arenaLoader.getArenas())
+        {
+            arena.closeArena();
+        }
+
         if (this.database != null)
         {
             this.database.savePlayers();
             this.database.close();
-        }
-
-        for (Arena arena : this.arenaLoader.getArenas())
-        {
-            for (EwPlayer player : arena.getPlayers())
-            {
-                arena.leaveArena(player, true, true);
-            }
-
-            if (arena.getStatus() == ArenaStatus.SETTING)
-            {
-                arena.saveArena();
-            }
         }
     }
 

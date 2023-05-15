@@ -52,8 +52,11 @@ public class Offer
 
     public boolean trade(Player player, boolean shift)
     {
-        while (this.canAfford(player))
-        {
+    	boolean hasBought = false;
+
+    	while (this.canAfford(player))
+        {//contents must be cloned one by one as well because they are "live" items from inventory
+            ItemStack[] prev = ItemUtils.copyContents(player.getInventory().getContents());
             ItemStack stack = adjustForRecipe(player, this.result, this.colorize);
             EquipmentSlot slot = ItemUtils.getTradeSlot(player, stack);
 
@@ -65,12 +68,16 @@ public class Offer
                 {
 /*
  * REMEMBER addItem returns items that were not added, which means that if one item was given
- * and returns one, it clearly means that the item was not added
+ * and returns one, it clearly means that the item was not added, however this complicates when
+ * you give an item stack with amount grater than one, then if the stack on the inv is not fully
+ * complete but there isn't enough space for the offered amount then it would give free items till
+ * the stack is full. This is why we have to revert all inv changes by saving previous value.
  */
                     Map<Integer, ItemStack> map = player.getInventory().addItem(slotItem);
 
                     if (!map.isEmpty())
                     {
+                        player.getInventory().setContents(prev);
                         TranslationUtils.sendMessage(INVENTORY_FULL_KEY, player);
                         return false;
                     }
@@ -85,26 +92,28 @@ public class Offer
 
             if (!map.isEmpty())
             {
+                player.getInventory().setContents(prev);
                 TranslationUtils.sendMessage(INVENTORY_FULL_KEY, player);
                 return false;
             }
 
             Price.sellItems(player, this.price);
+            hasBought = true;
 
-            if (shift && this.stackable())
+            if (shift && this.stackable())//if true it will try keep buying items
             {
-                if (!this.canAfford(player))
-                {
-                    return true;
-                }
-
                 continue;
             }
 
-            return true;
+            break;
         }
 
-        return false;
+    	if (!hasBought)
+    	{
+            TranslationUtils.sendMessage("shop.not_enough_items", player, Price.leftFor(this.price, player), this.price.getToken().getFormattedName(player));
+    	}
+
+        return hasBought;
     }
 
     public boolean stackable()

@@ -60,7 +60,7 @@ public class PlayerChatListener implements Listener
             {
                 if (ewplayer1.isEliminated() || EggWars.config.publicSpectChat)
                 {
-                    TranslationUtils.sendMessagePrefix("gameplay.ingame.spectator_chat", ewplayer1.getPlayer(), false, new Object[] {ewplayer.getPlayer().getName(), msg.get(), PlayerUtils.getPrefix(ewplayer.getPlayer())});
+                    TranslationUtils.sendMessagePrefix("gameplay.chat.spectator", ewplayer1.getPlayer(), false, new Object[] {ewplayer.getPlayer().getName(), msg.get(), PlayerUtils.getPrefix(ewplayer.getPlayer())});
                 }
             }
         }
@@ -81,11 +81,11 @@ public class PlayerChatListener implements Listener
                     /* I decided to make bold name appear in both team and solo, to keep them similar*/
                     if (/*arena.getMaxTeamPlayers() > 1 && */ewplayer2.getTeam() == team)
                     {
-                        TranslationUtils.sendMessagePrefix("gameplay.ingame.global_chat", ewplayer2.getPlayer(), false, new Object[] {TeamUtils.teamPrefix(team.getType(), ewplayer2.getPlayer()), team.getType().color() + "§l" + ewplayer.getPlayer().getName(), msg.get(), PlayerUtils.getPrefix(ewplayer.getPlayer())});
+                        TranslationUtils.sendMessagePrefix("gameplay.chat.global", ewplayer2.getPlayer(), false, new Object[] {TeamUtils.teamPrefix(team.getType(), ewplayer2.getPlayer()), team.getType().color() + "§l" + ewplayer.getPlayer().getName(), msg.get(), PlayerUtils.getPrefix(ewplayer.getPlayer())});
                     }
                     else
                     {
-                        TranslationUtils.sendMessagePrefix("gameplay.ingame.global_chat", ewplayer2.getPlayer(), false, new Object[] {TeamUtils.teamPrefix(team.getType(), ewplayer2.getPlayer()), team.getType().color() + ewplayer.getPlayer().getName(), msg.get(), PlayerUtils.getPrefix(ewplayer.getPlayer())});
+                        TranslationUtils.sendMessagePrefix("gameplay.chat.global", ewplayer2.getPlayer(), false, new Object[] {TeamUtils.teamPrefix(team.getType(), ewplayer2.getPlayer()), team.getType().color() + ewplayer.getPlayer().getName(), msg.get(), PlayerUtils.getPrefix(ewplayer.getPlayer())});
                     }
                 }
             }
@@ -93,7 +93,7 @@ public class PlayerChatListener implements Listener
             {
                 for (EwPlayer ewplayer4 : team.getPlayers())
                 {
-                    TranslationUtils.sendMessagePrefix("gameplay.ingame.team_chat", ewplayer4.getPlayer(), false, TeamUtils.translateTeamType(team.getType(), ewplayer4.getPlayer(), false), ewplayer.getPlayer().getName(), msg.get(), PlayerUtils.getPrefix(ewplayer.getPlayer()));
+                    TranslationUtils.sendMessagePrefix("gameplay.chat.team", ewplayer4.getPlayer(), false, TeamUtils.translateTeamType(team.getType(), ewplayer4.getPlayer(), false), ewplayer.getPlayer().getName(), msg.get(), PlayerUtils.getPrefix(ewplayer.getPlayer()));
                 }
             }
         }
@@ -101,7 +101,7 @@ public class PlayerChatListener implements Listener
         {
             for (EwPlayer ewplayer5 : arena.getPlayers())
             {
-                TranslationUtils.sendMessage("gameplay.ingame.lobby_chat", ewplayer5.getPlayer(), ewplayer.getPlayer().getName(), msg.get(), PlayerUtils.getPrefix(ewplayer.getPlayer()));
+                TranslationUtils.sendMessage("gameplay.chat.lobby", ewplayer5.getPlayer(), ewplayer.getPlayer().getName(), msg.get(), PlayerUtils.getPrefix(ewplayer.getPlayer()));
             }
         }
         else if (arena.getStatus().equals(ArenaStatus.FINISHING))
@@ -114,7 +114,7 @@ public class PlayerChatListener implements Listener
 
             for (EwPlayer ewplayer6 : arena.getPlayers())
             {
-                TranslationUtils.sendMessage("gameplay.ingame.finish_chat", ewplayer6.getPlayer(), ewplayer.getPlayer().getName(), msg.get(), PlayerUtils.getPrefix(ewplayer.getPlayer()));
+                TranslationUtils.sendMessage("gameplay.chat.finishing", ewplayer6.getPlayer(), ewplayer.getPlayer().getName(), msg.get(), PlayerUtils.getPrefix(ewplayer.getPlayer()));
             }
         }
         else

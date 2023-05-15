@@ -32,10 +32,11 @@ public class MultiOffer extends Offer
     {
         if (!this.canAfford(player))
         {
+            TranslationUtils.sendMessage("shop.not_enough_items", player, Price.leftFor(this.price, player), this.price.getToken().getFormattedName(player));
             return false;
         }
 
-        ItemStack[] prev = player.getInventory().getContents();
+        ItemStack[] prev = ItemUtils.copyContents(player.getInventory().getContents());
 
         for (Pair<Boolean, ItemStack> result : this.results)
         {
