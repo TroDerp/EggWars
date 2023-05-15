@@ -104,6 +104,7 @@ public class PlayerUtils
         return count;
     }
 
+    /** Adds the specified amount of points to the player and sends a message **/
     public static void addPoints(EwPlayer ewplayer, int i)
     {
         if (i <= 0)

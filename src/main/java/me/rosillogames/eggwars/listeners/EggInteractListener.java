@@ -5,19 +5,14 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Arrow;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Scoreboards;
@@ -164,13 +159,13 @@ public class EggInteractListener implements Listener
 
         for (EwPlayer player : team.getArena().getPlayers())
         {
-            TranslationUtils.sendMessage("gameplay.ingame.egg_destroyed", player.getPlayer(), TeamUtils.translateTeamType(team.getType(), player.getPlayer(), false), ewplayer.getTeam().getType().colorizeName(ewplayer.getPlayer().getName()));
+            TranslationUtils.sendMessage("gameplay.ingame.team_egg_destroyed", player.getPlayer(), TeamUtils.translateTeamType(team.getType(), player.getPlayer(), false), ewplayer.getTeam().getType().colorizeName(ewplayer.getPlayer().getName()));
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 100F, 1.0F);
 
             if (player.getTeam() == team)
             {
-                ReflectionUtils.sendTitle(player.getPlayer(), Integer.valueOf(5), Integer.valueOf(20), Integer.valueOf(5), "", TranslationUtils.getMessage("gameplay.ingame.team_egg_destroyed", player.getPlayer()));
-                TranslationUtils.sendMessage("gameplay.ingame.team_egg_destroyed", player.getPlayer());
+                ReflectionUtils.sendTitle(player.getPlayer(), Integer.valueOf(5), Integer.valueOf(20), Integer.valueOf(5), "", TranslationUtils.getMessage("gameplay.ingame.your_egg_destroyed", player.getPlayer()));
+                TranslationUtils.sendMessage("gameplay.ingame.your_egg_destroyed", player.getPlayer());
             }
         }
 
@@ -185,57 +180,6 @@ public class EggInteractListener implements Listener
         if (event.getBlock().getType().equals(Material.DRAGON_EGG) && EggWars.getArenaManager().getArenaByWorld(event.getBlock().getWorld()) != null)
         {
             event.setCancelled(true);
-        }
-    }
-
-    @EventHandler
-    public void hitEgg(ProjectileHitEvent projectilehitevent)
-    {
-        if (projectilehitevent.getHitBlock() != null && projectilehitevent.getHitBlock().getType().equals(Material.DRAGON_EGG) && projectilehitevent.getEntityType() == EntityType.ARROW && ((Arrow)projectilehitevent.getEntity()).isShotFromCrossbow() && ((Arrow)projectilehitevent.getEntity()).getShooter() instanceof Player)
-        {
-            EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)((Arrow)projectilehitevent.getEntity()).getShooter());
-
-            if (!ewplayer.isInArena() || ewplayer.isEliminated())
-            {
-                return;
-            }
-
-            Team team = TeamUtils.getTeamByEggLocation(ewplayer.getArena(), projectilehitevent.getHitBlock().getLocation());
-
-            if (team == null || team.equals(ewplayer.getTeam()) || team.isEliminated())
-            {
-                return;
-            }
-
-            try
-            {
-                EwPlayerRemoveEggEvent ewplayerremoveeggevent = new EwPlayerRemoveEggEvent(ewplayer, team);
-                Bukkit.getPluginManager().callEvent(ewplayerremoveeggevent);
-
-                if (ewplayerremoveeggevent.isCancelled())
-                {
-                    return;
-                }
-            }
-            catch (Exception exception) { }
-
-            ewplayer.getIngameStats().addStat(StatType.EGGS_BROKEN, 1);
-
-            for (EwPlayer player : team.getArena().getPlayers())
-            {
-                TranslationUtils.sendMessage("gameplay.ingame.egg_shot", player.getPlayer(), TeamUtils.translateTeamType(team.getType(), player.getPlayer(), false), ewplayer.getTeam().getType().colorizeName(ewplayer.getPlayer().getName()));
-                player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 100F, 1.0F);
-
-                if (player.getTeam() == team)
-                {
-                    ReflectionUtils.sendTitle(player.getPlayer(), Integer.valueOf(5), Integer.valueOf(20), Integer.valueOf(5), "", TranslationUtils.getMessage("gameplay.ingame.team_egg_destroyed", player.getPlayer()));
-                }
-            }
-
-            projectilehitevent.getHitBlock().setType(Material.AIR);
-            projectilehitevent.getEntity().remove();
-            PlayerUtils.addPoints(ewplayer, EggWars.instance.getConfig().getInt("gameplay.points.on_egg"));
-            Scoreboards.setScore(ewplayer.getArena());
         }
     }
 

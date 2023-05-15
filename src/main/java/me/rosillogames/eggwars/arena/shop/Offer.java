@@ -71,7 +71,7 @@ public class Offer
  * and returns one, it clearly means that the item was not added, however this complicates when
  * you give an item stack with amount grater than one, then if the stack on the inv is not fully
  * complete but there isn't enough space for the offered amount then it would give free items till
- * the stack is full. This is why we have to revert all inv changes by saving previous value.
+ * the stack is full. This is why we have to revert all inv changes by storing previous value.
  */
                     Map<Integer, ItemStack> map = player.getInventory().addItem(slotItem);
 

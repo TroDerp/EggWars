@@ -27,7 +27,7 @@ public class PlayerDeathListener implements Listener
 {
     @EventHandler
     public void death(PlayerDeathEvent playerdeathevent)
-    {
+    {//TODO: All of this is going to be re-made
         final EwPlayer diedPlayer = PlayerUtils.getEwPlayer(playerdeathevent.getEntity());
 
         if (!diedPlayer.isInArena() || diedPlayer.getTeam() == null)
@@ -81,6 +81,7 @@ public class PlayerDeathListener implements Listener
             diedPlayer.getArena().sendBroadcast("gameplay.ingame.player_eliminated", diedPlayer.getPlayer().getDisplayName());
             diedPlayer.setEliminated(true);
             Scoreboards.setScore(diedPlayer.getArena());
+            Finish.sendFinishStats(diedPlayer);
 
             if (diedTeam.isEliminated())
             {
@@ -126,7 +127,6 @@ public class PlayerDeathListener implements Listener
         if (pl.isEliminated())
         {
             event.setRespawnLocation(pl.getArena().getCenter());
-            Finish.sendFinishStats(pl);
 
             if (EggWars.config.canSpectStay)
             {

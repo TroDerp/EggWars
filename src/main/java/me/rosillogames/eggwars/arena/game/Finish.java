@@ -30,26 +30,27 @@ public class Finish
         arena.setStatus(ArenaStatus.FINISHING);
         arena.getGenerators().values().forEach(generator -> generator.stop());
 
-        for (EwPlayer pl : arena.getPlayers())
+        for (EwPlayer p : arena.getPlayers())
         {
-            if (!pl.isEliminated())
+            if (!p.isEliminated())
             {
-                sendFinishStats(pl);
+                sendFinishStats(p);
             }
         }
 
         if (winner != null)
         {
-            for (EwPlayer pl1 : arena.getPlayers())
+            for (EwPlayer p1 : arena.getPlayers())
             {
-                String teamName = TeamUtils.translateTeamType(winner.getType(), pl1.getPlayer(), false);
-                TranslationUtils.sendMessage("gameplay.ingame.team_winned", pl1.getPlayer(), teamName);
-                pl1.getPlayer().closeInventory();
+            	Player player = p1.getPlayer();
+                TranslationUtils.sendMessage("gameplay.ingame.team_wins", player, TeamUtils.translateTeamType(winner.getType(), player, false));
+                player.closeInventory();
 
-                if (winner.equals(pl1.getTeam()))
+                if (winner.equals(p1.getTeam()))
                 {
-                    pl1.getIngameStats().addStat(StatType.WINS, 1);
-                    PlayerUtils.addPoints(pl1, EggWars.instance.getConfig().getInt("gameplay.points.on_win"));
+                    TranslationUtils.sendMessage("gameplay.ingame.you_win", player);
+                    p1.getIngameStats().addStat(StatType.WINS, 1);
+                    PlayerUtils.addPoints(p1, EggWars.instance.getConfig().getInt("gameplay.points.on_win"));
                 }
             }
 
@@ -117,12 +118,35 @@ public class Finish
     	String stripemsg = TranslationUtils.getMessage("stats.endOfGame.stripes", ply);
     	ply.sendMessage(stripemsg);
         sendFinishStat(ply, TranslationUtils.getMessage("stats.endOfGame.game_lenght", ply), TranslationUtils.translateTime(ply, pl.getIngameStats().getStat(StatType.TIME_PLAYED), true));
-        sendFinishStat(ply, TranslationUtils.getMessage("stats.kills", ply), String.valueOf(pl.getIngameStats().getStat(StatType.KILLS)));
+        int kills = pl.getIngameStats().getStat(StatType.KILLS);
+
+        if (kills > 0)
+        {
+            sendFinishStat(ply, TranslationUtils.getMessage("stats.kills", ply), String.valueOf(kills));
+        }
+
         int deaths = pl.getIngameStats().getStat(StatType.DEATHS);
-        sendFinishStat(ply, TranslationUtils.getMessage("stats.deaths", ply), deaths);
-        sendFinishStat(ply, TranslationUtils.getMessage("stats.endOfGame.kill_death", ply), String.format("%.2f", (double)pl.getIngameStats().getStat(StatType.KILLS) / (double)(deaths <= 0 ? 1 : deaths)));
-        sendFinishStat(ply, TranslationUtils.getMessage("stats.eggs_broken", ply), String.valueOf(pl.getIngameStats().getStat(StatType.EGGS_BROKEN)));
-        sendFinishStat(ply, TranslationUtils.getMessage("stats.eliminations", ply), String.valueOf(pl.getIngameStats().getStat(StatType.ELIMINATIONS)));
+
+        if (deaths > 0)
+        {
+            sendFinishStat(ply, TranslationUtils.getMessage("stats.deaths", ply), deaths);
+        }
+
+        sendFinishStat(ply, TranslationUtils.getMessage("stats.endOfGame.kill_death", ply), String.format("%.2f", (double)kills / (double)(deaths <= 0 ? 1 : deaths)));
+        int eggsBroken = pl.getIngameStats().getStat(StatType.EGGS_BROKEN);
+
+        if (eggsBroken > 0)
+        {
+            sendFinishStat(ply, TranslationUtils.getMessage("stats.eggs_broken", ply), String.valueOf(eggsBroken));
+        }
+
+        int finalKills = pl.getIngameStats().getStat(StatType.ELIMINATIONS);
+
+        if (finalKills > 0)
+        {
+            sendFinishStat(ply, TranslationUtils.getMessage("stats.eliminations", ply), String.valueOf(finalKills));
+        }
+
     	ply.sendMessage(stripemsg);
     }
 
