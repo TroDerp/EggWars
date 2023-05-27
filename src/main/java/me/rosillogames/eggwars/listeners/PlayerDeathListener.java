@@ -11,6 +11,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import me.rosillogames.eggwars.EggWars;
+import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Scoreboards;
 import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.arena.game.Countdown;
@@ -26,14 +27,16 @@ import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 public class PlayerDeathListener implements Listener
 {
     @EventHandler
-    public void death(PlayerDeathEvent playerdeathevent)
-    {//TODO: All of this is going to be re-made
-        final EwPlayer diedPlayer = PlayerUtils.getEwPlayer(playerdeathevent.getEntity());
+    public void death(PlayerDeathEvent deathevent)
+    {
+        final EwPlayer diedPlayer = PlayerUtils.getEwPlayer(deathevent.getEntity());
 
         if (!diedPlayer.isInArena() || diedPlayer.getTeam() == null)
         {
             return;
         }
+
+        String cause = diedPlayer.getPlayer().getLastDamageCause().getCause().name().toLowerCase();
 
         if (diedPlayer.getLastDamager() != null)
         {
@@ -46,17 +49,18 @@ public class PlayerDeathListener implements Listener
                 killerPlayer.getIngameStats().addStat(StatType.ELIMINATIONS, 1);
             }
 
-            diedPlayer.getArena().sendBroadcast("gameplay.ingame.player_killed", diedPlayer.getTeam().getType().colorizeName(diedPlayer.getPlayer().getName()), killerPlayer.getTeam().getType().colorizeName(killerPlayer.getPlayer().getName()));
+            diedPlayer.getArena().sendBroadcast("gameplay.death."+ cause + ".player", TeamUtils.colorizePlayerName(diedPlayer), TeamUtils.colorizePlayerName(killerPlayer));
+          //Reward points message for killer comes before elimination message
             PlayerUtils.addPoints(killerPlayer, fk ? EggWars.instance.getConfig().getInt("gameplay.points.on_final_kill") : EggWars.instance.getConfig().getInt("gameplay.points.on_kill"));
         }
         else
         {
-            diedPlayer.getArena().sendBroadcast("gameplay.ingame.player_died", diedPlayer.getTeam().getType().colorizeName(diedPlayer.getPlayer().getName()));
+            diedPlayer.getArena().sendBroadcast("gameplay.death." + cause, TeamUtils.colorizePlayerName(diedPlayer));
         }
 
         diedPlayer.getIngameStats().addStat(StatType.DEATHS, 1);
-        playerdeathevent.getDrops().clear();
-        playerdeathevent.setKeepInventory(true);
+        deathevent.getDrops().clear();
+        deathevent.setKeepInventory(true);
 
         if (!EggWars.config.keepInv)
         {
@@ -69,21 +73,21 @@ public class PlayerDeathListener implements Listener
         }
         else
         {
-            playerdeathevent.setKeepInventory(true);
+            deathevent.setKeepInventory(true);
         }
 
-        playerdeathevent.setDeathMessage(null);
+        deathevent.setDeathMessage(null);
 
         if (!diedPlayer.getTeam().canRespawn())
         {
+            diedPlayer.setEliminated(true);
             Team diedTeam = diedPlayer.getTeam();
             diedTeam.removePlayer(diedPlayer);
-            diedPlayer.getArena().sendBroadcast("gameplay.ingame.player_eliminated", diedPlayer.getPlayer().getDisplayName());
-            diedPlayer.setEliminated(true);
-            Scoreboards.setScore(diedPlayer.getArena());
-            Finish.sendFinishStats(diedPlayer);
+        	Arena arena = diedPlayer.getArena();
+            arena.sendBroadcast("gameplay.ingame.player_eliminated", diedPlayer.getPlayer().getDisplayName());
+            Scoreboards.setScore(arena);
 
-            if (diedTeam.isEliminated())
+            if (diedTeam.isEliminated() && arena.getMode().isTeam())
             {
                 for (EwPlayer ewplayer : diedPlayer.getArena().getPlayers())
                 {
@@ -92,15 +96,14 @@ public class PlayerDeathListener implements Listener
                     ewplayer.getPlayer().sendMessage("");
                     ewplayer.getPlayer().playSound(ewplayer.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 0.0F);
                 }
+            }
 
-                Team team = diedPlayer.getArena().getWinner();
+            Finish.sendFinishStats(diedPlayer);
+            Team team = arena.getWinner();
 
-                if (team == null)
-                {
-                    return;
-                }
-
-                Finish.finish(diedPlayer.getArena(), team);
+            if (team != null)
+            {
+                Finish.finish(arena, team);
             }
         }
 

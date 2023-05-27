@@ -100,7 +100,7 @@ public class Team
      **/
     public void addCage(Location location)
     {
-        this.cages.add(Locations.toBlock(location));
+        this.cages.add(Locations.toBlock(location, false));
     }
 
     public boolean removeLastCage()
@@ -130,7 +130,7 @@ public class Team
      **/
     public void setRespawn(Location location)
     {
-        this.respawn = Locations.toBlock(location);
+        this.respawn = Locations.toBlock(location, false);
     }
 
     /** Returns a copy of the raw egg position, without middling it **/
@@ -149,7 +149,7 @@ public class Team
      **/
     public void setEgg(Location location)
     {
-        this.egg = Locations.toBlock(location);
+        this.egg = Locations.toBlock(location, true);
     }
 
     /** Returns a copy of the raw villager position, without middling it **/
@@ -168,7 +168,7 @@ public class Team
      **/
     public void setVillager(Location location)
     {
-        this.villagerLoc = Locations.toBlock(location);
+        this.villagerLoc = Locations.toBlock(location, false);
     }
 
     public TeamTypes getType()

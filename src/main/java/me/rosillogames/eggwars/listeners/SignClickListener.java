@@ -44,9 +44,9 @@ public class SignClickListener implements Listener
                 return;
             }
 
-            arena.getGenerators().forEach((location, gen) ->
+            arena.getGenerators().forEach((locVec, gen) ->
             {
-                if (location.equals(clickLoc) || (EggWars.config.useBelowBlock && location.equals(clickLoc.clone().add(0.0D, 1.0D, 0.0D))))
+                if (locVec.equals(clickLoc.toVector()) || (EggWars.config.useBelowBlock && locVec.equals(clickLoc.clone().add(0.0D, 1.0D, 0.0D).toVector())))
                 {
                     if (gen.hasCachedType())
                     {

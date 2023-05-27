@@ -77,9 +77,9 @@ public class ReflectionUtils
         currentReflections.setFormatAndSetSignLines(loc, line1, line2, line3, line4);
     }
 
-    public static void disablePhysics(Entity e)
+    public static void killOutOfWorld(Player p)
     {
-        currentReflections.disablePhysics(e);
+        currentReflections.killOutOfWorld(p);
     }
 
     public static void saveFullWorld(World world)

@@ -32,6 +32,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
+
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import me.rosillogames.eggwars.EggWars;
@@ -69,7 +71,8 @@ public class Arena
     public final File arenaFolder;
     private final String name;
     private final Map<TeamTypes, Team> teams = Maps.newEnumMap(TeamTypes.class);
-    private final Map<Location, Generator> generators = Maps.newHashMap();
+    //Use vector instead of location to skip an issue with worlds when used loc.equals(other)
+    private final Map<Vector, Generator> generators = Maps.newHashMap();
     //Arena status will now always be "Setup" at first, before completing init or when arena is newly created
     private ArenaStatus status = ArenaStatus.SETTING;
 
@@ -152,8 +155,8 @@ public class Arena
         this.name = fileconf.getString("Name");
         Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Loading arena " + this.name + ".");
         World world = WorldController.regenArena(this);
-        loadIfPresent(fileconf, "Lobby", (loc) -> this.setLobby(loc));
-        loadIfPresent(fileconf, "Center", (loc) -> this.setCenter(loc));
+        loadIfPresent(fileconf, "Lobby", this::setLobby);
+        loadIfPresent(fileconf, "Center", this::setCenter);
         this.boundaries = Bounds.deserialize(fileconf.getString("Bounds"));
         this.maxTeamPlayers = fileconf.getInt("MaxPlayersPerTeam");
         this.minPlayers = fileconf.getInt("MinPlayers");
@@ -195,9 +198,9 @@ public class Arena
                 }
             }
 
-            loadIfPresent(fileconf, teamtypeid + ".Respawn", (loc) -> team.setRespawn(loc));
-            loadIfPresent(fileconf, teamtypeid + ".Villager", (loc) -> team.setVillager(loc));
-            loadIfPresent(fileconf, teamtypeid + ".Egg", (loc) -> team.setEgg(loc));
+            loadIfPresent(fileconf, teamtypeid + ".Respawn", team::setRespawn);
+            loadIfPresent(fileconf, teamtypeid + ".Villager", team::setVillager);
+            loadIfPresent(fileconf, teamtypeid + ".Egg", team::setEgg);
             this.teams.put(teamtype, team);
         }
 
@@ -207,8 +210,8 @@ public class Arena
         {
             for (String gen : gens.getKeys(false))
             {
-                Location genLoc = Locations.toBlock(Locations.fromString(fileconf.getString("Generator." + gen + ".Loc")));
-                this.generators.put(genLoc, new Generator(genLoc, fileconf.getInt("Generator." + gen + ".DefLevel"), fileconf.getString("Generator." + gen + ".Type"), this));
+                Generator generator = new Generator(Locations.fromString(fileconf.getString("Generator." + gen + ".Loc")), fileconf.getInt("Generator." + gen + ".DefLevel"), fileconf.getString("Generator." + gen + ".Type"), this);
+                this.generators.put(generator.getBlock().toVector(), generator);
             }
         }
 
@@ -366,21 +369,25 @@ public class Arena
         return flag;
     }
 
-    public Map<Location, Generator> getGenerators()
+    public Map<Vector, Generator> getGenerators()
     {
         return new HashMap(this.generators);
     }
 
     @Nullable
-    public Generator removeGenerator(Location loc)
+    public Generator removeGenerator(Vector loc)
     {
     	return this.generators.remove(loc);
     }
 
+    /**
+     * Puts the specified generator to its location on genMap. Returns the previous generator
+     * that was on the same position, if there was already one.
+     */
     @Nullable
-    public Generator putGenerator(Location loc, Generator gen)
+    public Generator putGenerator(Generator gen)
     {
-    	return this.generators.put(loc, gen);
+    	return this.generators.put(gen.getBlock().toVector(), gen);
     }
 
     public String getName()
@@ -409,12 +416,12 @@ public class Arena
 
     	if (this.lobby != null)
     	{
-    	    this.lobby.setWorld(this.world);
+    	    this.lobby.setWorld(worldIn);
     	}
 
         if (this.center != null)
         {
-            this.center.setWorld(this.world);
+            this.center.setWorld(worldIn);
         }
 
         this.getTeams().values().forEach(team -> team.setArenaWorld());

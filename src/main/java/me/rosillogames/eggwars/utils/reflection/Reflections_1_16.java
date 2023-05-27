@@ -298,16 +298,14 @@ public class Reflections_1_16 implements Reflections
     }
 
     @Override
-    public void disablePhysics(Entity e)
+    public void killOutOfWorld(Player p)
     {
         try
         {
-            Object nmsE = e.getClass().getMethod("getHandle").invoke(e);
-            Field field = nmsE.getClass().getField("noclip");
-            boolean accessible = field.isAccessible();
-            field.setAccessible(true);
-            field.set(nmsE, true);
-            field.setAccessible(accessible);
+            Object nmsP = p.getClass().getMethod("getHandle").invoke(p);
+            Class cDmgSource = this.getNMSClass("DamageSource");
+            Object dmgSource = cDmgSource.getField("OUT_OF_WORLD").get(null);
+            nmsP.getClass().getMethod("damageEntity", cDmgSource, float.class).invoke(nmsP, dmgSource, 10000F);
         }
         catch (Exception exception)
         {

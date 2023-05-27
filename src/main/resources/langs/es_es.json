@@ -16,7 +16,7 @@
   "gameplay.ingame.player_eliminated": "&c{0} ha sido eliminado de la partida.",
   "gameplay.ingame.team_egg_destroyed": "&eEl huevo del equipo {0}&e ha sido destruido por {1}&e.",
   "gameplay.ingame.your_egg_destroyed": "&4&l¡Tu huevo ha sido destruido!",
-  "gameplay.ingame.team_wins": "&a¡El equipo {0}&a ha ganado la partida!",
+  "gameplay.ingame.winner": "&7------------------------------------\n&a¡{0}&a ha ganado la partida!\n&7------------------------------------",
   "gameplay.ingame.you_win": "&a¡Enhorabuena, has ganado!",
   "gameplay.ingame.player_left": "&e{0} &ese ha ido!",
   "gameplay.ingame.player_died": "&e¡{0}&e ha muerto!",
@@ -28,10 +28,170 @@
   "gameplay.ingame.compass_target": "&6Equipo apuntado: {0} &2- &6Jugador: {1} &2- &6Distancia: &b{2}",
   "gameplay.ingame.you_died": "&c¡Has muerto!",
   "gameplay.ingame.you_died_exit": "&7Escribe &8/leave &7para salir",
-  "gameplay.ingame.you_died_respawning": "&9Reapareciendo en &e{0}&9.",
+  "gameplay.ingame.you_died_respawning": "&9Reapareciendo en &e{0}&9...",
   "gameplay.ingame.respawning": "&6Reapareciendo...",
   "gameplay.ingame.respawned_by_egg": "&b¡Tu huevo te ha dado una nueva vida!",
   "gameplay.ingame.invincible": "&cAhora eres invencible por {0}&c.",
+  "gameplay.death.generic": "&e{0}&e ha muerto.",
+  "gameplay.death.generic.player": "&e{0}&e ha muerto mientras huía de {1}&e.",
+  "gameplay.death.contact": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.contact.player": {
+    "reference": "gameplay.death.generic.player"
+  },
+  "gameplay.death.entity_attack": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.entity_attack.player": "&e{0}&e fue asesinado por {1}&e.",
+  "gameplay.death.entity_sweep_attack": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.entity_sweep_attack.player": {
+    "reference": "gameplay.death.entity_attack.player"
+  },
+  "gameplay.death.projectile": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.projectile.player": "&e{0}&e fue disparado por {1}&e.",
+  "gameplay.death.suffocation": "&e{0}&e murió sofocado.",
+  "gameplay.death.suffocation.player": "&e{0}&e murió sofocado mientras huía de {1}&e.",
+  "gameplay.death.fall": [
+    "&e{0}&e cayó a su muerte.",
+    "&e{0}&e no pudo volar."
+  ],
+  "gameplay.death.fall.player": [
+    "&e{0}&e cayó a su muerte mientras huía de {1}&e.",
+    "&e{0}&e no pudo volar mientras huía de {1}&e."
+  ],
+  "gameplay.death.fire": [
+    "&e{0}&e ardió en llamas.",
+    "&e{0}&e se quemó hasta morir."
+  ],
+  "gameplay.death.fire.player": [
+    "&e{0}&e ardió en llamas mientras luchaba con {1}&e.",
+    "&e{0}&e se quemó hasta morir mientras huía de {1}&e."
+  ],
+  "gameplay.death.fire_tick": {
+    "reference": "gameplay.death.fire"
+  },
+  "gameplay.death.fire_tick.player": {
+    "reference": "gameplay.death.fire.player"
+  },
+  "gameplay.death.melting": {
+    "reference": "gameplay.death.fire"
+  },
+  "gameplay.death.melting.player": {
+    "reference": "gameplay.death.fire.player"
+  },
+  "gameplay.death.lava": "&e{0}&e pensó que podía nadar en lava.",
+  "gameplay.death.lava.player": "&e{0}&e pensó que podía nadar en lava mientras huía de {1}&e.",
+  "gameplay.death.drowning": "&e{0}&e se ahogó.",
+  "gameplay.death.drowning.player": "&e{0}&e se ahogó mientras huía de {1}&e.",
+  "gameplay.death.block_explosion": {
+    "reference": "gameplay.death.entity_explosion"
+  },
+  "gameplay.death.block_explosion.player": {
+    "reference": "gameplay.death.entity_explosion.player"
+  },
+  "gameplay.death.entity_explosion": "&e{0}&e explotó.",
+  "gameplay.death.entity_explosion.player": "&e{0}&e fue explotado por {1}&e.",
+  "gameplay.death.void": [
+    "&e{0}&e pensó que podría sobrevivir en el vacío.",
+    "&e{0}&e murió en el vacío."
+  ],
+  "gameplay.death.void.player": [
+    "&e{0}&e pensó que podría sobrevivir en el vacío mientras huía de {1}&e.",
+    "&e{0}&e murió en el vacío mientras huía de {1}&e."
+  ],
+  "gameplay.death.lightning": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.lightning.player": {
+    "reference": "gameplay.death.generic.player"
+  },
+  "gameplay.death.suicide": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.suicide.player": {
+    "reference": "gameplay.death.generic.player"
+  },
+  "gameplay.death.starvation": "&e{0}&e murió de hambre.",
+  "gameplay.death.starvation.player": "&e{0}&e murió de hambre mientras huía de {1}&e.",
+  "gameplay.death.poison": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.poison.player": {
+    "reference": "gameplay.death.generic.player"
+  },
+  "gameplay.death.magic": "&e{0}&e murió mágicamente.",
+  "gameplay.death.magic.player": "&e{0}&e murió mágicamente mientras huía de {1}&e.",
+  "gameplay.death.wither": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.wither.player": {
+    "reference": "gameplay.death.generic.player"
+  },
+  "gameplay.death.falling_block": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.falling_block.player": {
+    "reference": "gameplay.death.generic.player"
+  },
+  "gameplay.death.thorns": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.thorns.player": {
+    "reference": "gameplay.death.entity_attack.player"
+  },
+  "gameplay.death.dragon_breath": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.dragon_breath.player": {
+    "reference": "gameplay.death.generic.player"
+  },
+  "gameplay.death.custom": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.custom.player": {
+    "reference": "gameplay.death.generic.player"
+  },
+  "gameplay.death.fly_into_wall": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.fly_into_wall.player": {
+    "reference": "gameplay.death.generic.player"
+  },
+  "gameplay.death.hot_floor": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.hot_floor.player": {
+    "reference": "gameplay.death.generic.player"
+  },
+  "gameplay.death.cramming": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.cramming.player": {
+    "reference": "gameplay.death.generic.player"
+  },
+  "gameplay.death.dryout": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.dryout.player": {
+    "reference": "gameplay.death.generic.player"
+  },
+  "gameplay.death.freeze": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.freeze.player": {
+    "reference": "gameplay.death.generic.player"
+  },
+  "gameplay.death.sonic_boom": {
+    "reference": "gameplay.death.generic"
+  },
+  "gameplay.death.sonic_boom.player": {
+    "reference": "gameplay.death.generic.player"
+  },
   "gameplay.chat.global": "&7[&cGlobal&7]&7 {1}&f: &7{2}",
   "gameplay.chat.team": "&7[&bEquipo&7]&7 {1}&f: &7{2}",
   "gameplay.chat.lobby": "&7[&aLobby&7]&7 {0}&f: &7{1}",
@@ -238,7 +398,7 @@
   "commands.teamList.failed": "&cThere isn't any team on arena {0}&c!",
   "commands.setBungeeLobby.success": "&aBungee lobby set! (&e{0}&a)",
   "commands.setBungeeLobby.usage": "&cUsage: /ews setBungeeLobby <???>",
-  "stats.endOfGame.stripes": "&7------------------------------------",
+  "stats.endOfGame.container": "&7------------------------------------\n{0}\n&7------------------------------------",
   "stats.endOfGame.stat": "&8● &7{0}: &e{1}",
   "stats.endOfGame.game_lenght": "Duración de la Partida",
   "stats.endOfGame.kill_death": "K/D",

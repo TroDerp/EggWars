@@ -226,9 +226,10 @@ public class EwPlayer
     	this.lastDamagerMillis = System.currentTimeMillis();
     }
 
+    @Nullable
     public EwPlayer getLastDamager()
     {
-        if (System.currentTimeMillis() - this.lastDamagerMillis > 20000L)
+        if (System.currentTimeMillis() - this.lastDamagerMillis > 20000L)//20 seconds
         {
         	this.lastDamager = null;
         }

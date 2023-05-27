@@ -34,7 +34,7 @@ public class ItemPickupListener implements Listener
         ItemStack stack = pickUpEvent.getItem().getItemStack();
         ItemMeta meta = stack.getItemMeta();
 
-        if (meta.getPersistentDataContainer().has(EggWars.apssId, PersistentDataType.STRING))
+        if (EggWars.config.enableAPSS && meta.getPersistentDataContainer().has(EggWars.apssId, PersistentDataType.STRING))
         {
             for (Generator gen : ewplayer.getArena().getGenerators().values())
             {

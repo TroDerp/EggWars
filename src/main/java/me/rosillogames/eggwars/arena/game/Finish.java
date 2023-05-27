@@ -30,27 +30,25 @@ public class Finish
         arena.setStatus(ArenaStatus.FINISHING);
         arena.getGenerators().values().forEach(generator -> generator.stop());
 
-        for (EwPlayer p : arena.getPlayers())
-        {
-            if (!p.isEliminated())
-            {
-                sendFinishStats(p);
-            }
-        }
-
         if (winner != null)
         {
-            for (EwPlayer p1 : arena.getPlayers())
+            for (EwPlayer ewpl : arena.getPlayers())
             {
-            	Player player = p1.getPlayer();
-                TranslationUtils.sendMessage("gameplay.ingame.team_wins", player, TeamUtils.translateTeamType(winner.getType(), player, false));
-                player.closeInventory();
+            	Player player = ewpl.getPlayer();
+            	String winnerObj = arena.getMode().isTeam() ? TeamUtils.translateTeamType(winner.getType(), player, false) : TeamUtils.colorizePlayerName(winner.getPlayers().iterator().next());
+                TranslationUtils.sendMessage("gameplay.ingame.winner", player, winnerObj);
 
-                if (winner.equals(p1.getTeam()))
+                if (winner.equals(ewpl.getTeam()))
                 {
                     TranslationUtils.sendMessage("gameplay.ingame.you_win", player);
-                    p1.getIngameStats().addStat(StatType.WINS, 1);
-                    PlayerUtils.addPoints(p1, EggWars.instance.getConfig().getInt("gameplay.points.on_win"));
+                    ewpl.getIngameStats().addStat(StatType.WINS, 1);
+                    PlayerUtils.addPoints(ewpl, EggWars.instance.getConfig().getInt("gameplay.points.on_win"));
+                }
+
+                if (!ewpl.isEliminated())
+                {
+                    player.closeInventory();
+                    sendFinishStats(ewpl);
                 }
             }
 
@@ -115,43 +113,47 @@ public class Finish
     public static void sendFinishStats(EwPlayer pl)
     {
         Player ply = pl.getPlayer();
-    	String stripemsg = TranslationUtils.getMessage("stats.endOfGame.stripes", ply);
-    	ply.sendMessage(stripemsg);
-        sendFinishStat(ply, TranslationUtils.getMessage("stats.endOfGame.game_lenght", ply), TranslationUtils.translateTime(ply, pl.getIngameStats().getStat(StatType.TIME_PLAYED), true));
+        StringBuilder builder = new StringBuilder();
+        addFinishStat(builder, ply, TranslationUtils.getMessage("stats.endOfGame.game_lenght", ply), TranslationUtils.translateTime(ply, pl.getIngameStats().getStat(StatType.TIME_PLAYED), true));
         int kills = pl.getIngameStats().getStat(StatType.KILLS);
 
         if (kills > 0)
         {
-            sendFinishStat(ply, TranslationUtils.getMessage("stats.kills", ply), String.valueOf(kills));
+        	addFinishStat(builder, ply, TranslationUtils.getMessage("stats.kills", ply), String.valueOf(kills));
         }
 
         int deaths = pl.getIngameStats().getStat(StatType.DEATHS);
 
         if (deaths > 0)
         {
-            sendFinishStat(ply, TranslationUtils.getMessage("stats.deaths", ply), deaths);
+        	addFinishStat(builder, ply, TranslationUtils.getMessage("stats.deaths", ply), deaths);
         }
 
-        sendFinishStat(ply, TranslationUtils.getMessage("stats.endOfGame.kill_death", ply), String.format("%.2f", (double)kills / (double)(deaths <= 0 ? 1 : deaths)));
+        addFinishStat(builder, ply, TranslationUtils.getMessage("stats.endOfGame.kill_death", ply), String.format("%.2f", (double)kills / (double)(deaths <= 0 ? 1 : deaths)));
         int eggsBroken = pl.getIngameStats().getStat(StatType.EGGS_BROKEN);
 
         if (eggsBroken > 0)
         {
-            sendFinishStat(ply, TranslationUtils.getMessage("stats.eggs_broken", ply), String.valueOf(eggsBroken));
+        	addFinishStat(builder, ply, TranslationUtils.getMessage("stats.eggs_broken", ply), String.valueOf(eggsBroken));
         }
 
         int finalKills = pl.getIngameStats().getStat(StatType.ELIMINATIONS);
 
         if (finalKills > 0)
         {
-            sendFinishStat(ply, TranslationUtils.getMessage("stats.eliminations", ply), String.valueOf(finalKills));
+        	addFinishStat(builder, ply, TranslationUtils.getMessage("stats.eliminations", ply), String.valueOf(finalKills));
         }
 
-    	ply.sendMessage(stripemsg);
+    	TranslationUtils.sendMessage("stats.endOfGame.container", ply, builder.toString());
     }
 
-    private static void sendFinishStat(Player pl, Object... args)
+    private static void addFinishStat(StringBuilder builder, Player pl, Object... args)
     {
-        pl.getPlayer().sendMessage(TranslationUtils.getMessage("stats.endOfGame.stat", pl, args));
+    	if (builder.length() > 0)
+    	{
+    		builder.append("\n");
+    	}
+ 
+    	builder.append(TranslationUtils.getMessage("stats.endOfGame.stat", pl, args));
     }
 }

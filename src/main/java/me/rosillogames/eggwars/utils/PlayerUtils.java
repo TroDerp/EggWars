@@ -179,7 +179,7 @@ public class PlayerUtils
             {
                 ReflectionUtils.sendActionBar(ewplayer.getPlayer(), TranslationUtils.getMessage("gameplay.ingame.compass_target", ewplayer.getPlayer(), new Object[] {
                     TeamUtils.translateTeamType(ewplayer1.getTeam().getType(), ewplayer.getPlayer(), false),
-                    ewplayer1.getTeam().getType().colorizeName(ewplayer1.getPlayer().getName()),
+                    TeamUtils.colorizePlayerName(ewplayer1),
                     String.format("%.1f", Double.valueOf(ewplayer.getPlayer().getLocation().distance(ewplayer1.getPlayer().getLocation())))
                 }), Integer.valueOf(0), Integer.valueOf(25), Integer.valueOf(0));
             }
@@ -200,7 +200,7 @@ public class PlayerUtils
         {
             ReflectionUtils.sendActionBar(ewplayer.getPlayer(), TranslationUtils.getMessage("gameplay.ingame.compass_target", ewplayer.getPlayer(), new Object[] {
                 TeamUtils.translateTeamType(ewplayer2.getTeam().getType(), ewplayer.getPlayer(), false),
-                ewplayer2.getTeam().getType().colorizeName(ewplayer2.getPlayer().getName()),
+                TeamUtils.colorizePlayerName(ewplayer2),
                 String.format("%.1f", Double.valueOf(ewplayer.getPlayer().getLocation().distance(ewplayer2.getPlayer().getLocation())))
             }), Integer.valueOf(0), Integer.valueOf(25), Integer.valueOf(0));
         }

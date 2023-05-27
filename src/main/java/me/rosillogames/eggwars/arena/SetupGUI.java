@@ -601,8 +601,9 @@ public class SetupGUI
             }
 
             EwPlayer ewplayer = PlayerUtils.getEwPlayer(interactEvent.getPlayer());
+            Arena arena = ewplayer.getSettingArena();
 
-            if (ewplayer.getSettingArena() == null || !ewplayer.getSettingArena().getStatus().equals(ArenaStatus.SETTING) || !ewplayer.getPlayer().getWorld().equals(ewplayer.getSettingArena().getWorld()))
+            if (arena == null || !arena.getStatus().equals(ArenaStatus.SETTING) || !ewplayer.getPlayer().getWorld().equals(arena.getWorld()))
             {
                 ewplayer.setSettingArena(null);
                 return;
@@ -624,10 +625,9 @@ public class SetupGUI
 
             if (type != null && generators.containsKey(type) && level <= generators.get(type).getMaxLevel())
             {
-                Location clickLoc = interactEvent.getClickedBlock().getLocation();
-                Generator generator = new Generator(clickLoc, level, type, ewplayer.getSettingArena());
+                Generator generator = new Generator(interactEvent.getClickedBlock().getLocation(), level, type, arena);
 
-                if (!generator.equals(ewplayer.getSettingArena().putGenerator(clickLoc, generator)))
+                if (!generator.equals(arena.putGenerator(generator)))
                 {
                     TranslationUtils.sendMessage("setup.generator.added", interactEvent.getPlayer());
                 }

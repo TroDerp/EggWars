@@ -109,11 +109,6 @@ public enum TeamTypes
         return RED;
     }
 
-    public String colorizeName(String s)
-    {
-        return this.chatColor + s;
-    }
-
     public static TeamTypes byId(String s) throws IllegalArgumentException
     {
         for (TeamTypes teams : values())

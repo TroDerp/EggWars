@@ -34,7 +34,9 @@ import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.Fireworks;
 import me.rosillogames.eggwars.utils.ItemUtils;
+import me.rosillogames.eggwars.utils.Locations;
 import me.rosillogames.eggwars.utils.PlayerUtils;
+import me.rosillogames.eggwars.utils.TeamUtils;
 import me.rosillogames.eggwars.utils.WorldController;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
@@ -61,7 +63,7 @@ public class Generator
 
     public Generator(Location loc, int lvl, String typeIn, Arena arenaIn)
     {
-        this.block = loc;
+        this.block = Locations.toBlock(loc, true);
         this.defLevel = lvl;
         this.level = lvl;
         this.type = typeIn;
@@ -271,24 +273,24 @@ public class Generator
 
                     if (dx > 0.8)
                     {
-                        dx -= 0.1;
+                        dx -= 0.15;
                     }
 
                     if (dx < 0.2)
                     {
-                        dx += 0.1;
+                        dx += 0.15;
                     }
 
                     double dz = (new Random()).nextDouble();
 
                     if (dz > 0.8)
                     {
-                        dz -= 0.1;
+                        dz -= 0.15;
                     }
 
                     if (dz < 0.2)
                     {
-                        dz += 0.1;
+                        dz += 0.15;
                     }
 
                     entityitem.setVelocity(new Vector(0, 0, 0));
@@ -344,7 +346,7 @@ public class Generator
         for (EwPlayer ewplayer1 : ewplayer.getTeam().getPlayers())
         {
         	Player teamPlayer = ewplayer1.getPlayer();
-            TranslationUtils.sendMessage("generator.team_upgraded", teamPlayer, ewplayer.getTeam().getType().colorizeName(playerIn.getName()), this.cachedType.droppedToken().getFormattedName(teamPlayer), this.level + 1);
+            TranslationUtils.sendMessage("generator.team_upgraded", teamPlayer, TeamUtils.colorizePlayerName(ewplayer), this.cachedType.droppedToken().getFormattedName(teamPlayer), this.level + 1);
         }
 
         Price.sellItems(playerIn, price);
@@ -417,7 +419,7 @@ public class Generator
     @Override
     public boolean equals(Object obj)
     {
-        if (obj == null)
+    	if (obj == null)
         {
             return false;
         }
@@ -470,7 +472,13 @@ public class Generator
 //keep update() and nextTurn() separated because update() is used more often to set Turn to 0 when some player candidates in one Gen leave, for the pickup not be disabled for remaining players in slow generators
         public void update()
         {
-            this.candidates.clear();
+        	this.candidates.clear();
+
+        	if (!EggWars.config.enableAPSS)
+        	{
+        		return;
+        	}
+
             BoundingBox itembox = new BoundingBox(Generator.this.block.getX() - 0.25, Generator.this.block.getY(), Generator.this.block.getZ() - 0.25, Generator.this.block.getX() + 0.25, Generator.this.block.getY() + 0.45, Generator.this.block.getZ() + 0.25);
 
             for (EwPlayer ewplayer : Generator.this.arena.getAlivePlayers())

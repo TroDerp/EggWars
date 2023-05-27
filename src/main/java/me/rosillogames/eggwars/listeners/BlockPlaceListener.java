@@ -10,6 +10,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.util.Vector;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
+import me.rosillogames.eggwars.arena.Generator;
 import me.rosillogames.eggwars.arena.Scoreboards;
 import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.enums.ArenaStatus;
@@ -88,9 +89,9 @@ public class BlockPlaceListener implements Listener
             	}
             }
 
-            for (Location genLoc : arena.getGenerators().keySet())
+            for (Generator gen : arena.getGenerators().values())
             {
-                if (invalidPlace(genLoc, eventIn, true))
+                if (invalidPlace(gen.getBlock(), eventIn, true))
                 {
                     return;
                 }

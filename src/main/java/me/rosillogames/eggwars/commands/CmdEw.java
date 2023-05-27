@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -36,7 +37,7 @@ public class CmdEw implements TabExecutor
     }
 
     @Override
-    public boolean onCommand(CommandSender senderIn, Command commandIn, String s, String args[])
+    public boolean onCommand(CommandSender senderIn, Command cmdIn, String s, String args[])
     {
         if (args.length != 0 && this.fixArg(args[0]) != null)
         {
@@ -45,6 +46,12 @@ public class CmdEw implements TabExecutor
             if (arg.isPlayersOnly() && !(senderIn instanceof Player))
             {
                 TranslationUtils.sendMessage("commands.error.only_players", senderIn);
+                return true;
+            }
+
+            if (arg.getPermission() != null && !senderIn.hasPermission(arg.getPermission()))
+            {
+                TranslationUtils.sendMessage("commands.error.no_permission", senderIn);
                 return true;
             }
 
@@ -57,17 +64,20 @@ public class CmdEw implements TabExecutor
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String args[])
+    public List<String> onTabComplete(CommandSender senderIn, Command cmdIn, String s, String args[])
     {
         if (args.length == 1)
         {
-            List list = new ArrayList();
+            List<String> list = new ArrayList();
 
-            for (String mainArg : this.mainArgs.keySet())
+            for (Entry<String, CommandArg> entry : this.mainArgs.entrySet())
             {
-                if (mainArg.toLowerCase().startsWith(args[0].toLowerCase()))
+            	String key = entry.getKey();
+            	CommandArg arg = entry.getValue();
+
+            	if (key.toLowerCase().startsWith(args[0].toLowerCase()) && (arg.getPermission() == null || senderIn.hasPermission(arg.getPermission())))
                 {
-                    list.add(mainArg);
+                    list.add(key);
                 }
             }
 
@@ -77,7 +87,7 @@ public class CmdEw implements TabExecutor
         if (args.length != 0 && this.fixArg(args[0]) != null)
         {
             CommandArg arg = this.mainArgs.get(this.fixArg(args[0]));
-            return arg.getCompleteArgs(commandSender, args);
+            return arg.getCompleteArgs(senderIn, args);
         }
 
         return new ArrayList();
@@ -106,12 +116,6 @@ public class CmdEw implements TabExecutor
         @Override
         public boolean execute(CommandSender commandSender, String[] args)
         {
-            if (!commandSender.hasPermission("eggwars.command.forcestart"))
-            {
-                TranslationUtils.sendMessage("commands.error.no_permission", commandSender);
-                return false;
-            }
-
             Arena arena = commandSender instanceof Player ? PlayerUtils.getEwPlayer((Player)commandSender).getArena() : null;
 
             if (args.length == 2)
@@ -171,6 +175,12 @@ public class CmdEw implements TabExecutor
 
             return list;
         }
+
+        @Override
+        public String getPermission()
+        {
+            return "eggwars.command.forcestart";
+        }
     }
 
     public static class Help extends CommandArg
@@ -204,12 +214,6 @@ public class CmdEw implements TabExecutor
         @Override
         public boolean execute(CommandSender commandSender, String[] args)
         {
-            if (!commandSender.hasPermission("eggwars.command.join"))
-            {
-                TranslationUtils.sendMessage("commands.error.no_permission", commandSender);
-                return false;
-            }
-
             if (args.length == 1)
             {
                 TranslationUtils.sendMessage("commands.join.usage", commandSender);
@@ -285,6 +289,12 @@ public class CmdEw implements TabExecutor
 
             return list;
         }
+
+        @Override
+        public String getPermission()
+        {
+            return "eggwars.command.join";
+        }
     }
 
     public static class Lobby extends CommandArg
@@ -297,12 +307,6 @@ public class CmdEw implements TabExecutor
         @Override
         public boolean execute(CommandSender commandSender, String[] args)
         {
-            if (!commandSender.hasPermission("eggwars.command.lobby"))
-            {
-                TranslationUtils.sendMessage("commands.error.no_permission", commandSender);
-                return false;
-            }
-
             EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)commandSender);
 
             if (ewplayer.isInArena())
@@ -321,6 +325,12 @@ public class CmdEw implements TabExecutor
         {
             return new ArrayList();
         }
+
+        @Override
+        public String getPermission()
+        {
+            return "eggwars.command.lobby";
+        }
     }
 
     public static class Menu extends CommandArg
@@ -333,12 +343,6 @@ public class CmdEw implements TabExecutor
         @Override
         public boolean execute(CommandSender commandSender, String[] args)
         {
-            if (!commandSender.hasPermission("eggwars.command.menu"))
-            {
-                TranslationUtils.sendMessage("commands.error.no_permission", commandSender);
-                return false;
-            }
-
             Player player = (Player)commandSender;
             EwPlayer ewplayer = PlayerUtils.getEwPlayer(player);
 
@@ -357,24 +361,19 @@ public class CmdEw implements TabExecutor
         {
             return new ArrayList();
         }
+
+        @Override
+        public String getPermission()
+        {
+            return "eggwars.command.menu";
+        }
     }
 
-    public static class RandomJoin extends CommandArg
+    public static class RandomJoin extends Join //same join permission
     {
-        public RandomJoin()
-        {
-            super(true);
-        }
-
         @Override
         public boolean execute(CommandSender commandSender, String[] args)
         {
-            if (!commandSender.hasPermission("eggwars.command.join"))
-            {
-                TranslationUtils.sendMessage("commands.error.no_permission", commandSender);
-                return false;
-            }
-
             if (PlayerUtils.getEwPlayer((Player)commandSender).isInArena())
             {
                 TranslationUtils.sendMessage("commands.error.in_arena", commandSender);
@@ -434,12 +433,6 @@ public class CmdEw implements TabExecutor
         @Override
         public boolean execute(CommandSender sender, String[] args)
         {
-            if (!sender.hasPermission("eggwars.command.reload"))
-            {
-                TranslationUtils.sendMessage("commands.error.no_permission", sender);
-                return false;
-            }
-
             if (args.length == 1)
             {
                 TranslationUtils.sendMessage("commands.reload.usage", sender);
@@ -479,6 +472,12 @@ public class CmdEw implements TabExecutor
             }
 
             return list;
+        }
+
+        @Override
+        public String getPermission()
+        {
+            return "eggwars.command.reload";
         }
     }
 }

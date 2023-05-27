@@ -1,6 +1,7 @@
 package me.rosillogames.eggwars.commands;
 
 import java.util.List;
+import javax.annotation.Nullable;
 import org.bukkit.command.CommandSender;
 
 public abstract class CommandArg
@@ -15,6 +16,12 @@ public abstract class CommandArg
     public boolean isPlayersOnly()
     {
         return this.isPlayersOnly;
+    }
+
+    @Nullable
+    public String getPermission()
+    {//Only used in /ew commands by now 
+        return null;
     }
 
     public abstract boolean execute(CommandSender commandSender, String args[]);

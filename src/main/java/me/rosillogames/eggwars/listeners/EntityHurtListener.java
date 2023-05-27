@@ -1,8 +1,9 @@
 package me.rosillogames.eggwars.listeners;
 
-import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.entity.Villager;
 import org.bukkit.event.EventHandler;
@@ -10,15 +11,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.PlayerUtils;
-
-import org.bukkit.event.entity.FoodLevelChangeEvent;
 
 public class EntityHurtListener implements Listener
 {
@@ -54,66 +52,55 @@ public class EntityHurtListener implements Listener
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void cancelDamageByPlayer(EntityDamageByEntityEvent damageByEntityEvent)
+    public void cancelDamageByPlayer(EntityDamageByEntityEvent event)
     {
-        if (!(damageByEntityEvent.getEntity() instanceof Player))
+        if (!(event.getEntity() instanceof Player))
         {
             return;
         }
 
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)damageByEntityEvent.getEntity());
+        EwPlayer ewVictim = PlayerUtils.getEwPlayer((Player)event.getEntity());
 
-        if (ewplayer == null)
+        if (ewVictim == null || !ewVictim.isInArena())
         {
             return;
         }
 
-        if (!ewplayer.isInArena())
+        Entity damager = event.getDamager();
+        EwPlayer ewDamager = null;
+
+        if (damager instanceof Projectile && (((Projectile)damager).getShooter() instanceof Player))
         {
-            return;
+            ewDamager = PlayerUtils.getEwPlayer((Player)((Projectile)damager).getShooter());
         }
 
-        if ((damageByEntityEvent.getDamager() instanceof Arrow) && (((Arrow)damageByEntityEvent.getDamager()).getShooter() instanceof Player))
+        if (damager instanceof TNTPrimed && (((TNTPrimed)damager).getSource() instanceof Player))
         {
-            EwPlayer ewplayer1 = PlayerUtils.getEwPlayer((Player)((Arrow)damageByEntityEvent.getDamager()).getShooter());
+        	ewDamager = PlayerUtils.getEwPlayer((Player)((TNTPrimed)damager).getSource());
+        }
 
-            if (!ewplayer1.isInArena() || !ewplayer1.getArena().equals(ewplayer.getArena()) || ewplayer1.isEliminated() || ewplayer1.getTeam() == null || ewplayer.getTeam() == null)
+        if (damager instanceof Player)
+        {
+            ewDamager = PlayerUtils.getEwPlayer((Player)damager);
+        }
+
+        if (ewDamager != null)
+        {
+            if (!ewDamager.isInArena() || !ewDamager.getArena().equals(ewVictim.getArena()) || ewDamager.getTeam() == null || ewVictim.getTeam() == null)
             {
-                damageByEntityEvent.setCancelled(true);
+                event.setCancelled(true);
                 return;
             }
 
-            if (ewplayer.getTeam().equals(ewplayer1.getTeam()))
+            if (ewVictim.getTeam().equals(ewDamager.getTeam()))
             {
-                damageByEntityEvent.setCancelled(true);
+                event.setCancelled(true);
                 return;
             }
             else
             {
-                ewplayer.setLastDamager(ewplayer1);
-                return;
-            }
-        }
-
-        if (damageByEntityEvent.getDamager() instanceof Player)
-        {
-            EwPlayer ewplayer2 = PlayerUtils.getEwPlayer((Player)damageByEntityEvent.getDamager());
-
-            if (!ewplayer2.isInArena() || !ewplayer2.getArena().equals(ewplayer.getArena()) || ewplayer2.isEliminated() || ewplayer2.getTeam() == null || ewplayer.getTeam() == null)
-            {
-                damageByEntityEvent.setCancelled(true);
-                return;
-            }
-
-            if (ewplayer.getTeam().equals(ewplayer2.getTeam()))
-            {
-                damageByEntityEvent.setCancelled(true);
-                return;
-            }
-            else
-            {
-                ewplayer.setLastDamager(ewplayer2);
-                ewplayer2.clearInvincible();
+                ewVictim.setLastDamager(ewDamager);
+                ewDamager.clearInvincible();
                 return;
             }
         }
@@ -170,51 +157,19 @@ public class EntityHurtListener implements Listener
     }
 
     @EventHandler
-    public void cancelFriendlyDamage(EntityDamageByEntityEvent entityDamageByEntityEvent)
+    public void cancelFriendlyDamage(EntityDamageByEntityEvent event)
     {
-        if (entityDamageByEntityEvent.getEntity().getType() == EntityType.PLAYER && entityDamageByEntityEvent.getDamager().getType() == EntityType.FIREWORK)
+        if (event.getEntity().getType() == EntityType.PLAYER && event.getDamager().getType() == EntityType.FIREWORK)
         {
-            EwPlayer pl = PlayerUtils.getEwPlayer((Player)entityDamageByEntityEvent.getEntity());
+            EwPlayer pl = PlayerUtils.getEwPlayer((Player)event.getEntity());
 
             if (!pl.isInArena())
             {
                 return;
             }
 
-            entityDamageByEntityEvent.setCancelled(true);
+            event.setCancelled(true);
             return;
-        }
-
-        if (entityDamageByEntityEvent.getDamager().getType() == EntityType.PRIMED_TNT && entityDamageByEntityEvent.getCause() == DamageCause.ENTITY_EXPLOSION)
-        {
-            if (!(entityDamageByEntityEvent.getEntity() instanceof Player))
-            {
-                return;
-            }
-
-            EwPlayer pl = PlayerUtils.getEwPlayer((Player)entityDamageByEntityEvent.getEntity());
-
-            if (!pl.isInArena())
-            {
-                return;
-            }
-
-            if (((TNTPrimed)entityDamageByEntityEvent.getDamager()).getSource() instanceof Player)
-            {
-                EwPlayer pl1 = PlayerUtils.getEwPlayer((Player)((TNTPrimed)entityDamageByEntityEvent.getDamager()).getSource());
-
-                if (!pl1.isInArena())
-                {
-                    return;
-                }
-
-                if (pl.getTeam() == pl1.getTeam())
-                {
-                    entityDamageByEntityEvent.setCancelled(true);
-                }
-
-                return;
-            }
         }
 
         return;

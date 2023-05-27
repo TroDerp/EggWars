@@ -9,6 +9,7 @@ import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.PlayerUtils;
+import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class PlayerMoveListener implements Listener
 {
@@ -32,7 +33,7 @@ public class PlayerMoveListener implements Listener
             else if (ewplayer.getArena().getStatus().equals(ArenaStatus.IN_GAME) && ewplayer.getPlayer().getLocation().getY() < -65.0)
             {
                 //insta kill
-                ewplayer.getPlayer().damage(10000.0f);
+            	ReflectionUtils.killOutOfWorld(ewplayer.getPlayer());
             }
 
             if (!ewplayer.getPlayer().getWorld().equals(ewplayer.getArena().getWorld()))

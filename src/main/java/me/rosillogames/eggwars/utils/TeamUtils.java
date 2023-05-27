@@ -12,6 +12,7 @@ import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 
 public class TeamUtils implements Listener
@@ -35,7 +36,9 @@ public class TeamUtils implements Listener
 
     public static String teamPrefix(TeamTypes type, Player player)
     {
-        if (PlayerUtils.getEwPlayer(player) != null && PlayerUtils.getEwPlayer(player).getTeam() != null && PlayerUtils.getEwPlayer(player).getTeam().getType() == type)
+    	EwPlayer ewply = PlayerUtils.getEwPlayer(player);
+
+    	if (ewply != null && ewply.getTeam() != null && ewply.getTeam().getType() == type)
         {
             return type.color() + "§l[" + TeamUtils.translateTeamType(type, player, true, true) + type.color() + "§l]";
         }
@@ -52,12 +55,19 @@ public class TeamUtils implements Listener
             return "§cnull";
         }
 
-        if (allowBold && PlayerUtils.getEwPlayer(player) != null && PlayerUtils.getEwPlayer(player).getTeam() != null && PlayerUtils.getEwPlayer(player).getTeam().getType() == type)
+    	EwPlayer ewply = PlayerUtils.getEwPlayer(player);
+
+        if (allowBold && ewply != null && ewply.getTeam() != null && ewply.getTeam().getType() == type)
         {
             return TranslationUtils.getMessage("team." + type.id() + (shortv ? ".short" : ""), player, "§l");
         }
 
         return TranslationUtils.getMessage("team." + type.id() + (shortv ? ".short" : ""), player);
+    }
+
+    public static String colorizePlayerName(EwPlayer ewpl)
+    {
+        return ewpl.getTeam().getType().color() + ewpl.getPlayer().getName();
     }
 
     public static Team getTeamByEggLocation(Arena arena, Location location)

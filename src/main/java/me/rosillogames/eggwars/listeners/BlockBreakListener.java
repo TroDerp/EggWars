@@ -12,6 +12,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.util.Vector;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Generator;
@@ -33,9 +34,10 @@ public class BlockBreakListener implements Listener
             return;
         }
 
+        Location location = eventIn.getBlock().getLocation();
         ArenaSign ewsign;
 
-        if ((ewsign = LobbySigns.getSignByLocation(eventIn.getBlock().getLocation(), true)) != null)
+        if ((ewsign = LobbySigns.getSignByLocation(location, true)) != null)
         {
             if (!eventIn.getPlayer().hasPermission("eggwars.sign.break"))
             {
@@ -56,7 +58,7 @@ public class BlockBreakListener implements Listener
             return;
         }
 
-        Arena arena = EggWars.getArenaManager().getArenaByWorld(eventIn.getBlock().getLocation().getWorld());
+        Arena arena = EggWars.getArenaManager().getArenaByWorld(location.getWorld());
 
         if (arena == null)
         {
@@ -64,9 +66,9 @@ public class BlockBreakListener implements Listener
         }
 
         //remember that 'return' doesn't work outside forEach
-        for (Map.Entry<Location, Generator> entry : arena.getGenerators().entrySet())
+        for (Map.Entry<Vector, Generator> entry : arena.getGenerators().entrySet())
         {
-            if (entry.getKey().equals(eventIn.getBlock().getLocation()))
+            if (entry.getKey().equals(location.toVector()))
             {
                 //Block break has to be cancelled to skip further issues
                 if (arena.getStatus() != ArenaStatus.SETTING)
@@ -83,6 +85,7 @@ public class BlockBreakListener implements Listener
 
                 arena.removeGenerator(entry.getKey());
                 TranslationUtils.sendMessage("setup.generator.removed", eventIn.getPlayer());
+                return;
             }
         }
 

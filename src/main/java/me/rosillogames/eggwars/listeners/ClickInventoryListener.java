@@ -11,6 +11,7 @@ import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Generator;
@@ -53,6 +54,22 @@ public class ClickInventoryListener implements Listener
                 clickEvent.setCancelled(true);
                 return;
             }
+        }
+    }
+
+    @EventHandler
+    public void cancelIllegalItemSwap(PlayerSwapHandItemsEvent event)
+    {
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
+
+        if (ewplayer.isInArena() && !ewplayer.getArena().getStatus().equals(ArenaStatus.IN_GAME))
+        {
+            event.setCancelled(true);
+            return;
+        }
+        else
+        {
+            return;
         }
     }
 

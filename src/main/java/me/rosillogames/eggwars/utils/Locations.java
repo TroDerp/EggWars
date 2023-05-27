@@ -7,12 +7,19 @@ import com.google.gson.JsonObject;
 
 public class Locations
 {
-    public static Location toBlock(Location l1)
+    public static Location toBlock(Location l1, boolean removeDir)
     {
         Location l2 = l1.clone();
         l2.setX(l1.getBlockX());
         l2.setY(l1.getBlockY());
         l2.setZ(l1.getBlockZ());
+
+        if (removeDir)
+        {
+        	l2.setYaw(0.0F);
+        	l2.setPitch(0.0F);
+        }
+
         return l2;
     }
 

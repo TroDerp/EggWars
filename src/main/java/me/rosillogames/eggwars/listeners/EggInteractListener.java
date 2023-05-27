@@ -159,7 +159,7 @@ public class EggInteractListener implements Listener
 
         for (EwPlayer player : team.getArena().getPlayers())
         {
-            TranslationUtils.sendMessage("gameplay.ingame.team_egg_destroyed", player.getPlayer(), TeamUtils.translateTeamType(team.getType(), player.getPlayer(), false), ewplayer.getTeam().getType().colorizeName(ewplayer.getPlayer().getName()));
+            TranslationUtils.sendMessage("gameplay.ingame.team_egg_destroyed", player.getPlayer(), TeamUtils.translateTeamType(team.getType(), player.getPlayer(), false), TeamUtils.colorizePlayerName(ewplayer));
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 100F, 1.0F);
 
             if (player.getTeam() == team)

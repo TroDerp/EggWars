@@ -83,7 +83,7 @@ public class SignChangeListener implements Listener
             }
 
             Generator generator = new Generator(signchangeevent.getBlock().getLocation(), Integer.parseInt(signchangeevent.getLine(2)), signchangeevent.getLine(1).toLowerCase(), arena1);
-            arena1.putGenerator(signchangeevent.getBlock().getLocation(), generator);
+            arena1.putGenerator(generator);
             TranslationUtils.sendMessage("setup.generator.added", signchangeevent.getPlayer());
             generator.updateSign();
         }

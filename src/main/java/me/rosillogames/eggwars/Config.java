@@ -28,6 +28,7 @@ public class Config
     public boolean skipSoloLobby = true;
     public boolean balanceTeams = false;
     public boolean useBelowBlock = true;
+    public boolean enableAPSS = true;
     public boolean moveTNTOnIgnite = true;
     public boolean keepInv = false;
     public boolean publicSpectChat = true;
@@ -114,6 +115,7 @@ public class Config
 
         fileConf.addDefault("generator.fast_items", false);
         fileConf.addDefault("generator.use_below_block", true);
+        fileConf.addDefault("generator.enable_apss", true);
 
         fileConf.addDefault("spectator.can_stay_at_game", true);
         fileConf.addDefault("spectator.can_enter_ingame", false);
@@ -170,6 +172,7 @@ public class Config
         this.alwaysTpToLobby = fileConf.getBoolean("plugin.always_teleport_to_lobby");
         this.moveTNTOnIgnite = fileConf.getBoolean("gameplay.move_tnt_on_ignition");
         this.useBelowBlock = fileConf.getBoolean("generator.use_below_block");
+        this.enableAPSS = fileConf.getBoolean("generator.enable_apss");
         this.vault = fileConf.getBoolean("plugin.vault") && DependencyUtils.vault();
         this.balanceTeams = fileConf.getBoolean("gameplay.balance_teams");
         this.skipSoloLobby = fileConf.getBoolean("gameplay.skip_solo_lobby");
