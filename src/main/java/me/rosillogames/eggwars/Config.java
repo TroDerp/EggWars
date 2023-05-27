@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import me.rosillogames.eggwars.dependencies.DependencyUtils;
+import me.rosillogames.eggwars.enums.Versions;
 import me.rosillogames.eggwars.loaders.ArenaLoader;
 import me.rosillogames.eggwars.loaders.GeneratorLoader;
 import me.rosillogames.eggwars.loaders.KitLoader;
@@ -28,6 +29,7 @@ public class Config
     public boolean skipSoloLobby = true;
     public boolean balanceTeams = false;
     public boolean useBelowBlock = true;
+  //Version check for APSS is for an issue with item.setThrower(UUID) not being in early 1.16
     public boolean enableAPSS = true;
     public boolean moveTNTOnIgnite = true;
     public boolean keepInv = false;
@@ -172,7 +174,7 @@ public class Config
         this.alwaysTpToLobby = fileConf.getBoolean("plugin.always_teleport_to_lobby");
         this.moveTNTOnIgnite = fileConf.getBoolean("gameplay.move_tnt_on_ignition");
         this.useBelowBlock = fileConf.getBoolean("generator.use_below_block");
-        this.enableAPSS = fileConf.getBoolean("generator.enable_apss");
+        this.enableAPSS = fileConf.getBoolean("generator.enable_apss") && EggWars.serverVersion.ordinal() >= Versions.V_1_16_R3.ordinal();
         this.vault = fileConf.getBoolean("plugin.vault") && DependencyUtils.vault();
         this.balanceTeams = fileConf.getBoolean("gameplay.balance_teams");
         this.skipSoloLobby = fileConf.getBoolean("gameplay.skip_solo_lobby");

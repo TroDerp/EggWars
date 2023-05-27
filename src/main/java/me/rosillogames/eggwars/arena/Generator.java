@@ -15,8 +15,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
@@ -248,12 +246,13 @@ public class Generator
             return;
         }
 
-        ItemStack itemstack = stack.clone();
-        ItemMeta meta = itemstack.getItemMeta();
-        meta.getPersistentDataContainer().set(EggWars.apssId, PersistentDataType.STRING, this.apss.uuid.toString());
-        itemstack.setItemMeta(meta);
+        final Item entityitem = this.block.getWorld().dropItem(this.getBlock().add(0.5, 0.2, 0.5), stack);
 
-        final Item entityitem = this.block.getWorld().dropItem(this.getBlock().add(0.5, 0.2, 0.5), itemstack);
+        if (EggWars.config.enableAPSS)
+        {
+            entityitem.setThrower(this.apss.uuid);
+        }
+
         entityitem.setVelocity(new Vector(0, 0, 0));
         entityitem.setPickupDelay(0);
 

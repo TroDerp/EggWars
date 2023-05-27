@@ -87,7 +87,6 @@ public class EggWars extends JavaPlugin
     public static Set<ArenaSign> signs;
     public static Config config = new Config();
     public static Versions serverVersion;
-    public static NamespacedKey apssId;
     public static NamespacedKey genType;
     public static NamespacedKey genLevel;
     private ArenaLoader arenaLoader;
@@ -189,7 +188,6 @@ public class EggWars extends JavaPlugin
 
     private void loadNamespaces()
     {
-        apssId = new NamespacedKey(this, "APSS_ID");
         genType = new NamespacedKey(this, "GEN_TYPE");
         genLevel = new NamespacedKey(this, "GEN_LEVEL");
     }

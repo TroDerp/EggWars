@@ -33,7 +33,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import me.rosillogames.eggwars.EggWars;
@@ -193,7 +192,6 @@ public class Arena
             {
                 for (String key : cages.getKeys(false))
                 {
-                    //lambda not necessary: loadIfPresent(fileconf, teamtypeid + cagekey + key, (loc) -> team.addCage(loc));
                     team.addCage(Locations.fromString(fileconf.getString(teamtypeid + cagekey + key)));
                 }
             }

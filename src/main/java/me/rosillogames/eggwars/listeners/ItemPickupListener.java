@@ -1,13 +1,10 @@
 package me.rosillogames.eggwars.listeners;
 
-import java.util.UUID;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Generator;
 import me.rosillogames.eggwars.player.EwPlayer;
@@ -31,33 +28,28 @@ public class ItemPickupListener implements Listener
             return;
         }
 
-        ItemStack stack = pickUpEvent.getItem().getItemStack();
-        ItemMeta meta = stack.getItemMeta();
+        Item item = pickUpEvent.getItem();
 
-        if (EggWars.config.enableAPSS && meta.getPersistentDataContainer().has(EggWars.apssId, PersistentDataType.STRING))
+        if (EggWars.config.enableAPSS && item.getThrower() != null)
         {
             for (Generator gen : ewplayer.getArena().getGenerators().values())
             {
             	Generator.APSS apss = gen.getAPSS();
 
-            	if (apss.uuid.equals(UUID.fromString(meta.getPersistentDataContainer().get(EggWars.apssId, PersistentDataType.STRING))))
+            	if (apss.uuid.equals(item.getThrower()))
             	{
-            		if (apss.candidates.size() > 1 && apss.candidates.contains(ewplayer))
+            		if (apss.candidates.size() > 1 && apss.candidates.contains(ewplayer) && apss.turn != apss.candidates.indexOf(ewplayer))
             		{
-            			if (apss.turn != apss.candidates.indexOf(ewplayer))
-            			{
-            				pickUpEvent.setCancelled(true);
-            				return;
-            			}
+        				pickUpEvent.setCancelled(true);
+        				return;
             		}
 
-            		stack = new ItemStack(stack.getType(), stack.getAmount());
             		break;
             	}
             }
         }
 
-        pickUpEvent.getItem().setItemStack(ItemUtils.tryColorizeByTeam(ewplayer.getTeam().getType(), stack));
+        pickUpEvent.getItem().setItemStack(ItemUtils.tryColorizeByTeam(ewplayer.getTeam().getType(), item.getItemStack()));
         return;
     }
 }
