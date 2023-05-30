@@ -2,7 +2,6 @@ package me.rosillogames.eggwars.events;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-
 import me.rosillogames.eggwars.player.EwPlayer;
 
 public class EwPlayerChangeLangEvent extends Event

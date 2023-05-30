@@ -16,19 +16,20 @@ public enum ReloadType
         EggWars.getGeneratorManager().loadGenerators();
         EggWars.getTradingManager().loadTrades();
     }),
-	CONFIG("config", sender ->
-	{
-	    EggWars.config.loadConfig();
-	}),
+    CONFIG("config", sender ->
+    {
+        EggWars.config.loadConfig();
+    }),
     LANGUAGES("languages", sender ->
     {
         EggWars.languageManager().loadLangs();
     }),
-	KITS("kits", sender ->
-	{
-	    EggWars.getKitManager().loadKits();
-	}),
-    GENERATORS("generators", sender -> {
+    KITS("kits", sender ->
+    {
+        EggWars.getKitManager().loadKits();
+    }),
+    GENERATORS("generators", sender ->
+    {
         EggWars.getTokenManager().loadTokens();
         EggWars.getGeneratorManager().loadGenerators();
     }),
@@ -37,6 +38,7 @@ public enum ReloadType
         EggWars.getTokenManager().loadTokens();
         EggWars.getTradingManager().loadTrades();
     });
+
     private final String nameKey;
     private final Consumer<CommandSender> onReload;
 

@@ -27,7 +27,6 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.Encoder;
 import com.mojang.serialization.JsonOps;
-
 import me.rosillogames.eggwars.EggWars;
 
 public class Reflections_1_18 implements Reflections
@@ -129,8 +128,8 @@ public class Reflections_1_18 implements Reflections
         {
             Class cMojangsonParser = this.getNMSClass("nbt.MojangsonParser");
             Object blockNbt = cMojangsonParser.getMethod("a", String.class).invoke(null, string);
-            Class cNBTCompound =  this.getNMSClass("nbt.NBTTagCompound");
-            Class cGameProfileSerializer =  this.getNMSClass("nbt.GameProfileSerializer");
+            Class cNBTCompound = this.getNMSClass("nbt.NBTTagCompound");
+            Class cGameProfileSerializer = this.getNMSClass("nbt.GameProfileSerializer");
             Object blockData = cGameProfileSerializer.getMethod("c", cNBTCompound).invoke(null, blockNbt);
             Class cIBlockData = this.getNMSClass("world.level.block.state.IBlockData");
             Class cCraftBlockData = this.getOBCClass("block.data.CraftBlockData");
@@ -233,7 +232,7 @@ public class Reflections_1_18 implements Reflections
         {
             Class cBlockPosition = this.getNMSClass("core.BlockPosition");
             Object world = loc.getWorld().getClass().getMethod("getHandle").invoke(loc.getWorld());
-            Object blockPos = cBlockPosition.getConstructor(double.class, double.class,double.class).newInstance(loc.getX(), loc.getY(), loc.getZ());
+            Object blockPos = cBlockPosition.getConstructor(double.class, double.class, double.class).newInstance(loc.getX(), loc.getY(), loc.getZ());
             Object tileEntity = world.getClass().getMethod("getTileEntity", cBlockPosition).invoke(world, blockPos);
 
             if (tileEntity != null)

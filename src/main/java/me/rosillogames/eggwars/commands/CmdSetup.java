@@ -8,7 +8,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
-
 import me.rosillogames.eggwars.commands.setup.AddTeam;
 import me.rosillogames.eggwars.commands.setup.CloneArena;
 import me.rosillogames.eggwars.commands.setup.CreateArena;
@@ -76,7 +75,7 @@ public class CmdSetup implements TabExecutor
     {
         if (!senderIn.hasPermission("eggwars.setup"))
         {
-        	TranslationUtils.sendMessage("commands.error.no_permission", senderIn);
+            TranslationUtils.sendMessage("commands.error.no_permission", senderIn);
             return true;
         }
 

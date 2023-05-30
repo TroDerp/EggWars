@@ -39,7 +39,8 @@ public class ItemUtils
             {
                 i += itemstack.getAmount();
             }
-        } while(true);
+        }
+        while (true);
 
         return i;
     }
@@ -63,7 +64,7 @@ public class ItemUtils
             {
                 boolean flag = true;
 
-                while (i > 0 && flag) 
+                while (i > 0 && flag)
                 {
                     i--;
 
@@ -80,7 +81,8 @@ public class ItemUtils
                     }
                 }
             }
-        } while(true);
+        }
+        while (true);
 
         player.updateInventory();
     }
@@ -92,17 +94,17 @@ public class ItemUtils
 
     public static ItemStack[] copyContents(ItemStack[] contents)
     {
-    	ItemStack[] copy = new ItemStack[contents.length];
+        ItemStack[] copy = new ItemStack[contents.length];
 
-    	for (int idx = 0; idx < contents.length; ++idx)
-    	{
-    		ItemStack stack = contents[idx];
+        for (int idx = 0; idx < contents.length; ++idx)
+        {
+            ItemStack stack = contents[idx];
 
-    		if (stack != null)
-    		{
-        		copy[idx] = stack.clone();
-    		}
-    	}
+            if (stack != null)
+            {
+                copy[idx] = stack.clone();
+            }
+        }
 
         return copy;
     }
@@ -127,7 +129,7 @@ public class ItemUtils
         }
         catch (Exception ex)
         {
-        	EggWars.instance.getLogger().log(Level.WARNING, "Error parsing json item \"" + s + "\", returning " + material, ex);
+            EggWars.instance.getLogger().log(Level.WARNING, "Error parsing json item \"" + s + "\", returning " + material, ex);
             return new ItemStack(material);
         }
 

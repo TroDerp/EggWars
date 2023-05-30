@@ -39,35 +39,37 @@ public class LobbySigns
 
         try
         {
-        	Sign sign = (Sign)ewsign.getLocation().getBlock().getState();
+            Sign sign = (Sign)ewsign.getLocation().getBlock().getState();
 
-        	if (!isValidWallSign(sign))
-        	{
-        		return;
-        	}
+            if (!isValidWallSign(sign))
+            {
+                return;
+            }
 
-        	Block block = ewsign.getSupport().getBlock();
+            Block block = ewsign.getSupport().getBlock();
 
-        	switch (ewsign.getArena().getStatus())
-        	{
-        	case LOBBY:
-        		block.setBlockData(lobby);
-        		break;
-        	case STARTING:
-        		block.setBlockData(starting);
-        		break;
-        	case IN_GAME:
-        	case STARTING_GAME:
-        		block.setBlockData(ingame);
-        		break;
-        	case FINISHING:
-        		block.setBlockData(finished);
-        		break;
-        	case SETTING:
-        		block.setBlockData(setting);
-        	}
+            switch (ewsign.getArena().getStatus())
+            {
+                case LOBBY:
+                    block.setBlockData(lobby);
+                    break;
+                case STARTING:
+                    block.setBlockData(starting);
+                    break;
+                case IN_GAME:
+                case STARTING_GAME:
+                    block.setBlockData(ingame);
+                    break;
+                case FINISHING:
+                    block.setBlockData(finished);
+                    break;
+                case SETTING:
+                    block.setBlockData(setting);
+            }
         }
-        catch (Exception exception) { }
+        catch (Exception exception)
+        {
+        }
     }
 
     public static ArenaSign getSignByLocation(Location location, boolean allowSupport)

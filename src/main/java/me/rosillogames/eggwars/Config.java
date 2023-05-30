@@ -29,7 +29,7 @@ public class Config
     public boolean skipSoloLobby = true;
     public boolean balanceTeams = false;
     public boolean useBelowBlock = true;
-  //Version check for APSS is for an issue with item.setThrower(UUID) not being in early 1.16
+    //Version check for APSS is for an issue with item.setThrower(UUID) not being in early 1.16
     public boolean enableAPSS = true;
     public boolean moveTNTOnIgnite = true;
     public boolean keepInv = false;

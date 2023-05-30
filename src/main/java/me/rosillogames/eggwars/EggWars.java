@@ -456,7 +456,7 @@ public class EggWars extends JavaPlugin
         EggWars.signsConfig.getConfig().set("Signs", list);
         EggWars.signsConfig.saveConfig();
     }
-    
+
     public Gson getGson()
     {
         return this.gson;
@@ -566,7 +566,9 @@ public class EggWars extends JavaPlugin
             chkV = (new BufferedReader(new InputStreamReader(connection.getInputStream()))).readLine();
             connection.disconnect();
         }
-        catch (Exception ex) {}
+        catch (Exception ex)
+        {
+        }
 
         if (chkV != null && !chkV.equals(EGGWARS_VERSION) && !EGGWARS_VERSION.contains("dev") && !chkV.contains("dev"))
         {

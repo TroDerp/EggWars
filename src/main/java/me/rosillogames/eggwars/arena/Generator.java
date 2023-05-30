@@ -134,7 +134,7 @@ public class Generator
         final int tickRate = this.cachedType.tickRate(this.level);
         this.tickTask = (new BukkitRunnable()
         {
-        	public void run()
+            public void run()
             {
                 if (!Generator.this.cachedType.requiresNearbyPlayer() || PlayerUtils.getNearbyPlayerAmount(Generator.this.block, 3.0, Generator.this.arena) >= 1)
                 {
@@ -344,7 +344,7 @@ public class Generator
 
         for (EwPlayer ewplayer1 : ewplayer.getTeam().getPlayers())
         {
-        	Player teamPlayer = ewplayer1.getPlayer();
+            Player teamPlayer = ewplayer1.getPlayer();
             TranslationUtils.sendMessage("generator.team_upgraded", teamPlayer, TeamUtils.colorizePlayerName(ewplayer), this.cachedType.droppedToken().getFormattedName(teamPlayer), this.level + 1);
         }
 
@@ -388,8 +388,8 @@ public class Generator
             {
                 this.level = Math.min(this.level, newType.getMaxLevel());
 
-              //Checks if there was a tick task active before (by checking if it's not null, because it is removed only on arena reset)
-              //to know if it has to start generating again
+                //Checks if there was a tick task active before (by checking if it's not null, because it is removed only on arena reset)
+                //to know if it has to start generating again
                 if (this.tickTask != null)
                 {
                     this.start();
@@ -418,7 +418,7 @@ public class Generator
     @Override
     public boolean equals(Object obj)
     {
-    	if (obj == null)
+        if (obj == null)
         {
             return false;
         }
@@ -468,31 +468,31 @@ public class Generator
         public List<EwPlayer> candidates = Lists.newArrayList();
         public int turn = 0;
 
-//keep update() and nextTurn() separated because update() is used more often to set Turn to 0 when some player candidates in one Gen leave, for the pickup not be disabled for remaining players in slow generators
+        //keep update() and nextTurn() separated because update() is used more often to set Turn to 0 when some player candidates in one Gen leave, for the pickup not be disabled for remaining players in slow generators
         public void update()
         {
-        	this.candidates.clear();
+            this.candidates.clear();
 
-        	if (!EggWars.config.enableAPSS)
-        	{
-        		return;
-        	}
+            if (!EggWars.config.enableAPSS)
+            {
+                return;
+            }
 
             BoundingBox itembox = new BoundingBox(Generator.this.block.getX() - 0.25, Generator.this.block.getY(), Generator.this.block.getZ() - 0.25, Generator.this.block.getX() + 0.25, Generator.this.block.getY() + 0.45, Generator.this.block.getZ() + 0.25);
 
             for (EwPlayer ewplayer : Generator.this.arena.getAlivePlayers())
             {
-            	Player player = ewplayer.getPlayer();
+                Player player = ewplayer.getPlayer();
 
-            	if (player.getBoundingBox().clone().expand(1.0, 0.5, 1.0).overlaps(itembox))
-            	{
-                	this.candidates.add(ewplayer);
-            	}
+                if (player.getBoundingBox().clone().expand(1.0, 0.5, 1.0).overlaps(itembox))
+                {
+                    this.candidates.add(ewplayer);
+                }
             }
 
             if (this.turn >= this.candidates.size())
             {
-            	this.turn = 0;
+                this.turn = 0;
             }
         }
 
@@ -500,11 +500,11 @@ public class Generator
         {
             if (this.turn < (this.candidates.size() - 1))
             {
-            	this.turn++;
+                this.turn++;
             }
             else
             {
-            	this.turn = 0;
+                this.turn = 0;
             }
         }
     }

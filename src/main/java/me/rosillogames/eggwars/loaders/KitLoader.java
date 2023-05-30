@@ -96,7 +96,9 @@ public class KitLoader
                         {
                             slot = EquipmentSlot.valueOf(GsonHelper.getAsString(itemjson, "custom_slot").toUpperCase());
                         }
-                        catch (Exception ex) { }
+                        catch (Exception ex)
+                        {
+                        }
 
                         items.add(new Pair(slot, item));
                     }
@@ -107,13 +109,13 @@ public class KitLoader
                 }
                 catch (Exception ex)
                 {
-                	EggWars.instance.getLogger().log(Level.WARNING, "Error loading kit \"" + key + "\":", ex);
+                    EggWars.instance.getLogger().log(Level.WARNING, "Error loading kit \"" + key + "\":", ex);
                 }
             }
         }
         catch (Exception ex1)
         {
-        	EggWars.instance.getLogger().log(Level.WARNING, "Error loading kits: ", ex1);
+            EggWars.instance.getLogger().log(Level.WARNING, "Error loading kits: ", ex1);
         }
 
         this.kitsMenu.loadGui();

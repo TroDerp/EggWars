@@ -248,7 +248,7 @@ public class Arena
             }
             catch (Exception ex)
             {
-            	EggWars.instance.getLogger().log(Level.WARNING, "Error loading specific trades for arena \"" + this.getName() + "\" from type \": ", ex);
+                EggWars.instance.getLogger().log(Level.WARNING, "Error loading specific trades for arena \"" + this.getName() + "\" from type \": ", ex);
             }
         }
 
@@ -314,7 +314,7 @@ public class Arena
 
     public void addPlacedBlock(Location location)
     {
-    	this.placedBlocks.add(location);
+        this.placedBlocks.add(location);
     }
 
     public void addBrokenBlock(BlockState state)
@@ -375,7 +375,7 @@ public class Arena
     @Nullable
     public Generator removeGenerator(Vector loc)
     {
-    	return this.generators.remove(loc);
+        return this.generators.remove(loc);
     }
 
     /**
@@ -385,7 +385,7 @@ public class Arena
     @Nullable
     public Generator putGenerator(Generator gen)
     {
-    	return this.generators.put(gen.getBlock().toVector(), gen);
+        return this.generators.put(gen.getBlock().toVector(), gen);
     }
 
     public String getName()
@@ -400,7 +400,7 @@ public class Arena
 
     public void setStatus(ArenaStatus status)
     {
-    	this.status = status;
+        this.status = status;
     }
 
     public World getWorld()
@@ -410,12 +410,12 @@ public class Arena
 
     public void setWorld(World worldIn)
     {
-    	this.world = worldIn;
+        this.world = worldIn;
 
-    	if (this.lobby != null)
-    	{
-    	    this.lobby.setWorld(worldIn);
-    	}
+        if (this.lobby != null)
+        {
+            this.lobby.setWorld(worldIn);
+        }
 
         if (this.center != null)
         {
@@ -433,7 +433,7 @@ public class Arena
 
     public void setMaxTeamPlayers(int i)
     {
-    	this.maxTeamPlayers = i;
+        this.maxTeamPlayers = i;
     }
 
     public int getMaxPlayers()
@@ -453,7 +453,7 @@ public class Arena
 
     public void setFullCountdown(int i)
     {
-    	this.fullCountdown = i;
+        this.fullCountdown = i;
     }
 
     public Bounds getBounds()
@@ -488,7 +488,9 @@ public class Arena
                 return false;
             }
         }
-        catch (LinkageError err) { }
+        catch (LinkageError err)
+        {
+        }
 
         ewplayer.setJoining(true);
         this.players.add(ewplayer);
@@ -523,7 +525,7 @@ public class Arena
 
         if (!silently && this.status.isLobby())
         {
-        	this.sendBroadcast("gameplay.lobby.player_joined", player.getPlayer().getDisplayName(), Integer.valueOf(this.players.size()), Integer.valueOf(this.getTeams().size() * this.maxTeamPlayers));
+            this.sendBroadcast("gameplay.lobby.player_joined", player.getPlayer().getDisplayName(), Integer.valueOf(this.players.size()), Integer.valueOf(this.getTeams().size() * this.maxTeamPlayers));
         }
 
         if (toSpectate)
@@ -777,48 +779,48 @@ public class Arena
         }
 
         this.forced = false;
-    	this.itemsVotes.clear();
+        this.itemsVotes.clear();
         this.healthVotes.clear();
         this.players.clear();
         this.getTeams().values().forEach(team -> team.reset());
         this.getGenerators().values().forEach(generator -> generator.reset());
-    	this.getWorld().setGameRule(GameRule.NATURAL_REGENERATION, Boolean.valueOf(true));
+        this.getWorld().setGameRule(GameRule.NATURAL_REGENERATION, Boolean.valueOf(true));
 
-    	//If it is entering setup it will regen the world, and if it is exiting it will not.
-    	//In other words, when the game was not in setup mode, if it is entering setup it will regen the world, if not then the config option must be enabled
-    	//The status check serves to fix an internal issue when an incomplete arena is loaded, be able to set enterSetup=true to correctly set the world to edit mode without regenerating the world again on server startup
-    	if (this.status != ArenaStatus.SETTING && (enterSetup || EggWars.instance.getConfig().getBoolean("plugin.regenerate_worlds")))
-    	{
+        //If it is entering setup it will regen the world, and if it is exiting it will not.
+        //In other words, when the game was not in setup mode, if it is entering setup it will regen the world, if not then the config option must be enabled
+        //The status check serves to fix an internal issue when an incomplete arena is loaded, be able to set enterSetup=true to correctly set the world to edit mode without regenerating the world again on server startup
+        if (this.status != ArenaStatus.SETTING && (enterSetup || EggWars.instance.getConfig().getBoolean("plugin.regenerate_worlds")))
+        {
             this.placedBlocks.clear();
             this.brokenBlocks.clear();
             this.world.removePluginChunkTickets(EggWars.instance);
             this.setWorld(WorldController.regenArena(this));
-    	}
-    	else
-    	{
+        }
+        else
+        {
             for (Location loc : this.placedBlocks)
-    	    {
-    	        loc.getBlock().setType(Material.AIR);
-    	    }
-
-    	    for (BlockState state : this.brokenBlocks)
             {
-    	        //Get block location and then get block from that location in order to get the proper block
+                loc.getBlock().setType(Material.AIR);
+            }
+
+            for (BlockState state : this.brokenBlocks)
+            {
+                //Get block location and then get block from that location in order to get the proper block
                 state.getBlock().getLocation().getBlock().setType(state.getType());
                 state.getBlock().getLocation().getBlock().setBlockData(state.getBlockData());
             }
 
-    	    this.brokenBlocks.clear();
-    	    this.placedBlocks.clear();
-    	    this.world.removePluginChunkTickets(EggWars.instance);
-    	}
+            this.brokenBlocks.clear();
+            this.placedBlocks.clear();
+            this.world.removePluginChunkTickets(EggWars.instance);
+        }
 
-    	if (!enterSetup)
-    	{
+        if (!enterSetup)
+        {
             this.getWorld().setGameRule(GameRule.RANDOM_TICK_SPEED, Integer.valueOf(0));
-    	}
+        }
 
-    	this.itemType = ItemType.NORMAL;
+        this.itemType = ItemType.NORMAL;
         this.healthType = HealthType.NORMAL;
         this.status = enterSetup ? ArenaStatus.SETTING : ArenaStatus.LOBBY;
         this.updateInvs();
@@ -1124,7 +1126,7 @@ public class Arena
 
         this.teamInv.setItem(this.teamInv.getSize() - 1, TranslatableItem.translatableName(new ItemStack(Material.NETHER_STAR), "teams.random.item_name"));
         InventoryController.updateInventories((predicateplayer) -> predicateplayer.getArena() == this, this.teamInv, EwInvType.TEAM_SELECTION);
- 
+
         if (this.voteInv == null)
         {
             this.voteInv = new TranslatableInventory(27, "voting.menu_title");
@@ -1288,34 +1290,34 @@ public class Arena
 
     public boolean playerVoteItem(ItemType itemtype, EwPlayer ewplayer)
     {
-    	if (this.itemsVotes.containsKey(ewplayer) && this.itemsVotes.get(ewplayer) == itemtype)
-    	{
-    		return false;
-    	}
-    	else if (this.status == ArenaStatus.LOBBY || this.status == ArenaStatus.STARTING || this.status == ArenaStatus.STARTING_GAME)
-    	{
-        	this.itemsVotes.put(ewplayer, itemtype);
-        	return true;
-    	}
+        if (this.itemsVotes.containsKey(ewplayer) && this.itemsVotes.get(ewplayer) == itemtype)
+        {
+            return false;
+        }
+        else if (this.status == ArenaStatus.LOBBY || this.status == ArenaStatus.STARTING || this.status == ArenaStatus.STARTING_GAME)
+        {
+            this.itemsVotes.put(ewplayer, itemtype);
+            return true;
+        }
 
-		return false;
+        return false;
     }
 
     public int getVotesForItem(ItemType itemtype)
     {
-    	int[] aint0 = new int[ItemType.values().length];
+        int[] aint0 = new int[ItemType.values().length];
 
-    	for (EwPlayer ewplayer : this.players)
-    	{
-    		ItemType itemtype1 = this.itemsVotes.get(ewplayer);
+        for (EwPlayer ewplayer : this.players)
+        {
+            ItemType itemtype1 = this.itemsVotes.get(ewplayer);
 
-    		if (itemtype1 != null)
-    		{
-    			aint0[itemtype1.getNumericalId()] += 1;
-    		}
-    	}
+            if (itemtype1 != null)
+            {
+                aint0[itemtype1.getNumericalId()] += 1;
+            }
+        }
 
-    	return aint0[itemtype.getNumericalId()];
+        return aint0[itemtype.getNumericalId()];
     }
 
     public boolean playerVoteHealth(HealthType healthtype, EwPlayer ewplayer)
@@ -1392,7 +1394,7 @@ public class Arena
         {
             public void run()
             {
-              //broadcast forcestart must happen after command success
+                //broadcast forcestart must happen after command success
                 Arena.this.sendBroadcast("gameplay.lobby.force_started");
                 Lobby.endStartingPhase(Arena.this);
                 Arena.this.forced = Arena.this.getPlayers().size() == 1 || Arena.this.getAliveTeams().size() == 1;

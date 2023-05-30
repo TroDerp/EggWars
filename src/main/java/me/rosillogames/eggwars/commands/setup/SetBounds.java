@@ -2,7 +2,6 @@ package me.rosillogames.eggwars.commands.setup;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

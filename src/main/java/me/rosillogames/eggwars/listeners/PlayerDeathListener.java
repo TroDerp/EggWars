@@ -49,8 +49,8 @@ public class PlayerDeathListener implements Listener
                 killerPlayer.getIngameStats().addStat(StatType.ELIMINATIONS, 1);
             }
 
-            diedPlayer.getArena().sendBroadcast("gameplay.death."+ cause + ".player", TeamUtils.colorizePlayerName(diedPlayer), TeamUtils.colorizePlayerName(killerPlayer));
-          //Reward points message for killer comes before elimination message
+            diedPlayer.getArena().sendBroadcast("gameplay.death." + cause + ".player", TeamUtils.colorizePlayerName(diedPlayer), TeamUtils.colorizePlayerName(killerPlayer));
+            //Reward points message for killer comes before elimination message
             PlayerUtils.addPoints(killerPlayer, fk ? EggWars.instance.getConfig().getInt("gameplay.points.on_final_kill") : EggWars.instance.getConfig().getInt("gameplay.points.on_kill"));
         }
         else
@@ -83,7 +83,7 @@ public class PlayerDeathListener implements Listener
             diedPlayer.setEliminated(true);
             Team diedTeam = diedPlayer.getTeam();
             diedTeam.removePlayer(diedPlayer);
-        	Arena arena = diedPlayer.getArena();
+            Arena arena = diedPlayer.getArena();
             arena.sendBroadcast("gameplay.ingame.player_eliminated", diedPlayer.getPlayer().getDisplayName());
             Scoreboards.setScore(arena);
 
@@ -168,21 +168,21 @@ public class PlayerDeathListener implements Listener
 
                         switch (countdown.getCountdown())
                         {
-                        case 1:
-                        case 2:
-                        case 3:
-                        case 4:
-                        case 5:
-                        case 10:
-                        case 15:
-                            ReflectionUtils.sendTitle(pl.getPlayer(), Integer.valueOf(0), Integer.valueOf(22), Integer.valueOf(0), TranslationUtils.getMessage("gameplay.ingame.you_died", pl.getPlayer()), TranslationUtils.getMessage("gameplay.ingame.you_died_respawning", pl.getPlayer(), TranslationUtils.translateTime(pl.getPlayer(), countdown.getCountdown(), false)));
-                            break;
-                        case 0:
-                            pl.getPlayer().setGameMode(GameMode.SURVIVAL);
-                            pl.getPlayer().teleport(Locations.toMiddle(pl.getTeam().getRespawn()));
-                            performRespawn(pl);
-                            this.cancel();
-                            return;
+                            case 1:
+                            case 2:
+                            case 3:
+                            case 4:
+                            case 5:
+                            case 10:
+                            case 15:
+                                ReflectionUtils.sendTitle(pl.getPlayer(), Integer.valueOf(0), Integer.valueOf(22), Integer.valueOf(0), TranslationUtils.getMessage("gameplay.ingame.you_died", pl.getPlayer()), TranslationUtils.getMessage("gameplay.ingame.you_died_respawning", pl.getPlayer(), TranslationUtils.translateTime(pl.getPlayer(), countdown.getCountdown(), false)));
+                                break;
+                            case 0:
+                                pl.getPlayer().setGameMode(GameMode.SURVIVAL);
+                                pl.getPlayer().teleport(Locations.toMiddle(pl.getTeam().getRespawn()));
+                                performRespawn(pl);
+                                this.cancel();
+                                return;
                         }
                     }
                 }).runTaskTimer(EggWars.instance, 20L, 20L);

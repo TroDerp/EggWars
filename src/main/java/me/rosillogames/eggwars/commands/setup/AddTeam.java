@@ -69,7 +69,7 @@ public class AddTeam extends CommandArg
 
             if (arena != null)
             {
-                for (TeamTypes teamtype : TeamTypes.values()) 
+                for (TeamTypes teamtype : TeamTypes.values())
                 {
                     if (!arena.getTeams().containsKey(teamtype))
                     {

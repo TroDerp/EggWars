@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.player.EwPlayer;
@@ -33,7 +32,7 @@ public class PlayerMoveListener implements Listener
             else if (ewplayer.getArena().getStatus().equals(ArenaStatus.IN_GAME) && ewplayer.getPlayer().getLocation().getY() < -65.0)
             {
                 //insta kill
-            	ReflectionUtils.killOutOfWorld(ewplayer.getPlayer());
+                ReflectionUtils.killOutOfWorld(ewplayer.getPlayer());
             }
 
             if (!ewplayer.getPlayer().getWorld().equals(ewplayer.getArena().getWorld()))

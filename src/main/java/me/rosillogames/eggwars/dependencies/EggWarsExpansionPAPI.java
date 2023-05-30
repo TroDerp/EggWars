@@ -127,7 +127,9 @@ public class EggWarsExpansionPAPI extends PlaceholderExpansion
                     }
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+            }
 
             return "";
         }

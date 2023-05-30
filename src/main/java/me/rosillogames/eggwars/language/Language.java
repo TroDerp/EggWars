@@ -21,7 +21,7 @@ public class Language
 
     public Language(String name, Language other)
     {
-    	this(name, ImmutableMap.copyOf(other.translations));
+        this(name, ImmutableMap.copyOf(other.translations));
     }
 
     private Language(String name, Map<String, StringProvider> strings)
@@ -30,10 +30,10 @@ public class Language
 
         for (StringProvider provider : strings.values())
         {
-        	if (provider instanceof StringProvider.Reference)
-        	{
-        		((StringProvider.Reference)provider).setLang(this);
-        	}
+            if (provider instanceof StringProvider.Reference)
+            {
+                ((StringProvider.Reference)provider).setLang(this);
+            }
         }
 
         this.translations = strings;
@@ -99,51 +99,51 @@ public class Language
 
     public static Language loadFromJsonFile(File file, String locale) throws IOException
     {
-    	FileInputStream fileinputstream = new FileInputStream(file);
+        FileInputStream fileinputstream = new FileInputStream(file);
         ImmutableMap.Builder<String, StringProvider> builder = ImmutableMap.<String, StringProvider>builder();
         JsonObject jsonobject = EggWars.instance.getGson().fromJson(new InputStreamReader(fileinputstream, StandardCharsets.UTF_8), JsonObject.class);
 
         for (Map.Entry<String, JsonElement> entry : jsonobject.entrySet())
         {
-        	String key = entry.getKey();
-        	JsonElement element = entry.getValue();
+            String key = entry.getKey();
+            JsonElement element = entry.getValue();
 
-        	if (GsonHelper.isStringValue(element))
-        	{
-        		builder.put(key, new StringProvider.Default(GsonHelper.convertToString(element, key)));
-        		continue;
-        	}
+            if (GsonHelper.isStringValue(element))
+            {
+                builder.put(key, new StringProvider.Default(GsonHelper.convertToString(element, key)));
+                continue;
+            }
 
-        	if (element.isJsonArray())
-        	{
-        		JsonArray array = element.getAsJsonArray();
-        		String[] strings = new String[array.size()];
+            if (element.isJsonArray())
+            {
+                JsonArray array = element.getAsJsonArray();
+                String[] strings = new String[array.size()];
 
-        		for (int i = 0; i < array.size(); i++)
+                for (int i = 0; i < array.size(); i++)
                 {
-        			if (GsonHelper.isStringValue(array.get(i)))
-        			{
-        				strings[i] = array.get(i).getAsString();
-        			}
+                    if (GsonHelper.isStringValue(array.get(i)))
+                    {
+                        strings[i] = array.get(i).getAsString();
+                    }
                 }
 
-        		if (strings.length > 0)
-        		{
-            		builder.put(key, new StringProvider.Multiple(strings));
-        			continue;
-        		}
-        	}
+                if (strings.length > 0)
+                {
+                    builder.put(key, new StringProvider.Multiple(strings));
+                    continue;
+                }
+            }
 
-        	if (element.isJsonObject())
-        	{
-        		JsonElement string = element.getAsJsonObject().get("reference");
+            if (element.isJsonObject())
+            {
+                JsonElement string = element.getAsJsonObject().get("reference");
 
-        		if (string != null && string.isJsonPrimitive() && string.getAsJsonPrimitive().isString())
-        		{
-            		builder.put(key, new StringProvider.Reference(string.getAsString()));
-            		continue;
-        		}
-        	}
+                if (string != null && string.isJsonPrimitive() && string.getAsJsonPrimitive().isString())
+                {
+                    builder.put(key, new StringProvider.Reference(string.getAsString()));
+                    continue;
+                }
+            }
 
             EggWars.instance.getLogger().log(Level.WARNING, "Language \"" + locale + "\" contains an unknown json element for translation key \"" + key + "\".");
         }

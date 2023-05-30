@@ -29,8 +29,8 @@ public class VaultEconomy
             return;
         }
 
-    	vaultEco.withdrawPlayer(offPlayer, vaultEco.getBalance(offPlayer));
-    	vaultEco.depositPlayer(offPlayer, (double)amount);
+        vaultEco.withdrawPlayer(offPlayer, vaultEco.getBalance(offPlayer));
+        vaultEco.depositPlayer(offPlayer, (double)amount);
     }
 
     public static int getBalance(OfflinePlayer offPlayer)

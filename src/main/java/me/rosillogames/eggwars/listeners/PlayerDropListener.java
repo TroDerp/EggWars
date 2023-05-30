@@ -3,7 +3,6 @@ package me.rosillogames.eggwars.listeners;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
-
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.PlayerUtils;

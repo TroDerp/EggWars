@@ -63,7 +63,7 @@ public class TeamList extends CommandArg
             Team team = (Team)arena.getTeams().get(teamType);
             TextComponent textcomponent = new TextComponent(TeamUtils.translateTeamType(team.getType(), player, false));
 
-          //Use middled respawn location for teleporting to team
+            //Use middled respawn location for teleporting to team
             if (team.getRespawn() != null)
             {
                 TextComponent tpcomponent = new TextComponent(TranslationUtils.getMessage("commands.teamList.teleport", player));

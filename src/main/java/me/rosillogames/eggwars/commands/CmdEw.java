@@ -72,10 +72,10 @@ public class CmdEw implements TabExecutor
 
             for (Entry<String, CommandArg> entry : this.mainArgs.entrySet())
             {
-            	String key = entry.getKey();
-            	CommandArg arg = entry.getValue();
+                String key = entry.getKey();
+                CommandArg arg = entry.getValue();
 
-            	if (key.toLowerCase().startsWith(args[0].toLowerCase()) && (arg.getPermission() == null || senderIn.hasPermission(arg.getPermission())))
+                if (key.toLowerCase().startsWith(args[0].toLowerCase()) && (arg.getPermission() == null || senderIn.hasPermission(arg.getPermission())))
                 {
                     list.add(key);
                 }

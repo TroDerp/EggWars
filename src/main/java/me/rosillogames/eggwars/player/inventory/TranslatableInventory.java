@@ -17,8 +17,8 @@ public class TranslatableInventory
 
     public TranslatableInventory(int sizeIn, String translatableTitleIn)
     {
-    	this.size = sizeIn;
-    	this.title = (player) -> TranslationUtils.getMessage(translatableTitleIn, player);
+        this.size = sizeIn;
+        this.title = (player) -> TranslationUtils.getMessage(translatableTitleIn, player);
     }
 
     public TranslatableInventory(int sizeIn, Translatable titleIn)

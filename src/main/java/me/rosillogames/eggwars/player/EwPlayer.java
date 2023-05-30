@@ -45,18 +45,18 @@ public class EwPlayer
 
     public EwPlayer(Player player1)
     {
-    	this.player = player1;
-    	this.arena = null;
+        this.player = player1;
+        this.arena = null;
         this.settingArena = null;
-    	this.team = null;
-    	this.eliminated = false;
-    	this.joining = false;
-    	this.outsideDat = null;
-    	this.inv = null;
-    	this.lastDamager = null;
-    	this.lastDamagerMillis = 0L;
-    	this.invincibleTime = null;
-    	this.timeUntilKit = null;
+        this.team = null;
+        this.eliminated = false;
+        this.joining = false;
+        this.outsideDat = null;
+        this.inv = null;
+        this.lastDamager = null;
+        this.lastDamagerMillis = 0L;
+        this.invincibleTime = null;
+        this.timeUntilKit = null;
         this.menu = new EwPlayerMenu(this);
 
         try
@@ -73,7 +73,7 @@ public class EwPlayer
 
     public void setArena(Arena arena)
     {
-    	this.arena = arena;
+        this.arena = arena;
     }
 
     @Nullable
@@ -112,7 +112,7 @@ public class EwPlayer
 
     public void setTeam(Team team)
     {
-    	this.team = team;
+        this.team = team;
     }
 
     public boolean isEliminated()
@@ -122,7 +122,7 @@ public class EwPlayer
 
     public void setEliminated(boolean flag)
     {
-    	this.eliminated = flag;
+        this.eliminated = flag;
     }
 
     public boolean isJoining()
@@ -132,7 +132,7 @@ public class EwPlayer
 
     public void setJoining(boolean flag)
     {
-    	this.joining = flag;
+        this.joining = flag;
     }
 
     public void storeGameData()
@@ -182,8 +182,8 @@ public class EwPlayer
     public void setInvincible()
     {
         this.invincibleTime = new Countdown(EggWars.config.invincibilityTime);
-        (new BukkitRunnable() {
-
+        (new BukkitRunnable()
+        {
             public void run()
             {
                 if (EwPlayer.this.invincibleTime == null)
@@ -222,8 +222,8 @@ public class EwPlayer
 
     public void setLastDamager(EwPlayer ewplayer)
     {
-    	this.lastDamager = ewplayer;
-    	this.lastDamagerMillis = System.currentTimeMillis();
+        this.lastDamager = ewplayer;
+        this.lastDamagerMillis = System.currentTimeMillis();
     }
 
     @Nullable
@@ -231,7 +231,7 @@ public class EwPlayer
     {
         if (System.currentTimeMillis() - this.lastDamagerMillis > 20000L)//20 seconds
         {
-        	this.lastDamager = null;
+            this.lastDamager = null;
         }
 
         return this.lastDamager;
@@ -288,7 +288,7 @@ public class EwPlayer
 
         return EggWars.languageManager().getLanguageOrDefault(locale);
     }
-    
+
     public void setLanguage(Language language)
     {
         EggWars.getDB().getPlayerData(this.player).setLocale(language.getLocale());
@@ -298,7 +298,9 @@ public class EwPlayer
             EwPlayerChangeLangEvent ewplayerchangelangevent = new EwPlayerChangeLangEvent(this);
             Bukkit.getPluginManager().callEvent(ewplayerchangelangevent);
         }
-        catch (LinkageError linkageerror) { }
+        catch (LinkageError linkageerror)
+        {
+        }
     }
 
     public int timeUntilKit()
@@ -315,8 +317,8 @@ public class EwPlayer
     {
         this.timeUntilKit = new Countdown(cooldown);
         TranslationUtils.sendMessage("gameplay.kits.cooldown_started", this.getPlayer(), TranslationUtils.translateTime(this.getPlayer(), this.timeUntilKit(), true));
-        (new BukkitRunnable() {
-
+        (new BukkitRunnable()
+        {
             public void run()
             {
                 if (EwPlayer.this.timeUntilKit == null)

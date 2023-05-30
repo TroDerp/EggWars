@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.commands.CommandArg;
@@ -60,7 +59,7 @@ public class SetTeamEgg extends CommandArg
 
             if (arena != null)
             {
-                for (TeamTypes teamtypes : arena.getTeams().keySet()) 
+                for (TeamTypes teamtypes : arena.getTeams().keySet())
                 {
                     if (teamtypes.id().startsWith(args[1]))
                     {

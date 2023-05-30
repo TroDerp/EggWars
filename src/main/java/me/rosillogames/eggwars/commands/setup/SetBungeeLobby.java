@@ -3,7 +3,6 @@ package me.rosillogames.eggwars.commands.setup;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.command.CommandSender;
-
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.commands.CommandArg;
 import me.rosillogames.eggwars.language.TranslationUtils;

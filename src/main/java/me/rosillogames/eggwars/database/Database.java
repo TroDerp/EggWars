@@ -21,7 +21,8 @@ public class Database
     private final Map<UUID, PlayerData> players = new HashMap<>();
     private final EggWars plugin;
     private Connection connection;
-//adding parameters doesn't reset the database
+
+    //adding parameters doesn't reset the database
     public Database(EggWars plugin)
     {
         this.plugin = plugin;

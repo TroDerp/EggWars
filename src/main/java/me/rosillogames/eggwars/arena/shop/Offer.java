@@ -30,10 +30,10 @@ public class Offer
     private final ItemStack result;
     public boolean colorize;
     protected final Price price;
-
-    /** This is used for classic shop, this can be set to true and it will not be displayed,
-     ** because the old GUI would be too large if we used too many ways to buy one same item
-     ** for different amounts.
+    /**
+     *  This is used for classic shop, this can be set to true and it will not be displayed,
+     * because the old GUI would be too large if we used too many ways to buy one same item
+     * for different amounts.
      **/
     private final boolean noClassic;
 
@@ -52,9 +52,9 @@ public class Offer
 
     public boolean trade(Player player, boolean shift)
     {
-    	boolean hasBought = false;
+        boolean hasBought = false;
 
-    	while (this.canAfford(player))
+        while (this.canAfford(player))
         {//contents must be cloned one by one as well because they are "live" items from inventory
             ItemStack[] prev = ItemUtils.copyContents(player.getInventory().getContents());
             ItemStack stack = adjustForRecipe(player, this.result, this.colorize);
@@ -66,13 +66,13 @@ public class Offer
 
                 if ((slotItem = ItemUtils.getSlot(player, slot)) != null)
                 {
-/*
- * REMEMBER addItem returns items that were not added, which means that if one item was given
- * and returns one, it clearly means that the item was not added, however this complicates when
- * you give an item stack with amount grater than one, then if the stack on the inv is not fully
- * complete but there isn't enough space for the offered amount then it would give free items till
- * the stack is full. This is why we have to revert all inv changes by storing previous value.
- */
+                    /*
+                     * REMEMBER addItem returns items that were not added, which means that if one item was given
+                     * and returns one, it clearly means that the item was not added, however this complicates when
+                     * you give an item stack with amount grater than one, then if the stack on the inv is not fully
+                     * complete but there isn't enough space for the offered amount then it would give free items till
+                     * the stack is full. This is why we have to revert all inv changes by storing previous value.
+                     */
                     Map<Integer, ItemStack> map = player.getInventory().addItem(slotItem);
 
                     if (!map.isEmpty())
@@ -108,10 +108,10 @@ public class Offer
             break;
         }
 
-    	if (!hasBought)
-    	{
+        if (!hasBought)
+        {
             TranslationUtils.sendMessage("shop.not_enough_items", player, Price.leftFor(this.price, player), this.price.getToken().getFormattedName(player));
-    	}
+        }
 
         return hasBought;
     }
@@ -192,11 +192,7 @@ public class Offer
                 int seventh_param = offer.amountOfPrice(player1);
                 String eight_param = offer.canAfford(player1) ? "§6" : "§c";
                 String ninth_param = priceToken.getColor().toString();
-                return offer.stackable() ?
-                TranslationUtils.getMessage("shop.buy_item_stackable.desc", player1, first_param, second_param, third_param, fourth_param, fifth_param, sixth_param, seventh_param, eight_param, ninth_param)
-                :
-                TranslationUtils.getMessage("shop.buy_item_unstackable.desc", player1, first_param, second_param, third_param, fourth_param, seventh_param, eight_param, ninth_param)
-                ;
+                return offer.stackable() ? TranslationUtils.getMessage("shop.buy_item_stackable.desc", player1, first_param, second_param, third_param, fourth_param, fifth_param, sixth_param, seventh_param, eight_param, ninth_param) : TranslationUtils.getMessage("shop.buy_item_unstackable.desc", player1, first_param, second_param, third_param, fourth_param, seventh_param, eight_param, ninth_param);
             }, (player1) ->
             {
                 return TranslationUtils.getMessage("menu.item_title", player1, (offer instanceof MultiOffer && ((MultiOffer)offer).getName() != null ? ((MultiOffer)offer).getName() : ReflectionUtils.getStackName(offer.getDisplayItem(player1))));

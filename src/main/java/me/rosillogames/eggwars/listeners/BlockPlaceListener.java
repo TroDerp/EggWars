@@ -40,13 +40,13 @@ public class BlockPlaceListener implements Listener
 
             if (!arena.getStatus().equals(ArenaStatus.IN_GAME))
             {
-            	eventIn.setCancelled(true);
+                eventIn.setCancelled(true);
                 return;
             }
 
             if (eventIn.getBlock().getType().equals(Material.TNT))
             {
-            	eventIn.getBlock().setType(Material.AIR);
+                eventIn.getBlock().setType(Material.AIR);
                 TNTPrimed tnt = eventIn.getBlock().getWorld().spawn(Locations.toMiddle(eventIn.getBlock().getLocation()), TNTPrimed.class);
 
                 if (!EggWars.config.moveTNTOnIgnite)
@@ -83,10 +83,10 @@ public class BlockPlaceListener implements Listener
                     return;
                 }
 
-            	if (invalidPlace(team1.getRespawn(), eventIn, false))
-            	{
-            		return;
-            	}
+                if (invalidPlace(team1.getRespawn(), eventIn, false))
+                {
+                    return;
+                }
             }
 
             for (Generator gen : arena.getGenerators().values())
@@ -107,12 +107,12 @@ public class BlockPlaceListener implements Listener
             if (arena.getWorld().equals(eventIn.getBlock().getWorld()))
             {
                 arena.addBrokenBlock(eventIn.getBlockReplacedState());
-            	arena.addPlacedBlock(eventIn.getBlock().getLocation());
+                arena.addPlacedBlock(eventIn.getBlock().getLocation());
                 ewplayer.getIngameStats().addStat(StatType.BLOCKS_PLACED, 1);
             }
             else
             {
-            	eventIn.setCancelled(true);
+                eventIn.setCancelled(true);
             }
         }
         else

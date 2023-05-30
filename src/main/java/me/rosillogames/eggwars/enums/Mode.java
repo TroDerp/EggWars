@@ -4,6 +4,7 @@ public enum Mode
 {
     SOLO("Solo"),
     TEAM("Team");
+
     private final String name;
 
     private Mode(String s)

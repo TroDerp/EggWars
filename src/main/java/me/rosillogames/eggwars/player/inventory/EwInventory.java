@@ -18,15 +18,15 @@ public class EwInventory
 
     public EwInventory(EwPlayer player1, TranslatableInventory mcInv, EwInvType type)
     {
-    	this.player = player1;
-    	this.invType = type;
-    	this.mcInventory = mcInv.getTranslatedInventory(player1.getPlayer());
+        this.player = player1;
+        this.invType = type;
+        this.mcInventory = mcInv.getTranslatedInventory(player1.getPlayer());
         this.handler = mcInv;
     }
 
     public void setParent(EwInventory parent)
     {
-    	this.parent = parent;
+        this.parent = parent;
     }
 
     @Nullable

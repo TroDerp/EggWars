@@ -16,8 +16,8 @@ public class Locations
 
         if (removeDir)
         {
-        	l2.setYaw(0.0F);
-        	l2.setPitch(0.0F);
+            l2.setYaw(0.0F);
+            l2.setPitch(0.0F);
         }
 
         return l2;

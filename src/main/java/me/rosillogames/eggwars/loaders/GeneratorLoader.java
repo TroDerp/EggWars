@@ -113,13 +113,13 @@ public class GeneratorLoader
                 }
                 catch (Exception ex1)
                 {
-                	EggWars.instance.getLogger().log(Level.WARNING, "Error loading generator \"" + name + "\":", ex1);
+                    EggWars.instance.getLogger().log(Level.WARNING, "Error loading generator \"" + name + "\":", ex1);
                 }
             }
         }
         catch (Exception ex2)
         {
-        	EggWars.instance.getLogger().log(Level.WARNING, "Error loading generators: ", ex2);
+            EggWars.instance.getLogger().log(Level.WARNING, "Error loading generators: ", ex2);
         }
 
         //On plugin load arenas are loaded before so there is no problem.

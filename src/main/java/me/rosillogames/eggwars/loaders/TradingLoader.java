@@ -64,7 +64,7 @@ public class TradingLoader
                 }
                 catch (Exception ex1)
                 {
-                	EggWars.instance.getLogger().log(Level.WARNING, "Error loading trade category \"" + name + "\": ", ex1);
+                    EggWars.instance.getLogger().log(Level.WARNING, "Error loading trade category \"" + name + "\": ", ex1);
                 }
             }
 
@@ -72,7 +72,7 @@ public class TradingLoader
         }
         catch (Exception ex2)
         {
-        	EggWars.instance.getLogger().log(Level.WARNING, "Error loading main trades: ", ex2);
+            EggWars.instance.getLogger().log(Level.WARNING, "Error loading main trades: ", ex2);
         }
     }
 
@@ -188,13 +188,13 @@ public class TradingLoader
             }
             catch (Exception ex)
             {
-            	EggWars.instance.getLogger().log(Level.WARNING, "Error loading offer " + i + ": ", ex);
+                EggWars.instance.getLogger().log(Level.WARNING, "Error loading offer " + i + ": ", ex);
                 continue;
             }
         }
 
         //Comment this merchant condition to make it always add offers from default
-        if (def != null && /*merchant.isEmpty() &&*/ !def.isEmpty())
+        if (def != null && /* merchant.isEmpty() && */ !def.isEmpty())
         {
             for (Offer offer : def.getOffers())
             {

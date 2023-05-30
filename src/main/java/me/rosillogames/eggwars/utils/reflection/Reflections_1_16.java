@@ -29,14 +29,13 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
 import com.mojang.serialization.Encoder;
 import com.mojang.serialization.JsonOps;
-
 import me.rosillogames.eggwars.EggWars;
 
 public class Reflections_1_16 implements Reflections
 {
-	private final boolean newVersion;
+    private final boolean newVersion;
 
-	public Reflections_1_16(boolean newV)
+    public Reflections_1_16(boolean newV)
     {
         this.newVersion = newV;
     }
@@ -213,10 +212,10 @@ public class Reflections_1_16 implements Reflections
     @Override
     public void hideDyeFlag(LeatherArmorMeta meta)
     {
-    	if (this.newVersion)
-    	{
+        if (this.newVersion)
+        {
             meta.addItemFlags(ItemFlag.HIDE_DYE);
-    	}
+        }
     }
 
     @Nullable

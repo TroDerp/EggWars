@@ -212,7 +212,7 @@ public class Colorizer
         COLORED_DYES.put(12, Material.BROWN_DYE);
         COLORED_DYES.put(13, Material.GREEN_DYE);
         COLORED_DYES.put(14, Material.RED_DYE);
-        COLORED_DYES.put(15, Material.BLACK_DYE);/*
+        COLORED_DYES.put(15, Material.BLACK_DYE);/* @formatter:off
         COLORED_.put(0, Material.WHITE_
         COLORED_.put(1, Material.ORANGE_
         COLORED_.put(2, Material.MAGENTA_
@@ -229,7 +229,7 @@ public class Colorizer
         COLORED_.put(13, Material.GREEN_
         COLORED_.put(14, Material.RED_
         COLORED_.put(15, Material.BLACK_
-        */
+        @formatter:on */
         COLORED_GLASS.put(-1, Material.GLASS);//-1 is used to find uncolored block for converting
         COLORED_GLASS.put(0, Material.WHITE_STAINED_GLASS);
         COLORED_GLASS.put(1, Material.ORANGE_STAINED_GLASS);

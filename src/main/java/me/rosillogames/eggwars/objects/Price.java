@@ -28,7 +28,7 @@ public class Price
         return this.token;
     }
 
-    /** Amount of items required from the price**/
+    /** Amount of items required from the price **/
     public int getAmount()
     {
         return this.amount;

@@ -28,7 +28,7 @@ public class Lobby
             @Override
             public void run()
             {
-        	    countdown.decrease();
+                countdown.decrease();
 
                 if (!arenaIn.getStatus().equals(ArenaStatus.STARTING))
                 {
@@ -71,22 +71,22 @@ public class Lobby
 
                 switch (count)
                 {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 10:
-                case 20:
-                case 30:
-                case 60:
-                case 90:
-                case 120:
-                case 160:
-                    Countdown.playCountDownSoundAndSendText(arenaIn, "starting", count);
-                    return;
-                default:
-                    break;
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 10:
+                    case 20:
+                    case 30:
+                    case 60:
+                    case 90:
+                    case 120:
+                    case 160:
+                        Countdown.playCountDownSoundAndSendText(arenaIn, "starting", count);
+                        return;
+                    default:
+                        break;
                 }
 
                 if (count <= 0)
@@ -109,7 +109,7 @@ public class Lobby
     {
         if (arenaIn.skipSoloLobby())
         {
-//"solo" start has to skip ArenaStatus.STARTING_GAME and should use defCountdown
+            //"solo" start has to skip ArenaStatus.STARTING_GAME and should use defCountdown
             arenaIn.setupVotedResults();
             arenaIn.loadShop();
 

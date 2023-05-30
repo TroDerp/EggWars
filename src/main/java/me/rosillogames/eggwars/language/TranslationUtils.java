@@ -62,7 +62,7 @@ public class TranslationUtils
             }
         }
 
-      //This is used to merge time strings depending of the amount of units, for example; "3 hours, 20 minutes and 5 seconds"
+        //This is used to merge time strings depending of the amount of units, for example; "3 hours, 20 minutes and 5 seconds"
         if (units.size() > 1)
         {
             String merged = "";
@@ -106,7 +106,7 @@ public class TranslationUtils
 
     public static boolean hasMessage(String msg, Player player)
     {
-    	return (player != null ? LanguageUtils.getPlayerLanguage(player) : LanguageManager.getDefaultLanguage()).has(msg);
+        return (player != null ? LanguageUtils.getPlayerLanguage(player) : LanguageManager.getDefaultLanguage()).has(msg);
     }
 
     public static String getMessage(String msg)

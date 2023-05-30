@@ -10,7 +10,7 @@ import me.rosillogames.eggwars.language.TranslationUtils;
 
 public class ServerListPingListener implements Listener
 {
-	@EventHandler
+    @EventHandler
     public void ping(ServerListPingEvent serverlistpingevent)
     {
         if (!EggWars.bungee.isEnabled())

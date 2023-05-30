@@ -76,7 +76,7 @@ public class EntityHurtListener implements Listener
 
         if (damager instanceof TNTPrimed && (((TNTPrimed)damager).getSource() instanceof Player))
         {
-        	ewDamager = PlayerUtils.getEwPlayer((Player)((TNTPrimed)damager).getSource());
+            ewDamager = PlayerUtils.getEwPlayer((Player)((TNTPrimed)damager).getSource());
         }
 
         if (damager instanceof Player)

@@ -85,14 +85,14 @@ public class SetupGUI
             {
                 ItemStack stack = ItemUtils.tryColorizeByTeam(teamtype, new ItemStack(Material.WHITE_WOOL, 1));
                 int to_conf = 1;
-//don't change this! negative items (INCLUDING zero) don't work
+                //don't change this! negative items (INCLUDING zero) don't work
                 if (team != null)
                 {
                     if (team.getVillager() == null)
                     {
                         to_conf++;
                     }
- 
+
                     if (team.getCages() == null || team.getCages().size() < arena.getMaxTeamPlayers())
                     {
                         to_conf++;
@@ -619,7 +619,9 @@ public class SetupGUI
                 type = meta.getPersistentDataContainer().get(EggWars.genType, PersistentDataType.STRING);
                 level = meta.getPersistentDataContainer().get(EggWars.genLevel, PersistentDataType.INTEGER);
             }
-            catch (Exception ex) {}
+            catch (Exception ex)
+            {
+            }
 
             Map<String, GeneratorType> generators = EggWars.getGeneratorManager().getGenerators();
 

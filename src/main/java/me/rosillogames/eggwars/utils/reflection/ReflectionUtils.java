@@ -111,31 +111,31 @@ public class ReflectionUtils
     {
         switch (v)
         {
-        case V_1_16_R1:
-        case V_1_16_R2:
-            currentReflections = new Reflections_1_16(false);
-            return;
-        case V_1_16_R3:
-            currentReflections = new Reflections_1_16(true);
-            return;
-        case V_1_17:
-            currentReflections = new Reflections_1_17();
-            return;
-        case V_1_18_R1:
-            currentReflections = new Reflections_1_18(false);
-            return;
-        case V_1_18_R2:
-            currentReflections = new Reflections_1_18(true);
-            return;
-        case V_1_19_R1:
-            currentReflections = new Reflections_1_19((byte)0);
-            return;
-        case V_1_19_R2:
-            currentReflections = new Reflections_1_19((byte)1);
-            return;
-        case OTHER:
-        case V_1_19_R3:
-            currentReflections = new Reflections_1_19((byte)2);
+            case V_1_16_R1:
+            case V_1_16_R2:
+                currentReflections = new Reflections_1_16(false);
+                return;
+            case V_1_16_R3:
+                currentReflections = new Reflections_1_16(true);
+                return;
+            case V_1_17:
+                currentReflections = new Reflections_1_17();
+                return;
+            case V_1_18_R1:
+                currentReflections = new Reflections_1_18(false);
+                return;
+            case V_1_18_R2:
+                currentReflections = new Reflections_1_18(true);
+                return;
+            case V_1_19_R1:
+                currentReflections = new Reflections_1_19((byte)0);
+                return;
+            case V_1_19_R2:
+                currentReflections = new Reflections_1_19((byte)1);
+                return;
+            case OTHER:
+            case V_1_19_R3:
+                currentReflections = new Reflections_1_19((byte)2);
         }
     }
 }

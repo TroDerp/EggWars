@@ -36,9 +36,9 @@ public class TeamUtils implements Listener
 
     public static String teamPrefix(TeamTypes type, Player player)
     {
-    	EwPlayer ewply = PlayerUtils.getEwPlayer(player);
+        EwPlayer ewply = PlayerUtils.getEwPlayer(player);
 
-    	if (ewply != null && ewply.getTeam() != null && ewply.getTeam().getType() == type)
+        if (ewply != null && ewply.getTeam() != null && ewply.getTeam().getType() == type)
         {
             return type.color() + "§l[" + TeamUtils.translateTeamType(type, player, true, true) + type.color() + "§l]";
         }
@@ -55,7 +55,7 @@ public class TeamUtils implements Listener
             return "§cnull";
         }
 
-    	EwPlayer ewply = PlayerUtils.getEwPlayer(player);
+        EwPlayer ewply = PlayerUtils.getEwPlayer(player);
 
         if (allowBold && ewply != null && ewply.getTeam() != null && ewply.getTeam().getType() == type)
         {

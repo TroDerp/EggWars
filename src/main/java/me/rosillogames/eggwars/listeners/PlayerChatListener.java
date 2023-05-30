@@ -6,7 +6,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Team;
@@ -19,7 +18,7 @@ import me.rosillogames.eggwars.utils.reflection.HelpObject;
 
 public class PlayerChatListener implements Listener
 {
-    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=false)
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
     public void chat(AsyncPlayerChatEvent event)
     {
         if (event.isCancelled())
@@ -78,8 +77,8 @@ public class PlayerChatListener implements Listener
             {
                 for (EwPlayer ewplayer2 : arena.getPlayers())
                 {
-                    /* I decided to make bold name appear in both team and solo, to keep them similar*/
-                    if (/*arena.getMaxTeamPlayers() > 1 && */ewplayer2.getTeam() == team)
+                    /* I decided to make bold name appear in both team and solo, to keep them similar */
+                    if (/* arena.getMaxTeamPlayers() > 1 && */ewplayer2.getTeam() == team)
                     {
                         TranslationUtils.sendMessagePrefix("gameplay.chat.global", ewplayer2.getPlayer(), false, new Object[] {TeamUtils.teamPrefix(team.getType(), ewplayer2.getPlayer()), team.getType().color() + "§l" + ewplayer.getPlayer().getName(), msg.get(), PlayerUtils.getPrefix(ewplayer.getPlayer())});
                     }

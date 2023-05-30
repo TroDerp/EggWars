@@ -34,8 +34,8 @@ public class Finish
         {
             for (EwPlayer ewpl : arena.getPlayers())
             {
-            	Player player = ewpl.getPlayer();
-            	String winnerObj = arena.getMode().isTeam() ? TeamUtils.translateTeamType(winner.getType(), player, false) : TeamUtils.colorizePlayerName(winner.getPlayers().iterator().next());
+                Player player = ewpl.getPlayer();
+                String winnerObj = arena.getMode().isTeam() ? TeamUtils.translateTeamType(winner.getType(), player, false) : TeamUtils.colorizePlayerName(winner.getPlayers().iterator().next());
                 TranslationUtils.sendMessage("gameplay.ingame.winner", player, winnerObj);
 
                 if (winner.equals(ewpl.getTeam()))
@@ -119,14 +119,14 @@ public class Finish
 
         if (kills > 0)
         {
-        	addFinishStat(builder, ply, TranslationUtils.getMessage("stats.kills", ply), String.valueOf(kills));
+            addFinishStat(builder, ply, TranslationUtils.getMessage("stats.kills", ply), String.valueOf(kills));
         }
 
         int deaths = pl.getIngameStats().getStat(StatType.DEATHS);
 
         if (deaths > 0)
         {
-        	addFinishStat(builder, ply, TranslationUtils.getMessage("stats.deaths", ply), deaths);
+            addFinishStat(builder, ply, TranslationUtils.getMessage("stats.deaths", ply), deaths);
         }
 
         addFinishStat(builder, ply, TranslationUtils.getMessage("stats.endOfGame.kill_death", ply), String.format("%.2f", (double)kills / (double)(deaths <= 0 ? 1 : deaths)));
@@ -134,26 +134,26 @@ public class Finish
 
         if (eggsBroken > 0)
         {
-        	addFinishStat(builder, ply, TranslationUtils.getMessage("stats.eggs_broken", ply), String.valueOf(eggsBroken));
+            addFinishStat(builder, ply, TranslationUtils.getMessage("stats.eggs_broken", ply), String.valueOf(eggsBroken));
         }
 
         int finalKills = pl.getIngameStats().getStat(StatType.ELIMINATIONS);
 
         if (finalKills > 0)
         {
-        	addFinishStat(builder, ply, TranslationUtils.getMessage("stats.eliminations", ply), String.valueOf(finalKills));
+            addFinishStat(builder, ply, TranslationUtils.getMessage("stats.eliminations", ply), String.valueOf(finalKills));
         }
 
-    	TranslationUtils.sendMessage("stats.endOfGame.container", ply, builder.toString());
+        TranslationUtils.sendMessage("stats.endOfGame.container", ply, builder.toString());
     }
 
     private static void addFinishStat(StringBuilder builder, Player pl, Object... args)
     {
-    	if (builder.length() > 0)
-    	{
-    		builder.append("\n");
-    	}
- 
-    	builder.append(TranslationUtils.getMessage("stats.endOfGame.stat", pl, args));
+        if (builder.length() > 0)
+        {
+            builder.append("\n");
+        }
+
+        builder.append(TranslationUtils.getMessage("stats.endOfGame.stat", pl, args));
     }
 }

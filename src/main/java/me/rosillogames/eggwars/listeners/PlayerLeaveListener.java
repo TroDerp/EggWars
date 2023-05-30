@@ -13,7 +13,7 @@ public class PlayerLeaveListener implements Listener
     {
     }
 
-    @EventHandler//KickEvent collides with leave event
+    @EventHandler //KickEvent collides with leave event
     public void leave(PlayerQuitEvent playerquitevent)
     {
         EwPlayer ewplayer = PlayerUtils.getEwPlayer(playerquitevent.getPlayer());

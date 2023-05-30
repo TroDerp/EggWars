@@ -1,7 +1,6 @@
 package me.rosillogames.eggwars.listeners;
 
 import java.util.UUID;
-
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -37,18 +36,18 @@ public class ItemPickupListener implements Listener
         {
             for (Generator gen : ewplayer.getArena().getGenerators().values())
             {
-            	Generator.APSS apss = gen.getAPSS();
+                Generator.APSS apss = gen.getAPSS();
 
-            	if (apss.uuid.equals(uuid))
-            	{
-            		if (apss.candidates.size() > 1 && apss.candidates.contains(ewplayer) && apss.turn != apss.candidates.indexOf(ewplayer))
-            		{
-        				pickUpEvent.setCancelled(true);
-        				return;
-            		}
+                if (apss.uuid.equals(uuid))
+                {
+                    if (apss.candidates.size() > 1 && apss.candidates.contains(ewplayer) && apss.turn != apss.candidates.indexOf(ewplayer))
+                    {
+                        pickUpEvent.setCancelled(true);
+                        return;
+                    }
 
-            		break;
-            	}
+                    break;
+                }
             }
         }
 

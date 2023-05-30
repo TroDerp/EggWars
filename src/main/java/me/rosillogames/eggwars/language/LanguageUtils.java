@@ -2,7 +2,6 @@ package me.rosillogames.eggwars.language;
 
 import java.util.Map;
 import org.bukkit.entity.Player;
-
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.PlayerUtils;

@@ -22,6 +22,7 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 public class PlayerUtils
 {
+    @Nullable
     public static EwPlayer getEwPlayer(Player player)
     {
         if (player == null)
@@ -177,11 +178,7 @@ public class PlayerUtils
 
             if (ewplayer.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.COMPASS) || ewplayer.getPlayer().getInventory().getItemInOffHand().getType().equals(Material.COMPASS))
             {
-                ReflectionUtils.sendActionBar(ewplayer.getPlayer(), TranslationUtils.getMessage("gameplay.ingame.compass_target", ewplayer.getPlayer(), new Object[] {
-                    TeamUtils.translateTeamType(ewplayer1.getTeam().getType(), ewplayer.getPlayer(), false),
-                    TeamUtils.colorizePlayerName(ewplayer1),
-                    String.format("%.1f", Double.valueOf(ewplayer.getPlayer().getLocation().distance(ewplayer1.getPlayer().getLocation())))
-                }), Integer.valueOf(0), Integer.valueOf(25), Integer.valueOf(0));
+                ReflectionUtils.sendActionBar(ewplayer.getPlayer(), TranslationUtils.getMessage("gameplay.ingame.compass_target", ewplayer.getPlayer(), new Object[] {TeamUtils.translateTeamType(ewplayer1.getTeam().getType(), ewplayer.getPlayer(), false), TeamUtils.colorizePlayerName(ewplayer1), String.format("%.1f", Double.valueOf(ewplayer.getPlayer().getLocation().distance(ewplayer1.getPlayer().getLocation())))}), Integer.valueOf(0), Integer.valueOf(25), Integer.valueOf(0));
             }
 
             return;
@@ -198,11 +195,7 @@ public class PlayerUtils
 
         if (ewplayer.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.COMPASS) || ewplayer.getPlayer().getInventory().getItemInOffHand().getType().equals(Material.COMPASS))
         {
-            ReflectionUtils.sendActionBar(ewplayer.getPlayer(), TranslationUtils.getMessage("gameplay.ingame.compass_target", ewplayer.getPlayer(), new Object[] {
-                TeamUtils.translateTeamType(ewplayer2.getTeam().getType(), ewplayer.getPlayer(), false),
-                TeamUtils.colorizePlayerName(ewplayer2),
-                String.format("%.1f", Double.valueOf(ewplayer.getPlayer().getLocation().distance(ewplayer2.getPlayer().getLocation())))
-            }), Integer.valueOf(0), Integer.valueOf(25), Integer.valueOf(0));
+            ReflectionUtils.sendActionBar(ewplayer.getPlayer(), TranslationUtils.getMessage("gameplay.ingame.compass_target", ewplayer.getPlayer(), new Object[] {TeamUtils.translateTeamType(ewplayer2.getTeam().getType(), ewplayer.getPlayer(), false), TeamUtils.colorizePlayerName(ewplayer2), String.format("%.1f", Double.valueOf(ewplayer.getPlayer().getLocation().distance(ewplayer2.getPlayer().getLocation())))}), Integer.valueOf(0), Integer.valueOf(25), Integer.valueOf(0));
         }
     }
 

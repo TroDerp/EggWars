@@ -1,5 +1,7 @@
 package me.rosillogames.eggwars.api;
 
+import javax.annotation.Nullable;
+
 import org.bukkit.entity.Player;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
@@ -8,6 +10,7 @@ import me.rosillogames.eggwars.utils.PlayerUtils;
 
 public class EggWarsAPI
 {
+    @Nullable
     public static EwPlayer getEggWarsPlayer(Player bukkitPlayer)
     {
         return PlayerUtils.getEwPlayer(bukkitPlayer);

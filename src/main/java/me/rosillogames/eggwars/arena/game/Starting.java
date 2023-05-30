@@ -79,22 +79,22 @@ public class Starting
 
                 switch (count)
                 {
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                case 5:
-                case 10:
-                case 15:
-                    Countdown.playCountDownSoundAndSendText(arenaIn, "release", count);
-                    break;
-                case 0:
-                    Countdown.playCountDownSound(arenaIn);
-                    releasePlayersAndStartGame(arenaIn);
-                    this.cancel();
-                    return;
-                default:
-                    break;
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 10:
+                    case 15:
+                        Countdown.playCountDownSoundAndSendText(arenaIn, "release", count);
+                        break;
+                    case 0:
+                        Countdown.playCountDownSound(arenaIn);
+                        releasePlayersAndStartGame(arenaIn);
+                        this.cancel();
+                        return;
+                    default:
+                        break;
                 }
             }
 

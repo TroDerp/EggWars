@@ -26,15 +26,15 @@ public class Scoreboards
     {
         switch (arena.getStatus())
         {
-        case LOBBY:
-        case STARTING:
-            setLobbyScore(ewplayer, arena);
-            break;
-        case SETTING:
-        case STARTING_GAME:
-        case IN_GAME:
-        case FINISHING:
-            setIngameScore(ewplayer, arena);
+            case LOBBY:
+            case STARTING:
+                setLobbyScore(ewplayer, arena);
+                break;
+            case SETTING:
+            case STARTING_GAME:
+            case IN_GAME:
+            case FINISHING:
+                setIngameScore(ewplayer, arena);
         }
     }
 

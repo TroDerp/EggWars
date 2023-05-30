@@ -314,11 +314,6 @@ public class ClickInventoryListener implements Listener
 
         clickEvent.setCancelled(true);
 
-        //if (!ewplayer.isInArena() || !ewplayer.getArena().getStatus().equals(ArenaStatus.LOBBY) && !ewplayer.getArena().getStatus().equals(ArenaStatus.STARTING) && !ewplayer.getArena().getStatus().equals(ArenaStatus.STARTING_GAME))
-        //{
-            //return;
-        //}
-
         if (clickEvent.getCurrentItem() == null || useCloseMenu(clickEvent))
         {
             return;

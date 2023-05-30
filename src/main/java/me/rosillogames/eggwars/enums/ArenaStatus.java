@@ -2,13 +2,14 @@ package me.rosillogames.eggwars.enums;
 
 public enum ArenaStatus
 {
-	LOBBY("lobby"),
-	STARTING("starting"),
-	STARTING_GAME("starting_game"),
-	SETTING("setting"),
-	IN_GAME("in_game"),
-	FINISHING("finishing");
-	private final String namespace;
+    LOBBY("lobby"),
+    STARTING("starting"),
+    STARTING_GAME("starting_game"),
+    SETTING("setting"),
+    IN_GAME("in_game"),
+    FINISHING("finishing");
+
+    private final String namespace;
 
     private ArenaStatus(String s)
     {
