@@ -1,5 +1,7 @@
 package me.rosillogames.eggwars.listeners;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -29,14 +31,15 @@ public class ItemPickupListener implements Listener
         }
 
         Item item = pickUpEvent.getItem();
+        UUID uuid;
 
-        if (EggWars.config.enableAPSS && item.getThrower() != null)
+        if (EggWars.config.enableAPSS && (uuid = item.getThrower()) != null)
         {
             for (Generator gen : ewplayer.getArena().getGenerators().values())
             {
             	Generator.APSS apss = gen.getAPSS();
 
-            	if (apss.uuid.equals(item.getThrower()))
+            	if (apss.uuid.equals(uuid))
             	{
             		if (apss.candidates.size() > 1 && apss.candidates.contains(ewplayer) && apss.turn != apss.candidates.indexOf(ewplayer))
             		{
