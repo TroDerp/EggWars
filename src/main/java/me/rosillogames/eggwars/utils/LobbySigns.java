@@ -3,7 +3,7 @@ package me.rosillogames.eggwars.utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import me.rosillogames.eggwars.EggWars;
@@ -30,45 +30,32 @@ public class LobbySigns
         setting = ItemUtils.getBlockData(fileconf.getString("lobby.sign_status.setting"), Material.CYAN_STAINED_GLASS.createBlockData());
     }
 
-    public static void setBlock(ArenaSign ewsign)
+    public static void setBlock(ArenaSign sign)
     {
-        if (!activeSign)
+        if (!activeSign || !isValidWallSign(sign.getLocation().getBlock().getState()))
         {
             return;
         }
 
-        try
+        Block block = sign.getSupport().getBlock();
+
+        switch (sign.getArena().getStatus())
         {
-            Sign sign = (Sign)ewsign.getLocation().getBlock().getState();
-
-            if (!isValidWallSign(sign))
-            {
-                return;
-            }
-
-            Block block = ewsign.getSupport().getBlock();
-
-            switch (ewsign.getArena().getStatus())
-            {
-                case LOBBY:
-                    block.setBlockData(lobby);
-                    break;
-                case STARTING:
-                    block.setBlockData(starting);
-                    break;
-                case IN_GAME:
-                case STARTING_GAME:
-                    block.setBlockData(ingame);
-                    break;
-                case FINISHING:
-                    block.setBlockData(finished);
-                    break;
-                case SETTING:
-                    block.setBlockData(setting);
-            }
-        }
-        catch (Exception exception)
-        {
+            case LOBBY:
+                block.setBlockData(lobby);
+                break;
+            case STARTING:
+                block.setBlockData(starting);
+                break;
+            case IN_GAME:
+            case STARTING_GAME:
+                block.setBlockData(ingame);
+                break;
+            case FINISHING:
+                block.setBlockData(finished);
+                break;
+            case SETTING:
+                block.setBlockData(setting);
         }
     }
 
@@ -95,11 +82,11 @@ public class LobbySigns
         return null;
     }
 
-    public static boolean isValidWallSign(Sign sign)
+    public static boolean isValidWallSign(BlockState state)
     {
         for (Material mat : ReflectionUtils.getWallSigns())
         {
-            if (sign.getType().equals(mat))
+            if (mat.equals(state.getType()))
             {
                 return true;
             }

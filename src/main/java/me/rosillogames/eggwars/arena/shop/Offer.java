@@ -31,7 +31,7 @@ public class Offer
     public boolean colorize;
     protected final Price price;
     /**
-     *  This is used for classic shop, this can be set to true and it will not be displayed,
+     * This is used for classic shop, this can be set to true and it will not be displayed,
      * because the old GUI would be too large if we used too many ways to buy one same item
      * for different amounts.
      **/

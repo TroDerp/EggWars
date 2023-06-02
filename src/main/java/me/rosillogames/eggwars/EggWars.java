@@ -372,58 +372,21 @@ public class EggWars extends JavaPlugin
         {
             Arena arena;
             Location location;
-            String as[];
 
-            if ((as = s.split(":")).length == 2)
+            try
             {
-                arena = this.arenaLoader.getArenaByName(as[1]);
-
-                if (arena == null)
-                {
-                    continue;
-                }
-
-                try
-                {
-                    String as1[] = as[0].split(";");
-
-                    if (as1.length == 4)
-                    {
-                        location = new Location(Bukkit.getWorld(as1[3]), Integer.parseInt(as1[0]), Integer.parseInt(as1[1]), Integer.parseInt(as1[2]));
-                    }
-                    else
-                    {
-                        double d = Double.parseDouble(as1[0]);
-                        double d1 = Double.parseDouble(as1[1]);
-                        double d2 = Double.parseDouble(as1[2]);
-                        float f = Float.parseFloat(as1[3]);
-                        float f1 = Float.parseFloat(as1[4]);
-                        World world = Bukkit.getWorld(as1[5]);
-                        location = new Location(world, d, d1, d2, f1, f);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    continue;
-                }
+                JsonObject entryjson = GsonHelper.parse(s);
+                JsonObject locjson = GsonHelper.getAsJsonObject(entryjson, "location");
+                World world = Bukkit.getWorld(GsonHelper.getAsString(locjson, "world_name"));
+                double d0 = (double)GsonHelper.getAsFloat(locjson, "x");
+                double d1 = (double)GsonHelper.getAsFloat(locjson, "y");
+                double d2 = (double)GsonHelper.getAsFloat(locjson, "z");
+                location = new Location(world, d0, d1, d2);
+                arena = this.arenaLoader.getArenaByName(GsonHelper.getAsString(entryjson, "arena"));
             }
-            else
+            catch (Exception ex)
             {
-                try
-                {
-                    JsonObject json0 = GsonHelper.parse(s);
-                    JsonObject json = GsonHelper.getAsJsonObject(json0, "location");
-                    World world = Bukkit.getWorld(GsonHelper.getAsString(json, "world_name"));
-                    double d0 = (double)GsonHelper.getAsFloat(json, "x");
-                    double d1 = (double)GsonHelper.getAsFloat(json, "y");
-                    double d2 = (double)GsonHelper.getAsFloat(json, "z");
-                    location = new Location(world, d0, d1, d2);
-                    arena = this.arenaLoader.getArenaByName(GsonHelper.getAsString(json0, "arena"));
-                }
-                catch (Exception ex)
-                {
-                    continue;
-                }
+                continue;
             }
 
             if (location.getWorld() != null && location.getBlock().getState() instanceof Sign && LobbySigns.isValidWallSign((Sign)location.getBlock().getState()))

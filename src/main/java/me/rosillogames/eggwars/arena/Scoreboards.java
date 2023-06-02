@@ -1,12 +1,12 @@
 package me.rosillogames.eggwars.arena;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
+import me.rosillogames.eggwars.EggWars;
+import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.TeamUtils;
@@ -68,18 +68,34 @@ public class Scoreboards
         objective = scoreboard.registerNewObjective("ingame", "dummy", "ingame");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         objective.setDisplayName(TranslationUtils.getMessage("gameplay.scoreboard.ingame.name", ewplayer.getPlayer()));
-        Map<Team, String> hashmap = new HashMap();
 
         for (Team team : arena.getTeams().values())
         {
             if (!team.isEliminated())
             {
-                hashmap.put(team, (team.canRespawn() ? "§a✔ " : "§c✘ ") + TeamUtils.translateTeamType(team.getType(), ewplayer.getPlayer(), true));
+                objective.getScore((team.canRespawn() ? "§a✔ " : "§c✘ ") + TeamUtils.translateTeamType(team.getType(), ewplayer.getPlayer(), true)).setScore(team.getPlayersAlive().size());
             }
         }
 
-        setScoreboard(hashmap, objective);
         setBelowScoreboard(TranslationUtils.getMessage("gameplay.scoreboard.ingame.data", ewplayer.getPlayer(), new Object[] {arena.getAlivePlayers().size(), ewplayer.getPoints(), arena.getName()}).split("\\n"), objective);
+        Objective objective1 = scoreboard.getObjective("kills");
+
+        if (objective1 != null)
+        {
+            objective1.unregister();
+        }
+
+        if (EggWars.config.showKills)
+        {
+            objective1 = scoreboard.registerNewObjective("kills", "dummy", "kills");
+            objective1.setDisplaySlot(DisplaySlot.PLAYER_LIST);
+
+            for (EwPlayer arenaPlayer : arena.getPlayers())
+            {
+                objective1.getScore(arenaPlayer.getPlayer()).setScore(arenaPlayer.getIngameStats().getStat(StatType.KILLS));
+            }
+        }
+
         ewplayer.getPlayer().setScoreboard(scoreboard);
     }
 
@@ -115,14 +131,6 @@ public class Scoreboards
         {
             objective.getScore(s).setScore(i);
             i--;
-        }
-    }
-
-    public static void setScoreboard(Map<Team, String> map, Objective objective)
-    {
-        for (Team team : map.keySet())
-        {
-            objective.getScore(map.get(team)).setScore(team.getPlayersAlive().size());
         }
     }
 }

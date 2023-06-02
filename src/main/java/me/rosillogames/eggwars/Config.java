@@ -27,6 +27,7 @@ public class Config
     public boolean alwaysTpToLobby = true;
     public boolean vault = false;
     public boolean skipSoloLobby = true;
+    public boolean showKills = true;
     public boolean balanceTeams = false;
     public boolean useBelowBlock = true;
     //Version check for APSS is for an issue with item.setThrower(UUID) not being in early 1.16
@@ -72,6 +73,7 @@ public class Config
 
         fileConf.addDefault("gameplay.balance_teams", false);
         fileConf.addDefault("gameplay.skip_solo_lobby", true);
+        fileConf.addDefault("gameplay.show_kills", true);
         fileConf.addDefault("gameplay.drop_blocks", false);
         fileConf.addDefault("gameplay.keep_inventory", false);
         fileConf.addDefault("gameplay.respawn_delay", 4);
@@ -178,6 +180,7 @@ public class Config
         this.vault = fileConf.getBoolean("plugin.vault") && DependencyUtils.vault();
         this.balanceTeams = fileConf.getBoolean("gameplay.balance_teams");
         this.skipSoloLobby = fileConf.getBoolean("gameplay.skip_solo_lobby");
+        this.showKills = fileConf.getBoolean("gameplay.show_kills");
         this.keepInv = fileConf.getBoolean("gameplay.keep_inventory");
         this.finishingTime = fileConf.getInt("gameplay.finishing_time");
         this.invincibilityTime = fileConf.getInt("gameplay.invincible_time");

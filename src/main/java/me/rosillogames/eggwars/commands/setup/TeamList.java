@@ -61,20 +61,20 @@ public class TeamList extends CommandArg
         for (TeamTypes teamType : arena.getTeams().keySet())
         {
             Team team = (Team)arena.getTeams().get(teamType);
-            TextComponent textcomponent = new TextComponent(TeamUtils.translateTeamType(team.getType(), player, false));
+            TextComponent teamComponent = new TextComponent(TeamUtils.translateTeamType(team.getType(), player, false));
 
             //Use middled respawn location for teleporting to team
             if (team.getRespawn() != null)
             {
-                TextComponent tpcomponent = new TextComponent(TranslationUtils.getMessage("commands.teamList.teleport", player));
+                TextComponent tpComponent = new TextComponent(TranslationUtils.getMessage("commands.teamList.teleport", player));
                 Location respawnLoc = Locations.toMiddle(team.getRespawn());
                 String cmd = "tp " + player.getName() + " " + respawnLoc.getX() + " " + respawnLoc.getY() + " " + respawnLoc.getZ();
-                tpcomponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.GRAY + "/" + cmd)));
-                tpcomponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/minecraft:execute in " + respawnLoc.getWorld().getName() + " run " + cmd + " " + respawnLoc.getYaw() + " " + respawnLoc.getPitch()));
-                textcomponent.addExtra(tpcomponent);
+                tpComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(ChatColor.GRAY + "/" + cmd)));
+                tpComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/minecraft:execute in " + respawnLoc.getWorld().getName() + " run " + cmd + " " + respawnLoc.getYaw() + " " + respawnLoc.getPitch()));
+                teamComponent.addExtra(tpComponent);
             }
 
-            player.spigot().sendMessage(textcomponent);
+            player.spigot().sendMessage(teamComponent);
             player.sendMessage(" ");
         }
 

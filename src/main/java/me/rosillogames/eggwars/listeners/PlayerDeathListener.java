@@ -37,6 +37,7 @@ public class PlayerDeathListener implements Listener
         }
 
         String cause = diedPlayer.getPlayer().getLastDamageCause().getCause().name().toLowerCase();
+        Arena arena = diedPlayer.getArena();
 
         if (diedPlayer.getLastDamager() != null)
         {
@@ -49,13 +50,13 @@ public class PlayerDeathListener implements Listener
                 killerPlayer.getIngameStats().addStat(StatType.ELIMINATIONS, 1);
             }
 
-            diedPlayer.getArena().sendBroadcast("gameplay.death." + cause + ".player", TeamUtils.colorizePlayerName(diedPlayer), TeamUtils.colorizePlayerName(killerPlayer));
+            arena.sendBroadcast("gameplay.death." + cause + ".player", TeamUtils.colorizePlayerName(diedPlayer), TeamUtils.colorizePlayerName(killerPlayer));
             //Reward points message for killer comes before elimination message
             PlayerUtils.addPoints(killerPlayer, fk ? EggWars.instance.getConfig().getInt("gameplay.points.on_final_kill") : EggWars.instance.getConfig().getInt("gameplay.points.on_kill"));
         }
         else
         {
-            diedPlayer.getArena().sendBroadcast("gameplay.death." + cause, TeamUtils.colorizePlayerName(diedPlayer));
+            arena.sendBroadcast("gameplay.death." + cause, TeamUtils.colorizePlayerName(diedPlayer));
         }
 
         diedPlayer.getIngameStats().addStat(StatType.DEATHS, 1);
@@ -77,19 +78,18 @@ public class PlayerDeathListener implements Listener
         }
 
         deathevent.setDeathMessage(null);
+        Scoreboards.setScore(arena);
 
         if (!diedPlayer.getTeam().canRespawn())
         {
             diedPlayer.setEliminated(true);
             Team diedTeam = diedPlayer.getTeam();
             diedTeam.removePlayer(diedPlayer);
-            Arena arena = diedPlayer.getArena();
             arena.sendBroadcast("gameplay.ingame.player_eliminated", diedPlayer.getPlayer().getDisplayName());
-            Scoreboards.setScore(arena);
 
             if (diedTeam.isEliminated() && arena.getMode().isTeam())
             {
-                for (EwPlayer ewplayer : diedPlayer.getArena().getPlayers())
+                for (EwPlayer ewplayer : arena.getPlayers())
                 {
                     ewplayer.getPlayer().sendMessage("");
                     TranslationUtils.sendMessage("gameplay.ingame.team_eliminated", ewplayer.getPlayer(), TeamUtils.translateTeamType(diedTeam.getType(), ewplayer.getPlayer(), false));
