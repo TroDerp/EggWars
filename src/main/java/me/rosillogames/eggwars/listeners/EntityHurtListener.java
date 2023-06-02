@@ -43,7 +43,7 @@ public class EntityHurtListener implements Listener
                 return;
             }
 
-            if (ewplayer.isInvincible())
+            if (ewplayer.isInvincible() && damageEvent.getCause() != EntityDamageEvent.DamageCause.VOID)
             {
                 damageEvent.setCancelled(true);
                 return;
