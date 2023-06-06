@@ -15,6 +15,7 @@ public class Bounds
     {
         this.start = startIn;
         this.end = endIn;
+        this.fix();
     }
 
     public Location getStart()
@@ -30,6 +31,7 @@ public class Bounds
     public void setStart(Location s)
     {
         this.start = s;
+        this.fix();
     }
 
     public Location getEnd()
@@ -45,6 +47,7 @@ public class Bounds
     public void setEnd(Location e)
     {
         this.end = e;
+        this.fix();
     }
 
     public boolean canPlaceAt(Location loc)
@@ -55,6 +58,23 @@ public class Bounds
     public boolean areComplete()
     {
         return this.start != null && this.end != null;
+    }
+
+    private void fix()
+    {
+        if (this.start == null || this.end == null)
+        {
+            return;
+        }
+
+        int sX = this.start.getBlockX();
+        int sY = this.start.getBlockY();
+        int sZ = this.start.getBlockZ();
+        int eX = this.end.getBlockX();
+        int eY = this.end.getBlockY();
+        int eZ = this.end.getBlockZ();
+        this.start = new Location(null, sX > eX ? eX : sX, sY > eY ? eY : sY, sZ > eZ ? eZ : sZ);
+        this.end = new Location(null, sX > eX ? sX : eX, sY > eY ? sY : eY, sZ > eZ ? sZ : eZ);
     }
 
     public static Bounds deserialize(String json)

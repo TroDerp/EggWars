@@ -135,10 +135,6 @@ public class Starting
             else
             {
                 Player player = ewplayer.getPlayer();
-                player.getInventory().setHelmet(new ItemStack(Material.AIR));
-                player.getInventory().setChestplate(new ItemStack(Material.AIR));
-                player.getInventory().setLeggings(new ItemStack(Material.AIR));
-                player.getInventory().setBoots(new ItemStack(Material.AIR));
                 player.getInventory().clear();
 
                 if (ewplayer.getKit() != null)

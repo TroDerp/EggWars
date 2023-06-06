@@ -10,6 +10,7 @@ import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.utils.PlayerUtils;
 
 public class PlayerJoinListener implements Listener
 {
@@ -52,9 +53,9 @@ public class PlayerJoinListener implements Listener
             return;
         }
 
-        if (!EggWars.bungee.isEnabled() && EggWars.config.alwaysTpToLobby && EggWars.config.lobby != null)
+        if (EggWars.config.alwaysTpToLobby)
         {
-            player.teleport(EggWars.config.lobby);
+            PlayerUtils.tpToLobby(player, false);//don't send bungee
         }
 
         EggWars.getDB().loadPlayer(player);

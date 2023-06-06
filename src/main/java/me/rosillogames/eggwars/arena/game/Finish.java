@@ -48,6 +48,7 @@ public class Finish
                 if (!ewpl.isEliminated())
                 {
                     player.closeInventory();
+                    player.getInventory().clear();
                     sendFinishStats(ewpl);
                 }
             }

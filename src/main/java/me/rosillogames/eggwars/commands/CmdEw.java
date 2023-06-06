@@ -315,8 +315,9 @@ public class CmdEw implements TabExecutor
                 return true;
             }
 
-            PlayerUtils.tpToLobby(ewplayer, true);
-            Bukkit.getPluginManager().callEvent(new PlayerMoveEvent(ewplayer.getPlayer(), ewplayer.getPlayer().getLocation(), ewplayer.getPlayer().getLocation()));
+            Player pl = ewplayer.getPlayer();
+            PlayerUtils.tpToLobby(pl, true);
+            Bukkit.getPluginManager().callEvent(new PlayerMoveEvent(pl, pl.getLocation(), pl.getLocation()));
             return true;
         }
 

@@ -127,9 +127,9 @@ public class PlayerUtils
         TranslationUtils.sendMessage("gameplay.misc.add_points", ewplayer.getPlayer(), Integer.valueOf(j), m);
     }
 
-    public static void tpToLobby(EwPlayer ewplayer, boolean sendBungee)
+    public static void tpToLobby(Player player, boolean sendBungee)
     {
-        if (ewplayer == null || ewplayer.getPlayer() == null || !ewplayer.getPlayer().isOnline())
+        if (player == null || player == null || !player.isOnline())
         {
             return;
         }
@@ -138,21 +138,21 @@ public class PlayerUtils
         {
             if (sendBungee)
             {
-                sendBungeeLobby(ewplayer.getPlayer());
+                sendBungeeLobby(player);
             }
 
             return;
         }
 
-        ewplayer.getPlayer().setFallDistance(0.0F);
+        player.setFallDistance(0.0F);
 
         if (EggWars.config.lobby == null || EggWars.config.lobby.getWorld() == null)
         {
-            ewplayer.getPlayer().teleport(new Location((World)Bukkit.getWorlds().get(0), 0.0D, 100.5D, 0.0D), PlayerTeleportEvent.TeleportCause.END_PORTAL);
+            player.teleport(new Location((World)Bukkit.getWorlds().get(0), 0.0D, 100.5D, 0.0D), PlayerTeleportEvent.TeleportCause.END_PORTAL);
         }
         else
         {
-            ewplayer.getPlayer().teleport(EggWars.config.lobby.clone().add(0.0D, 0.5D, 0.0D), PlayerTeleportEvent.TeleportCause.END_PORTAL);
+            player.teleport(EggWars.config.lobby.clone().add(0.0D, 0.5D, 0.0D), PlayerTeleportEvent.TeleportCause.END_PORTAL);
         }
     }
 

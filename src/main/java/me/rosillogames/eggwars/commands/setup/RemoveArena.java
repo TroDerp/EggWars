@@ -49,7 +49,7 @@ public class RemoveArena extends CommandArg
             if (entity instanceof Player)
             {
                 PlayerUtils.getEwPlayer((Player)entity).setSettingArena(null);
-                PlayerUtils.tpToLobby(PlayerUtils.getEwPlayer((Player)entity), true);
+                PlayerUtils.tpToLobby((Player)entity, true);
             }
             else
             {

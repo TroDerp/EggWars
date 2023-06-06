@@ -43,13 +43,7 @@ public class SetBounds extends CommandArg
         {
             try
             {
-                int sX = Integer.parseInt(args[1]);
-                int sY = Integer.parseInt(args[2]);
-                int sZ = Integer.parseInt(args[3]);
-                int eX = Integer.parseInt(args[4]);
-                int eY = Integer.parseInt(args[5]);
-                int eZ = Integer.parseInt(args[6]);
-                arena.setBounds(new Bounds(new Location(null, sX > eX ? eX : sX, sY > eY ? eY : sY, sZ > eZ ? eZ : sZ), new Location(null, sX > eX ? sX : eX, sY > eY ? sY : eY, sZ > eZ ? sZ : eZ)));
+                arena.setBounds(new Bounds(new Location(null, Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3])), new Location(null, Integer.parseInt(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]))));
             }
             catch (NumberFormatException ex)
             {

@@ -66,11 +66,6 @@ public class PlayerDeathListener implements Listener
         if (!EggWars.config.keepInv)
         {
             diedPlayer.getPlayer().getInventory().clear();
-            diedPlayer.getPlayer().getInventory().setHelmet(new ItemStack(Material.AIR));
-            diedPlayer.getPlayer().getInventory().setChestplate(new ItemStack(Material.AIR));
-            diedPlayer.getPlayer().getInventory().setLeggings(new ItemStack(Material.AIR));
-            diedPlayer.getPlayer().getInventory().setBoots(new ItemStack(Material.AIR));
-            diedPlayer.getPlayer().getInventory().setItemInOffHand(new ItemStack(Material.AIR));
         }
         else
         {

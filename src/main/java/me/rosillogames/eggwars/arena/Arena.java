@@ -507,10 +507,6 @@ public class Arena
         this.hidePlayers(player, false);
         player.setArena(this);
         player.storeGameData();
-        player.getPlayer().getInventory().setHelmet(new ItemStack(Material.AIR));
-        player.getPlayer().getInventory().setChestplate(new ItemStack(Material.AIR));
-        player.getPlayer().getInventory().setLeggings(new ItemStack(Material.AIR));
-        player.getPlayer().getInventory().setBoots(new ItemStack(Material.AIR));
         player.getPlayer().getInventory().clear();
         player.getPlayer().setFlying(false);
         player.getPlayer().setAllowFlight(false);
@@ -615,7 +611,7 @@ public class Arena
         }
 
         player.setArena(null);
-        PlayerUtils.tpToLobby(player, sendBungee);
+        PlayerUtils.tpToLobby(player.getPlayer(), sendBungee);
         player.setEliminated(false);
 
         if (this.status.isGame())
@@ -770,7 +766,7 @@ public class Arena
         {
             if (entity instanceof Player)
             {
-                PlayerUtils.tpToLobby(PlayerUtils.getEwPlayer((Player)entity), true);
+                PlayerUtils.tpToLobby((Player)entity, true);
             }
             else
             {
