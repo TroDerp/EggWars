@@ -1,14 +1,17 @@
 package me.rosillogames.eggwars;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
+import com.google.common.collect.Lists;
 import me.rosillogames.eggwars.dependencies.DependencyUtils;
 import me.rosillogames.eggwars.enums.Versions;
 import me.rosillogames.eggwars.loaders.ArenaLoader;
@@ -153,6 +156,38 @@ public class Config
         fileConf.addDefault("inventory.voting_normal_health", "{\"id\":\"minecraft:glass_bottle\"}");
         fileConf.addDefault("inventory.voting_double_health", "{\"id\":\"minecraft:potion\"}");
         fileConf.addDefault("inventory.voting_triple_health", "{\"id\":\"minecraft:experience_bottle\"}");
+        Map<String, Object> map = new HashMap();
+        createDeathMsgSection(map, "CONTACT", "generic");
+        createDeathMsgSection(map, "ENTITY_ATTACK", "slain");
+        createDeathMsgSection(map, "ENTITY_SWEEP_ATTACK", "slain");
+        createDeathMsgSection(map, "PROJECTILE", "shot");
+        createDeathMsgSection(map, "SUFFOCATION", "suffocated");
+        createDeathMsgSection(map, "FALL", "couldnt_fly", "fell_to_death");
+        createDeathMsgSection(map, "FIRE", "burnt_to_crisp", "burned_to_death");
+        createDeathMsgSection(map, "FIRE_TICK", "burnt_to_crisp", "burned_to_death");
+        createDeathMsgSection(map, "MELTING", "generic");
+        createDeathMsgSection(map, "LAVA", "swim_in_lava");
+        createDeathMsgSection(map, "DROWNING", "drowned");
+        createDeathMsgSection(map, "BLOCK_EXPLOSION", "blown_up");
+        createDeathMsgSection(map, "ENTITY_EXPLOSION", "blown_up");
+        createDeathMsgSection(map, "VOID", "died_in_void", "thought_void");
+        createDeathMsgSection(map, "LIGHTNING", "generic");
+        createDeathMsgSection(map, "SUICIDE", "generic");
+        createDeathMsgSection(map, "STARVATION", "starved");
+        createDeathMsgSection(map, "POISON", "poison");
+        createDeathMsgSection(map, "MAGIC", "magic");
+        createDeathMsgSection(map, "WITHER", "generic");
+        createDeathMsgSection(map, "FALLING_BLOCK", "generic");
+        createDeathMsgSection(map, "THORNS", "slain");
+        createDeathMsgSection(map, "DRAGON_BREATH", "generic");
+        createDeathMsgSection(map, "CUSTOM", "generic");
+        createDeathMsgSection(map, "FLY_INTO_WALL", "generic");
+        createDeathMsgSection(map, "HOT_FLOOR", "generic");
+        createDeathMsgSection(map, "CRAMMING", "generic");
+        createDeathMsgSection(map, "DRYOUT", "generic");
+        createDeathMsgSection(map, "FREEZE", "generic");
+        createDeathMsgSection(map, "SONIC_BOOM", "generic");
+        fileConf.addDefaults((Map<String, Object>)map);
         fileConf.options().copyDefaults(true);
         String s1 = fileConf.getString("plugin.version");
         s1 = ((s1 == null || s1.isEmpty()) ? "unknown" : s1);
@@ -219,5 +254,10 @@ public class Config
         //Keep LocationSerializer.toStringNew ??
         EggWars.instance.getConfig().set("lobby.location", Locations.toStringWithWorld(location, true));
         EggWars.instance.saveConfig();
+    }
+
+    private static void createDeathMsgSection(Map map, String cause, String... strings)
+    {
+        map.put("languages.death_message_keys." + cause, Lists.<String>newArrayList(strings));
     }
 }

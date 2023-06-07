@@ -2,10 +2,8 @@ package me.rosillogames.eggwars.arena.game;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;

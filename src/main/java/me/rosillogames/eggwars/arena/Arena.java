@@ -181,7 +181,7 @@ public class Arena
             Team team = new Team(this, teamtype);
             String cagekey = ".Glasses.";//LEGACY KEY
 
-            if (fileconf.getConfigurationSection(teamtypeid + cagekey) == null)//if legacy not present then use new key
+            if (!fileconf.isConfigurationSection(teamtypeid + cagekey))//if legacy not present then use new key
             {
                 cagekey = ".Cages.";
             }

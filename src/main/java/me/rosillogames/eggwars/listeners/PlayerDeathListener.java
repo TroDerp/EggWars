@@ -1,14 +1,12 @@
 package me.rosillogames.eggwars.listeners;
 
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
@@ -36,7 +34,7 @@ public class PlayerDeathListener implements Listener
             return;
         }
 
-        String cause = diedPlayer.getPlayer().getLastDamageCause().getCause().name().toLowerCase();
+        String cause = EggWars.languageManager().getDeathMsgKey(diedPlayer.getPlayer().getLastDamageCause().getCause());
         Arena arena = diedPlayer.getArena();
 
         if (diedPlayer.getLastDamager() != null)

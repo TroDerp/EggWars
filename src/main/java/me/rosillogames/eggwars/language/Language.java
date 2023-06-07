@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.logging.Level;
 import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.rosillogames.eggwars.EggWars;
@@ -16,7 +14,7 @@ import me.rosillogames.eggwars.utils.GsonHelper;
 
 public class Language
 {
-    private final Map<String, StringProvider> translations;
+    private final Map<String, String> translations;
     private final String locale;
 
     public Language(String name, Language other)
@@ -24,24 +22,15 @@ public class Language
         this(name, ImmutableMap.copyOf(other.translations));
     }
 
-    private Language(String name, Map<String, StringProvider> strings)
+    private Language(String name, Map<String, String> strings)
     {
         this.locale = name;
-
-        for (StringProvider provider : strings.values())
-        {
-            if (provider instanceof StringProvider.Reference)
-            {
-                ((StringProvider.Reference)provider).setLang(this);
-            }
-        }
-
         this.translations = strings;
     }
 
-    public StringProvider getOrDefault(final String string)
+    public String getOrDefault(final String string)
     {
-        return this.translations.getOrDefault(string, LanguageManager.getDefaultLanguage().translations.getOrDefault(string, (new StringProvider.Default(string))));
+        return this.translations.getOrDefault(string, LanguageManager.getDefaultLanguage().translations.getOrDefault(string, string));
     }
 
     public boolean has(final String string)
@@ -100,52 +89,13 @@ public class Language
     public static Language loadFromJsonFile(File file, String locale) throws IOException
     {
         FileInputStream fileinputstream = new FileInputStream(file);
-        ImmutableMap.Builder<String, StringProvider> builder = ImmutableMap.<String, StringProvider>builder();
+        ImmutableMap.Builder<String, String> builder = ImmutableMap.<String, String>builder();
         JsonObject jsonobject = EggWars.instance.getGson().fromJson(new InputStreamReader(fileinputstream, StandardCharsets.UTF_8), JsonObject.class);
 
         for (Map.Entry<String, JsonElement> entry : jsonobject.entrySet())
         {
             String key = entry.getKey();
-            JsonElement element = entry.getValue();
-
-            if (GsonHelper.isStringValue(element))
-            {
-                builder.put(key, new StringProvider.Default(GsonHelper.convertToString(element, key)));
-                continue;
-            }
-
-            if (element.isJsonArray())
-            {
-                JsonArray array = element.getAsJsonArray();
-                String[] strings = new String[array.size()];
-
-                for (int i = 0; i < array.size(); i++)
-                {
-                    if (GsonHelper.isStringValue(array.get(i)))
-                    {
-                        strings[i] = array.get(i).getAsString();
-                    }
-                }
-
-                if (strings.length > 0)
-                {
-                    builder.put(key, new StringProvider.Multiple(strings));
-                    continue;
-                }
-            }
-
-            if (element.isJsonObject())
-            {
-                JsonElement string = element.getAsJsonObject().get("reference");
-
-                if (string != null && string.isJsonPrimitive() && string.getAsJsonPrimitive().isString())
-                {
-                    builder.put(key, new StringProvider.Reference(string.getAsString()));
-                    continue;
-                }
-            }
-
-            EggWars.instance.getLogger().log(Level.WARNING, "Language \"" + locale + "\" contains an unknown json element for translation key \"" + key + "\".");
+            builder.put(key, GsonHelper.convertToString(entry.getValue(), key));
         }
 
         fileinputstream.close();

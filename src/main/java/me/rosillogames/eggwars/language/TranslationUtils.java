@@ -101,7 +101,7 @@ public class TranslationUtils
     public static void sendMessagePrefix(String msg, CommandSender sender, boolean prefix, Object... args)
     {
         Language lang = (sender != null && sender instanceof Player) ? LanguageUtils.getPlayerLanguage((Player)sender) : LanguageManager.getDefaultLanguage();
-        sender.sendMessage(lang != null ? MessageFactory.factGetMessages(lang.getOrDefault(msg).getString(), prefix, args) : new String[] {msg});
+        sender.sendMessage(lang != null ? MessageFactory.factGetMessages(lang.getOrDefault(msg), prefix, args) : new String[] {msg});
     }
 
     public static boolean hasMessage(String msg, Player player)
@@ -131,6 +131,6 @@ public class TranslationUtils
 
     public static String getMessage(String msg, Language lang, Object... args)
     {
-        return lang != null ? MessageFactory.factGetMessage(lang.getOrDefault(msg).getString(), args) : msg;
+        return lang != null ? MessageFactory.factGetMessage(lang.getOrDefault(msg), args) : msg;
     }
 }

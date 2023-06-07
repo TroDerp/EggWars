@@ -2,22 +2,49 @@ package me.rosillogames.eggwars.language;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import com.google.gson.JsonParseException;
 import me.rosillogames.eggwars.EggWars;
 
 public class LanguageManager
 {
     private final Map<String, Language> languages = new HashMap();
+    private final Map<DamageCause, List<String>> deathMessages = new EnumMap(DamageCause.class);
     private Language defaultLanguage = null;
     /** Ignores the language of the client player if it hasn't selected any language on the plugin and uses the default language instead */
     public boolean ignoreClientLanguage;
 
     public void loadConfig()
     {
-        this.ignoreClientLanguage = EggWars.instance.getConfig().getBoolean("plugin.ignore_client_language", false);
+        FileConfiguration config = EggWars.instance.getConfig();
+        this.ignoreClientLanguage = config.getBoolean("plugin.ignore_client_language", false);
+        this.deathMessages.clear();
+        String optKey = "languages.death_message_keys";
+
+        if (config.isConfigurationSection(optKey))
+        {
+            ConfigurationSection section = config.getConfigurationSection(optKey);
+
+            for (DamageCause cause : DamageCause.values())
+            {
+                List<String> list = section.getStringList(cause.name());
+
+                if (list.isEmpty())
+                {
+                    list.add("generic");
+                }
+
+                this.deathMessages.put(cause, list);
+            }
+        }
     }
 
     public void loadLangs()
@@ -81,5 +108,17 @@ public class LanguageManager
     public static Language getDefaultLanguage()
     {
         return EggWars.languageManager().defaultLanguage;
+    }
+
+    public String getDeathMsgKey(DamageCause cause)
+    {
+        List<String> list = this.deathMessages.get(cause);
+
+        if (list != null)
+        {
+            return list.get((new Random()).nextInt(list.size()));
+        }
+
+        return cause.name().toLowerCase();
     }
 }

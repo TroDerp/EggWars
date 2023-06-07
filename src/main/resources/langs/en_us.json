@@ -31,165 +31,37 @@
   "gameplay.ingame.respawned_by_egg": "&bYour egg has brought you a new life!",
   "gameplay.ingame.invincible": "&cYou are now invincible for {0}&c.",
   "gameplay.death.generic": "&e{0}&e died.",
-  "gameplay.death.generic.player": "&e{0}&e died while escaping {1}&e.",
-  "gameplay.death.contact": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.contact.player": {
-    "reference": "gameplay.death.generic.player"
-  },
-  "gameplay.death.entity_attack": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.entity_attack.player": "&e{0}&e was slain by {1}&e.",
-  "gameplay.death.entity_sweep_attack": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.entity_sweep_attack.player": {
-    "reference": "gameplay.death.entity_attack.player"
-  },
-  "gameplay.death.projectile": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.projectile.player": "&e{0}&e was shot by {1}&e.",
-  "gameplay.death.suffocation": "&e{0}&e suffocated.",
-  "gameplay.death.suffocation.player": "&e{0}&e suffocated while escaping {1}&e.",
-  "gameplay.death.fall": [
-    "&e{0}&e fell to their death.",
-    "&e{0}&e couldn't fly."
-  ],
-  "gameplay.death.fall.player": [
-    "&e{0}&e fell to their death while escaping {1}&e.",
-    "&e{0}&e couldn't fly while escaping {1}&e."
-  ],
-  "gameplay.death.fire": [
-    "&e{0}&e burnt to a crisp.",
-    "&e{0}&e burned to death."
-  ],
-  "gameplay.death.fire.player": [
-    "&e{0}&e burnt to a crisp while fighting {1}&e.",
-    "&e{0}&e burned to death while escaping {1}&e."
-  ],
-  "gameplay.death.fire_tick": {
-    "reference": "gameplay.death.fire"
-  },
-  "gameplay.death.fire_tick.player": {
-    "reference": "gameplay.death.fire.player"
-  },
-  "gameplay.death.melting": {
-    "reference": "gameplay.death.fire"
-  },
-  "gameplay.death.melting.player": {
-    "reference": "gameplay.death.fire.player"
-  },
-  "gameplay.death.lava": "&e{0}&e thought they could swim in lava.",
-  "gameplay.death.lava.player": "&e{0}&e thought they could swim in lava while escaping {1}&e.",
-  "gameplay.death.drowning": "&e{0}&e drowned.",
-  "gameplay.death.drowning.player": "&e{0}&e drowned while escaping {1}&e.",
-  "gameplay.death.block_explosion": {
-    "reference": "gameplay.death.entity_explosion"
-  },
-  "gameplay.death.block_explosion.player": {
-    "reference": "gameplay.death.entity_explosion.player"
-  },
-  "gameplay.death.entity_explosion": "&e{0}&e blew up.",
-  "gameplay.death.entity_explosion.player": "&e{0}&e was blown up by {1}&e.",
-  "gameplay.death.void": [
-    "&e{0}&e thought they could survive in the void.",
-    "&e{0}&e died in the void."
-  ],
-  "gameplay.death.void.player": [
-    "&e{0}&e thought they could survive in the void while escaping {1}&e.",
-    "&e{0}&e died in the void while escaping {1}&e."
-  ],
-  "gameplay.death.lightning": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.lightning.player": {
-    "reference": "gameplay.death.generic.player"
-  },
-  "gameplay.death.suicide": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.suicide.player": {
-    "reference": "gameplay.death.generic.player"
-  },
-  "gameplay.death.starvation": "&e{0}&e starved.",
-  "gameplay.death.starvation.player": "&e{0}&e starved while fighting {1}&e.",
-  "gameplay.death.poison": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.poison.player": {
-    "reference": "gameplay.death.generic.player"
-  },
-  "gameplay.death.magic": "&e{0}&e magically died.",
-  "gameplay.death.magic.player": "&e{0}&e magically died while escaping {1}&e.",
-  "gameplay.death.wither": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.wither.player": {
-    "reference": "gameplay.death.generic.player"
-  },
-  "gameplay.death.falling_block": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.falling_block.player": {
-    "reference": "gameplay.death.generic.player"
-  },
-  "gameplay.death.thorns": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.thorns.player": {
-    "reference": "gameplay.death.entity_attack.player"
-  },
-  "gameplay.death.dragon_breath": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.dragon_breath.player": {
-    "reference": "gameplay.death.generic.player"
-  },
-  "gameplay.death.custom": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.custom.player": {
-    "reference": "gameplay.death.generic.player"
-  },
-  "gameplay.death.fly_into_wall": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.fly_into_wall.player": {
-    "reference": "gameplay.death.generic.player"
-  },
-  "gameplay.death.hot_floor": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.hot_floor.player": {
-    "reference": "gameplay.death.generic.player"
-  },
-  "gameplay.death.cramming": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.cramming.player": {
-    "reference": "gameplay.death.generic.player"
-  },
-  "gameplay.death.dryout": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.dryout.player": {
-    "reference": "gameplay.death.generic.player"
-  },
-  "gameplay.death.freeze": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.freeze.player": {
-    "reference": "gameplay.death.generic.player"
-  },
-  "gameplay.death.sonic_boom": {
-    "reference": "gameplay.death.generic"
-  },
-  "gameplay.death.sonic_boom.player": {
-    "reference": "gameplay.death.generic.player"
-  },
+  "gameplay.death.generic.player": "&e{0}&e died because of {1}&e.",
+  "gameplay.death.slain": "&e{0}&e was slain.",
+  "gameplay.death.slain.player": "&e{0}&e was slain by {1}&e.",
+  "gameplay.death.shot": "&e{0}&e was shot.",
+  "gameplay.death.shot.player": "&e{0}&e was shot by {1}&e.",
+  "gameplay.death.suffocated": "&e{0}&e suffocated.",
+  "gameplay.death.suffocated.player": "&e{0}&e suffocated while escaping {1}&e.",
+  "gameplay.death.couldnt_fly": "&e{0}&e couldn't fly.",
+  "gameplay.death.couldnt_fly.player": "&e{0}&e couldn't fly while escaping {1}&e.",
+  "gameplay.death.fell_to_death": "&e{0}&e fell to their death.",
+  "gameplay.death.fell_to_death.player": "&e{0}&e fell to their death while escaping {1}&e.",
+  "gameplay.death.burnt_to_crisp": "&e{0}&e burnt to a crisp.",
+  "gameplay.death.burnt_to_crisp.player": "&e{0}&e burnt to a crisp while fighting {1}&e.",
+  "gameplay.death.burned_to_death": "&e{0}&e burned to death.",
+  "gameplay.death.burned_to_death.player": "&e{0}&e burned to death while fighting {1}&e.",
+  "gameplay.death.swim_in_lava": "&e{0}&e thought they could swim in lava.",
+  "gameplay.death.swim_in_lava.player": "&e{0}&e thought they could swim in lava while escaping {1}&e.",
+  "gameplay.death.drowned": "&e{0}&e drowned.",
+  "gameplay.death.drowned.player": "&e{0}&e drowned while escaping {1}&e.",
+  "gameplay.death.blown_up": "&e{0}&e blew up.",
+  "gameplay.death.blown_up.player": "&e{0}&e was blown up by {1}&e.",
+  "gameplay.death.died_in_void": "&e{0}&e died in the void.",
+  "gameplay.death.died_in_void.player": "&e{0}&e died in the void while escaping {1}&e.",
+  "gameplay.death.thought_void": "&e{0}&e thought they could survive in the void.",
+  "gameplay.death.thought_void.player": "&e{0}&e thought they could survive in the void while escaping {1}&e.",
+  "gameplay.death.starved": "&e{0}&e starved.",
+  "gameplay.death.starved.player": "&e{0}&e starved while fighting {1}&e.",
+  "gameplay.death.poison": "&e{0}&e died of poison.",
+  "gameplay.death.poison.player": "&e{0}&e died of poison while fighting {1}&e.",
+  "gameplay.death.magic": "&e{0}&e was killed with magic.",
+  "gameplay.death.magic.player": "&e{0}&e was killed with magic while fighting {1}&e.",
   "gameplay.chat.global": "&7[&cGlobal&7]&7 {1}&f: &7{2}",
   "gameplay.chat.team": "&7[&bTeam&7]&7 {1}&f: &7{2}",
   "gameplay.chat.lobby": "&7[&aLobby&7]&7 {0}&f: &7{1}",
