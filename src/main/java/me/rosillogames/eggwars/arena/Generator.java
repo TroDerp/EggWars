@@ -206,7 +206,7 @@ public class Generator
         this.genInv.setItem(11, tInfoItem);
         this.genInv.setItem(15, tUpgradeItem);
         this.genInv.setItem(22, EwPlayerMenu.getCloseItem());
-        InventoryController.updateInventories((p) -> p.getArena() == this.arena && p.getInv() != null && p.getInv().getExtraData() instanceof Generator && ((Generator)p.getInv().getExtraData()).getBlock() == this.getBlock(), this.genInv, EwInvType.GENERATOR_INFO);
+        InventoryController.updateInventories((p) -> p.getArena() == this.arena && p.getInv() != null && p.getInv().getExtraData() instanceof Generator && ((Generator)p.getInv().getExtraData()).getBlock().equals(this.getBlock()), this.genInv, EwInvType.GENERATOR_INFO);
     }
 
     public void stop()
@@ -405,7 +405,7 @@ public class Generator
     public static String getName(Player player, GeneratorType type, int level, boolean color)
     {
         String lvl = level == 0 ? TranslationUtils.getMessage("generator.info.broken", player) : TranslationUtils.getMessage("generator.info.level", player, level);
-        return TranslationUtils.getMessage("generator.title", player, color ? (ChatColor.YELLOW + "" + ChatColor.BOLD) : ChatColor.DARK_GRAY, (color ? type.droppedToken().getColor() + "" + ChatColor.BOLD : "") + TranslationUtils.getMessage(type.droppedToken().getTypeName(), player), lvl);
+        return TranslationUtils.getMessage("generator.title", player, color ? (ChatColor.YELLOW + "" + ChatColor.BOLD) : "", (color ? type.droppedToken().getColor() + "" + ChatColor.BOLD : "") + TranslationUtils.getMessage(type.droppedToken().getTypeName(), player), lvl);
     }
 
     public int hashCode()

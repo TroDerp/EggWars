@@ -19,11 +19,11 @@ public class EwInvType
     public static final EwInvType SETTINGS = new EwInvType("settings");
     public static final EwInvType LANGUAGES = new EwInvType("languages");
     public static final EwInvType ARENA_SETUP = new EwInvType("arena_setup");
-    public static final EwInvType MAIN_SETUP = new EwInvType("main_setup");
+    public static final EwInvType BASIC_SETTINGS = new EwInvType("basic_settings");
     public static final EwInvType TEAMS_SETUP = new EwInvType("teams_setup");
     public static final EwInvType SINGLE_TEAM_SETUP = new EwInvType("single_team_setup");
-    public static final EwInvType GENERATORS_SETUP = new EwInvType("generators_setup");
-    public static final EwInvType GENERATOR_LEVELS_SETUP = new EwInvType("generator_levels_setup");
+    public static final EwInvType SELECT_GENERATOR = new EwInvType("select_generator");
+    public static final EwInvType SELECT_GENERATOR_LEVEL = new EwInvType("select_generator_level");
 
     private final String nameSpace;
 

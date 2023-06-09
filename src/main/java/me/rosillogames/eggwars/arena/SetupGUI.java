@@ -28,6 +28,7 @@ import me.rosillogames.eggwars.player.inventory.InventoryController;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.ItemUtils;
+import me.rosillogames.eggwars.utils.Locations;
 import me.rosillogames.eggwars.utils.PlayerUtils;
 import me.rosillogames.eggwars.utils.TeamTypes;
 import me.rosillogames.eggwars.utils.TeamUtils;
@@ -36,25 +37,25 @@ public class SetupGUI
 {
     public static void openArenaGUI(Player player1, Arena arena)
     {
-        TranslatableInventory tInv = new TranslatableInventory(36, (player) -> "Arena Setup Gui");
-        tInv.setItem(11, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.CRAFTING_TABLE, 1), (player) -> "§7Here you can setup some of\n§7the arena's main settings", (player) -> "§e§lMain Setup"));
-        tInv.setItem(13, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.BLACK_BANNER, 1), (player) -> "§7Here you can setup the arena's teams", (player) -> "§e§lTeam Setup"));
-        tInv.setItem(15, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.OAK_SIGN, 1), (player) -> "§7Here you can setup the generators", (player) -> "§e§lGenerator Setup"));
+        TranslatableInventory tInv = new TranslatableInventory(36, "setup.gui.arena.title");
+        tInv.setItem(11, TranslatableItem.translatableNameLore(new ItemStack(Material.CRAFTING_TABLE, 1), "setup.gui.arena.basic.item_lore", "setup.gui.arena.basic.item_name"));
+        tInv.setItem(13, TranslatableItem.translatableNameLore(new ItemStack(Material.BLACK_BANNER, 1), "setup.gui.arena.teams.item_lore", "setup.gui.arena.teams.item_name"));
+        tInv.setItem(15, TranslatableItem.translatableNameLore(new ItemStack(Material.OAK_SIGN, 1), "setup.gui.arena.generators.item_lore", "setup.gui.arena.generators.item_name"));
         tInv.setItem(31, EwPlayerMenu.getCloseItem());
         InventoryController.openInventory(player1, tInv, EwInvType.ARENA_SETUP);
     }
 
     public static TranslatableItem getSetupGUIItem()
     {
-        return TranslatableItem.translatableNameLore(new ItemStack(Material.ITEM_FRAME), (player) -> "§7Right-Click to open!", (player) -> "§a§lSetup GUI");
+        return TranslatableItem.translatableNameLore(new ItemStack(Material.ITEM_FRAME), "setup.gui.item_lore", "setup.gui.item_name");
     }
 
-    private static void openMainSetupGUI(Player player1, Arena arena)
+    private static void openBasicSetupGUI(Player player1, Arena arena)
     {
-        TranslatableInventory tInv = new TranslatableInventory(27, (player) -> "Main Settings");
-        tInv.setItem(4, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.WRITABLE_BOOK, 1), (player) -> "§7Click to show the to-do list on the chat", (player) -> "§a§lTo-Do List"));
-        tInv.setItem(10, getTeamSetting("Lobby Location", arena.getLobby(), Material.SANDSTONE));
-        tInv.setItem(12, getTeamSetting("Center Location", arena.getCenter(), Material.RED_SANDSTONE));
+        TranslatableInventory tInv = new TranslatableInventory(27, "setup.gui.basic.title");
+        tInv.setItem(4, TranslatableItem.translatableNameLore(new ItemStack(Material.WRITABLE_BOOK, 1), "setup.gui.basic.todo.item_lore", "setup.gui.basic.todo.item_name"));
+        tInv.setItem(10, getLocationSetting("setup.gui.basic.lobby", arena.getLobby(), Material.SANDSTONE));
+        tInv.setItem(12, getLocationSetting("setup.gui.basic.center", arena.getCenter(), Material.RED_SANDSTONE));
 
         if (arena.getBounds() == null)
         {
@@ -62,19 +63,16 @@ public class SetupGUI
         }
 
         Bounds bounds = arena.getBounds();
-        tInv.setItem(14, getTeamSetting("Bounds Start", bounds.getStart(), bounds.getStart() != null ? Material.STRUCTURE_VOID : Material.BARRIER));
-        tInv.setItem(15, getTeamSetting("Bounds End", bounds.getEnd(), bounds.getEnd() != null ? Material.STRUCTURE_VOID : Material.BARRIER));
-        TranslatableItem boundsItem = new TranslatableItem(new ItemStack(Material.TARGET, 1));
-        boundsItem.setName((player) -> "§a§lArena Bounds");
-        boundsItem.addLoreString("§7Arena Bounds are used to\n§7set the build limits for players" + (bounds.getStart() == null && bounds.getEnd() == null ? "" : "\n\n§4Shift+Click to remove bounds"), false);
-        tInv.setItem(16, boundsItem);
+        tInv.setItem(14, getLocationSetting("setup.gui.basic.bounds_start", bounds.getStart(), bounds.getStart() != null ? Material.STRUCTURE_VOID : Material.BARRIER));
+        tInv.setItem(15, getLocationSetting("setup.gui.basic.bounds_end", bounds.getEnd(), bounds.getEnd() != null ? Material.STRUCTURE_VOID : Material.BARRIER));
+        tInv.setItem(16, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.TARGET, 1), (player) -> TranslationUtils.getMessage("setup.gui.basic.bounds_info.item_lore", player, (bounds.getStart() == null && bounds.getEnd() == null ? "" : TranslationUtils.getMessage("setup.gui.basic.bounds_info.remove", player))), (player) -> TranslationUtils.getMessage("setup.gui.basic.bounds_info.item_name", player)));
         tInv.setItem(22, EwPlayerMenu.getCloseItem());
-        InventoryController.openInventory(player1, tInv, EwInvType.MAIN_SETUP);
+        InventoryController.openInventory(player1, tInv, EwInvType.BASIC_SETTINGS);
     }
 
     private static void openTeamsSetupGUI(Player player1, Arena arena)
     {
-        TranslatableInventory tInv = new TranslatableInventory(36, (player) -> "Teams");
+        TranslatableInventory tInv = new TranslatableInventory(36, "setup.gui.teams.title");
         Map<Integer, TeamTypes> map = new HashMap();
         int i = 0;
 
@@ -84,8 +82,8 @@ public class SetupGUI
             TranslatableItem tItem = new TranslatableItem((player) ->
             {
                 ItemStack stack = ItemUtils.tryColorizeByTeam(teamtype, new ItemStack(Material.WHITE_WOOL, 1));
-                int to_conf = 1;
-                //don't change this! negative items (INCLUDING zero) don't work
+                int to_conf = 1;//don't change this! negative items (INCLUDING zero) don't work anymore
+
                 if (team != null)
                 {
                     if (team.getVillager() == null)
@@ -121,52 +119,55 @@ public class SetupGUI
                 return stack;
             });
 
-            tItem.setName((player) -> TeamUtils.translateTeamType(teamtype, player, false));
-            tItem.addLoreString("§7Todo:", false);
-
-            if (team == null)
+            tItem.setName((player) -> TranslationUtils.getMessage("setup.gui.teams.team.item_name", player, TeamUtils.translateTeamType(teamtype, player, false)));
+            tItem.addLoreTranslatable((player) ->
             {
-                tItem.addLoreString("§c - Create team", false);
-                tItem.addLoreString("", false);
-                tItem.addLoreString("§7Click to create this team!", false);
-            }
-            else
-            {
-                boolean done = true;
+                StringBuilder todoLore = new StringBuilder();
+                String clickLore;
 
-                if (team.getVillager() == null)
+                if (team == null)
                 {
-                    done = false;
-                    tItem.addLoreString("§6 - Set villager", false);
+                    todoLore.append(TranslationUtils.getMessage("setup.gui.teams.team.todo.create", player));
+                    clickLore = TranslationUtils.getMessage("setup.gui.teams.team.click.uncreated", player);
+                }
+                else
+                {
+                    boolean done = true;
+
+                    if (team.getVillager() == null)
+                    {
+                        done = false;
+                        todoLore.append(TranslationUtils.getMessage("setup.gui.teams.team.todo.villager", player));
+                    }
+
+                    if (team.getCages() == null || team.getCages().size() < arena.getMaxTeamPlayers())
+                    {
+                        done = false;
+                        todoLore.append(TranslationUtils.getMessage("setup.gui.teams.team.todo.cages", player));
+                    }
+
+                    if (team.getRespawn() == null)
+                    {
+                        done = false;
+                        todoLore.append(TranslationUtils.getMessage("setup.gui.teams.team.todo.respawn", player));
+                    }
+
+                    if (team.getEgg() == null)
+                    {
+                        done = false;
+                        todoLore.append(TranslationUtils.getMessage("setup.gui.teams.team.todo.egg", player));
+                    }
+
+                    if (done)
+                    {
+                        todoLore.append(TranslationUtils.getMessage("setup.gui.teams.team.todo.done", player));
+                    }
+
+                    clickLore = TranslationUtils.getMessage("setup.gui.teams.team.click.created", player);
                 }
 
-                if (team.getCages() == null || team.getCages().size() < arena.getMaxTeamPlayers())
-                {
-                    done = false;
-                    tItem.addLoreString("§6 - Add cages", false);
-                }
-
-                if (team.getRespawn() == null)
-                {
-                    done = false;
-                    tItem.addLoreString("§6 - Set respawn", false);
-                }
-
-                if (team.getEgg() == null)
-                {
-                    done = false;
-                    tItem.addLoreString("§6 - Set egg", false);
-                }
-
-                if (done)
-                {
-                    tItem.addLoreString("§a - Done!", false);
-                }
-
-                tItem.addLoreString("", false);
-                tItem.addLoreString("§7Click to view settings!", false);
-                tItem.addLoreString("§4Shift click to remove this team!", false);
-            }
+                return TranslationUtils.getMessage("setup.gui.teams.team.item_lore", player, todoLore.toString(), clickLore);
+            });
 
             int slot = (9 * ((i / 7) + 1)) + ((i % 7) + 1);
             map.put(slot, teamtype);
@@ -181,37 +182,42 @@ public class SetupGUI
     private static void openSingleTeamSetupGUI(Player player, Team team, Arena arena)
     {
         TranslatableInventory tInv = new TranslatableInventory(27, (player1) -> TeamUtils.translateTeamType(team.getType(), player1, false) + "'s settings");
-        tInv.setItem(10, getTeamSetting("Villager Location", team.getVillager(), Material.VILLAGER_SPAWN_EGG));
-        tInv.setItem(12, getMultipleSetting("Cage Locations", team.getCages(), Material.GLASS, team.getCages().size(), arena.getMaxTeamPlayers()));
-        tInv.setItem(14, getTeamSetting("Respawn Location", team.getRespawn(), Material.RED_WOOL));
-        tInv.setItem(16, getTeamSetting("Egg Location", team.getEgg(), Material.DRAGON_EGG));
+        tInv.setItem(10, getLocationSetting("setup.gui.team.villager", team.getVillager(), Material.VILLAGER_SPAWN_EGG));
+        tInv.setItem(12, getMultipleSetting("setup.gui.team.cages", team.getCages(), Material.GLASS, team.getCages().size(), arena.getMaxTeamPlayers()));
+        tInv.setItem(14, getLocationSetting("setup.gui.team.respawn", team.getRespawn(), Material.RED_WOOL));
+        tInv.setItem(16, getLocationSetting("setup.gui.team.egg", team.getEgg(), Material.DRAGON_EGG));
         tInv.setItem(22, EwPlayerMenu.getCloseItem());
         InventoryController.openInventory(player, tInv, EwInvType.SINGLE_TEAM_SETUP).setExtraData(team);
     }
 
-    private static TranslatableItem getTeamSetting(String name, Location setting, Material mat)
+    private static TranslatableItem getLocationSetting(String tKey, Location setting, Material mat)
     {
         TranslatableItem settingItem = new TranslatableItem(new ItemStack(mat, 1));
-        settingItem.setName((player) -> "§e§l" + name);
-
-        if (setting != null)
+        settingItem.setName((player) -> TranslationUtils.getMessage(tKey + ".item_name", player));
+        settingItem.addLoreTranslatable((player) ->
         {
-            settingItem.addLoreString("§7Position:", false);
-            settingItem.addLoreString("§7- X: " + setting.getBlockX(), false);
-            settingItem.addLoreString("§7- Y: " + setting.getBlockY(), false);
-            settingItem.addLoreString("§7- Z: " + setting.getBlockZ(), false);
-        }
-        else
-        {
-            settingItem.addLoreString("§cNot set!", false);
-        }
+            String settingLore;
 
-        settingItem.addLoreString("", false);
-        settingItem.addLoreString("§6Click to set location (Your position)", false);
+            if (setting != null)
+            {
+                settingLore = TranslationUtils.getMessage("setup.gui.location_desc.set", player, setting.getBlockX(), setting.getBlockY(), setting.getBlockZ());
+            }
+            else
+            {
+                settingLore = TranslationUtils.getMessage("setup.gui.location_desc.unset", player);
+            }
+
+            return TranslationUtils.getMessage(tKey + ".item_lore", player, settingLore);
+        });
+
         return settingItem;
     }
 
-    private static TranslatableItem getMultipleSetting(String name, Collection<Location> setting, Material mat, int set, int toSet)
+    /* TODO
+     * Remove this in the future, will create new gui of multiple items with single locations
+     * to add support for right+click to teleport to cages
+     */
+    private static TranslatableItem getMultipleSetting(String tKey, Collection<Location> setting, Material mat, int set, int toSet)
     {
         TranslatableItem settingItem = new TranslatableItem((player) ->
         {
@@ -219,34 +225,33 @@ public class SetupGUI
             return stack;
         });
 
-        settingItem.setName((player) -> "§e§l" + name);
-        settingItem.addLoreString("§7Positions: §e(" + set + "/" + toSet + ")", false);
-
-        if (setting != null && !setting.isEmpty())
+        settingItem.setName((player) -> TranslationUtils.getMessage(tKey + ".item_name", player));
+        settingItem.addLoreTranslatable((player) ->
         {
-            for (Location loc : setting)
+            StringBuilder settingLore = new StringBuilder();
+
+            if (setting != null && !setting.isEmpty())
             {
-                settingItem.addLoreString("§7- X: " + loc.getBlockX() + ", Y: " + loc.getBlockY() + ", Z: " + loc.getBlockZ(), false);
+                for (Location loc : setting)
+                {
+                    settingLore.append(TranslationUtils.getMessage("setup.gui.multi_locations.value", player, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+                }
             }
-        }
-        else
-        {
-            settingItem.addLoreString("§cNot set!", false);
-        }
+            else
+            {
+                settingLore.append(TranslationUtils.getMessage("setup.gui.multi_locations.none_set", player));
+            }
 
-        settingItem.addLoreString("", false);
-        settingItem.addLoreString("§6Click to add location (Your position)", false);
-        settingItem.addLoreString("§4Shift+Click to remove last location", false);
+            return TranslationUtils.getMessage(tKey + ".item_lore", player, TranslationUtils.getMessage("setup.gui.multi_locations.desc", player, set, toSet, settingLore.toString()));
+        });
         return settingItem;
     }
-
-    //TODO: cache generator inventories
 
     private static void openGeneratorsSetupGUI(Player player1, int page)
     {
         Map<String, GeneratorType> generators = EggWars.getGeneratorManager().getGenerators();
         List<EwPlayerMenu.MenuSize> sizes = EwPlayerMenu.MenuSize.fromChestSize(generators.size());
-        TranslatableInventory tInv = new TranslatableInventory(sizes.get(page).getSlots(), (player) -> "Generators");
+        TranslatableInventory tInv = new TranslatableInventory(sizes.get(page).getSlots(), "setup.gui.generators.title");
 
         if (page < (sizes.size() - 1))
         {
@@ -276,20 +281,20 @@ public class SetupGUI
             if (pages == page)
             {
                 int slot = (9 * ((counter / 7) + 1)) + ((counter % 7) + 1);
-                tInv.setItem(slot, TranslatableItem.translatableNameLore(new ItemStack(entry.getValue().droppedToken().getMaterial(), 1), (player) -> "§7Click to choose level", (player) -> entry.getValue().droppedToken().getFormattedName(player)));
+                tInv.setItem(slot, TranslatableItem.translatableNameLore(new ItemStack(entry.getValue().droppedToken().getMaterial(), 1), (player) -> TranslationUtils.getMessage("setup.gui.generators.type.item_lore", player), (player) -> TranslationUtils.getMessage("setup.gui.generators.type.item_name", player, entry.getValue().droppedToken().getFormattedName(player))));
                 typeMap.put(slot, entry.getValue());
             }
 
             counter++;
         }
 
-        InventoryController.openInventory(player1, tInv, EwInvType.GENERATORS_SETUP).setExtraData(new Pair(page, typeMap));
+        InventoryController.openInventory(player1, tInv, EwInvType.SELECT_GENERATOR).setExtraData(new Pair(page, typeMap));
     }
 
     private static void openGeneratorLevelsGUI(Player player1, GeneratorType type, int page)
     {
         List<EwPlayerMenu.MenuSize> sizes = EwPlayerMenu.MenuSize.fromChestSize(type.getMaxLevel());
-        TranslatableInventory tInv = new TranslatableInventory(sizes.get(page).getSlots(), (player) -> "Generators");
+        TranslatableInventory tInv = new TranslatableInventory(sizes.get(page).getSlots(), "setup.gui.gen_level.title");
 
         if (page < (sizes.size() - 1))
         {
@@ -326,10 +331,8 @@ public class SetupGUI
                 itemstack.setItemMeta(meta);
                 final int fnl = i;
                 TranslatableItem tItem = new TranslatableItem(itemstack);
-                tItem.setName((player) -> type.droppedToken().getFormattedName(player) + " - Level " + fnl);
-                tItem.addLoreString("§7Click to pick level", false);
-                tItem.addLoreString("", false);
-                tItem.addLoreString("§7Right click a sign to apply the level!", false);
+                tItem.setName((player) -> TranslationUtils.getMessage("setup.gui.gen_level.level.item_name", player, type.droppedToken().getFormattedName(player), fnl));
+                tItem.addLoreString("setup.gui.gen_level.level.item_lore", true);
                 tInv.setItem(slot, tItem);
                 typeMap.put(slot, i);
             }
@@ -337,7 +340,7 @@ public class SetupGUI
             counter++;
         }
 
-        InventoryController.openInventory(player1, tInv, EwInvType.GENERATOR_LEVELS_SETUP).setExtraData(new Pair(new Pair(type, page), typeMap));
+        InventoryController.openInventory(player1, tInv, EwInvType.SELECT_GENERATOR_LEVEL).setExtraData(new Pair(new Pair(type, page), typeMap));
     }
 
     public static class Listener implements org.bukkit.event.Listener
@@ -359,7 +362,7 @@ public class SetupGUI
                 if (clickEvent.getRawSlot() == 11)
                 {
                     clickEvent.setCurrentItem(null);
-                    SetupGUI.openMainSetupGUI(ewplayer.getPlayer(), ewplayer.getSettingArena());
+                    SetupGUI.openBasicSetupGUI(ewplayer.getPlayer(), ewplayer.getSettingArena());
                     return;
                 }
 
@@ -380,7 +383,7 @@ public class SetupGUI
                 return;
             }
 
-            if (ewplayer.getInv().getInventoryType() == EwInvType.MAIN_SETUP)
+            if (ewplayer.getInv().getInventoryType() == EwInvType.BASIC_SETTINGS)
             {
                 clickEvent.setCancelled(true);
 
@@ -395,6 +398,11 @@ public class SetupGUI
 
                 if (clickEvent.getRawSlot() == 10)
                 {
+                    if (tryTpRightClick(clickEvent, arena.getLobby()))
+                    {
+                        return;
+                    }
+
                     arena.setLobby(player.getLocation().clone());
                     TranslationUtils.sendMessage("commands.setArenaLobby.success", player, arena.getName());
                     flag = true;
@@ -402,14 +410,25 @@ public class SetupGUI
 
                 if (clickEvent.getRawSlot() == 12)
                 {
+                    if (tryTpRightClick(clickEvent, arena.getCenter()))
+                    {
+                        return;
+                    }
+
                     arena.setCenter(player.getLocation().clone());
                     TranslationUtils.sendMessage("commands.setCenter.success", player, arena.getName());
                     flag = true;
                 }
 
+                Bounds builder = arena.getBounds();
+
                 if (clickEvent.getRawSlot() == 14)
                 {
-                    Bounds builder = arena.getBounds();
+                    if (tryTpRightClick(clickEvent, builder.getStart()))
+                    {
+                        return;
+                    }
+
                     builder.setStart(player.getLocation().clone());
                     arena.setBounds(builder);
                     TranslationUtils.sendMessage("commands.setBounds.success", player, arena.getName());
@@ -418,14 +437,18 @@ public class SetupGUI
 
                 if (clickEvent.getRawSlot() == 15)
                 {
-                    Bounds builder = arena.getBounds();
+                    if (tryTpRightClick(clickEvent, builder.getEnd()))
+                    {
+                        return;
+                    }
+
                     builder.setEnd(player.getLocation().clone());
                     arena.setBounds(builder);
                     TranslationUtils.sendMessage("commands.setBounds.success", player, arena.getName());
                     flag = true;
                 }
 
-                if (clickEvent.getRawSlot() == 16 && clickEvent.isShiftClick())
+                if (clickEvent.getRawSlot() == 16 && clickEvent.isShiftClick() && (builder.getStart() != null || builder.getEnd() != null))
                 {
                     arena.setBounds(null);
                     TranslationUtils.sendMessage("commands.setBounds.success.removed", player, arena.getName());
@@ -435,7 +458,7 @@ public class SetupGUI
                 if (flag)
                 {
                     clickEvent.setCurrentItem(null);
-                    SetupGUI.openMainSetupGUI(ewplayer.getPlayer(), arena);
+                    SetupGUI.openBasicSetupGUI(ewplayer.getPlayer(), arena);
                 }
 
                 return;
@@ -484,6 +507,11 @@ public class SetupGUI
 
                 if (clickEvent.getRawSlot() == 10)
                 {
+                    if (tryTpRightClick(clickEvent, team.getVillager()))
+                    {
+                        return;
+                    }
+
                     team.setVillager(player.getLocation());
                     TranslationUtils.sendMessage("commands.setTeamVillager.success", player, team.getType().id());
                     flag = true;
@@ -507,6 +535,11 @@ public class SetupGUI
 
                 if (clickEvent.getRawSlot() == 14)
                 {
+                    if (tryTpRightClick(clickEvent, team.getRespawn()))
+                    {
+                        return;
+                    }
+
                     team.setRespawn(player.getLocation());
                     TranslationUtils.sendMessage("commands.setTeamRespawn.success", player, team.getType().id());
                     flag = true;
@@ -514,6 +547,11 @@ public class SetupGUI
 
                 if (clickEvent.getRawSlot() == 16)
                 {
+                    if (tryTpRightClick(clickEvent, team.getEgg()))
+                    {
+                        return;
+                    }
+
                     team.setEgg(player.getLocation());
                     TranslationUtils.sendMessage("commands.setTeamEgg.success", player, team.getType().id());
                     flag = true;
@@ -529,7 +567,7 @@ public class SetupGUI
                 return;
             }
 
-            if (ewplayer.getInv().getInventoryType() == EwInvType.GENERATORS_SETUP)
+            if (ewplayer.getInv().getInventoryType() == EwInvType.SELECT_GENERATOR)
             {
                 clickEvent.setCancelled(true);
                 Pair<Integer, Map<Integer, GeneratorType>> pair = (Pair<Integer, Map<Integer, GeneratorType>>)ewplayer.getInv().getExtraData();
@@ -561,7 +599,7 @@ public class SetupGUI
                 return;
             }
 
-            if (ewplayer.getInv().getInventoryType() == EwInvType.GENERATOR_LEVELS_SETUP)
+            if (ewplayer.getInv().getInventoryType() == EwInvType.SELECT_GENERATOR_LEVEL)
             {
                 clickEvent.setCancelled(true);
                 Pair<Pair<GeneratorType, Integer>, Map<Integer, Integer>> pair = (Pair<Pair<GeneratorType, Integer>, Map<Integer, Integer>>)ewplayer.getInv().getExtraData();
@@ -636,6 +674,21 @@ public class SetupGUI
 
                 generator.updateSign();
             }
+        }
+
+        private static boolean tryTpRightClick(InventoryClickEvent click, Location loc)
+        {
+            if (click.isRightClick() && loc != null)
+            {
+                click.setCurrentItem(null);
+                Player clicker = (Player)click.getWhoClicked();
+                InventoryController.closeInventory(clicker, true);
+                loc.setWorld(clicker.getWorld());
+                clicker.teleport(Locations.toMiddle(loc));
+                return true;
+            }
+
+            return false;
         }
 
         public static boolean useCloseMenu(InventoryClickEvent clickEvent)

@@ -11,7 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
-import com.google.common.collect.Lists;
 import me.rosillogames.eggwars.dependencies.DependencyUtils;
 import me.rosillogames.eggwars.enums.Versions;
 import me.rosillogames.eggwars.loaders.ArenaLoader;
@@ -258,6 +257,6 @@ public class Config
 
     private static void createDeathMsgSection(Map map, String cause, String... strings)
     {
-        map.put("languages.death_message_keys." + cause, Lists.<String>newArrayList(strings));
+        map.put("death_message_keys." + cause, strings);
     }
 }

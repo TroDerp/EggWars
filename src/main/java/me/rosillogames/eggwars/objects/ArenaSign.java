@@ -27,7 +27,7 @@ public class ArenaSign
         if (this.location.getBlock().getState() instanceof Sign)
         {
             Sign sign = (Sign)this.location.getBlock().getState();
-            ArenaStatus status = this.arena.getStatus();
+            ArenaStatus status = this.arena.getStatus();//TODO: why is "setup" in this translation!?
             Object[] args = new Object[] {this.arena.getName(), TranslationUtils.getMessage("status." + status.toString()), Integer.toString(status.isGame() || status == ArenaStatus.FINISHING ? this.arena.getAlivePlayers().size() : this.arena.getPlayers().size()), Integer.toString(this.arena.getMaxPlayers())};
             sign.setLine(0, TranslationUtils.getMessage("setup.sign.arena.line_1", args));
             sign.setLine(1, TranslationUtils.getMessage("setup.sign.arena.line_2", args));

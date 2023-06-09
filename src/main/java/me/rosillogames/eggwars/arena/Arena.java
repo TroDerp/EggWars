@@ -1120,7 +1120,7 @@ public class Arena
             i++;
         }
 
-        this.teamInv.setItem(this.teamInv.getSize() - 1, TranslatableItem.translatableName(new ItemStack(Material.NETHER_STAR), "teams.random.item_name"));
+        this.teamInv.setItem(this.teamInv.getSize() - 1, TranslatableItem.translatableNameLore(new ItemStack(Material.NETHER_STAR), "teams.random.item_lore", "teams.random.item_name"));
         InventoryController.updateInventories((predicateplayer) -> predicateplayer.getArena() == this, this.teamInv, EwInvType.TEAM_SELECTION);
 
         if (this.voteInv == null)

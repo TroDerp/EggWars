@@ -57,7 +57,7 @@ public class EggWarsListener implements Listener
         {
             for (EwPlayer player : EggWars.players)
             {
-                if (player.getInv() != null && (player.getInv().getInventoryType() == EwInvType.GENERATOR_INFO || player.getInv().getInventoryType() == EwInvType.GENERATOR_LEVELS_SETUP || player.getInv().getInventoryType() == EwInvType.GENERATORS_SETUP))
+                if (player.getInv() != null && (player.getInv().getInventoryType() == EwInvType.GENERATOR_INFO || player.getInv().getInventoryType() == EwInvType.SELECT_GENERATOR_LEVEL || player.getInv().getInventoryType() == EwInvType.SELECT_GENERATOR))
                 {
                     InventoryController.closeInventory(player.getPlayer(), false);//add warning?
                 }

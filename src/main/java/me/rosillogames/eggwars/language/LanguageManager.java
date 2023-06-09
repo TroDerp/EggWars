@@ -27,7 +27,7 @@ public class LanguageManager
         FileConfiguration config = EggWars.instance.getConfig();
         this.ignoreClientLanguage = config.getBoolean("plugin.ignore_client_language", false);
         this.deathMessages.clear();
-        String optKey = "languages.death_message_keys";
+        String optKey = "death_message_keys";
 
         if (config.isConfigurationSection(optKey))
         {

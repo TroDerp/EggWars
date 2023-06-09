@@ -68,7 +68,14 @@ public class TranslatableItem
 
         for (Translatable<String> translatable : this.lore)
         {
-            translatedLore.addAll(Arrays.asList(translatable.translate(player).split("\\n")));
+            String translated = translatable.translate(player);
+
+            if (translated.isEmpty())
+            {
+                continue;
+            }
+
+            translatedLore.addAll(Arrays.asList(translated.split("\\n")));
         }
 
         if (!this.resetLore)
