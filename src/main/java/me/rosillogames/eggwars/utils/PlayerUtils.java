@@ -129,7 +129,7 @@ public class PlayerUtils
 
     public static void tpToLobby(Player player, boolean sendBungee)
     {
-        if (player == null || player == null || !player.isOnline())
+        if (player == null || !player.isOnline())
         {
             return;
         }
