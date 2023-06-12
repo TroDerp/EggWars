@@ -108,6 +108,7 @@ public class Arena
     private int fullCountdown;
     /** Count down for the game (in seconds). It is used when waiting on cages **/
     private int gameCountdown;
+    private final Scoreboards scores = new Scoreboards(this);
 
     public Arena(String name)
     {
@@ -468,9 +469,9 @@ public class Arena
 
     public void removePlayer(EwPlayer ewplayer)
     {
-        for (Team team : this.teams.values())
+        if (ewplayer.getTeam() != null)
         {
-            team.getPlayers().remove(ewplayer);
+            ewplayer.getTeam().removePlayer(ewplayer);
         }
 
         this.players.remove(ewplayer);
@@ -529,15 +530,16 @@ public class Arena
             player.getPlayer().teleport(this.center.clone().add(0.0D, 0.5D, 0.0D));
             player.getPlayer().setGameMode(GameMode.SPECTATOR);
             player.setEliminated(true);
+            this.scores.updateScores(false);
+            this.scores.setTeamScores(player);
         }
         else
         {
             player.getPlayer().teleport(this.lobby.clone().add(0.0D, 0.5D, 0.0D));
             player.getPlayer().setGameMode(GameMode.SURVIVAL);
             Lobby.onEnter(this, player);
+            this.scores.updateScores(true);
         }
-
-        Scoreboards.setScore(this);
 
         if (this.hasEnoughPlayers() && this.status.equals(ArenaStatus.LOBBY))
         {
@@ -549,12 +551,13 @@ public class Arena
 
     public void leaveArena(EwPlayer player, boolean sendBungee, boolean silent)
     {
-        this.players.remove(player);
-        Scoreboards.clearScoreboard(player.getPlayer());
+        Team team = player.getTeam();
+        this.removePlayer(player);
+        this.scores.clearScoreboard(player.getPlayer());
 
         if (!this.equals(player.getArena()))
         {
-            Scoreboards.setScore(this);
+            this.scores.updateScores(true);
             return;
         }
 
@@ -571,17 +574,14 @@ public class Arena
             this.sendBroadcast("gameplay." + (this.status.isLobby() ? "lobby" : "ingame") + ".player_left", player.getPlayer().getDisplayName(), Integer.valueOf(this.players.size()), Integer.valueOf(this.getTeams().size() * this.maxTeamPlayers));
         }
 
-        if (player.getTeam() != null)
+        if (team != null && this.status.isGame() && !player.isEliminated())
         {
-            if (!player.isEliminated() && !silent && this.status.isGame())
+            if (!silent)
             {
                 player.getArena().sendBroadcast("gameplay.ingame.player_eliminated", player.getPlayer().getCustomName());
             }
 
-            Team team = player.getTeam();
-            team.removePlayer(player);
-
-            if (this.status.isGame() && team.isEliminated())
+            if (team.isEliminated())
             {
                 if (team.canRespawn())
                 {
@@ -590,18 +590,12 @@ public class Arena
 
                 if (!silent)
                 {
-                    for (EwPlayer ewplayer1 : this.getPlayers())
-                    {
-                        ewplayer1.getPlayer().sendMessage("");
-                        TranslationUtils.sendMessage("gameplay.ingame.team_eliminated", ewplayer1.getPlayer(), TeamUtils.translateTeamType(team.getType(), ewplayer1.getPlayer(), false));
-                        ewplayer1.getPlayer().sendMessage("");
-                        ewplayer1.getPlayer().playSound(ewplayer1.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 0.0F);
-                    }
+                    team.broadcastEliminated();
                 }
             }
         }
 
-        Scoreboards.setScore(this);
+        this.scores.updateScores(true);
 
         if (this.status.isLobby())
         {
@@ -616,11 +610,11 @@ public class Arena
 
         if (this.status.isGame())
         {
-            Team team = this.getWinner();
+            Team winner = this.getWinner();
 
-            if ((!this.forced && team != null) || this.getAliveTeams().isEmpty())
+            if ((!this.forced && winner != null) || this.getAliveTeams().isEmpty())
             {
-                Finish.finish(this, team);
+                Finish.finish(this, winner);
             }
         }
     }
@@ -738,6 +732,11 @@ public class Arena
     public void setGameCountdown(int i)
     {
         this.gameCountdown = i;
+    }
+
+    public Scoreboards getScores()
+    {
+        return this.scores;
     }
 
     /** Calculates the winner team of the game from the last remaining alive team **/

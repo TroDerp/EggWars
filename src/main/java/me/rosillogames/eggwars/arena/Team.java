@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Set;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -251,25 +253,6 @@ public class Team
         blw.setCustomName(TranslationUtils.getMessage("gameplay.villager.below"));
         blw.setCustomNameVisible(true);
         this.villager.add(blw);
-
-        //Scores
-
-        for (EwPlayer ewplayer : this.arena.getPlayers())
-        {
-            Scoreboard scoreboard = ewplayer.getPlayer().getScoreboard();
-            org.bukkit.scoreboard.Team mcTeam = scoreboard.registerNewTeam(this.type.id());
-            mcTeam.setDisplayName(TeamUtils.translateTeamType(this.type, ewplayer.getPlayer(), true));
-            mcTeam.setColor(this.type.color());
-            mcTeam.setCanSeeFriendlyInvisibles(true);
-            mcTeam.setPrefix(TeamUtils.teamPrefix(this.type, ewplayer.getPlayer()) + " ");
-
-            for (EwPlayer teamplayer : this.players)
-            {
-                mcTeam.addEntry(teamplayer.getPlayer().getName());
-            }
-
-            ewplayer.getPlayer().setScoreboard(scoreboard);
-        }
     }
 
     public void tpPlayersToCages()
@@ -379,18 +362,13 @@ public class Team
         }
     }
 
-    public void sendBroadcast(String s, boolean translate, Object... objects)
+    public void broadcastEliminated()
     {
-        for (EwPlayer ewplayer : this.getPlayers())
+        for (EwPlayer ewplayer1 : this.arena.getPlayers())
         {
-            if (translate)
-            {
-                TranslationUtils.sendMessage(s, ewplayer.getPlayer(), objects);
-            }
-            else
-            {
-                ewplayer.getPlayer().sendMessage(s);
-            }
+            Player pl = ewplayer1.getPlayer();
+            TranslationUtils.sendMessage("gameplay.ingame.team_eliminated", pl, TeamUtils.translateTeamType(this.type, pl, false));
+            pl.playSound(pl.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 0.0F);
         }
     }
 

@@ -38,7 +38,7 @@ public class EggWarsListener implements Listener
 
             for (Arena arena : EggWars.getArenaManager().getArenas())
             {
-                Scoreboards.setScore(arena);
+                arena.getScores().updateScores(true);
             }
         }
 
@@ -78,7 +78,9 @@ public class EggWarsListener implements Listener
 
         if (ewplayer.getArena() != null)
         {
-            Scoreboards.setScore(ewplayer, ewplayer.getArena());
+            Scoreboards scores = ewplayer.getArena().getScores();
+            scores.setScore(ewplayer);
+            scores.setTeamScores(ewplayer);
         }
     }
 }

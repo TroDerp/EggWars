@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
-import me.rosillogames.eggwars.arena.Scoreboards;
 import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.StatType;
@@ -35,7 +34,7 @@ public class Finish
             for (EwPlayer ewpl : arena.getPlayers())
             {
                 Player player = ewpl.getPlayer();
-                String winnerObj = arena.getMode().isTeam() ? TeamUtils.translateTeamType(winner.getType(), player, false) : TeamUtils.colorizePlayerName(winner.getPlayers().iterator().next());
+                String winnerObj = arena.getMode().isTeam() || winner.getPlayers().size() < 1 ? TeamUtils.translateTeamType(winner.getType(), player, false) : TeamUtils.colorizePlayerName(winner.getPlayers().iterator().next());
                 TranslationUtils.sendMessage("gameplay.ingame.winner", player, winnerObj);
 
                 if (winner.equals(ewpl.getTeam()))
@@ -53,11 +52,11 @@ public class Finish
                 }
             }
 
-            Scoreboards.setScore(arena);
+            arena.getScores().updateScores(false);
         }
         else
         {
-            Scoreboards.clearScoreboard(arena);
+            arena.getScores().clearScoreboards();
         }
 
         performFinishCounter(arena, winner);

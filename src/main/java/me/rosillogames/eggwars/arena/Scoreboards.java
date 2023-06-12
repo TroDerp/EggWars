@@ -1,5 +1,6 @@
 package me.rosillogames.eggwars.arena;
 
+import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -9,36 +10,49 @@ import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.utils.TeamTypes;
 import me.rosillogames.eggwars.utils.TeamUtils;
 
 @SuppressWarnings("deprecation")
 public class Scoreboards
 {
-    public static void setScore(Arena arena)
+    private final Arena arena;
+
+    public Scoreboards(Arena arenaIn)
     {
-        for (EwPlayer ewplayer : arena.getPlayers())
+        this.arena = arenaIn;
+    }
+
+    public void updateScores(boolean updateTeams)
+    {
+        for (EwPlayer ewplayer : this.arena.getPlayers())
         {
-            setScore(ewplayer, arena);
+            this.setScore(ewplayer);
+
+            if (updateTeams)
+            {
+                this.setTeamScores(ewplayer);
+            }
         }
     }
 
-    public static void setScore(EwPlayer ewplayer, Arena arena)
+    public void setScore(EwPlayer ewplayer)
     {
-        switch (arena.getStatus())
+        switch (this.arena.getStatus())
         {
             case LOBBY:
             case STARTING:
-                setLobbyScore(ewplayer, arena);
+                this.setLobbyScore(ewplayer);
                 break;
             case SETTING:
             case STARTING_GAME:
             case IN_GAME:
             case FINISHING:
-                setIngameScore(ewplayer, arena);
+                this.setIngameScore(ewplayer);
         }
     }
 
-    public static void setLobbyScore(EwPlayer ewplayer, Arena arena)
+    private void setLobbyScore(EwPlayer ewplayer)
     {
         Scoreboard scoreboard = ewplayer.getPlayer().getScoreboard();
         Objective objective = scoreboard.getObjective("lobby");
@@ -51,11 +65,11 @@ public class Scoreboards
         objective = scoreboard.registerNewObjective("lobby", "dummy", "lobby");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         objective.setDisplayName(TranslationUtils.getMessage("gameplay.scoreboard.lobby.name", ewplayer.getPlayer()));
-        setScoreboard(TranslationUtils.getMessage("gameplay.scoreboard.lobby.data", ewplayer.getPlayer(), new Object[] {arena.getPlayers().size(), ewplayer.getPoints(), arena.getMaxPlayers(), arena.getName()}).split("\\n"), objective);
+        setScoreboard(TranslationUtils.getMessage("gameplay.scoreboard.lobby.data", ewplayer.getPlayer(), new Object[] {this.arena.getPlayers().size(), ewplayer.getPoints(), this.arena.getMaxPlayers(), this.arena.getName()}).split("\\n"), objective);
         ewplayer.getPlayer().setScoreboard(scoreboard);
     }
 
-    public static void setIngameScore(EwPlayer ewplayer, Arena arena)
+    private void setIngameScore(EwPlayer ewplayer)
     {
         Scoreboard scoreboard = ewplayer.getPlayer().getScoreboard();
         Objective objective = scoreboard.getObjective("ingame");
@@ -69,7 +83,7 @@ public class Scoreboards
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         objective.setDisplayName(TranslationUtils.getMessage("gameplay.scoreboard.ingame.name", ewplayer.getPlayer()));
 
-        for (Team team : arena.getTeams().values())
+        for (Team team : this.arena.getTeams().values())
         {
             if (!team.isEliminated())
             {
@@ -77,7 +91,7 @@ public class Scoreboards
             }
         }
 
-        setBelowScoreboard(TranslationUtils.getMessage("gameplay.scoreboard.ingame.data", ewplayer.getPlayer(), new Object[] {arena.getAlivePlayers().size(), ewplayer.getPoints(), arena.getName()}).split("\\n"), objective);
+        setBelowScoreboard(TranslationUtils.getMessage("gameplay.scoreboard.ingame.data", ewplayer.getPlayer(), new Object[] {this.arena.getAlivePlayers().size(), ewplayer.getPoints(), this.arena.getName()}).split("\\n"), objective);
         Objective objective1 = scoreboard.getObjective("kills");
 
         if (objective1 != null)
@@ -90,29 +104,58 @@ public class Scoreboards
             objective1 = scoreboard.registerNewObjective("kills", "dummy", "kills");
             objective1.setDisplaySlot(DisplaySlot.PLAYER_LIST);
 
-            for (EwPlayer arenaPlayer : arena.getPlayers())
+            for (EwPlayer arenaPlayer : this.arena.getPlayers())
             {
-                objective1.getScore(arenaPlayer.getPlayer()).setScore(arenaPlayer.getIngameStats().getStat(StatType.KILLS));
+                objective1.getScore(arenaPlayer.getPlayer().getName()).setScore(arenaPlayer.getIngameStats().getStat(StatType.KILLS));
             }
         }
 
         ewplayer.getPlayer().setScoreboard(scoreboard);
     }
 
-    public static void clearScoreboard(Arena arena)
+    public void setTeamScores(EwPlayer ewplayer)
     {
-        for (EwPlayer ewplayer : arena.getPlayers())
+        Scoreboard scoreboard = ewplayer.getPlayer().getScoreboard();
+
+        for (Map.Entry<TeamTypes, Team> entry : this.arena.getTeams().entrySet())
         {
-            clearScoreboard(ewplayer.getPlayer());
+            TeamTypes type = entry.getKey();
+            org.bukkit.scoreboard.Team mcTeam = scoreboard.getTeam(type.id());
+
+            if (mcTeam != null)
+            {
+                mcTeam.unregister();
+            }
+
+            mcTeam = scoreboard.registerNewTeam(type.id());
+            mcTeam.setDisplayName(TeamUtils.translateTeamType(type, ewplayer.getPlayer(), true));
+            mcTeam.setColor(type.color());
+            mcTeam.setCanSeeFriendlyInvisibles(true);
+            mcTeam.setPrefix(TeamUtils.teamPrefix(type, ewplayer.getPlayer()) + " ");
+
+            for (EwPlayer teamplayer : entry.getValue().getPlayers())
+            {
+                mcTeam.addEntry(teamplayer.getPlayer().getName());
+            }
+        }
+
+        ewplayer.getPlayer().setScoreboard(scoreboard);
+    }
+
+    public void clearScoreboards()
+    {
+        for (EwPlayer ewplayer : this.arena.getPlayers())
+        {
+            this.clearScoreboard(ewplayer.getPlayer());
         }
     }
 
-    public static void clearScoreboard(Player player)
+    public void clearScoreboard(Player player)
     {
         player.setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
     }
 
-    public static void setScoreboard(String sa[], Objective objective)
+    private static void setScoreboard(String sa[], Objective objective)
     {
         int i = sa.length;
 
@@ -123,7 +166,7 @@ public class Scoreboards
         }
     }
 
-    public static void setBelowScoreboard(String sa[], Objective objective)
+    private static void setBelowScoreboard(String sa[], Objective objective)
     {
         int i = -1;
 

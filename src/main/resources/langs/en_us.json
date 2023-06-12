@@ -12,7 +12,7 @@
   "gameplay.lobby.teleporting": "&9Teleporting to map...",
   "gameplay.lobby.not_enough_players": "&cThere aren't enough players! Start cancelled!",
   "gameplay.lobby.go": "&9Go!",
-  "gameplay.ingame.team_eliminated": "&cThe {0}&c team has been eliminated.",
+  "gameplay.ingame.team_eliminated": "&f\n&cThe {0}&c team has been eliminated.\n&f",
   "gameplay.ingame.player_eliminated": "&c{0}&c has been eliminated from the game.",
   "gameplay.ingame.team_egg_destroyed": "&eTeam {0}'s&e egg has been destroyed by {1}&e.",
   "gameplay.ingame.your_egg_destroyed": "&4&lYour egg has been destroyed!",

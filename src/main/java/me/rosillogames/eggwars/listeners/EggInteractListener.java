@@ -15,7 +15,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
-import me.rosillogames.eggwars.arena.Scoreboards;
 import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.StatType;
@@ -56,7 +55,8 @@ public class EggInteractListener implements Listener
             return;
         }
 
-        Team team = TeamUtils.getTeamByEggLocation(ewplayer.getArena(), event.getClickedBlock().getLocation());
+        Arena arena = ewplayer.getArena();
+        Team team = TeamUtils.getTeamByEggLocation(arena, event.getClickedBlock().getLocation());
 
         if (team == null || team.isEliminated())
         {
@@ -81,7 +81,7 @@ public class EggInteractListener implements Listener
 
             ItemStack copy = event.getPlayer().getInventory().getItemInMainHand().clone();
             placing.setType(event.getPlayer().getInventory().getItemInMainHand().getType());
-            ewplayer.getArena().addPlacedBlock(placing.getLocation());
+            arena.addPlacedBlock(placing.getLocation());
             ewplayer.getIngameStats().addStat(StatType.BLOCKS_PLACED, 1);
 
             if ((event.getPlayer().getInventory().getItemInMainHand().getAmount() - 1) == 0)
@@ -116,7 +116,7 @@ public class EggInteractListener implements Listener
 
             ItemStack copy = event.getPlayer().getInventory().getItemInOffHand().clone();
             placing.setType(event.getPlayer().getInventory().getItemInOffHand().getType());
-            ewplayer.getArena().addPlacedBlock(placing.getLocation());
+            arena.addPlacedBlock(placing.getLocation());
             ewplayer.getIngameStats().addStat(StatType.BLOCKS_PLACED, 1);
 
             if ((event.getPlayer().getInventory().getItemInOffHand().getAmount() - 1) == 0)
@@ -171,7 +171,7 @@ public class EggInteractListener implements Listener
 
         event.getClickedBlock().setType(Material.AIR);
         PlayerUtils.addPoints(ewplayer, EggWars.instance.getConfig().getInt("gameplay.points.on_egg"));
-        Scoreboards.setScore(ewplayer.getArena());
+        arena.getScores().updateScores(false);
     }
 
     @EventHandler

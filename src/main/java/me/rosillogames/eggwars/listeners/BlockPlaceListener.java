@@ -11,7 +11,6 @@ import org.bukkit.util.Vector;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Generator;
-import me.rosillogames.eggwars.arena.Scoreboards;
 import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.StatType;
@@ -61,11 +60,11 @@ public class BlockPlaceListener implements Listener
 
             if (eventIn.getBlock().getType().equals(Material.DRAGON_EGG))
             {
-                Team team = TeamUtils.getTeamByEggLocation(ewplayer.getArena(), eventIn.getBlock().getLocation());
+                Team team = TeamUtils.getTeamByEggLocation(arena, eventIn.getBlock().getLocation());
 
                 if (team != null && !team.isEliminated())
                 {
-                    Scoreboards.setScore(ewplayer.getArena());
+                    arena.getScores().updateScores(false);
                     return;
                 }
                 else

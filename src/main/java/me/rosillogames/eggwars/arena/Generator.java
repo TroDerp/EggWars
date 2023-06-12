@@ -340,16 +340,16 @@ public class Generator
             return false;
         }
 
+        Price.sellItems(playerIn, price);
+        this.level++;
         EwPlayer ewplayer = PlayerUtils.getEwPlayer(playerIn);
 
         for (EwPlayer ewplayer1 : ewplayer.getTeam().getPlayers())
         {
             Player teamPlayer = ewplayer1.getPlayer();
-            TranslationUtils.sendMessage("generator.team_upgraded", teamPlayer, TeamUtils.colorizePlayerName(ewplayer), this.cachedType.droppedToken().getFormattedName(teamPlayer), this.level + 1);
+            TranslationUtils.sendMessage("generator.team_upgraded", teamPlayer, TeamUtils.colorizePlayerName(ewplayer), this.cachedType.droppedToken().getFormattedName(teamPlayer), this.level);
         }
 
-        Price.sellItems(playerIn, price);
-        this.level++;
         this.stop();
         this.start();
         Firework firework = Fireworks.genRawFirework(this.block.clone().add(0.5D, 0.0D, 0.5D));

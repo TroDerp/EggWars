@@ -1,7 +1,6 @@
 package me.rosillogames.eggwars.listeners;
 
 import org.bukkit.GameMode;
-import org.bukkit.Sound;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -10,7 +9,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
-import me.rosillogames.eggwars.arena.Scoreboards;
 import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.arena.game.Countdown;
 import me.rosillogames.eggwars.arena.game.Finish;
@@ -71,24 +69,17 @@ public class PlayerDeathListener implements Listener
         }
 
         deathevent.setDeathMessage(null);
-        Scoreboards.setScore(arena);
+        arena.getScores().updateScores(false);
 
         if (!diedPlayer.getTeam().canRespawn())
         {
             diedPlayer.setEliminated(true);
-            Team diedTeam = diedPlayer.getTeam();
-            diedTeam.removePlayer(diedPlayer);
             arena.sendBroadcast("gameplay.ingame.player_eliminated", diedPlayer.getPlayer().getDisplayName());
+            Team diedTeam = diedPlayer.getTeam();
 
             if (diedTeam.isEliminated() && arena.getMode().isTeam())
             {
-                for (EwPlayer ewplayer : arena.getPlayers())
-                {
-                    ewplayer.getPlayer().sendMessage("");
-                    TranslationUtils.sendMessage("gameplay.ingame.team_eliminated", ewplayer.getPlayer(), TeamUtils.translateTeamType(diedTeam.getType(), ewplayer.getPlayer(), false));
-                    ewplayer.getPlayer().sendMessage("");
-                    ewplayer.getPlayer().playSound(ewplayer.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 0.0F);
-                }
+                diedTeam.broadcastEliminated();
             }
 
             Finish.sendFinishStats(diedPlayer);
