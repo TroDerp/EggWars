@@ -14,13 +14,12 @@ import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.SetupGUI;
 import me.rosillogames.eggwars.enums.ArenaStatus;
+import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.loaders.ArenaLoader;
-import me.rosillogames.eggwars.loaders.KitLoader;
 import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.PlayerUtils;
-import me.rosillogames.eggwars.utils.TeamUtils;
-import me.rosillogames.eggwars.utils.VoteUtils;
 
 public class PlayerInteractListener implements Listener
 {
@@ -89,7 +88,7 @@ public class PlayerInteractListener implements Listener
 
         ItemStack itemstack = playerinteractevent.getPlayer().getInventory().getItemInMainHand();
 
-        if (itemstack.equals(KitLoader.getInvItem(playerinteractevent.getPlayer())))
+        if (ItemUtils.getOpensMenu(itemstack) == MenuType.KIT_SELECTION)
         {
             playerinteractevent.setCancelled(true);
             EggWars.getKitManager().openKitsInv(ewplayer.getPlayer(), 0);
@@ -123,7 +122,7 @@ public class PlayerInteractListener implements Listener
 
         ItemStack itemstack = playerinteractevent.getPlayer().getInventory().getItemInMainHand();
 
-        if (itemstack.equals(TeamUtils.getInvItem(playerinteractevent.getPlayer())))
+        if (ItemUtils.getOpensMenu(itemstack) == MenuType.TEAM_SELECTION)
         {
             playerinteractevent.setCancelled(true);
             ewplayer.getArena().openTeamInv(ewplayer.getPlayer());
@@ -157,7 +156,7 @@ public class PlayerInteractListener implements Listener
 
         ItemStack itemstack = playerinteractevent.getPlayer().getInventory().getItemInMainHand();
 
-        if (itemstack.equals(VoteUtils.getInvItem(playerinteractevent.getPlayer())))
+        if (ItemUtils.getOpensMenu(itemstack) == MenuType.VOTING)
         {
             playerinteractevent.setCancelled(true);
             ewplayer.getArena().openVoteInv(ewplayer.getPlayer());
@@ -223,11 +222,16 @@ public class PlayerInteractListener implements Listener
             return;
         }
 
-        //don't use off had because use-spam when placing blocks
+        //don't use off hand because use-spam when placing blocks
         if (ewplayer.getPlayer().getInventory().getItemInMainHand().getType().equals(Material.COMPASS))
         {
-            PlayerUtils.setCompassTarget(ewplayer, true);
-            ewplayer.getPlayer().playSound(ewplayer.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 2.0F);
+            boolean success = PlayerUtils.setCompassTarget(ewplayer, true);
+
+            if (success)
+            {
+                ewplayer.getPlayer().playSound(ewplayer.getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 2.0F);
+            }
+
             return;
         }
     }
@@ -247,7 +251,7 @@ public class PlayerInteractListener implements Listener
             return;
         }
 
-        if (itemstack.equals(SetupGUI.getSetupGUIItem().getTranslated(playerinteractevent.getPlayer())))
+        if (ItemUtils.getOpensMenu(itemstack) == MenuType.ARENA_SETUP)
         {
             EwPlayer ewplayer = PlayerUtils.getEwPlayer(playerinteractevent.getPlayer());
             Arena arena = EggWars.getArenaManager().getArenaByWorld(ewplayer.getPlayer().getWorld());

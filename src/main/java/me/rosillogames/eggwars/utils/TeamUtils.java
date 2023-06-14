@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Team;
+import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
@@ -21,7 +22,10 @@ public class TeamUtils implements Listener
 
     public static void loadConfig()
     {
-        invItem = TranslatableItem.translatableNameLore(ItemUtils.hideStackAttributes(ItemUtils.getItemOrDefault(EggWars.instance.getConfig().getString("inventory.team_selection.item"), Material.NETHER_STAR)), "gameplay.teams.item_lore", "gameplay.teams.item_name");
+        ItemStack stack = ItemUtils.getItemOrDefault(EggWars.instance.getConfig().getString("inventory.team_selection.item"), Material.NETHER_STAR);
+        ItemUtils.hideStackAttributes(stack);
+        ItemUtils.setOpensMenu(stack, MenuType.TEAM_SELECTION);
+        invItem = TranslatableItem.translatableNameLore(stack, "gameplay.teams.item_lore", "gameplay.teams.item_name");
     }
 
     public static ItemStack getInvItem(Player player)

@@ -20,10 +20,10 @@ import org.bukkit.persistence.PersistentDataType;
 import com.mojang.datafixers.util.Pair;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.ArenaStatus;
+import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.player.EwPlayerMenu;
-import me.rosillogames.eggwars.player.inventory.EwInvType;
 import me.rosillogames.eggwars.player.inventory.InventoryController;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
@@ -42,12 +42,14 @@ public class SetupGUI
         tInv.setItem(13, TranslatableItem.translatableNameLore(new ItemStack(Material.BLACK_BANNER, 1), "setup.gui.arena.teams.item_lore", "setup.gui.arena.teams.item_name"));
         tInv.setItem(15, TranslatableItem.translatableNameLore(new ItemStack(Material.OAK_SIGN, 1), "setup.gui.arena.generators.item_lore", "setup.gui.arena.generators.item_name"));
         tInv.setItem(31, EwPlayerMenu.getCloseItem());
-        InventoryController.openInventory(player1, tInv, EwInvType.ARENA_SETUP);
+        InventoryController.openInventory(player1, tInv, MenuType.ARENA_SETUP);
     }
 
     public static TranslatableItem getSetupGUIItem()
     {
-        return TranslatableItem.translatableNameLore(new ItemStack(Material.ITEM_FRAME), "setup.gui.item_lore", "setup.gui.item_name");
+        ItemStack stack = new ItemStack(Material.ITEM_FRAME);
+        ItemUtils.setOpensMenu(stack, MenuType.ARENA_SETUP);
+        return TranslatableItem.translatableNameLore(stack, "setup.gui.item_lore", "setup.gui.item_name");
     }
 
     private static void openBasicSetupGUI(Player player1, Arena arena)
@@ -67,7 +69,7 @@ public class SetupGUI
         tInv.setItem(15, getLocationSetting("setup.gui.basic.bounds_end", bounds.getEnd(), bounds.getEnd() != null ? Material.STRUCTURE_VOID : Material.BARRIER));
         tInv.setItem(16, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.TARGET, 1), (player) -> TranslationUtils.getMessage("setup.gui.basic.bounds_info.item_lore", player, (bounds.getStart() == null && bounds.getEnd() == null ? "" : TranslationUtils.getMessage("setup.gui.basic.bounds_info.remove", player))), (player) -> TranslationUtils.getMessage("setup.gui.basic.bounds_info.item_name", player)));
         tInv.setItem(22, EwPlayerMenu.getCloseItem());
-        InventoryController.openInventory(player1, tInv, EwInvType.BASIC_SETTINGS);
+        InventoryController.openInventory(player1, tInv, MenuType.BASIC_SETTINGS);
     }
 
     private static void openTeamsSetupGUI(Player player1, Arena arena)
@@ -176,7 +178,7 @@ public class SetupGUI
         }
 
         tInv.setItem(31, EwPlayerMenu.getCloseItem());
-        InventoryController.openInventory(player1, tInv, EwInvType.TEAMS_SETUP).setExtraData(map);
+        InventoryController.openInventory(player1, tInv, MenuType.TEAMS_SETUP).setExtraData(map);
     }
 
     private static void openSingleTeamSetupGUI(Player player, Team team, Arena arena)
@@ -187,7 +189,7 @@ public class SetupGUI
         tInv.setItem(14, getLocationSetting("setup.gui.team.respawn", team.getRespawn(), Material.RED_WOOL));
         tInv.setItem(16, getLocationSetting("setup.gui.team.egg", team.getEgg(), Material.DRAGON_EGG));
         tInv.setItem(22, EwPlayerMenu.getCloseItem());
-        InventoryController.openInventory(player, tInv, EwInvType.SINGLE_TEAM_SETUP).setExtraData(team);
+        InventoryController.openInventory(player, tInv, MenuType.SINGLE_TEAM_SETUP).setExtraData(team);
     }
 
     private static TranslatableItem getLocationSetting(String tKey, Location setting, Material mat)
@@ -288,7 +290,7 @@ public class SetupGUI
             counter++;
         }
 
-        InventoryController.openInventory(player1, tInv, EwInvType.SELECT_GENERATOR).setExtraData(new Pair(page, typeMap));
+        InventoryController.openInventory(player1, tInv, MenuType.SELECT_GENERATOR).setExtraData(new Pair(page, typeMap));
     }
 
     private static void openGeneratorLevelsGUI(Player player1, GeneratorType type, int page)
@@ -340,7 +342,7 @@ public class SetupGUI
             counter++;
         }
 
-        InventoryController.openInventory(player1, tInv, EwInvType.SELECT_GENERATOR_LEVEL).setExtraData(new Pair(new Pair(type, page), typeMap));
+        InventoryController.openInventory(player1, tInv, MenuType.SELECT_GENERATOR_LEVEL).setExtraData(new Pair(new Pair(type, page), typeMap));
     }
 
     public static class Listener implements org.bukkit.event.Listener
@@ -355,7 +357,7 @@ public class SetupGUI
                 return;
             }
 
-            if (ewplayer.getInv().getInventoryType() == EwInvType.ARENA_SETUP)
+            if (ewplayer.getInv().getInventoryType() == MenuType.ARENA_SETUP)
             {
                 clickEvent.setCancelled(true);
 
@@ -383,7 +385,7 @@ public class SetupGUI
                 return;
             }
 
-            if (ewplayer.getInv().getInventoryType() == EwInvType.BASIC_SETTINGS)
+            if (ewplayer.getInv().getInventoryType() == MenuType.BASIC_SETTINGS)
             {
                 clickEvent.setCancelled(true);
 
@@ -464,7 +466,7 @@ public class SetupGUI
                 return;
             }
 
-            if (ewplayer.getInv().getInventoryType() == EwInvType.TEAMS_SETUP)
+            if (ewplayer.getInv().getInventoryType() == MenuType.TEAMS_SETUP)
             {
                 clickEvent.setCancelled(true);
 
@@ -498,7 +500,7 @@ public class SetupGUI
                 return;
             }
 
-            if (ewplayer.getInv().getInventoryType() == EwInvType.SINGLE_TEAM_SETUP)
+            if (ewplayer.getInv().getInventoryType() == MenuType.SINGLE_TEAM_SETUP)
             {
                 clickEvent.setCancelled(true);
                 Team team = (Team)ewplayer.getInv().getExtraData();
@@ -567,7 +569,7 @@ public class SetupGUI
                 return;
             }
 
-            if (ewplayer.getInv().getInventoryType() == EwInvType.SELECT_GENERATOR)
+            if (ewplayer.getInv().getInventoryType() == MenuType.SELECT_GENERATOR)
             {
                 clickEvent.setCancelled(true);
                 Pair<Integer, Map<Integer, GeneratorType>> pair = (Pair<Integer, Map<Integer, GeneratorType>>)ewplayer.getInv().getExtraData();
@@ -599,7 +601,7 @@ public class SetupGUI
                 return;
             }
 
-            if (ewplayer.getInv().getInventoryType() == EwInvType.SELECT_GENERATOR_LEVEL)
+            if (ewplayer.getInv().getInventoryType() == MenuType.SELECT_GENERATOR_LEVEL)
             {
                 clickEvent.setCancelled(true);
                 Pair<Pair<GeneratorType, Integer>, Map<Integer, Integer>> pair = (Pair<Pair<GeneratorType, Integer>, Map<Integer, Integer>>)ewplayer.getInv().getExtraData();

@@ -10,9 +10,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.ItemType;
+import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayerMenu;
-import me.rosillogames.eggwars.player.inventory.EwInvType;
 import me.rosillogames.eggwars.player.inventory.InventoryController;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
@@ -104,7 +104,7 @@ public class Category
             }
             else
             {
-                InventoryController.openInventory(player, merchant.inventory, EwInvType.VILLAGER_TRADING).setExtraData(merchant.slots);
+                InventoryController.openInventory(player, merchant.inventory, MenuType.VILLAGER_TRADING).setExtraData(merchant.slots);
             }
         }
         catch (Exception exception)

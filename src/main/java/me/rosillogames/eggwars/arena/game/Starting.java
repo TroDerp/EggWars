@@ -132,6 +132,8 @@ public class Starting
             else
             {
                 Player player = ewplayer.getPlayer();
+                player.setLevel(0);
+                player.setExp(0.0F);
                 player.getInventory().clear();
 
                 if (ewplayer.getKit() != null)

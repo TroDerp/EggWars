@@ -8,11 +8,11 @@ import javax.annotation.Nullable;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import me.rosillogames.eggwars.EggWars;
+import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.language.Language;
 import me.rosillogames.eggwars.language.LanguageManager;
 import me.rosillogames.eggwars.language.TranslationUtils;
-import me.rosillogames.eggwars.player.inventory.EwInvType;
 import me.rosillogames.eggwars.player.inventory.InventoryController;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
@@ -182,22 +182,22 @@ public class EwPlayerMenu
 
     public void openMainInv()
     {
-        InventoryController.openInventory(this.player.getPlayer(), this.mainInv, EwInvType.MENU);
+        InventoryController.openInventory(this.player.getPlayer(), this.mainInv, MenuType.MENU);
     }
 
     public void openStatsInv()
     {
-        InventoryController.openInventory(this.player.getPlayer(), this.statsInv, EwInvType.STATS);
+        InventoryController.openInventory(this.player.getPlayer(), this.statsInv, MenuType.STATS);
     }
 
     public void openSettingsInv()
     {
-        InventoryController.openInventory(this.player.getPlayer(), this.settingsInv, EwInvType.SETTINGS);
+        InventoryController.openInventory(this.player.getPlayer(), this.settingsInv, MenuType.SETTINGS);
     }
 
     public void openLanguageInv(int page)
     {
-        InventoryController.openInventory(this.player.getPlayer(), this.langInvs.get(page), EwInvType.LANGUAGES).setExtraData(Integer.valueOf(page));
+        InventoryController.openInventory(this.player.getPlayer(), this.langInvs.get(page), MenuType.LANGUAGES).setExtraData(Integer.valueOf(page));
     }
 
     public TranslatableItem getProfileItem()

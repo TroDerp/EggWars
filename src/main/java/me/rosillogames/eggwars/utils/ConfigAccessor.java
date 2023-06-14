@@ -71,6 +71,28 @@ public class ConfigAccessor
         return this.fileConfiguration;
     }
 
+    /** Creates a new config instance and deletes the file of older instance **/
+    public void createNewConfig()
+    {
+        try
+        {
+            if (!this.configFile.exists())
+            {
+                this.configFile.createNewFile();
+            }
+            else
+            {
+                this.configFile.delete();
+            }
+        }
+        catch (IOException ioexception)
+        {
+            ioexception.printStackTrace();
+        }
+
+        this.fileConfiguration = new YamlConfiguration();
+    }
+
     public void reloadConfig()
     {
         try

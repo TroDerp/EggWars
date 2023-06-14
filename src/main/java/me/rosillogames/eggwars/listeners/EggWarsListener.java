@@ -5,11 +5,11 @@ import org.bukkit.event.Listener;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Scoreboards;
+import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.enums.ReloadType;
 import me.rosillogames.eggwars.events.EwPlayerChangeLangEvent;
 import me.rosillogames.eggwars.events.EwPluginReloadEvent;
 import me.rosillogames.eggwars.player.EwPlayer;
-import me.rosillogames.eggwars.player.inventory.EwInvType;
 import me.rosillogames.eggwars.player.inventory.InventoryController;
 
 public class EggWarsListener implements Listener
@@ -25,7 +25,7 @@ public class EggWarsListener implements Listener
 
                 if (player.getInv() != null)
                 {
-                    if (player.getInv().getInventoryType() == EwInvType.LANGUAGES)
+                    if (player.getInv().getInventoryType() == MenuType.LANGUAGES)
                     {
                         InventoryController.closeInventory(player.getPlayer(), true);//add warning?
                     }
@@ -46,7 +46,7 @@ public class EggWarsListener implements Listener
         {
             for (EwPlayer player : EggWars.players)
             {
-                if (player.getInv() != null && player.getInv().getInventoryType() == EwInvType.KIT_SELECTION)
+                if (player.getInv() != null && player.getInv().getInventoryType() == MenuType.KIT_SELECTION)
                 {
                     InventoryController.closeInventory(player.getPlayer(), true);//add warning?
                 }
@@ -57,7 +57,7 @@ public class EggWarsListener implements Listener
         {
             for (EwPlayer player : EggWars.players)
             {
-                if (player.getInv() != null && (player.getInv().getInventoryType() == EwInvType.GENERATOR_INFO || player.getInv().getInventoryType() == EwInvType.SELECT_GENERATOR_LEVEL || player.getInv().getInventoryType() == EwInvType.SELECT_GENERATOR))
+                if (player.getInv() != null && (player.getInv().getInventoryType() == MenuType.GENERATOR_INFO || player.getInv().getInventoryType() == MenuType.SELECT_GENERATOR_LEVEL || player.getInv().getInventoryType() == MenuType.SELECT_GENERATOR))
                 {
                     InventoryController.closeInventory(player.getPlayer(), false);//add warning?
                 }

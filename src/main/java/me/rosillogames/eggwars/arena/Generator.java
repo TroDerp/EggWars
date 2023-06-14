@@ -3,7 +3,9 @@ package me.rosillogames.eggwars.arena;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+
 import javax.annotation.Nullable;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -21,12 +23,12 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import com.google.common.collect.Lists;
 import me.rosillogames.eggwars.EggWars;
+import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.objects.Price;
 import me.rosillogames.eggwars.objects.Token;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.player.EwPlayerMenu;
-import me.rosillogames.eggwars.player.inventory.EwInvType;
 import me.rosillogames.eggwars.player.inventory.InventoryController;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
@@ -206,7 +208,7 @@ public class Generator
         this.genInv.setItem(11, tInfoItem);
         this.genInv.setItem(15, tUpgradeItem);
         this.genInv.setItem(22, EwPlayerMenu.getCloseItem());
-        InventoryController.updateInventories((p) -> p.getArena() == this.arena && p.getInv() != null && p.getInv().getExtraData() instanceof Generator && ((Generator)p.getInv().getExtraData()).getBlock().equals(this.getBlock()), this.genInv, EwInvType.GENERATOR_INFO);
+        InventoryController.updateInventories((p) -> p.getArena() == this.arena && p.getInv() != null && p.getInv().getExtraData() instanceof Generator && ((Generator)p.getInv().getExtraData()).getBlock().equals(this.getBlock()), this.genInv, MenuType.GENERATOR_INFO);
     }
 
     public void stop()
@@ -321,7 +323,7 @@ public class Generator
 
     public void openInventory(Player player)
     {
-        InventoryController.openInventory(player, this.genInv, EwInvType.GENERATOR_INFO).setExtraData(this);
+        InventoryController.openInventory(player, this.genInv, MenuType.GENERATOR_INFO).setExtraData(this);
     }
 
     public boolean tryUpgrade(Player playerIn)

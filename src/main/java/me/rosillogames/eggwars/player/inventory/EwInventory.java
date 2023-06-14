@@ -3,12 +3,13 @@ package me.rosillogames.eggwars.player.inventory;
 import java.util.Map;
 import javax.annotation.Nullable;
 import org.bukkit.inventory.Inventory;
+import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.player.EwPlayer;
 
 public class EwInventory
 {
     private final EwPlayer player;
-    private final EwInvType invType;
+    private final MenuType invType;
     @Nullable
     private EwInventory parent;
     private Inventory mcInventory;
@@ -16,7 +17,7 @@ public class EwInventory
     @Nullable
     private Object extraData;
 
-    public EwInventory(EwPlayer player1, TranslatableInventory mcInv, EwInvType type)
+    public EwInventory(EwPlayer player1, TranslatableInventory mcInv, MenuType type)
     {
         this.player = player1;
         this.invType = type;
@@ -40,7 +41,7 @@ public class EwInventory
         return this.player;
     }
 
-    public EwInvType getInventoryType()
+    public MenuType getInventoryType()
     {
         return this.invType;
     }

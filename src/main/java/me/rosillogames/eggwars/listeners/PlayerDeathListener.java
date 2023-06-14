@@ -14,6 +14,7 @@ import me.rosillogames.eggwars.arena.game.Countdown;
 import me.rosillogames.eggwars.arena.game.Finish;
 import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.objects.Kit;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.Locations;
 import me.rosillogames.eggwars.utils.PlayerUtils;
@@ -185,12 +186,14 @@ public class PlayerDeathListener implements Listener
             TranslationUtils.sendMessage("gameplay.ingame.invincible", pl.getPlayer(), TranslationUtils.translateTime(pl.getPlayer(), EggWars.config.invincibilityTime, true));
         }
 
-        if (pl.getKit() != null && pl.getKit().cooldownTime() >= 0)
+        Kit plKit = pl.getKit();
+
+        if (plKit != null && plKit.cooldownTime() >= 0)
         {
             if (pl.timeUntilKit() <= 0)
             {
-                pl.getKit().equip(pl.getPlayer());
-                int cooldown = pl.getKit().cooldownTime();
+                plKit.equip(pl.getPlayer());
+                int cooldown = plKit.cooldownTime();
 
                 if (cooldown > 0)
                 {

@@ -89,6 +89,7 @@ public class EggWars extends JavaPlugin
     public static Versions serverVersion;
     public static NamespacedKey genType;
     public static NamespacedKey genLevel;
+    public static NamespacedKey openMenu;
     private ArenaLoader arenaLoader;
     private KitLoader kitLoader;
     private TokenLoader tokenLoader;
@@ -142,6 +143,7 @@ public class EggWars extends JavaPlugin
         this.languageManager = new LanguageManager();
         this.gson = new Gson();
         this.loadLists();
+        this.loadNamespaces();
         config.loadConfig();
 
         if (config.checkUpdates)
@@ -161,7 +163,6 @@ public class EggWars extends JavaPlugin
         this.commandRegister();
         DependencyUtils.registerEggWarsPlaceHolders();
         this.loadLoaders();
-        this.loadNamespaces();
         this.loadArenas();
         this.loadSigns();
         TickClock.start();
@@ -190,6 +191,7 @@ public class EggWars extends JavaPlugin
     {
         genType = new NamespacedKey(this, "GEN_TYPE");
         genLevel = new NamespacedKey(this, "GEN_LEVEL");
+        openMenu = new NamespacedKey(this, "OPEN_MENU");
     }
 
     private void loadLists()
@@ -416,6 +418,7 @@ public class EggWars extends JavaPlugin
             list.add(json1.toString());
         }
 
+        EggWars.signsConfig.createNewConfig();
         EggWars.signsConfig.getConfig().set("Signs", list);
         EggWars.signsConfig.saveConfig();
     }

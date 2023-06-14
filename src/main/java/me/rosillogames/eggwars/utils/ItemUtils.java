@@ -13,8 +13,10 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 import com.google.gson.JsonObject;
 import me.rosillogames.eggwars.EggWars;
+import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class ItemUtils
@@ -241,6 +243,26 @@ public class ItemUtils
         }
 
         return data;
+    }
+
+    public static void setOpensMenu(ItemStack stack, MenuType menu)
+    {
+        ItemMeta meta = stack.getItemMeta();
+        meta.getPersistentDataContainer().set(EggWars.openMenu, PersistentDataType.STRING, menu.name());
+        stack.setItemMeta(meta);
+    }
+
+    public static MenuType getOpensMenu(ItemStack stack)
+    {
+        try
+        {
+            ItemMeta meta = stack.getItemMeta();
+            return MenuType.valueOf(meta.getPersistentDataContainer().get(EggWars.openMenu, PersistentDataType.STRING));
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
     }
 
     public static ItemStack tryColorizeByTeam(TeamTypes team, ItemStack uncolored)

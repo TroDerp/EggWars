@@ -4,12 +4,13 @@ import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import org.bukkit.entity.Player;
 import me.rosillogames.eggwars.EggWars;
+import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.PlayerUtils;
 
 public class InventoryController
 {
-    public static EwInventory openInventory(Player player, TranslatableInventory inv, EwInvType type)
+    public static EwInventory openInventory(Player player, TranslatableInventory inv, MenuType type)
     {
         EwPlayer ewplayer = PlayerUtils.getEwPlayer(player);
         EwInventory newInventory = new EwInventory(ewplayer, inv, type);
@@ -58,7 +59,7 @@ public class InventoryController
         }
     }
 
-    public static void updateInventories(Predicate<EwPlayer> predicate, @Nullable TranslatableInventory inv, EwInvType type)
+    public static void updateInventories(Predicate<EwPlayer> predicate, @Nullable TranslatableInventory inv, MenuType type)
     {
         for (EwPlayer ewplayer : EggWars.players)
         {

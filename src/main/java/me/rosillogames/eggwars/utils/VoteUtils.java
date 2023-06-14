@@ -7,6 +7,7 @@ import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.enums.HealthType;
 import me.rosillogames.eggwars.enums.ItemType;
+import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
@@ -21,7 +22,10 @@ public class VoteUtils
 
     public static void loadConfig()
     {
-        invItem = TranslatableItem.translatableNameLore(ItemUtils.hideStackAttributes(ItemUtils.getItemOrDefault(EggWars.instance.getConfig().getString("inventory.voting.item"), Material.END_CRYSTAL)), "gameplay.voting.item_lore", "gameplay.voting.item_name");
+        ItemStack stack = ItemUtils.getItemOrDefault(EggWars.instance.getConfig().getString("inventory.voting.item"), Material.END_CRYSTAL);
+        ItemUtils.hideStackAttributes(stack);
+        ItemUtils.setOpensMenu(stack, MenuType.VOTING);
+        invItem = TranslatableItem.translatableNameLore(stack, "gameplay.voting.item_lore", "gameplay.voting.item_name");
 
         itemVoteItem = TranslatableItem.translatableNameLore(ItemUtils.hideStackAttributes(ItemUtils.getItemOrDefault(EggWars.instance.getConfig().getString("inventory.voting_items"), Material.VILLAGER_SPAWN_EGG)), "voting.items.item_lore", "voting.items.item_name");
         tradesVoteItems[0] = ItemUtils.hideStackAttributes(ItemUtils.getItemOrDefault(EggWars.instance.getConfig().getString("inventory.voting_hardcore_items"), Material.WOODEN_SWORD));

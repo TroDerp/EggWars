@@ -18,10 +18,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import me.rosillogames.eggwars.EggWars;
+import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.objects.Kit;
 import me.rosillogames.eggwars.objects.KitsMenu;
 import me.rosillogames.eggwars.player.EwPlayer;
-import me.rosillogames.eggwars.player.inventory.EwInvType;
 import me.rosillogames.eggwars.player.inventory.InventoryController;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.GsonHelper;
@@ -40,7 +40,10 @@ public class KitLoader
 
     public static void loadConfig()
     {
-        invItem = TranslatableItem.translatableNameLore(ItemUtils.hideStackAttributes(ItemUtils.getItemOrDefault(EggWars.instance.getConfig().getString("inventory.kit_selection.item"), Material.PAPER)), "gameplay.kits.item_lore", "gameplay.kits.item_name");
+        ItemStack stack = ItemUtils.getItemOrDefault(EggWars.instance.getConfig().getString("inventory.kit_selection.item"), Material.PAPER);
+        ItemUtils.hideStackAttributes(stack);
+        ItemUtils.setOpensMenu(stack, MenuType.KIT_SELECTION);
+        invItem = TranslatableItem.translatableNameLore(stack, "gameplay.kits.item_lore", "gameplay.kits.item_name");
         cooldownSeconds = EggWars.instance.getConfig().getInt("kits.cooldown_time");
     }
 
@@ -147,7 +150,7 @@ public class KitLoader
 
     public void openKitsInv(Player player, int page)
     {
-        InventoryController.openInventory(player, kitsMenu.getInventory(page), EwInvType.KIT_SELECTION).setExtraData(page);
+        InventoryController.openInventory(player, kitsMenu.getInventory(page), MenuType.KIT_SELECTION).setExtraData(page);
     }
 
     public static boolean buyKit(EwPlayer ewplayer, Kit kit)

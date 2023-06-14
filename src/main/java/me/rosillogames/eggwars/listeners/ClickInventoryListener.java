@@ -21,6 +21,7 @@ import me.rosillogames.eggwars.arena.shop.Offer;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.HealthType;
 import me.rosillogames.eggwars.enums.ItemType;
+import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.Language;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.loaders.KitLoader;
@@ -28,7 +29,6 @@ import me.rosillogames.eggwars.objects.Kit;
 import me.rosillogames.eggwars.objects.KitsMenu;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.player.EwPlayerMenu;
-import me.rosillogames.eggwars.player.inventory.EwInvType;
 import me.rosillogames.eggwars.player.inventory.InventoryController;
 import me.rosillogames.eggwars.utils.PlayerUtils;
 import me.rosillogames.eggwars.utils.TeamUtils;
@@ -88,7 +88,7 @@ public class ClickInventoryListener implements Listener
             return;
         }
 
-        if (ewplayer.getInv().getInventoryType() == EwInvType.VILLAGER_MENU || ewplayer.getInv().getInventoryType() == EwInvType.VILLAGER_TRADING)
+        if (ewplayer.getInv().getInventoryType() == MenuType.VILLAGER_MENU || ewplayer.getInv().getInventoryType() == MenuType.VILLAGER_TRADING)
         {//this controls whether if drag action is invalid in the current slot (inside villager container)
             for (Integer integer : dragEvent.getRawSlots())
             {
@@ -118,7 +118,7 @@ public class ClickInventoryListener implements Listener
             return;
         }
 
-        if (ewplayer.getInv().getInventoryType() == EwInvType.VILLAGER_MENU || ewplayer.getInv().getInventoryType() == EwInvType.VILLAGER_TRADING)
+        if (ewplayer.getInv().getInventoryType() == MenuType.VILLAGER_MENU || ewplayer.getInv().getInventoryType() == MenuType.VILLAGER_TRADING)
         {//this controls whether if shift click is invalid in the current slot (inside villager container)
             if (clickEvent.getRawSlot() > (clickEvent.getInventory().getSize() - 1))
             {
@@ -139,7 +139,7 @@ public class ClickInventoryListener implements Listener
             return;
         }
 
-        if (ewplayer.getInv().getInventoryType() == EwInvType.VILLAGER_MENU)
+        if (ewplayer.getInv().getInventoryType() == MenuType.VILLAGER_MENU)
         {
             int page = ((Integer)ewplayer.getInv().getExtraData()).intValue();
             Category cat = ewplayer.getArena().getShopSlots(page, clickEvent.getRawSlot());
@@ -173,7 +173,7 @@ public class ClickInventoryListener implements Listener
             }
         }
 
-        if (ewplayer.getInv().getInventoryType() == EwInvType.VILLAGER_TRADING)
+        if (ewplayer.getInv().getInventoryType() == MenuType.VILLAGER_TRADING)
         {
             Map<Integer, Offer> map = (Map<Integer, Offer>)ewplayer.getInv().getExtraData();
             Offer trade = map.get(clickEvent.getRawSlot());
@@ -198,9 +198,9 @@ public class ClickInventoryListener implements Listener
             return;
         }
 
-        boolean main = ewplayer.getInv().getInventoryType() == EwInvType.VOTING;
-        boolean trades = ewplayer.getInv().getInventoryType() == EwInvType.ITEM_VOTING;
-        boolean health = ewplayer.getInv().getInventoryType() == EwInvType.HEALTH_VOTING;
+        boolean main = ewplayer.getInv().getInventoryType() == MenuType.VOTING;
+        boolean trades = ewplayer.getInv().getInventoryType() == MenuType.ITEM_VOTING;
+        boolean health = ewplayer.getInv().getInventoryType() == MenuType.HEALTH_VOTING;
 
         if (!main && !trades && !health)
         {
@@ -282,7 +282,7 @@ public class ClickInventoryListener implements Listener
     {
         EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)clickEvent.getWhoClicked());
 
-        if (ewplayer.getInv() == null || ewplayer.getInv().getInventoryType() != EwInvType.GENERATOR_INFO)
+        if (ewplayer.getInv() == null || ewplayer.getInv().getInventoryType() != MenuType.GENERATOR_INFO)
         {
             return;
         }
@@ -307,7 +307,7 @@ public class ClickInventoryListener implements Listener
     {
         EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)clickEvent.getWhoClicked());
 
-        if (ewplayer.getInv() == null || ewplayer.getInv().getInventoryType() != EwInvType.KIT_SELECTION)
+        if (ewplayer.getInv() == null || ewplayer.getInv().getInventoryType() != MenuType.KIT_SELECTION)
         {
             return;
         }
@@ -395,7 +395,7 @@ public class ClickInventoryListener implements Listener
     {
         EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)clickEvent.getWhoClicked());
 
-        if (ewplayer.getInv() == null || ewplayer.getInv().getInventoryType() != EwInvType.TEAM_SELECTION)
+        if (ewplayer.getInv() == null || ewplayer.getInv().getInventoryType() != MenuType.TEAM_SELECTION)
         {
             return;
         }
@@ -457,7 +457,7 @@ public class ClickInventoryListener implements Listener
     {
         EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)clickEvent.getWhoClicked());
 
-        if (ewplayer.getInv() == null || ewplayer.getInv().getInventoryType() != EwInvType.MENU)
+        if (ewplayer.getInv() == null || ewplayer.getInv().getInventoryType() != MenuType.MENU)
         {
             return;
         }
@@ -488,7 +488,7 @@ public class ClickInventoryListener implements Listener
     {
         EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)clickEvent.getWhoClicked());
 
-        if (ewplayer.getInv() == null || ewplayer.getInv().getInventoryType() != EwInvType.STATS)
+        if (ewplayer.getInv() == null || ewplayer.getInv().getInventoryType() != MenuType.STATS)
         {
             return;
         }
@@ -506,7 +506,7 @@ public class ClickInventoryListener implements Listener
     {
         EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)clickEvent.getWhoClicked());
 
-        if (ewplayer.getInv() == null || ewplayer.getInv().getInventoryType() != EwInvType.SETTINGS)
+        if (ewplayer.getInv() == null || ewplayer.getInv().getInventoryType() != MenuType.SETTINGS)
         {
             return;
         }
@@ -529,7 +529,7 @@ public class ClickInventoryListener implements Listener
     {
         EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)clickEvent.getWhoClicked());
 
-        if (ewplayer.getInv() == null || ewplayer.getInv().getInventoryType() != EwInvType.LANGUAGES)
+        if (ewplayer.getInv() == null || ewplayer.getInv().getInventoryType() != MenuType.LANGUAGES)
         {
             return;
         }

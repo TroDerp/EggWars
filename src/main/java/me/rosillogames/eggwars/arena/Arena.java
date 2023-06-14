@@ -42,6 +42,7 @@ import me.rosillogames.eggwars.arena.shop.Category;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.HealthType;
 import me.rosillogames.eggwars.enums.ItemType;
+import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.enums.Mode;
 import me.rosillogames.eggwars.events.EwPlayerJoinArenaEvent;
 import me.rosillogames.eggwars.language.TranslationUtils;
@@ -50,7 +51,6 @@ import me.rosillogames.eggwars.objects.ArenaSign;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.player.EwPlayerMenu;
 import me.rosillogames.eggwars.player.EwPlayerMenu.MenuSize;
-import me.rosillogames.eggwars.player.inventory.EwInvType;
 import me.rosillogames.eggwars.player.inventory.InventoryController;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
@@ -1013,6 +1013,7 @@ public class Arena
     public boolean saveArena()
     {
         ConfigAccessor accessor = new ConfigAccessor(EggWars.instance, new File(this.arenaFolder, "arena.yml"));
+        accessor.createNewConfig();
         FileConfiguration fconfig = accessor.getConfig();
         fconfig.set("Name", this.getName());
         fconfig.set("MaxPlayersPerTeam", Integer.valueOf(this.maxTeamPlayers));
@@ -1120,7 +1121,7 @@ public class Arena
         }
 
         this.teamInv.setItem(this.teamInv.getSize() - 1, TranslatableItem.translatableNameLore(new ItemStack(Material.NETHER_STAR), "teams.random.item_lore", "teams.random.item_name"));
-        InventoryController.updateInventories((predicateplayer) -> predicateplayer.getArena() == this, this.teamInv, EwInvType.TEAM_SELECTION);
+        InventoryController.updateInventories((predicateplayer) -> predicateplayer.getArena() == this, this.teamInv, MenuType.TEAM_SELECTION);
 
         if (this.voteInv == null)
         {
@@ -1139,7 +1140,7 @@ public class Arena
         this.itemVoteInv.setItem(10, VoteUtils.getTradesVoteItem(ItemType.HARDCORE, this));
         this.itemVoteInv.setItem(13, VoteUtils.getTradesVoteItem(ItemType.NORMAL, this));
         this.itemVoteInv.setItem(16, VoteUtils.getTradesVoteItem(ItemType.OVERPOWERED, this));
-        InventoryController.updateInventories((predicateplayer) -> predicateplayer.getArena() == this, this.itemVoteInv, EwInvType.ITEM_VOTING);
+        InventoryController.updateInventories((predicateplayer) -> predicateplayer.getArena() == this, this.itemVoteInv, MenuType.ITEM_VOTING);
 
         if (this.healthVoteInv == null)
         {
@@ -1151,32 +1152,32 @@ public class Arena
         this.healthVoteInv.setItem(12, VoteUtils.getHealthVoteItem(HealthType.NORMAL, this));
         this.healthVoteInv.setItem(14, VoteUtils.getHealthVoteItem(HealthType.DOUBLE, this));
         this.healthVoteInv.setItem(16, VoteUtils.getHealthVoteItem(HealthType.TRIPLE, this));
-        InventoryController.updateInventories((predicateplayer) -> predicateplayer.getArena() == this, this.healthVoteInv, EwInvType.HEALTH_VOTING);
+        InventoryController.updateInventories((predicateplayer) -> predicateplayer.getArena() == this, this.healthVoteInv, MenuType.HEALTH_VOTING);
     }
 
     public void openTeamInv(Player player)
     {
-        InventoryController.openInventory(player, this.teamInv, EwInvType.TEAM_SELECTION);
+        InventoryController.openInventory(player, this.teamInv, MenuType.TEAM_SELECTION);
     }
 
     public void openVoteInv(Player player)
     {
-        InventoryController.openInventory(player, this.voteInv, EwInvType.VOTING);
+        InventoryController.openInventory(player, this.voteInv, MenuType.VOTING);
     }
 
     public void openItemVoteInv(Player player)
     {
-        InventoryController.openInventory(player, this.itemVoteInv, EwInvType.ITEM_VOTING);
+        InventoryController.openInventory(player, this.itemVoteInv, MenuType.ITEM_VOTING);
     }
 
     public void openHealthVoteInv(Player player)
     {
-        InventoryController.openInventory(player, this.healthVoteInv, EwInvType.HEALTH_VOTING);
+        InventoryController.openInventory(player, this.healthVoteInv, MenuType.HEALTH_VOTING);
     }
 
     public void openVillagerInv(Player player, int page)
     {
-        InventoryController.openInventory(player, this.shopInvs.get(page), EwInvType.VILLAGER_MENU).setExtraData(page);
+        InventoryController.openInventory(player, this.shopInvs.get(page), MenuType.VILLAGER_MENU).setExtraData(page);
     }
 
     @Nullable
