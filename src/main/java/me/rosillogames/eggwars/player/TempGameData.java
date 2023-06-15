@@ -13,6 +13,7 @@ public class TempGameData
     private final ItemStack items[];
     private final ItemStack armor[];
     private final ItemStack extra[];
+    private final ItemStack enderChest[];
     private final double health;
     private final double maxHealth;
     private final GameMode gamemode;
@@ -31,6 +32,7 @@ public class TempGameData
         this.armor = playerIn.getInventory().getArmorContents().clone();
         this.items = playerIn.getInventory().getContents().clone();
         this.extra = playerIn.getInventory().getExtraContents().clone();
+        this.enderChest = playerIn.getEnderChest().getContents().clone();
         this.maxHealth = playerIn.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
         this.health = playerIn.getHealth();
         this.foodLevel = playerIn.getFoodLevel();
@@ -52,6 +54,7 @@ public class TempGameData
         this.player.getInventory().setContents(this.items);
         this.player.getInventory().setArmorContents(this.armor);
         this.player.getInventory().setExtraContents(this.extra);
+        this.player.getEnderChest().setContents(this.enderChest);
         this.player.updateInventory();
         this.player.setGameMode(this.gamemode);
         this.player.addPotionEffects(this.effects);

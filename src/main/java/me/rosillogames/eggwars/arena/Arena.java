@@ -509,6 +509,7 @@ public class Arena
         player.setArena(this);
         player.storeGameData();
         player.getPlayer().getInventory().clear();
+        player.getPlayer().getEnderChest().clear();
         player.getPlayer().setFlying(false);
         player.getPlayer().setAllowFlight(false);
         this.setPlayerMaxHealth(player);
