@@ -28,15 +28,8 @@ import com.mojang.serialization.Encoder;
 import com.mojang.serialization.JsonOps;
 import me.rosillogames.eggwars.EggWars;
 
-public class Reflections_1_19 implements Reflections
+public class Reflections_1_20 implements Reflections
 {
-    private final byte version;
-
-    public Reflections_1_19(byte v)
-    {
-        this.version = v;
-    }
-
     @Override
     public void setArmorStandInvisible(ArmorStand stand)
     {
@@ -55,7 +48,7 @@ public class Reflections_1_19 implements Reflections
         try
         {
             Object obj = item.getClass().getMethod("getHandle").invoke(item);
-            Field field = obj.getClass().getField(this.version > 1 ? "g" : "ao");
+            Field field = obj.getClass().getField("g");
             boolean accessible = field.isAccessible();
             field.setAccessible(true);
             field.set(obj, age);
@@ -127,23 +120,11 @@ public class Reflections_1_19 implements Reflections
             Object blockNbt = cMojangsonParser.getMethod("a", String.class).invoke(null, string);
             Class cNBTCompound = this.getNMSClass("nbt.NBTTagCompound");
             Class cGameProfileSerializer = this.getNMSClass("nbt.GameProfileSerializer");
-            Object blockData;
-
-            if (this.version > 0)
-            {
-                //Now I'm starting to HATE that HolderLookup thing
-                //BuiltInRegistries.BLOCK.asLookup(); = BuiltInRegistries.f.p();
-                Class cHolderGetter = this.getNMSClass("core.HolderGetter");
-                Class cBIR = this.getNMSClass("core.registries.BuiltInRegistries");
-                Object registry = cBIR.getField("f").get((Object)null);
-                Object holdLook = registry.getClass().getMethod("p").invoke(registry);
-                blockData = cGameProfileSerializer.getMethod("a", cHolderGetter, cNBTCompound).invoke(null, holdLook, blockNbt);
-            }
-            else
-            {
-                blockData = cGameProfileSerializer.getMethod("c", cNBTCompound).invoke(null, blockNbt);
-            }
-
+            Class cHolderGetter = this.getNMSClass("core.HolderGetter");
+            Class cBIR = this.getNMSClass("core.registries.BuiltInRegistries");
+            Object registry = cBIR.getField("f").get((Object)null);
+            Object holdLook = registry.getClass().getMethod("p").invoke(registry);
+            Object blockData = cGameProfileSerializer.getMethod("a", cHolderGetter, cNBTCompound).invoke(null, holdLook, blockNbt);
             Class cIBlockData = this.getNMSClass("world.level.block.state.IBlockData");
             Class cCraftBlockData = this.getOBCClass("block.data.CraftBlockData");
             return (BlockData)cCraftBlockData.getMethod("fromData", cIBlockData).invoke(null, blockData);
@@ -199,7 +180,7 @@ public class Reflections_1_19 implements Reflections
             Class cItemStack = this.getNMSClass("world.item.ItemStack");
             Class cCraftItemStack = this.getOBCClass("inventory.CraftItemStack");
             Object nmsStack = cCraftItemStack.getMethod("asNMSCopy", stack.getClass()).invoke((Object)null, stack);
-            Object nameComponent = cItemStack.getMethod("x").invoke(nmsStack);
+            Object nameComponent = cItemStack.getMethod("y").invoke(nmsStack);
             Class cIChatBase = this.getNMSClass("network.chat.IChatBaseComponent");
             Object string = cIChatBase.getMethod("getString").invoke(nameComponent);
             return (String)string;
@@ -245,18 +226,8 @@ public class Reflections_1_19 implements Reflections
         {
             Object nmsP = p.getClass().getMethod("getHandle").invoke(p);
             Class cDmgSource = this.getNMSClass("world.damagesource.DamageSource");
-            Object dmgSource;
-
-            if (this.version > 1)
-            {
-                Object dmgSources = nmsP.getClass().getMethod("dG").invoke(nmsP);
-                dmgSource = dmgSources.getClass().getMethod("m").invoke(dmgSources);
-            }
-            else
-            {
-                dmgSource = cDmgSource.getField("m").get(null);
-            }
-
+            Object dmgSources = nmsP.getClass().getMethod("dJ").invoke(nmsP);
+            Object dmgSource = dmgSources.getClass().getMethod("m").invoke(dmgSources);
             nmsP.getClass().getMethod("a", cDmgSource, float.class).invoke(nmsP, dmgSource, 10000F);
         }
         catch (Exception exception)
@@ -271,7 +242,7 @@ public class Reflections_1_19 implements Reflections
         try
         {
             Object obj = world.getClass().getMethod("getHandle").invoke(world);
-            Field field = obj.getClass().getField(this.version > 1 ? "e" : "b");
+            Field field = obj.getClass().getField("e");
             boolean accessible = field.isAccessible();
             field.setAccessible(true);
             boolean boolVal = field.getBoolean(obj);
@@ -293,7 +264,7 @@ public class Reflections_1_19 implements Reflections
         try
         {
             Object nmsPlayer = player.getClass().getMethod("getHandle").invoke(player);
-            Object nmsConnection = nmsPlayer.getClass().getField("b").get(nmsPlayer);
+            Object nmsConnection = nmsPlayer.getClass().getField("c").get(nmsPlayer);
             nmsConnection.getClass().getMethod("a", this.getNMSClass("network.protocol.Packet")).invoke(nmsConnection, packetObj);
         }
         catch (Exception exception)
@@ -368,17 +339,8 @@ public class Reflections_1_19 implements Reflections
         list.add(Material.CRIMSON_WALL_SIGN);
         list.add(Material.WARPED_WALL_SIGN);
         list.add(Material.MANGROVE_WALL_SIGN);
-
-        if (this.version > 0)
-        {
-            list.add(Material.BAMBOO_WALL_SIGN);
-        }
-
-        if (this.version > 1)
-        {
-            list.add(Material.CHERRY_WALL_SIGN);
-        }
-
+        list.add(Material.BAMBOO_WALL_SIGN);
+        list.add(Material.CHERRY_WALL_SIGN);
         return list;
     }
 }

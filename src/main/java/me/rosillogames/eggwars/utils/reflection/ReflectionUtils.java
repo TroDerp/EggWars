@@ -72,11 +72,6 @@ public class ReflectionUtils
         return currentReflections.getEnchantmentsLore(stack);
     }
 
-    public static void setFormatAndSetSignLines(Location loc, String line1, String line2, String line3, String line4)
-    {
-        currentReflections.setFormatAndSetSignLines(loc, line1, line2, line3, line4);
-    }
-
     public static void killOutOfWorld(Player p)
     {
         currentReflections.killOutOfWorld(p);
@@ -133,9 +128,12 @@ public class ReflectionUtils
             case V_1_19_R2:
                 currentReflections = new Reflections_1_19((byte)1);
                 return;
-            case OTHER:
             case V_1_19_R3:
                 currentReflections = new Reflections_1_19((byte)2);
+                return;
+            case OTHER:
+            case V_1_20_R1:
+                currentReflections = new Reflections_1_20();
         }
     }
 }

@@ -133,7 +133,7 @@ public class EggWars extends JavaPlugin
 
         if (!serverVersion.isAllowedVersion())
         {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[EggWars] " + ChatColor.RESET + "Uncompatible version! Currently supported: " + Versions.SUPPORTED_TEXT);
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[EggWars] " + ChatColor.RESET + "Incompatible version! Currently supported: " + Versions.SUPPORTED_TEXT);
             Bukkit.shutdown();
             return;
         }

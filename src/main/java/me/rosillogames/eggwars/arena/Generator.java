@@ -3,9 +3,7 @@ package me.rosillogames.eggwars.arena;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-
 import javax.annotation.Nullable;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;

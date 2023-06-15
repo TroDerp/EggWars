@@ -40,8 +40,6 @@ public interface Reflections
 
     public List<String> getEnchantmentsLore(ItemStack stack);
 
-    public void setFormatAndSetSignLines(Location loc, String line1, String line2, String line3, String line4);
-
     public void killOutOfWorld(Player p);
 
     public void saveFullWorld(World world);

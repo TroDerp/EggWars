@@ -511,7 +511,7 @@ public class Arena
         player.getPlayer().getInventory().clear();
         player.getPlayer().setFlying(false);
         player.getPlayer().setAllowFlight(false);
-        player.getPlayer().setHealth(20.0);
+        this.setPlayerMaxHealth(player);
         player.getPlayer().setFoodLevel(20);
         player.getPlayer().setLevel(0);
         player.getPlayer().setExp(0.0f);
@@ -775,7 +775,9 @@ public class Arena
 
         this.forced = false;
         this.itemsVotes.clear();
+        this.itemType = ItemType.NORMAL;
         this.healthVotes.clear();
+        this.healthType = HealthType.NORMAL;
         this.players.clear();
         this.getTeams().values().forEach(team -> team.reset());
         this.getGenerators().values().forEach(generator -> generator.reset());
@@ -1082,6 +1084,7 @@ public class Arena
             this.teamInv = new TranslatableInventory((int)Math.ceil((double)(this.teams.size() + 1) / 9D) * 9, "teams.menu_title");
         }
 
+        this.teamInv.clear();
         int i = 0;
 
         for (TeamTypes teamtypes : TeamTypes.values())

@@ -226,36 +226,6 @@ public class Reflections_1_18 implements Reflections
     }
 
     @Override
-    public void setFormatAndSetSignLines(Location loc, String line1, String line2, String line3, String line4)
-    {
-        try
-        {
-            Class cBlockPosition = this.getNMSClass("core.BlockPosition");
-            Object world = loc.getWorld().getClass().getMethod("getHandle").invoke(loc.getWorld());
-            Object blockPos = cBlockPosition.getConstructor(double.class, double.class, double.class).newInstance(loc.getX(), loc.getY(), loc.getZ());
-            Object tileEntity = world.getClass().getMethod("getTileEntity", cBlockPosition).invoke(world, blockPos);
-
-            if (tileEntity != null)
-            {
-                Class cIChatBase = this.getNMSClass("network.chat.IChatBaseComponent");
-                Class cChatSerializer = cIChatBase.getClasses()[0];
-                Object fLine1 = cChatSerializer.getMethod("a", String.class).invoke(null, line1);
-                Object fLine2 = cChatSerializer.getMethod("a", String.class).invoke(null, line2);
-                Object fLine3 = cChatSerializer.getMethod("a", String.class).invoke(null, line3);
-                Object fLine4 = cChatSerializer.getMethod("a", String.class).invoke(null, line4);
-                tileEntity.getClass().getMethod("a", int.class, cIChatBase).invoke(tileEntity, 0, fLine1);
-                tileEntity.getClass().getMethod("a", int.class, cIChatBase).invoke(tileEntity, 1, fLine2);
-                tileEntity.getClass().getMethod("a", int.class, cIChatBase).invoke(tileEntity, 2, fLine3);
-                tileEntity.getClass().getMethod("a", int.class, cIChatBase).invoke(tileEntity, 3, fLine4);
-            }
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
-        }
-    }
-
-    @Override
     public void killOutOfWorld(Player p)
     {
         try
