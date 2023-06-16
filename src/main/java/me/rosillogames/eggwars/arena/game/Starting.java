@@ -49,14 +49,15 @@ public class Starting
         }
 
         arenaIn.getScores().updateScores(true);
-        Countdown.playCountDownSoundAndSendText(arenaIn, "release", arenaIn.getGameCountdown());
-        Countdown countdown = new Countdown(arenaIn.getGameCountdown());
+        Lobby.playCountDown(arenaIn, "release", arenaIn.getGameCountdown());
         (new BukkitRunnable()
         {
+            private int countDown = arenaIn.getGameCountdown();
+
             @Override
             public void run()
             {
-                countdown.decrease();
+                this.countDown--;
 
                 if (!arenaIn.getStatus().equals(ArenaStatus.STARTING_GAME))
                 {
@@ -71,10 +72,9 @@ public class Starting
                     return;
                 }
 
-                int count = countdown.getCountdown();
-                arenaIn.setCurrentCountdown(count);
+                arenaIn.setCurrentCountdown(this.countDown);
 
-                switch (count)
+                switch (this.countDown)
                 {
                     case 1:
                     case 2:
@@ -83,10 +83,10 @@ public class Starting
                     case 5:
                     case 10:
                     case 15:
-                        Countdown.playCountDownSoundAndSendText(arenaIn, "release", count);
+                        Lobby.playCountDown(arenaIn, "release", this.countDown);
                         break;
                     case 0:
-                        Countdown.playCountDownSound(arenaIn);
+                        Lobby.playCountDownSound(arenaIn);
                         releasePlayersAndStartGame(arenaIn);
                         this.cancel();
                         return;

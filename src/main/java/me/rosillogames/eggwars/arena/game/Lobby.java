@@ -1,5 +1,6 @@
 package me.rosillogames.eggwars.arena.game;
 
+import org.bukkit.Sound;
 import org.bukkit.scheduler.BukkitRunnable;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
@@ -17,17 +18,17 @@ public class Lobby
 {
     public static void doStartingPhase(final Arena arenaIn)
     {
-        Countdown countdown = new Countdown(arenaIn.getDefCountdown());
         arenaIn.setStatus(ArenaStatus.STARTING);
-        Countdown.playCountDownSoundAndSendText(arenaIn, "starting", countdown.getCountdown());
+        playCountDown(arenaIn, "starting", arenaIn.getDefCountdown());
         (new BukkitRunnable()
         {
-            private final int fullCountDown = arenaIn.getFullCountdown();
+            private int countDown = arenaIn.getDefCountdown();
+            private boolean full = false;
 
             @Override
             public void run()
             {
-                countdown.decrease();
+                this.countDown--;
 
                 if (!arenaIn.getStatus().equals(ArenaStatus.STARTING))
                 {
@@ -49,26 +50,31 @@ public class Lobby
                     return;
                 }
 
-                if (arenaIn.isFull() && !countdown.isFullCountdown() && this.fullCountDown >= 0)
+                if (arenaIn.isFull() && !this.full && arenaIn.getFullCountdown() >= 0)
                 {
-                    countdown.setFullCountdown(this.fullCountDown);
-                    arenaIn.getPlayers().forEach((ewplayer) ->
-                    {
-                        TranslationUtils.sendMessage("gameplay.lobby.full_countdown", ewplayer.getPlayer(), TranslationUtils.translateTime(ewplayer.getPlayer(), this.fullCountDown, true));
-                    });
-                }
+                    this.full = true;
+                    int fullCD = arenaIn.getFullCountdown();
 
-                int count = countdown.getCountdown();
+                    if (this.countDown > fullCD)
+                    {
+                        this.countDown = fullCD;
+                    }
+
+                    for (EwPlayer ewplayer : arenaIn.getPlayers())
+                    {
+                        TranslationUtils.sendMessage("gameplay.lobby.full_countdown", ewplayer.getPlayer(), TranslationUtils.translateTime(ewplayer.getPlayer(), this.countDown, true));
+                    }
+                }
 
                 for (EwPlayer ewplayer1 : arenaIn.getPlayers())
                 {
-                    ewplayer1.getPlayer().setLevel(count);
+                    ewplayer1.getPlayer().setLevel(this.countDown);
                     ewplayer1.getPlayer().setExp(0.0F);
                 }
 
-                arenaIn.setCurrentCountdown(count);
+                arenaIn.setCurrentCountdown(this.countDown);
 
-                switch (count)
+                switch (this.countDown)
                 {
                     case 1:
                     case 2:
@@ -82,13 +88,13 @@ public class Lobby
                     case 90:
                     case 120:
                     case 160:
-                        Countdown.playCountDownSoundAndSendText(arenaIn, "starting", count);
+                        playCountDown(arenaIn, "starting", this.countDown);
                         return;
                     default:
                         break;
                 }
 
-                if (count <= 0)
+                if (this.countDown <= 0)
                 {
                     endStartingPhase(arenaIn);
                     this.cancel();
@@ -166,5 +172,19 @@ public class Lobby
                 }
             }
         }).runTaskLater(EggWars.instance, 30L);
+    }
+
+    public static void playCountDownSound(Arena arenaIn)
+    {
+        arenaIn.broadcastSound(Sound.UI_BUTTON_CLICK, 1.0F, 2.0F);
+    }
+
+    public static void playCountDown(Arena arenaIn, String type, int countdown)
+    {
+        arenaIn.getPlayers().forEach((ewplayer) ->
+        {
+            TranslationUtils.sendMessage("gameplay.lobby." + type + "_countdown", ewplayer.getPlayer(), TranslationUtils.translateTime(ewplayer.getPlayer(), countdown, true));
+        });
+        playCountDownSound(arenaIn);
     }
 }

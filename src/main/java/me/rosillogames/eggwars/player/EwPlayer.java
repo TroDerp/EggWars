@@ -5,11 +5,9 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Team;
-import me.rosillogames.eggwars.arena.game.Countdown;
 import me.rosillogames.eggwars.dependencies.VaultEconomy;
 import me.rosillogames.eggwars.enums.Mode;
 import me.rosillogames.eggwars.enums.StatType;
@@ -17,6 +15,7 @@ import me.rosillogames.eggwars.events.EwPlayerChangeLangEvent;
 import me.rosillogames.eggwars.language.Language;
 import me.rosillogames.eggwars.language.LanguageManager;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.objects.Cooldown;
 import me.rosillogames.eggwars.objects.Kit;
 import me.rosillogames.eggwars.player.inventory.EwInventory;
 
@@ -36,9 +35,9 @@ public class EwPlayer
     @Nullable
     private EwInventory inv;
     private final EwPlayerMenu menu;
-    private Countdown invincibleTime;
-    private long lastDamagerMillis;
-    private Countdown timeUntilKit;
+    private final Cooldown invincibleTime = new Cooldown();
+    private final Cooldown lastDamagerRemain = new Cooldown();
+    private final Cooldown kitCooldown = new Cooldown();
     private EwPlayer lastDamager;
     private EwPlayer trackedPlayer;
     private float votePower = 1.0F;
@@ -54,9 +53,6 @@ public class EwPlayer
         this.outsideDat = null;
         this.inv = null;
         this.lastDamager = null;
-        this.lastDamagerMillis = 0L;
-        this.invincibleTime = null;
-        this.timeUntilKit = null;
         this.menu = new EwPlayerMenu(this);
 
         try
@@ -137,10 +133,7 @@ public class EwPlayer
 
     public void storeGameData()
     {
-        if (!EggWars.bungee.isEnabled())
-        {
-            this.outsideDat = new TempGameData(this.getPlayer());
-        }
+        this.outsideDat = new TempGameData(this.getPlayer());
     }
 
     public void restoreGameData()
@@ -176,36 +169,17 @@ public class EwPlayer
 
     public boolean isInvincible()
     {
-        return this.invincibleTime != null && this.invincibleTime.getCountdown() > 0;
+        return !this.invincibleTime.hasFinished();
     }
 
     public void setInvincible()
     {
-        this.invincibleTime = new Countdown(EggWars.config.invincibilityTime);
-        (new BukkitRunnable()
-        {
-            public void run()
-            {
-                if (EwPlayer.this.invincibleTime == null)
-                {
-                    this.cancel();
-                    return;
-                }
-
-                EwPlayer.this.invincibleTime.decrease();
-
-                if (EwPlayer.this.invincibleTime.getCountdown() == 0)
-                {
-                    this.cancel();
-                    EwPlayer.this.clearInvincible();
-                }
-            }
-        }).runTaskTimer(EggWars.instance, 0L, 20L);
+        this.invincibleTime.setFinish(EggWars.config.invincibilityTime);
     }
 
     public void clearInvincible()
     {
-        this.invincibleTime = null;
+        this.invincibleTime.clear();
     }
 
     public boolean hasKit(Kit kit)
@@ -223,14 +197,15 @@ public class EwPlayer
     public void setLastDamager(EwPlayer ewplayer)
     {
         this.lastDamager = ewplayer;
-        this.lastDamagerMillis = System.currentTimeMillis();
+        this.lastDamagerRemain.setFinish(20);
     }
 
     @Nullable
     public EwPlayer getLastDamager()
     {
-        if (System.currentTimeMillis() - this.lastDamagerMillis > 20000L)//20 seconds
+        if (this.lastDamagerRemain.hasFinished())
         {
+            this.lastDamagerRemain.clear();
             this.lastDamager = null;
         }
 
@@ -256,7 +231,6 @@ public class EwPlayer
         if (EggWars.config.vault)
         {
             VaultEconomy.setPoints(this.player, i);
-            EggWars.getDB().getPlayerData(this.player).setPoints(i);
         }
 
         EggWars.getDB().getPlayerData(this.player).setPoints(i);
@@ -305,42 +279,18 @@ public class EwPlayer
 
     public int timeUntilKit()
     {
-        if (this.timeUntilKit == null)
-        {
-            return -1;
-        }
-
-        return this.timeUntilKit.getCountdown();
+        return this.kitCooldown.timeUntilFinish();
     }
 
     public void startKitCooldown(int cooldown)
     {
-        this.timeUntilKit = new Countdown(cooldown);
+        this.kitCooldown.setFinish(cooldown);
         TranslationUtils.sendMessage("gameplay.kits.cooldown_started", this.getPlayer(), TranslationUtils.translateTime(this.getPlayer(), this.timeUntilKit(), true));
-        (new BukkitRunnable()
-        {
-            public void run()
-            {
-                if (EwPlayer.this.timeUntilKit == null)
-                {
-                    this.cancel();
-                    return;
-                }
-
-                EwPlayer.this.timeUntilKit.decrease();
-
-                if (EwPlayer.this.timeUntilKit.getCountdown() == 0)
-                {
-                    this.cancel();
-                    EwPlayer.this.clearKitCooldown();
-                }
-            }
-        }).runTaskTimer(EggWars.instance, 0L, 20L);
     }
 
     public void clearKitCooldown()
     {
-        this.timeUntilKit = null;
+        this.kitCooldown.clear();
     }
 
     @Nullable

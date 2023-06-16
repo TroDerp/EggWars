@@ -10,7 +10,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Team;
-import me.rosillogames.eggwars.arena.game.Countdown;
 import me.rosillogames.eggwars.arena.game.Finish;
 import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.language.TranslationUtils;
@@ -138,9 +137,10 @@ public class PlayerDeathListener implements Listener
                 event.setRespawnLocation(pl.getArena().getCenter());
                 pl.getPlayer().setGameMode(GameMode.SPECTATOR);
                 ReflectionUtils.sendTitle(pl.getPlayer(), Integer.valueOf(5), Integer.valueOf(22), Integer.valueOf(5), TranslationUtils.getMessage("gameplay.ingame.you_died", pl.getPlayer()), TranslationUtils.getMessage("gameplay.ingame.you_died_respawning", pl.getPlayer(), TranslationUtils.translateTime(pl.getPlayer(), EggWars.config.respawnDelay, false)));
-                Countdown countdown = new Countdown(EggWars.config.respawnDelay);
                 (new BukkitRunnable()
                 {
+                    private int countDown = EggWars.config.respawnDelay;
+
                     public void run()
                     {
                         if (!pl.getPlayer().isOnline() || !pl.isInArena())
@@ -149,9 +149,9 @@ public class PlayerDeathListener implements Listener
                             return;
                         }
 
-                        countdown.decrease();
+                        this.countDown--;
 
-                        switch (countdown.getCountdown())
+                        switch (this.countDown)
                         {
                             case 1:
                             case 2:
@@ -160,7 +160,7 @@ public class PlayerDeathListener implements Listener
                             case 5:
                             case 10:
                             case 15:
-                                ReflectionUtils.sendTitle(pl.getPlayer(), Integer.valueOf(0), Integer.valueOf(22), Integer.valueOf(0), TranslationUtils.getMessage("gameplay.ingame.you_died", pl.getPlayer()), TranslationUtils.getMessage("gameplay.ingame.you_died_respawning", pl.getPlayer(), TranslationUtils.translateTime(pl.getPlayer(), countdown.getCountdown(), false)));
+                                ReflectionUtils.sendTitle(pl.getPlayer(), Integer.valueOf(0), Integer.valueOf(22), Integer.valueOf(0), TranslationUtils.getMessage("gameplay.ingame.you_died", pl.getPlayer()), TranslationUtils.getMessage("gameplay.ingame.you_died_respawning", pl.getPlayer(), TranslationUtils.translateTime(pl.getPlayer(), this.countDown, false)));
                                 break;
                             case 0:
                                 pl.getPlayer().setGameMode(GameMode.SURVIVAL);
