@@ -106,7 +106,7 @@ public class KitLoader
                         items.add(new Pair(slot, item));
                     }
 
-                    int cooldown = GsonHelper.getAsInt(kit, "cooldown_time", KitLoader.cooldownSeconds);
+                    int cooldown = GsonHelper.getAsInt(kit, "cooldown_time", -1);
                     int price = GsonHelper.getAsInt(kit, "price", 0);
                     this.kits.add(new Kit(items, key, displayItem, price, cooldown));
                 }

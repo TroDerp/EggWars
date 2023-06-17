@@ -13,6 +13,7 @@ import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.arena.game.Finish;
 import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.objects.Cooldown;
 import me.rosillogames.eggwars.objects.Kit;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.Locations;
@@ -56,6 +57,7 @@ public class PlayerDeathListener implements Listener
         }
 
         diedPlayer.getIngameStats().addStat(StatType.DEATHS, 1);
+        diedPlayer.clearLastDamager();
         deathevent.getDrops().clear();
         deathevent.setKeepInventory(true);
 
@@ -190,19 +192,22 @@ public class PlayerDeathListener implements Listener
 
         if (plKit != null && plKit.cooldownTime() >= 0)
         {
-            if (pl.timeUntilKit() <= 0)
+            Cooldown cooldown = pl.getKitCooldown();
+
+            if (cooldown.hasFinished())
             {
                 plKit.equip(pl.getPlayer());
-                int cooldown = plKit.cooldownTime();
+                int time = plKit.cooldownTime();
 
-                if (cooldown > 0)
+                if (time > 0)
                 {
-                    pl.startKitCooldown(cooldown);
+                    cooldown.setFinish(time);
+                    TranslationUtils.sendMessage("gameplay.kits.cooldown_started", pl.getPlayer(), TranslationUtils.translateTime(pl.getPlayer(), cooldown.timeUntilFinish(), true));
                 }
             }
             else
             {
-                TranslationUtils.sendMessage("gameplay.kits.on_cooldown", pl.getPlayer(), TranslationUtils.translateTime(pl.getPlayer(), pl.timeUntilKit(), true));
+                TranslationUtils.sendMessage("gameplay.kits.on_cooldown", pl.getPlayer(), TranslationUtils.translateTime(pl.getPlayer(), cooldown.timeUntilFinish(), true));
             }
         }
 

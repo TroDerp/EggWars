@@ -290,14 +290,15 @@ public class EggWars extends JavaPlugin
         }
         else
         {
-            if (bungee.useRandomArena())
+            File afile1[] = arenasFolder.listFiles();
+
+            if (bungee.useRandomArena() && afile1.length > 0)
             {
                 this.loadRandomArena();
                 return;
             }
 
             bungee.setArena(null);
-            File afile1[] = arenasFolder.listFiles();
             int j = afile1.length;
             int l = 0;
 

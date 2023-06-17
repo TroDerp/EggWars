@@ -15,7 +15,6 @@ import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.events.EwPlayerChangeLangEvent;
 import me.rosillogames.eggwars.language.Language;
 import me.rosillogames.eggwars.language.LanguageManager;
-import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.objects.Cooldown;
 import me.rosillogames.eggwars.objects.Kit;
 import me.rosillogames.eggwars.player.inventory.EwInventory;
@@ -153,7 +152,7 @@ public class EwPlayer
 
         this.clearInvincible();
         this.clearLastDamager();
-        this.clearKitCooldown();
+        this.kitCooldown.clear();
     }
 
     @Nullable
@@ -275,6 +274,22 @@ public class EwPlayer
         return this.ingameStats;
     }
 
+    public Cooldown getKitCooldown()
+    {
+        return this.kitCooldown;
+    }
+
+    @Nullable
+    public EwPlayer getTrackedPlayer()
+    {
+        return this.trackedPlayer;
+    }
+
+    public void setTrackedPlayer(@Nullable EwPlayer player)
+    {
+        this.trackedPlayer = player;
+    }
+
     public Language getLanguage()
     {
         String locale = EggWars.getDB().getPlayerData(this.player).getLocale();
@@ -299,33 +314,6 @@ public class EwPlayer
         catch (LinkageError linkageerror)
         {
         }
-    }
-
-    public int timeUntilKit()
-    {
-        return this.kitCooldown.timeUntilFinish();
-    }
-
-    public void startKitCooldown(int cooldown)
-    {
-        this.kitCooldown.setFinish(cooldown);
-        TranslationUtils.sendMessage("gameplay.kits.cooldown_started", this.getPlayer(), TranslationUtils.translateTime(this.getPlayer(), this.timeUntilKit(), true));
-    }
-
-    public void clearKitCooldown()
-    {
-        this.kitCooldown.clear();
-    }
-
-    @Nullable
-    public EwPlayer getTrackedPlayer()
-    {
-        return this.trackedPlayer;
-    }
-
-    public void setTrackedPlayer(@Nullable EwPlayer player)
-    {
-        this.trackedPlayer = player;
     }
 
     public class IngameStats
