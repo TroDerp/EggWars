@@ -17,6 +17,7 @@ import org.bukkit.persistence.PersistentDataType;
 import com.google.gson.JsonObject;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.MenuType;
+import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class ItemUtils
@@ -265,7 +266,7 @@ public class ItemUtils
         }
     }
 
-    public static ItemStack tryColorizeByTeam(TeamTypes team, ItemStack uncolored)
+    public static ItemStack tryColorizeByTeam(TeamType team, ItemStack uncolored)
     {
         ItemStack colored = uncolored.clone();
         Colorizer.colorizeItem(colored, team.woolColor());

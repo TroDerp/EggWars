@@ -10,9 +10,9 @@ import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.commands.CommandArg;
+import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.utils.Locations;
-import me.rosillogames.eggwars.utils.TeamTypes;
 import me.rosillogames.eggwars.utils.TeamUtils;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -58,7 +58,7 @@ public class TeamList extends CommandArg
         TranslationUtils.sendMessage("commands.teamList.success", player, arena.getName());
         player.sendMessage(" ");
 
-        for (TeamTypes teamType : arena.getTeams().keySet())
+        for (TeamType teamType : arena.getTeams().keySet())
         {
             Team team = (Team)arena.getTeams().get(teamType);
             TextComponent teamComponent = new TextComponent(TeamUtils.translateTeamType(team.getType(), player, false));

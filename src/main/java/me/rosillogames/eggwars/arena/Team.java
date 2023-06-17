@@ -15,11 +15,12 @@ import org.bukkit.entity.Villager;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
+
+import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.Colorizer;
 import me.rosillogames.eggwars.utils.Locations;
-import me.rosillogames.eggwars.utils.TeamTypes;
 import me.rosillogames.eggwars.utils.TeamUtils;
 import me.rosillogames.eggwars.utils.WorldController;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
@@ -33,9 +34,9 @@ public class Team
     private Location egg;
     private Location villagerLoc;
     private Location respawn;
-    private TeamTypes type;
+    private TeamType type;
 
-    public Team(Arena arena, TeamTypes color)
+    public Team(Arena arena, TeamType color)
     {
         this.arena = arena;
         this.type = color;
@@ -173,12 +174,12 @@ public class Team
         this.villagerLoc = Locations.toBlock(location, false);
     }
 
-    public TeamTypes getType()
+    public TeamType getType()
     {
         return this.type;
     }
 
-    public void setType(TeamTypes typeIn)
+    public void setType(TeamType typeIn)
     {
         this.type = typeIn;
     }

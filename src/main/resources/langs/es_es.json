@@ -323,7 +323,7 @@
   "commands.teamList.teleport": "&6 - &2[Teleport]",
   "commands.teamList.failed": "&cThere isn't any team on arena {0}&c!",
   "commands.setBungeeLobby.success": "&aBungee lobby set! (&e{0}&a)",
-  "commands.setBungeeLobby.usage": "&cUsage: /ews setBungeeLobby <???>",
+  "commands.setBungeeLobby.usage": "&cUsage: /ews setBungeeLobby <nombre del servidor>",
   "stats.endOfGame.container": "&7------------------------------------\n{0}\n&7------------------------------------",
   "stats.endOfGame.stat": "&8● &7{0}: &e{1}",
   "stats.endOfGame.game_lenght": "Duración de la Partida",

@@ -44,6 +44,7 @@ import me.rosillogames.eggwars.enums.HealthType;
 import me.rosillogames.eggwars.enums.ItemType;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.enums.Mode;
+import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.events.EwPlayerJoinArenaEvent;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.loaders.TradingLoader;
@@ -59,7 +60,6 @@ import me.rosillogames.eggwars.utils.GsonHelper;
 import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.Locations;
 import me.rosillogames.eggwars.utils.PlayerUtils;
-import me.rosillogames.eggwars.utils.TeamTypes;
 import me.rosillogames.eggwars.utils.TeamUtils;
 import me.rosillogames.eggwars.utils.VoteUtils;
 import me.rosillogames.eggwars.utils.WorldController;
@@ -69,7 +69,7 @@ public class Arena
     //Universal
     public final File arenaFolder;
     private final String name;
-    private final Map<TeamTypes, Team> teams = Maps.newEnumMap(TeamTypes.class);
+    private final Map<TeamType, Team> teams = Maps.newEnumMap(TeamType.class);
     //Use vector instead of location to skip an issue with worlds when used loc.equals(other)
     private final Map<Vector, Generator> generators = Maps.newHashMap();
     //Arena status will now always be "Setup" at first, before completing init or when arena is newly created
@@ -170,7 +170,7 @@ public class Arena
             EggWars.instance.saveCustomResource("custom/" + TradingLoader.SPEC_TRADES_FILE, new File(this.arenaFolder, TradingLoader.SPEC_TRADES_FILE), false);
         }
 
-        for (TeamTypes teamtype : TeamTypes.values())
+        for (TeamType teamtype : TeamType.values())
         {
             String teamtypeid = "Team." + teamtype.id();
 
@@ -335,22 +335,22 @@ public class Arena
         }
     }
 
-    public Map<TeamTypes, Team> getTeams()
+    public Map<TeamType, Team> getTeams()
     {
         return new HashMap(this.teams);
     }
 
-    public void removeTeam(TeamTypes teamTypes)
+    public void removeTeam(TeamType teamTypes)
     {
         this.teams.remove(teamTypes);
     }
 
-    public void addTeam(TeamTypes teamTypes)
+    public void addTeam(TeamType teamTypes)
     {
         this.teams.put(teamTypes, new Team(this, teamTypes));
     }
 
-    public boolean moveTeam(TeamTypes oldTeam, TeamTypes newTeam)
+    public boolean moveTeam(TeamType oldTeam, TeamType newTeam)
     {
         Team team = this.teams.remove(oldTeam);
         boolean flag = false;
@@ -517,8 +517,6 @@ public class Arena
         player.getPlayer().setLevel(0);
         player.getPlayer().setExp(0.0f);
         player.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
-        player.clearInvincible();
-        player.clearKitCooldown();
         PlayerUtils.removePotionEffects(player.getPlayer());
 
         if (!silently && this.status.isLobby())
@@ -567,8 +565,6 @@ public class Arena
         player.getPlayer().getInventory().clear();
         PlayerUtils.removePotionEffects(player.getPlayer());
         player.restoreGameData();
-        player.clearInvincible();
-        player.clearKitCooldown();
 
         if (!silent && !player.isEliminated())
         {
@@ -1029,7 +1025,7 @@ public class Arena
         fconfig.set("GameCountdown", Integer.valueOf(this.gameCountdown));
         fconfig.set("ArenaSpecificTrades", Boolean.valueOf(this.customTrades));
 
-        for (Map.Entry<TeamTypes, Team> entry : this.teams.entrySet())
+        for (Map.Entry<TeamType, Team> entry : this.teams.entrySet())
         {
             String id = entry.getKey().id();
             Team team = entry.getValue();
@@ -1088,7 +1084,7 @@ public class Arena
         this.teamInv.clear();
         int i = 0;
 
-        for (TeamTypes teamtypes : TeamTypes.values())
+        for (TeamType teamtypes : TeamType.values())
         {
             Team team = (Team)this.teams.get(teamtypes);
 

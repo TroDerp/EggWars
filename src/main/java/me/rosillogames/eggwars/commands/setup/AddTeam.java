@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.commands.CommandArg;
+import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
-import me.rosillogames.eggwars.utils.TeamTypes;
 
 public class AddTeam extends CommandArg
 {
@@ -34,11 +34,11 @@ public class AddTeam extends CommandArg
             return false;
         }
 
-        TeamTypes teamType;
+        TeamType teamType;
 
         try
         {
-            teamType = TeamTypes.byId(args[1]);
+            teamType = TeamType.byId(args[1]);
         }
         catch (IllegalArgumentException illegalArgumentException)
         {
@@ -69,7 +69,7 @@ public class AddTeam extends CommandArg
 
             if (arena != null)
             {
-                for (TeamTypes teamtype : TeamTypes.values())
+                for (TeamType teamtype : TeamType.values())
                 {
                     if (!arena.getTeams().containsKey(teamtype))
                     {

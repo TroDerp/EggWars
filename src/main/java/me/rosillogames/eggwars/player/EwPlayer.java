@@ -11,6 +11,7 @@ import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.dependencies.VaultEconomy;
 import me.rosillogames.eggwars.enums.Mode;
 import me.rosillogames.eggwars.enums.StatType;
+import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.events.EwPlayerChangeLangEvent;
 import me.rosillogames.eggwars.language.Language;
 import me.rosillogames.eggwars.language.LanguageManager;
@@ -31,6 +32,7 @@ public class EwPlayer
     private Team team;
     private boolean eliminated;
     private boolean joining;
+    @Nullable
     private TempGameData outsideDat;
     @Nullable
     private EwInventory inv;
@@ -38,7 +40,11 @@ public class EwPlayer
     private final Cooldown invincibleTime = new Cooldown();
     private final Cooldown lastDamagerRemain = new Cooldown();
     private final Cooldown kitCooldown = new Cooldown();
+    @Nullable
     private EwPlayer lastDamager;
+    @Nullable//cache last damager team to prevent a bug with message
+    private TeamType lastDamagerTeam;
+    @Nullable
     private EwPlayer trackedPlayer;
     private float votePower = 1.0F;
 
@@ -133,6 +139,7 @@ public class EwPlayer
 
     public void storeGameData()
     {
+        this.restoreGameData();
         this.outsideDat = new TempGameData(this.getPlayer());
     }
 
@@ -143,6 +150,10 @@ public class EwPlayer
             this.outsideDat.sendToPlayer();
             this.outsideDat = null;
         }
+
+        this.clearInvincible();
+        this.clearLastDamager();
+        this.clearKitCooldown();
     }
 
     @Nullable
@@ -197,7 +208,15 @@ public class EwPlayer
     public void setLastDamager(EwPlayer ewplayer)
     {
         this.lastDamager = ewplayer;
+        this.lastDamagerTeam = ewplayer.getTeam().getType();
         this.lastDamagerRemain.setFinish(20);
+    }
+
+    public void clearLastDamager()
+    {
+        this.lastDamager = null;
+        this.lastDamagerTeam = null;
+        this.lastDamagerRemain.clear();
     }
 
     @Nullable
@@ -205,11 +224,16 @@ public class EwPlayer
     {
         if (this.lastDamagerRemain.hasFinished())
         {
-            this.lastDamagerRemain.clear();
-            this.lastDamager = null;
+            this.clearLastDamager();
         }
 
         return this.lastDamager;
+    }
+
+    @Nullable
+    public TeamType getLastDamagerTeam()
+    {
+        return this.lastDamagerTeam;
     }
 
     public int getPoints()

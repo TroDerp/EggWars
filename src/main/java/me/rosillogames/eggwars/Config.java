@@ -68,10 +68,9 @@ public class Config
         EggWars.bungee.addConfigDefaults(fileConf);
 
         fileConf.addDefault("database.auto_mode", true);
-        fileConf.addDefault("database.url", "jdbc:mysql://{IP}:{PORT}/{DATABASENAME}");
+        fileConf.addDefault("database.url", "jdbc:mysql://{IP}:{PORT}/{DATABASENAME}?useSSL=false");
         fileConf.addDefault("database.username", "bukkit");
         fileConf.addDefault("database.password", "walrus");
-        fileConf.addDefault("database.useSSL", false);
 
         fileConf.addDefault("gameplay.balance_teams", false);
         fileConf.addDefault("gameplay.skip_solo_lobby", true);

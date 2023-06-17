@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.commands.CommandArg;
+import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
-import me.rosillogames.eggwars.utils.TeamTypes;
 import me.rosillogames.eggwars.utils.TeamUtils;
 
 public class RemoveTeam extends CommandArg
@@ -35,7 +35,7 @@ public class RemoveTeam extends CommandArg
             return false;
         }
 
-        TeamTypes teamtypes = TeamUtils.typeByIdAndValidateForArena(arena, args[1], commandSender);
+        TeamType teamtypes = TeamUtils.typeByIdAndValidateForArena(arena, args[1], commandSender);
 
         if (teamtypes == null)
         {
@@ -59,7 +59,7 @@ public class RemoveTeam extends CommandArg
 
             if (arena != null)
             {
-                for (TeamTypes teamtypes : arena.getTeams().keySet())
+                for (TeamType teamtypes : arena.getTeams().keySet())
                 {
                     if (teamtypes.id().startsWith(args[1]))
                     {

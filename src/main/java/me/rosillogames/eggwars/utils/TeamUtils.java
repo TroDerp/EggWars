@@ -12,6 +12,7 @@ import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.enums.MenuType;
+import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
@@ -33,12 +34,12 @@ public class TeamUtils implements Listener
         return invItem.getTranslated(player);
     }
 
-    public static String translateTeamType(TeamTypes type, Player player, boolean allowBold)
+    public static String translateTeamType(TeamType type, Player player, boolean allowBold)
     {
         return translateTeamType(type, player, allowBold, false);
     }
 
-    public static String teamPrefix(TeamTypes type, Player player)
+    public static String teamPrefix(TeamType type, Player player)
     {
         EwPlayer ewply = PlayerUtils.getEwPlayer(player);
 
@@ -52,7 +53,7 @@ public class TeamUtils implements Listener
         }
     }
 
-    public static String translateTeamType(TeamTypes type, Player player, boolean allowBold, boolean shortv)
+    public static String translateTeamType(TeamType type, Player player, boolean allowBold, boolean shortv)
     {
         if (type == null)
         {
@@ -71,7 +72,12 @@ public class TeamUtils implements Listener
 
     public static String colorizePlayerName(EwPlayer ewpl)
     {
-        return ewpl.getTeam().getType().color() + ewpl.getPlayer().getName();
+        return colorizePlayerName(ewpl.getPlayer(), ewpl.getTeam().getType());
+    }
+
+    public static String colorizePlayerName(Player pl, TeamType tmtype)
+    {
+        return tmtype.color() + pl.getName();
     }
 
     public static Team getTeamByEggLocation(Arena arena, Location location)
@@ -89,11 +95,11 @@ public class TeamUtils implements Listener
         return null;
     }
 
-    public static TeamTypes byOrdinalInArena(Arena arena, int i) throws IllegalArgumentException
+    public static TeamType byOrdinalInArena(Arena arena, int i) throws IllegalArgumentException
     {
         int j = 0;
 
-        for (TeamTypes teamtype : TeamTypes.values())
+        for (TeamType teamtype : TeamType.values())
         {
             Team team = (Team)arena.getTeams().get(teamtype);
 
@@ -114,9 +120,9 @@ public class TeamUtils implements Listener
     }
 
     @Nullable
-    public static TeamTypes typeByIdAndValidateForArena(Arena arena, String string, CommandSender commandSender)
+    public static TeamType typeByIdAndValidateForArena(Arena arena, String string, CommandSender commandSender)
     {
-        for (TeamTypes teamColor : TeamTypes.values())
+        for (TeamType teamColor : TeamType.values())
         {
             if (teamColor.id().equals(string))
             {

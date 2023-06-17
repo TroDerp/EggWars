@@ -1,8 +1,8 @@
-package me.rosillogames.eggwars.utils;
+package me.rosillogames.eggwars.enums;
 
 import org.bukkit.ChatColor;
 
-public enum TeamTypes
+public enum TeamType
 {
     RED("red", 14, ChatColor.DARK_RED),
     DARK_BLUE("dark_blue", 11, ChatColor.DARK_BLUE),
@@ -22,7 +22,7 @@ public enum TeamTypes
     private final int woolColor;
     private final ChatColor chatColor;
 
-    private TeamTypes(String s, int wColor, ChatColor color)
+    private TeamType(String s, int wColor, ChatColor color)
     {
         this.id = s;
         this.woolColor = wColor;
@@ -44,7 +44,7 @@ public enum TeamTypes
         return this.chatColor;
     }
 
-    public TeamTypes next()
+    public TeamType next()
     {
         if (this.equals(RED))
         {
@@ -109,9 +109,9 @@ public enum TeamTypes
         return RED;
     }
 
-    public static TeamTypes byId(String s) throws IllegalArgumentException
+    public static TeamType byId(String s) throws IllegalArgumentException
     {
-        for (TeamTypes teams : values())
+        for (TeamType teams : values())
         {
             if (teams.id().equals(s))
             {

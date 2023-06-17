@@ -1,7 +1,6 @@
 package me.rosillogames.eggwars.api;
 
 import javax.annotation.Nullable;
-
 import org.bukkit.entity.Player;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;

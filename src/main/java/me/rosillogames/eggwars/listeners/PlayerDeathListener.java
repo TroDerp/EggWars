@@ -46,7 +46,7 @@ public class PlayerDeathListener implements Listener
                 killerPlayer.getIngameStats().addStat(StatType.ELIMINATIONS, 1);
             }
 
-            arena.sendBroadcast("gameplay.death." + cause + ".player", TeamUtils.colorizePlayerName(diedPlayer), TeamUtils.colorizePlayerName(killerPlayer));
+            arena.sendBroadcast("gameplay.death." + cause + ".player", TeamUtils.colorizePlayerName(diedPlayer), TeamUtils.colorizePlayerName(killerPlayer.getPlayer(), diedPlayer.getLastDamagerTeam()));
             //Reward points message for killer comes before elimination message
             PlayerUtils.addPoints(killerPlayer, fk ? EggWars.instance.getConfig().getInt("gameplay.points.on_final_kill") : EggWars.instance.getConfig().getInt("gameplay.points.on_kill"));
         }

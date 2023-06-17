@@ -21,6 +21,7 @@ import com.mojang.datafixers.util.Pair;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.MenuType;
+import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.player.EwPlayerMenu;
@@ -30,7 +31,6 @@ import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.Locations;
 import me.rosillogames.eggwars.utils.PlayerUtils;
-import me.rosillogames.eggwars.utils.TeamTypes;
 import me.rosillogames.eggwars.utils.TeamUtils;
 
 public class SetupGUI
@@ -75,10 +75,10 @@ public class SetupGUI
     private static void openTeamsSetupGUI(Player player1, Arena arena)
     {
         TranslatableInventory tInv = new TranslatableInventory(36, "setup.gui.teams.title");
-        Map<Integer, TeamTypes> map = new HashMap();
+        Map<Integer, TeamType> map = new HashMap();
         int i = 0;
 
-        for (TeamTypes teamtype : TeamTypes.values())
+        for (TeamType teamtype : TeamType.values())
         {
             Team team = arena.getTeams().get(teamtype);
             TranslatableItem tItem = new TranslatableItem((player) ->
@@ -470,8 +470,8 @@ public class SetupGUI
             {
                 clickEvent.setCancelled(true);
 
-                Map<Integer, TeamTypes> map = (Map<Integer, TeamTypes>)ewplayer.getInv().getExtraData();
-                TeamTypes teamtype;
+                Map<Integer, TeamType> map = (Map<Integer, TeamType>)ewplayer.getInv().getExtraData();
+                TeamType teamtype;
 
                 if ((teamtype = map.get(clickEvent.getRawSlot())) != null)
                 {

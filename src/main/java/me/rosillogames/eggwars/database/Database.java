@@ -50,7 +50,7 @@ public class Database
             }
             else
             {
-                this.connection = DriverManager.getConnection(plugin.getConfig().getString("database.url") + "?useSSL=" + plugin.getConfig().getBoolean("database.useSSL"), plugin.getConfig().getString("database.username"), plugin.getConfig().getString("database.password"));
+                this.connection = DriverManager.getConnection(plugin.getConfig().getString("database.url"), plugin.getConfig().getString("database.username"), plugin.getConfig().getString("database.password"));
             }
 
             this.createTable();

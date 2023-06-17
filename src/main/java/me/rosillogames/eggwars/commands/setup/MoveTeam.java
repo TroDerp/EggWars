@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.commands.CommandArg;
+import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
-import me.rosillogames.eggwars.utils.TeamTypes;
 import me.rosillogames.eggwars.utils.TeamUtils;
 
 public class MoveTeam extends CommandArg
@@ -35,18 +35,18 @@ public class MoveTeam extends CommandArg
             return false;
         }
 
-        TeamTypes team1 = TeamUtils.typeByIdAndValidateForArena(arena, args[1], commandSender);
+        TeamType team1 = TeamUtils.typeByIdAndValidateForArena(arena, args[1], commandSender);
 
         if (team1 == null)
         {
             return false;
         }
 
-        TeamTypes team2;
+        TeamType team2;
 
         try
         {
-            team2 = TeamTypes.byId(args[2]);
+            team2 = TeamType.byId(args[2]);
         }
         catch (IllegalArgumentException illegalArgumentException)
         {
@@ -77,7 +77,7 @@ public class MoveTeam extends CommandArg
 
             if (arena != null)
             {
-                for (TeamTypes teamtypes : arena.getTeams().keySet())
+                for (TeamType teamtypes : arena.getTeams().keySet())
                 {
                     if (teamtypes.id().startsWith(args[1]))
                     {
@@ -92,7 +92,7 @@ public class MoveTeam extends CommandArg
 
             if (arena != null)
             {
-                for (TeamTypes teamtype : TeamTypes.values())
+                for (TeamType teamtype : TeamType.values())
                 {
                     list.add(teamtype.id());
                 }

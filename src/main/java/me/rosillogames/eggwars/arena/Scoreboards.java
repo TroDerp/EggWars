@@ -8,9 +8,9 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.StatType;
+import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
-import me.rosillogames.eggwars.utils.TeamTypes;
 import me.rosillogames.eggwars.utils.TeamUtils;
 
 @SuppressWarnings("deprecation")
@@ -117,9 +117,9 @@ public class Scoreboards
     {
         Scoreboard scoreboard = ewplayer.getPlayer().getScoreboard();
 
-        for (Map.Entry<TeamTypes, Team> entry : this.arena.getTeams().entrySet())
+        for (Map.Entry<TeamType, Team> entry : this.arena.getTeams().entrySet())
         {
-            TeamTypes type = entry.getKey();
+            TeamType type = entry.getKey();
             org.bukkit.scoreboard.Team mcTeam = scoreboard.getTeam(type.id());
 
             if (mcTeam != null)
