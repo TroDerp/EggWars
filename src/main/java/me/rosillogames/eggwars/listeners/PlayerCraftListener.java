@@ -10,18 +10,18 @@ import me.rosillogames.eggwars.utils.PlayerUtils;
 public class PlayerCraftListener implements Listener
 {
     @EventHandler
-    public void craft(CraftItemEvent craftitemevent)
+    public void craft(CraftItemEvent event)
     {
-        if (!(craftitemevent.getWhoClicked() instanceof Player))
+        if (!(event.getWhoClicked() instanceof Player))
         {
             return;
         }
 
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)craftitemevent.getWhoClicked());
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)event.getWhoClicked());
 
         if (ewplayer.isInArena())
         {
-            craftitemevent.setCancelled(true);
+            event.setCancelled(true);
         }
     }
 }

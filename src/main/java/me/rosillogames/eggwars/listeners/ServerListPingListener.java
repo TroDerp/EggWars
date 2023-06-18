@@ -11,7 +11,7 @@ import me.rosillogames.eggwars.language.TranslationUtils;
 public class ServerListPingListener implements Listener
 {
     @EventHandler
-    public void ping(ServerListPingEvent serverlistpingevent)
+    public void ping(ServerListPingEvent serverListEvent)
     {
         if (!EggWars.bungee.isEnabled())
         {
@@ -31,7 +31,7 @@ public class ServerListPingListener implements Listener
         }
 
         int i = EggWars.bungee.getArena().getStatus().isLobby() ? EggWars.bungee.getArena().getPlayers().size() : EggWars.bungee.getArena().getAlivePlayers().size();
-        serverlistpingevent.setMotd(s.replace("{PLAYERS}", Integer.valueOf(i).toString()).replace("{ARENA}", !EggWars.bungee.getArenaName().isEmpty() ? ChatColor.translateAlternateColorCodes('&', EggWars.bungee.getArenaName()) : EggWars.bungee.getArena().getName()));
-        serverlistpingevent.setMaxPlayers(EggWars.bungee.getArena().getMaxPlayers());
+        serverListEvent.setMotd(s.replace("{PLAYERS}", Integer.valueOf(i).toString()).replace("{ARENA}", !EggWars.bungee.getArenaName().isEmpty() ? ChatColor.translateAlternateColorCodes('&', EggWars.bungee.getArenaName()) : EggWars.bungee.getArena().getName()));
+        serverListEvent.setMaxPlayers(EggWars.bungee.getArena().getMaxPlayers());
     }
 }

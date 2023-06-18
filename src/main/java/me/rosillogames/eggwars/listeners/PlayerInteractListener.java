@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -67,48 +68,48 @@ public class PlayerInteractListener implements Listener
     }
 
     @EventHandler
-    public void openKits(PlayerInteractEvent playerinteractevent)
+    public void openKits(PlayerInteractEvent event)
     {
-        if (!playerinteractevent.getAction().equals(Action.RIGHT_CLICK_AIR) && !playerinteractevent.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+        if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
         {
             return;
         }
 
-        if (playerinteractevent.getPlayer().getInventory().getItemInMainHand() == null)
+        if (event.getPlayer().getInventory().getItemInMainHand() == null)
         {
             return;
         }
 
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer(playerinteractevent.getPlayer());
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
 
         if (!ewplayer.isInArena() || ewplayer.isEliminated())
         {
             return;
         }
 
-        ItemStack itemstack = playerinteractevent.getPlayer().getInventory().getItemInMainHand();
+        ItemStack itemstack = event.getPlayer().getInventory().getItemInMainHand();
 
         if (ItemUtils.getOpensMenu(itemstack) == MenuType.KIT_SELECTION)
         {
-            playerinteractevent.setCancelled(true);
+            event.setCancelled(true);
             EggWars.getKitManager().openKitsInv(ewplayer.getPlayer(), 0);
         }
     }
 
     @EventHandler
-    public void openTeams(PlayerInteractEvent playerinteractevent)
+    public void openTeams(PlayerInteractEvent event)
     {
-        if (!playerinteractevent.getAction().equals(Action.RIGHT_CLICK_AIR) && !playerinteractevent.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+        if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
         {
             return;
         }
 
-        if (playerinteractevent.getPlayer().getInventory().getItemInMainHand() == null)
+        if (event.getPlayer().getInventory().getItemInMainHand() == null)
         {
             return;
         }
 
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer(playerinteractevent.getPlayer());
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
 
         if (!ewplayer.isInArena())
         {
@@ -120,29 +121,29 @@ public class PlayerInteractListener implements Listener
             return;
         }
 
-        ItemStack itemstack = playerinteractevent.getPlayer().getInventory().getItemInMainHand();
+        ItemStack itemstack = event.getPlayer().getInventory().getItemInMainHand();
 
         if (ItemUtils.getOpensMenu(itemstack) == MenuType.TEAM_SELECTION)
         {
-            playerinteractevent.setCancelled(true);
+            event.setCancelled(true);
             ewplayer.getArena().openTeamInv(ewplayer.getPlayer());
         }
     }
 
     @EventHandler
-    public void openVoting(PlayerInteractEvent playerinteractevent)
+    public void openVoting(PlayerInteractEvent event)
     {
-        if (!playerinteractevent.getAction().equals(Action.RIGHT_CLICK_AIR) && !playerinteractevent.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+        if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
         {
             return;
         }
 
-        if (playerinteractevent.getPlayer().getInventory().getItemInMainHand() == null)
+        if (event.getPlayer().getInventory().getItemInMainHand() == null)
         {
             return;
         }
 
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer(playerinteractevent.getPlayer());
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
 
         if (!ewplayer.isInArena())
         {
@@ -154,29 +155,29 @@ public class PlayerInteractListener implements Listener
             return;
         }
 
-        ItemStack itemstack = playerinteractevent.getPlayer().getInventory().getItemInMainHand();
+        ItemStack itemstack = event.getPlayer().getInventory().getItemInMainHand();
 
         if (ItemUtils.getOpensMenu(itemstack) == MenuType.VOTING)
         {
-            playerinteractevent.setCancelled(true);
+            event.setCancelled(true);
             ewplayer.getArena().openVoteInv(ewplayer.getPlayer());
         }
     }
 
     @EventHandler
-    public void leaveArena(PlayerInteractEvent playerinteractevent)
+    public void leaveArena(PlayerInteractEvent event)
     {
-        if (!playerinteractevent.getAction().equals(Action.RIGHT_CLICK_AIR) && !playerinteractevent.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+        if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
         {
             return;
         }
 
-        if (playerinteractevent.getPlayer().getInventory().getItemInMainHand() == null)
+        if (event.getPlayer().getInventory().getItemInMainHand() == null)
         {
             return;
         }
 
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer(playerinteractevent.getPlayer());
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
 
         if (!ewplayer.isInArena())
         {
@@ -188,24 +189,24 @@ public class PlayerInteractListener implements Listener
             return;
         }
 
-        ItemStack itemstack = playerinteractevent.getPlayer().getInventory().getItemInMainHand();
+        ItemStack itemstack = event.getPlayer().getInventory().getItemInMainHand();
 
-        if (itemstack.equals(ArenaLoader.getLeaveItem(playerinteractevent.getPlayer())))
+        if (itemstack.equals(ArenaLoader.getLeaveItem(event.getPlayer())))
         {
-            playerinteractevent.setCancelled(true);
+            event.setCancelled(true);
             ewplayer.getArena().leaveArena(ewplayer, true, false);
         }
     }
 
     @EventHandler
-    public void useCompassTracker(PlayerInteractEvent playerinteractevent)
+    public void useCompassTracker(PlayerInteractEvent event)
     {
-        if (!playerinteractevent.getAction().equals(Action.RIGHT_CLICK_AIR) && !playerinteractevent.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+        if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
         {
             return;
         }
 
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer(playerinteractevent.getPlayer());
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
 
         if (!ewplayer.isInArena())
         {
@@ -237,29 +238,29 @@ public class PlayerInteractListener implements Listener
     }
 
     @EventHandler
-    public void openSetupGUI(PlayerInteractEvent playerinteractevent)
+    public void openSetupGUI(PlayerInteractEvent event)
     {
-        if (!playerinteractevent.getAction().equals(Action.RIGHT_CLICK_AIR) && !playerinteractevent.getAction().equals(Action.RIGHT_CLICK_BLOCK))
+        if (!event.getAction().equals(Action.RIGHT_CLICK_AIR) && !event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
         {
             return;
         }
 
         ItemStack itemstack;
 
-        if ((itemstack = playerinteractevent.getPlayer().getInventory().getItemInMainHand()) == null)
+        if ((itemstack = event.getPlayer().getInventory().getItemInMainHand()) == null)
         {
             return;
         }
 
         if (ItemUtils.getOpensMenu(itemstack) == MenuType.ARENA_SETUP)
         {
-            EwPlayer ewplayer = PlayerUtils.getEwPlayer(playerinteractevent.getPlayer());
+            EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
             Arena arena = EggWars.getArenaManager().getArenaByWorld(ewplayer.getPlayer().getWorld());
-            playerinteractevent.setCancelled(true);
+            event.setCancelled(true);
 
             if (arena == null || !arena.getStatus().equals(ArenaStatus.SETTING))
             {
-                TranslationUtils.sendMessage("commands.error.not_in_arena_world", playerinteractevent.getPlayer());
+                TranslationUtils.sendMessage("commands.error.not_in_arena_world", event.getPlayer());
                 return;
             }
 
@@ -269,15 +270,35 @@ public class PlayerInteractListener implements Listener
     }
 
     @EventHandler
-    public void logStrip(PlayerInteractEvent e)
+    public void logStrip(PlayerInteractEvent event)
     {
-        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getMaterial().toString().contains("_AXE") && e.getClickedBlock() != null)
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.useInteractedBlock() != Event.Result.DENY)
         {
-            String b = e.getClickedBlock().getType().toString();
+            Arena arena = EggWars.getArenaManager().getArenaByWorld(event.getClickedBlock().getWorld());
 
-            if (b.contains("_LOG") || b.contains("_WOOD") || b.contains("_STEM") || b.contains("_HYPHAE"))
+            if (arena == null || arena.getStatus() == ArenaStatus.SETTING || arena.getPlacedBlocks().contains(event.getClickedBlock().getLocation()))
             {
-                e.setCancelled(true);
+                return;
+            }
+
+            String b = event.getClickedBlock().getType().toString();
+
+            //log strip
+            if (event.getMaterial().toString().contains("_AXE") && (b.contains("_LOG") || b.contains("_WOOD") || b.contains("_STEM") || b.contains("_HYPHAE")))
+            {
+                event.setCancelled(true);
+            }
+
+            //hoe till
+            if (event.getMaterial().toString().contains("_HOE") && (b.contains("DIRT") || b.contains("_PATH") || b.contains("GRASS_BLOCK")))
+            {
+                event.setCancelled(true);
+            }
+
+            //dirt path
+            if (event.getMaterial().toString().contains("_SHOVEL") && (b.contains("DIRT") || b.contains("GRASS_BLOCK") || b.contains("PODZOL") || b.contains("MYCELIUM")))
+            {
+                event.setCancelled(true);
             }
         }
     }

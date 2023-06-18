@@ -2,7 +2,7 @@ package me.rosillogames.eggwars.objects;
 
 public class Cooldown
 {
-    public long finishMillis = -1L;
+    private long finishMillis = -1L;
 
     public void setFinish(int time)
     {

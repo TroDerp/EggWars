@@ -10,13 +10,13 @@ import me.rosillogames.eggwars.utils.PlayerUtils;
 public class PlayerDropListener implements Listener
 {
     @EventHandler
-    public void drop(PlayerDropItemEvent playerdropitemevent)
+    public void drop(PlayerDropItemEvent dropEvent)
     {
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer(playerdropitemevent.getPlayer());
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer(dropEvent.getPlayer());
 
         if (ewplayer.isInArena() && !ewplayer.getArena().getStatus().equals(ArenaStatus.IN_GAME))
         {
-            playerdropitemevent.setCancelled(true);
+            dropEvent.setCancelled(true);
             return;
         }
         else

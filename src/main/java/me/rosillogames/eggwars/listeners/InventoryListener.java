@@ -10,18 +10,18 @@ import me.rosillogames.eggwars.utils.PlayerUtils;
 public class InventoryListener implements Listener
 {
     @EventHandler
-    public void updatePlayerInvWhenClosing(InventoryCloseEvent inventorycloseevent)
+    public void updatePlayerInvWhenClosing(InventoryCloseEvent closeEvent)
     {
-        if (!(inventorycloseevent.getPlayer() instanceof Player) || inventorycloseevent.getPlayer() == null)
+        if (!(closeEvent.getPlayer() instanceof Player) || closeEvent.getPlayer() == null)
         {
             return;
         }
 
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)inventorycloseevent.getPlayer());
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)closeEvent.getPlayer());
 
         if (ewplayer != null && ewplayer.getInv() != null)
         {
-            if (ewplayer.getInv().getInventory() == inventorycloseevent.getInventory())
+            if (ewplayer.getInv().getInventory() == closeEvent.getInventory())
             {
                 ewplayer.setInv(null);
             }

@@ -190,10 +190,16 @@ public class Config
         String s1 = fileConf.getString("plugin.version");
         s1 = ((s1 == null || s1.isEmpty()) ? "unknown" : s1);
 
-        if (!s1.contains(EggWars.EGGWARS_VERSION))
+        if (!s1.equals(EggWars.EGGWARS_VERSION))
         {
             //EggWars.instance.getLogger().log(Level.WARNING, "Opening config from EggWars version " + s1 + "! (this version: " + EggWars.EGGWARS_VERSION + ") This may cause some problems on your configuration. I recommend to remove /langs/ and /custom/ folders to update them.");
             fileConf.set("plugin.version", EggWars.EGGWARS_VERSION);
+
+            if (fileConf.contains("database.useSSL") && !fileConf.getString("database.url").contains("useSSL="))
+            {
+                fileConf.set("database.url", fileConf.getString("database.url") + "?useSSL=" + fileConf.getBoolean("database.useSSL"));
+                fileConf.set("database.useSSL", null);
+            }
         }
 
         EggWars.instance.saveConfig();

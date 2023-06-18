@@ -10,6 +10,7 @@ import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.commands.CommandArg;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.PlayerUtils;
 
 public class ToggleEditMode extends CommandArg
@@ -37,6 +38,14 @@ public class ToggleEditMode extends CommandArg
             return false;
         }
 
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer(player);
+
+        if (ewplayer.isInArena())
+        {
+            TranslationUtils.sendMessage("commands.error.in_arena", player);
+            return false;
+        }
+
         if (arena.getStatus().equals(ArenaStatus.SETTING))
         {
             if (!arena.isSetup())
@@ -61,7 +70,7 @@ public class ToggleEditMode extends CommandArg
                     TranslationUtils.sendMessage("commands.toggleEditMode.success.saved", commandSender, arena.getName());
                 }
             }).runTaskLater(EggWars.instance, 100L);
-            PlayerUtils.getEwPlayer(player).setSettingArena(null);
+            ewplayer.setSettingArena(null);
         }
         else
         {
@@ -69,7 +78,7 @@ public class ToggleEditMode extends CommandArg
             arena.reset(true);
             player.teleport(arena.getLobby() != null ? arena.getLobby() : arena.getWorld().getSpawnLocation());
             TranslationUtils.sendMessage("commands.toggleEditMode.success", commandSender, arena.getName());
-            PlayerUtils.getEwPlayer(player).setSettingArena(arena);
+            ewplayer.setSettingArena(arena);
         }
 
         return true;

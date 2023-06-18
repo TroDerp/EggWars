@@ -21,14 +21,14 @@ import me.rosillogames.eggwars.utils.PlayerUtils;
 public class EntityHurtListener implements Listener
 {
     @EventHandler
-    public void cancelHurtOutsideGame(EntityDamageEvent damageEvent)
+    public void cancelHurtOutsideGame(EntityDamageEvent dmgEvent)
     {
-        if (!(damageEvent.getEntity() instanceof Player))
+        if (!(dmgEvent.getEntity() instanceof Player))
         {
             return;
         }
 
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)damageEvent.getEntity());
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)dmgEvent.getEntity());
 
         if (ewplayer == null)
         {
@@ -39,13 +39,13 @@ public class EntityHurtListener implements Listener
         {
             if (!ewplayer.getArena().getStatus().equals(ArenaStatus.IN_GAME))
             {
-                damageEvent.setCancelled(true);
+                dmgEvent.setCancelled(true);
                 return;
             }
 
-            if (ewplayer.isInvincible() && damageEvent.getCause() != EntityDamageEvent.DamageCause.VOID)
+            if (ewplayer.isInvincible() && dmgEvent.getCause() != EntityDamageEvent.DamageCause.VOID)
             {
-                damageEvent.setCancelled(true);
+                dmgEvent.setCancelled(true);
                 return;
             }
         }
@@ -111,23 +111,23 @@ public class EntityHurtListener implements Listener
     }
 
     @EventHandler
-    public void villagerImmunity(EntityDamageEvent entitydamageevent)
+    public void villagerImmunity(EntityDamageEvent dmgEvent)
     {
-        if (!(entitydamageevent.getEntity() instanceof Villager))
+        if (!(dmgEvent.getEntity() instanceof Villager))
         {
             return;
         }
 
         try
         {
-            Arena arena = EggWars.getArenaManager().getArenaByWorld(entitydamageevent.getEntity().getWorld());
+            Arena arena = EggWars.getArenaManager().getArenaByWorld(dmgEvent.getEntity().getWorld());
 
             if (arena == null || arena.getStatus().equals(ArenaStatus.SETTING))
             {
                 return;
             }
 
-            entitydamageevent.setCancelled(true);
+            dmgEvent.setCancelled(true);
         }
         catch (Exception exception)
         {
@@ -135,14 +135,14 @@ public class EntityHurtListener implements Listener
     }
 
     @EventHandler
-    public void cancelFoodDecreaseOutsideGame(FoodLevelChangeEvent foodlevelchangeevent)
+    public void cancelFoodDecreaseOutsideGame(FoodLevelChangeEvent foodEvent)
     {
-        if (!(foodlevelchangeevent.getEntity() instanceof Player))
+        if (!(foodEvent.getEntity() instanceof Player))
         {
             return;
         }
 
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)foodlevelchangeevent.getEntity());
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)foodEvent.getEntity());
 
         if (ewplayer == null)
         {
@@ -151,7 +151,7 @@ public class EntityHurtListener implements Listener
 
         if (ewplayer.isInArena() && !ewplayer.getArena().getStatus().equals(ArenaStatus.IN_GAME))
         {
-            foodlevelchangeevent.setCancelled(true);
+            foodEvent.setCancelled(true);
             return;
         }
     }

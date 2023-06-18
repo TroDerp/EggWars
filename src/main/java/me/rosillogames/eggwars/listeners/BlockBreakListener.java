@@ -153,19 +153,19 @@ public class BlockBreakListener implements Listener
     }
 
     @EventHandler
-    public void soilChange(PlayerInteractEvent playerinteractevent)
+    public void soilChange(PlayerInteractEvent event)
     {
-        if (playerinteractevent.getAction() != Action.PHYSICAL)
+        if (event.getAction() != Action.PHYSICAL)
         {
             return;
         }
 
-        if (playerinteractevent.getClickedBlock().getType() != Material.FARMLAND)
+        if (event.getClickedBlock().getType() != Material.FARMLAND)
         {
             return;
         }
 
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer(playerinteractevent.getPlayer());
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
 
         if (ewplayer.isInArena())
         {
@@ -173,7 +173,7 @@ public class BlockBreakListener implements Listener
 
             if (!arena.getStatus().equals(ArenaStatus.SETTING))
             {
-                playerinteractevent.setCancelled(true);
+                event.setCancelled(true);
             }
 
             return;

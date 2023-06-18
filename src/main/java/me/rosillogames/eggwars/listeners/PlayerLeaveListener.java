@@ -14,9 +14,9 @@ public class PlayerLeaveListener implements Listener
     }
 
     @EventHandler //KickEvent collides with leave event
-    public void leave(PlayerQuitEvent playerquitevent)
+    public void leave(PlayerQuitEvent quitEvent)
     {
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer(playerquitevent.getPlayer());
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer(quitEvent.getPlayer());
 
         if (ewplayer.isInArena())
         {
@@ -25,10 +25,10 @@ public class PlayerLeaveListener implements Listener
 
         if (EggWars.bungee.isEnabled())
         {
-            playerquitevent.setQuitMessage(null);
+            quitEvent.setQuitMessage(null);
         }
 
-        EggWars.getDB().savePlayer(playerquitevent.getPlayer());
+        EggWars.getDB().savePlayer(quitEvent.getPlayer());
         EggWars.players.remove(ewplayer);
     }
 }

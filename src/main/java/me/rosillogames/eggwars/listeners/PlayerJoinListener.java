@@ -15,7 +15,7 @@ import me.rosillogames.eggwars.utils.PlayerUtils;
 public class PlayerJoinListener implements Listener
 {
     @EventHandler
-    public void preLoginChecker(AsyncPlayerPreLoginEvent asyncplayerpreloginevent)
+    public void preLoginChecker(AsyncPlayerPreLoginEvent preLoginEvent)
     {
         if (!EggWars.bungee.isEnabled())
         {
@@ -28,7 +28,7 @@ public class PlayerJoinListener implements Listener
         {
             if (arena.isFull())
             {
-                asyncplayerpreloginevent.disallow(org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslationUtils.getMessage("gameplay.lobby.cant_join.full"));
+                preLoginEvent.disallow(org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslationUtils.getMessage("gameplay.lobby.cant_join.full"));
             }
         }
         else if (!EggWars.config.canSpectJoin)
@@ -38,7 +38,7 @@ public class PlayerJoinListener implements Listener
                 return;
             }
 
-            asyncplayerpreloginevent.disallow(org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslationUtils.getMessage("gameplay.lobby.cant_join.ingame"));
+            preLoginEvent.disallow(org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result.KICK_OTHER, TranslationUtils.getMessage("gameplay.lobby.cant_join.ingame"));
         }
     }
 
