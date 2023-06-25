@@ -63,7 +63,7 @@ public class PlayerChatListener implements Listener
                 }
             }
         }
-        else if (arena.getStatus().equals(ArenaStatus.IN_GAME) || arena.getStatus().equals(ArenaStatus.STARTING_GAME))
+        else if (arena.getStatus().isGame())
         {
             if (ewplayer.getTeam() == null)
             {
@@ -96,7 +96,7 @@ public class PlayerChatListener implements Listener
                 }
             }
         }
-        else if (arena.getStatus().equals(ArenaStatus.LOBBY) || arena.getStatus().equals(ArenaStatus.STARTING))
+        else if (arena.getStatus().isLobby())
         {
             for (EwPlayer ewplayer5 : arena.getPlayers())
             {

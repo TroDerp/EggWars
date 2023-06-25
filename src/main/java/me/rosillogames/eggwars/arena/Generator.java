@@ -241,62 +241,61 @@ public class Generator
 
         ItemStack stack = new ItemStack(this.cachedType.droppedToken().getMaterial(), 1);
 
-        if (ItemUtils.getNearbyItemCount(this.block, 2.0, stack.getType()) >= this.cachedType.maxItems(this.level))
+        if (ItemUtils.getNearbyItemCount(this.block, 2.5, stack.getType()) >= this.cachedType.maxItems(this.level))
         {
             return;
         }
 
-        final Item entityitem = this.block.getWorld().dropItem(this.getBlock().add(0.5, 0.2, 0.5), stack);
+        final Item itemEnt = this.block.getWorld().dropItem(this.getBlock().add(0.5, 0.2, 0.5), stack);
 
         if (EggWars.config.enableAPSS)
         {
-            entityitem.setThrower(this.apss.uuid);
+            itemEnt.setThrower(this.apss.uuid);
         }
 
-        entityitem.setVelocity(new Vector(0, 0, 0));
-        entityitem.setPickupDelay(0);
+        itemEnt.setVelocity(new Vector(0, 0, 0));
+        itemEnt.setPickupDelay(0);
 
         if (!EggWars.instance.getConfig().getBoolean("generator.fast_items"))
         {
             //This will make items don't merge, having more impact on performance, enable the option to disable this
-            ReflectionUtils.setItemAge(entityitem, -32768);
-        }
-
-        (new BukkitRunnable()
-        {
-            public void run()
+            ReflectionUtils.setItemAge(itemEnt, -32768);
+            (new BukkitRunnable()
             {
-                if (!entityitem.isDead())
+                public void run()
                 {
-                    double dx = (new Random()).nextDouble();
-
-                    if (dx > 0.8)
+                    if (!itemEnt.isDead())
                     {
-                        dx -= 0.15;
+                        double dx = (new Random()).nextDouble();
+
+                        if (dx > 0.8)
+                        {
+                            dx -= 0.15;
+                        }
+
+                        if (dx < 0.2)
+                        {
+                            dx += 0.15;
+                        }
+
+                        double dz = (new Random()).nextDouble();
+
+                        if (dz > 0.8)
+                        {
+                            dz -= 0.15;
+                        }
+
+                        if (dz < 0.2)
+                        {
+                            dz += 0.15;
+                        }
+
+                        itemEnt.setVelocity(new Vector(0, 0, 0));
+                        itemEnt.teleport(Generator.this.getBlock().add(dx, 0.0, dz));
                     }
-
-                    if (dx < 0.2)
-                    {
-                        dx += 0.15;
-                    }
-
-                    double dz = (new Random()).nextDouble();
-
-                    if (dz > 0.8)
-                    {
-                        dz -= 0.15;
-                    }
-
-                    if (dz < 0.2)
-                    {
-                        dz += 0.15;
-                    }
-
-                    entityitem.setVelocity(new Vector(0, 0, 0));
-                    entityitem.teleport(Generator.this.getBlock().add(dx, 0.0, dz));
                 }
-            }
-        }).runTaskLater(EggWars.instance, 15L);
+            }).runTaskLater(EggWars.instance, 15L);
+        }
     }
 
     public void updateSign()

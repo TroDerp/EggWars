@@ -5,10 +5,10 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.type.WallSign;
 import org.bukkit.configuration.file.FileConfiguration;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.objects.ArenaSign;
-import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class LobbySigns
 {
@@ -84,14 +84,6 @@ public class LobbySigns
 
     public static boolean isValidWallSign(BlockState state)
     {
-        for (Material mat : ReflectionUtils.getWallSigns())
-        {
-            if (mat.equals(state.getType()))
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return state.getBlockData() instanceof WallSign;
     }
 }

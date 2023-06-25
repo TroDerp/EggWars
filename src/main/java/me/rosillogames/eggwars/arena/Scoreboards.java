@@ -127,15 +127,18 @@ public class Scoreboards
                 mcTeam.unregister();
             }
 
-            mcTeam = scoreboard.registerNewTeam(type.id());
-            mcTeam.setDisplayName(TeamUtils.translateTeamType(type, ewplayer.getPlayer(), true));
-            mcTeam.setColor(type.color());
-            mcTeam.setCanSeeFriendlyInvisibles(true);
-            mcTeam.setPrefix(TeamUtils.teamPrefix(type, ewplayer.getPlayer()) + " ");
-
-            for (EwPlayer teamplayer : entry.getValue().getPlayers())
+            if (!this.arena.getStatus().isLobby())
             {
-                mcTeam.addEntry(teamplayer.getPlayer().getName());
+                mcTeam = scoreboard.registerNewTeam(type.id());
+                mcTeam.setDisplayName(TeamUtils.translateTeamType(type, ewplayer.getPlayer(), true));
+                mcTeam.setColor(type.color());
+                mcTeam.setCanSeeFriendlyInvisibles(true);
+                mcTeam.setPrefix(TeamUtils.teamPrefix(type, ewplayer.getPlayer()) + " ");
+
+                for (EwPlayer teamplayer : entry.getValue().getPlayers())
+                {
+                    mcTeam.addEntry(teamplayer.getPlayer().getName());
+                }
             }
         }
 

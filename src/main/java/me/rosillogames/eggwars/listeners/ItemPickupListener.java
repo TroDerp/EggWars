@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Generator;
+import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.PlayerUtils;
@@ -15,7 +16,7 @@ import me.rosillogames.eggwars.utils.PlayerUtils;
 public class ItemPickupListener implements Listener
 {
     @EventHandler
-    public void colorize(EntityPickupItemEvent pickUpEvent)
+    public void onPickup(EntityPickupItemEvent pickUpEvent)
     {
         if (!(pickUpEvent.getEntity() instanceof Player))
         {
@@ -26,6 +27,12 @@ public class ItemPickupListener implements Listener
 
         if (!ewplayer.isInArena() || ewplayer.getTeam() == null)
         {
+            return;
+        }
+
+        if (ewplayer.getArena().getStatus() == ArenaStatus.FINISHING)
+        {
+            pickUpEvent.setCancelled(true);
             return;
         }
 

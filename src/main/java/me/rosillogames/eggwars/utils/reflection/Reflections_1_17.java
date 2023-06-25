@@ -326,19 +326,4 @@ public class Reflections_1_17 implements Reflections
             exception.printStackTrace();
         }
     }
-
-    @Override
-    public List<Material> getWallSigns()
-    {
-        List<Material> list = new ArrayList<Material>();
-        list.add(Material.OAK_WALL_SIGN);
-        list.add(Material.SPRUCE_WALL_SIGN);
-        list.add(Material.BIRCH_WALL_SIGN);
-        list.add(Material.JUNGLE_WALL_SIGN);
-        list.add(Material.DARK_OAK_WALL_SIGN);
-        list.add(Material.ACACIA_WALL_SIGN);
-        list.add(Material.CRIMSON_WALL_SIGN);
-        list.add(Material.WARPED_WALL_SIGN);
-        return list;
-    }
 }

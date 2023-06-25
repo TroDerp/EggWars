@@ -87,7 +87,8 @@ public class Lobby
                     case 60:
                     case 90:
                     case 120:
-                    case 160:
+                    case 150:
+                    case 180:
                         playCountDown(arenaIn, "starting", this.countDown);
                         return;
                     default:

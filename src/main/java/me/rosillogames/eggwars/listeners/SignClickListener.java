@@ -24,7 +24,7 @@ public class SignClickListener implements Listener
     @EventHandler
     public void click(PlayerInteractEvent event)
     {
-        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getHand() != EquipmentSlot.HAND || !(event.getClickedBlock().getState() instanceof Sign))
+        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getHand() != EquipmentSlot.HAND)
         {
             return;
         }
@@ -32,6 +32,7 @@ public class SignClickListener implements Listener
         Location clickLoc = event.getClickedBlock().getLocation();
         ArenaSign ewsign = LobbySigns.getSignByLocation(clickLoc, false);
         EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
+        boolean isSign = event.getClickedBlock().getState() instanceof Sign;
 
         if (ewsign == null)
         {
@@ -44,7 +45,11 @@ public class SignClickListener implements Listener
 
             if (!arena.getStatus().equals(ArenaStatus.IN_GAME) || ewplayer.isEliminated())
             {
-                event.setCancelled(true);
+                if (isSign)
+                {
+                    event.setCancelled(true);
+                }
+
                 return;
             }
 
@@ -75,7 +80,11 @@ public class SignClickListener implements Listener
 
             if (!arena.getPlacedBlocks().contains(clickLoc))
             {
-                event.setCancelled(true);
+                if (isSign)
+                {
+                    event.setCancelled(true);
+                }
+
                 return;
             }
 
@@ -83,7 +92,14 @@ public class SignClickListener implements Listener
         }
         else
         {
-            if (event.getPlayer().isSneaking() || ewplayer.isInArena())
+            if (ewplayer.isInArena() || !isSign)
+            {
+                return;
+            }
+
+            event.setCancelled(true);
+
+            if (event.getPlayer().isSneaking())
             {
                 return;
             }
@@ -110,7 +126,6 @@ public class SignClickListener implements Listener
                 }
                 else
                 {
-                    event.setCancelled(true);
                     arena1.joinArena(ewplayer, false, false);
                 }
             }
@@ -120,7 +135,6 @@ public class SignClickListener implements Listener
             }
             else
             {
-                event.setCancelled(true);
                 arena1.joinArena(ewplayer, true, true);
             }
 

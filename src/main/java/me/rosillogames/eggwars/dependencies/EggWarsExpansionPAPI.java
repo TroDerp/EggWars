@@ -157,7 +157,11 @@ public class EggWarsExpansionPAPI extends PlaceholderExpansion
                 return ewplayer.getTeam() == null ? "" : ewplayer.getTeam().getType().id();
             }
         }
-        else
+        else if (params.equalsIgnoreCase("points"))
+        {
+            return Integer.valueOf(PlayerUtils.getEwPlayer(player).getPoints()).toString();
+        }
+        else//stat placeholders
         {
             PlayerData ew = EggWars.getDB().getPlayerData(player);
 

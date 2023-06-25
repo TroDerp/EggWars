@@ -7,7 +7,6 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.util.Vector;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Generator;
@@ -43,18 +42,11 @@ public class BlockPlaceListener implements Listener
                 return;
             }
 
-            if (eventIn.getBlock().getType().equals(Material.TNT))
+            if (eventIn.getBlock().getType() == Material.TNT && EggWars.instance.getConfig().getBoolean("game.tnt.auto_ignite"))
             {
                 eventIn.getBlock().setType(Material.AIR);
                 TNTPrimed tnt = eventIn.getBlock().getWorld().spawn(Locations.toMiddle(eventIn.getBlock().getLocation()), TNTPrimed.class);
-
-                if (!EggWars.config.moveTNTOnIgnite)
-                {
-                    tnt.setVelocity(new Vector(0.0D, 0.0D, 0.0D));
-                }
-
                 ReflectionUtils.setTNTSource(tnt, eventIn.getPlayer());
-                tnt.setYield(3.0F);
                 return;
             }
 

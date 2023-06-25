@@ -4,7 +4,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.ArmorStand;
@@ -49,8 +48,6 @@ public interface Reflections
     public void sendTitle(Player player, Integer fadeInTime, Integer stayTime, Integer fadeOutTime, String title, String subtitle);
 
     public void sendActionBar(Player player, String s, Integer integer, Integer integer1, Integer integer2);
-
-    public List<Material> getWallSigns();
 
     default String getNMSPackageName()
     {

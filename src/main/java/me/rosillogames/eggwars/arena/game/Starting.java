@@ -72,6 +72,12 @@ public class Starting
                     return;
                 }
 
+                for (EwPlayer ewplayer1 : arenaIn.getPlayers())
+                {
+                    ewplayer1.getPlayer().setLevel(this.countDown);
+                    ewplayer1.getPlayer().setExp(0.0F);
+                }
+
                 arenaIn.setCurrentCountdown(this.countDown);
 
                 switch (this.countDown)
@@ -116,7 +122,7 @@ public class Starting
 
         arena.getGenerators().values().forEach(gen -> gen.start());
 
-        for (EwPlayer ewplayer : arena.getPlayers())
+        for (EwPlayer ewplayer : arena.getAlivePlayers())
         {
             ReflectionUtils.sendTitle(ewplayer.getPlayer(), Integer.valueOf(5), Integer.valueOf(10), Integer.valueOf(5), TranslationUtils.getMessage("gameplay.lobby.go", ewplayer.getPlayer()), null);
             arena.setPlayerMaxHealth(ewplayer);

@@ -138,6 +138,7 @@ public class EggInteractListener implements Listener
 
         if (team.equals(ewplayer.getTeam()))
         {
+            TranslationUtils.sendMessage("gameplay.ingame.cant_destroy_your_egg", ewplayer.getPlayer());
             return;
         }
 
@@ -170,7 +171,7 @@ public class EggInteractListener implements Listener
         }
 
         event.getClickedBlock().setType(Material.AIR);
-        PlayerUtils.addPoints(ewplayer, EggWars.instance.getConfig().getInt("gameplay.points.on_egg"));
+        PlayerUtils.addPoints(ewplayer, EggWars.instance.getConfig().getInt("game.points.on_egg"));
         arena.getScores().updateScores(false);
     }
 

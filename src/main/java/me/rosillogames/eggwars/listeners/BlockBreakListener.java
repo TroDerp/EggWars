@@ -131,12 +131,12 @@ public class BlockBreakListener implements Listener
 
                 arena.removePlacedBlock(eventIn.getBlock());
 
-                if (!EggWars.instance.getConfig().getBoolean("gameplay.drop_blocks"))
+                if (!EggWars.instance.getConfig().getBoolean("game.drop_blocks"))
                 {
-                    eventIn.setCancelled(true);
-                    eventIn.getBlock().setType(Material.AIR);
+                    eventIn.setDropItems(false);
                 }
 
+                eventIn.setExpToDrop(0);
                 player.getIngameStats().addStat(StatType.BLOCKS_BROKEN, 1);
             }
         }

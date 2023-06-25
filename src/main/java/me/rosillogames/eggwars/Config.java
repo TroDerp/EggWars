@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import me.rosillogames.eggwars.dependencies.DependencyUtils;
 import me.rosillogames.eggwars.enums.Versions;
@@ -34,12 +35,12 @@ public class Config
     public boolean useBelowBlock = true;
     //Version check for APSS is for an issue with item.setThrower(UUID) not being in early 1.16
     public boolean enableAPSS = true;
-    public boolean moveTNTOnIgnite = true;
     public boolean keepInv = false;
+    public boolean dropInv = false;
     public boolean publicSpectChat = true;
     public int respawnDelay = 4;
     public int finishingTime = 10;
-    public int invincibilityTime = 10;
+    public int invincibleTime = 10;
     @Nullable
     public Location lobby = null;
     public Set<Material> breakableBlocks = new HashSet();
@@ -52,6 +53,20 @@ public class Config
     {
         EggWars.instance.reloadConfig();
         FileConfiguration fileConf = EggWars.instance.getConfig();
+        boolean converted = false;
+
+        //TODO: remove this in next version
+        if (fileConf.isConfigurationSection("gameplay"))
+        {
+            ConfigurationSection cs = fileConf.getConfigurationSection("gameplay");
+            fileConf.addDefault("game", cs);
+            fileConf.set("gameplay", null);
+            convertOldToNewKey(fileConf, "game.keep_inventory", "game.player.keep_inventory");
+            convertOldToNewKey(fileConf, "game.respawn_delay", "game.player.respawn_delay");
+            convertOldToNewKey(fileConf, "game.invincible_time", "game.player.invincible_time");
+            convertOldToNewKey(fileConf, "game.move_tnt_on_ignition", "game.tnt.move_when_ignited");
+            converted = true;
+        }
 
         fileConf.options().header("###########################################\n#               - EggWars -               #\n#         - By gaelitoelquesito -         #\n#      - Remastered by RosilloGames -     #\n###########################################\n");
 
@@ -72,15 +87,29 @@ public class Config
         fileConf.addDefault("database.username", "bukkit");
         fileConf.addDefault("database.password", "walrus");
 
-        fileConf.addDefault("gameplay.balance_teams", false);
-        fileConf.addDefault("gameplay.skip_solo_lobby", true);
-        fileConf.addDefault("gameplay.show_kills", true);
-        fileConf.addDefault("gameplay.drop_blocks", false);
-        fileConf.addDefault("gameplay.keep_inventory", false);
-        fileConf.addDefault("gameplay.respawn_delay", 4);
-        fileConf.addDefault("gameplay.invincible_time", 10);
-        fileConf.addDefault("gameplay.move_tnt_on_ignition", true);
-        fileConf.addDefault("gameplay.finishing_time", 10);
+        fileConf.addDefault("game.balance_teams", false);
+        fileConf.addDefault("game.skip_solo_lobby", true);
+        fileConf.addDefault("game.show_kills", true);
+        fileConf.addDefault("game.drop_blocks", false);
+        fileConf.addDefault("game.finishing_time", 10);
+        fileConf.addDefault("game.player.drop_inventory", false);
+
+        if (!converted)
+        {
+            fileConf.addDefault("game.player.keep_inventory", false);
+            fileConf.addDefault("game.player.respawn_delay", 4);
+            fileConf.addDefault("game.player.invincible_time", 10);;
+        }
+
+        fileConf.addDefault("game.tnt.auto_ignite", true);
+
+        if (!converted)
+        {
+            fileConf.addDefault("game.tnt.move_when_ignited", true);
+        }
+
+        fileConf.addDefault("game.tnt.strenght", 3.0D);
+        fileConf.addDefault("game.tnt.fuse_ticks", 80);
         List<String> list = new ArrayList();
         list.add("minecraft:fern");
         list.add("minecraft:grass");
@@ -108,13 +137,13 @@ public class Config
         list.add("minecraft:rose_bush");
         list.add("minecraft:peony");
         list.add("minecraft:snow");
-        fileConf.addDefault("gameplay.breakable_blocks", list);
+        fileConf.addDefault("game.breakable_blocks", list);
 
-        fileConf.addDefault("gameplay.points.multiplier", 1.0D);
-        fileConf.addDefault("gameplay.points.on_kill", 1);
-        fileConf.addDefault("gameplay.points.on_final_kill", 3);
-        fileConf.addDefault("gameplay.points.on_win", 50);
-        fileConf.addDefault("gameplay.points.on_egg", 6);
+        fileConf.addDefault("game.points.multiplier", 1.0D);
+        fileConf.addDefault("game.points.on_kill", 1);
+        fileConf.addDefault("game.points.on_final_kill", 3);
+        fileConf.addDefault("game.points.on_win", 50);
+        fileConf.addDefault("game.points.on_egg", 6);
 
         fileConf.addDefault("kits.cooldown_time", 120);
 
@@ -155,36 +184,36 @@ public class Config
         fileConf.addDefault("inventory.voting_double_health", "{\"id\":\"minecraft:potion\"}");
         fileConf.addDefault("inventory.voting_triple_health", "{\"id\":\"minecraft:experience_bottle\"}");
         Map<String, Object> map = new HashMap();
-        createDeathMsgSection(map, "CONTACT", "generic");
-        createDeathMsgSection(map, "ENTITY_ATTACK", "slain");
-        createDeathMsgSection(map, "ENTITY_SWEEP_ATTACK", "slain");
-        createDeathMsgSection(map, "PROJECTILE", "shot");
-        createDeathMsgSection(map, "SUFFOCATION", "suffocated");
-        createDeathMsgSection(map, "FALL", "couldnt_fly", "fell_to_death");
-        createDeathMsgSection(map, "FIRE", "burnt_to_crisp", "burned_to_death");
-        createDeathMsgSection(map, "FIRE_TICK", "burnt_to_crisp", "burned_to_death");
-        createDeathMsgSection(map, "MELTING", "generic");
-        createDeathMsgSection(map, "LAVA", "swim_in_lava");
-        createDeathMsgSection(map, "DROWNING", "drowned");
-        createDeathMsgSection(map, "BLOCK_EXPLOSION", "blown_up");
-        createDeathMsgSection(map, "ENTITY_EXPLOSION", "blown_up");
-        createDeathMsgSection(map, "VOID", "died_in_void", "thought_void");
-        createDeathMsgSection(map, "LIGHTNING", "generic");
-        createDeathMsgSection(map, "SUICIDE", "generic");
-        createDeathMsgSection(map, "STARVATION", "starved");
-        createDeathMsgSection(map, "POISON", "poison");
-        createDeathMsgSection(map, "MAGIC", "magic");
-        createDeathMsgSection(map, "WITHER", "generic");
-        createDeathMsgSection(map, "FALLING_BLOCK", "generic");
-        createDeathMsgSection(map, "THORNS", "slain");
-        createDeathMsgSection(map, "DRAGON_BREATH", "generic");
-        createDeathMsgSection(map, "CUSTOM", "generic");
-        createDeathMsgSection(map, "FLY_INTO_WALL", "generic");
-        createDeathMsgSection(map, "HOT_FLOOR", "generic");
-        createDeathMsgSection(map, "CRAMMING", "generic");
-        createDeathMsgSection(map, "DRYOUT", "generic");
-        createDeathMsgSection(map, "FREEZE", "generic");
-        createDeathMsgSection(map, "SONIC_BOOM", "generic");
+        addMsgsToMap(map, "CONTACT", "generic");
+        addMsgsToMap(map, "ENTITY_ATTACK", "slain");
+        addMsgsToMap(map, "ENTITY_SWEEP_ATTACK", "slain");
+        addMsgsToMap(map, "PROJECTILE", "shot");
+        addMsgsToMap(map, "SUFFOCATION", "suffocated");
+        addMsgsToMap(map, "FALL", "couldnt_fly", "fell_to_death");
+        addMsgsToMap(map, "FIRE", "burnt_to_crisp", "burned_to_death");
+        addMsgsToMap(map, "FIRE_TICK", "burnt_to_crisp", "burned_to_death");
+        addMsgsToMap(map, "MELTING", "generic");
+        addMsgsToMap(map, "LAVA", "swim_in_lava");
+        addMsgsToMap(map, "DROWNING", "drowned");
+        addMsgsToMap(map, "BLOCK_EXPLOSION", "blown_up");
+        addMsgsToMap(map, "ENTITY_EXPLOSION", "blown_up");
+        addMsgsToMap(map, "VOID", "died_in_void", "thought_void");
+        addMsgsToMap(map, "LIGHTNING", "generic");
+        addMsgsToMap(map, "SUICIDE", "generic");
+        addMsgsToMap(map, "STARVATION", "starved");
+        addMsgsToMap(map, "POISON", "poison");
+        addMsgsToMap(map, "MAGIC", "magic");
+        addMsgsToMap(map, "WITHER", "generic");
+        addMsgsToMap(map, "FALLING_BLOCK", "generic");
+        addMsgsToMap(map, "THORNS", "slain");
+        addMsgsToMap(map, "DRAGON_BREATH", "generic");
+        addMsgsToMap(map, "CUSTOM", "generic");
+        addMsgsToMap(map, "FLY_INTO_WALL", "generic");
+        addMsgsToMap(map, "HOT_FLOOR", "generic");
+        addMsgsToMap(map, "CRAMMING", "generic");
+        addMsgsToMap(map, "DRYOUT", "generic");
+        addMsgsToMap(map, "FREEZE", "generic");
+        addMsgsToMap(map, "SONIC_BOOM", "generic");
         fileConf.addDefaults((Map<String, Object>)map);
         fileConf.options().copyDefaults(true);
         String s1 = fileConf.getString("plugin.version");
@@ -202,27 +231,34 @@ public class Config
             }
         }
 
+        if (fileConf.isConfigurationSection("gameplay"))
+        {
+            ConfigurationSection cs = fileConf.getConfigurationSection("gameplay");
+            fileConf.set("game", cs);
+            fileConf.set("gameplay", null);
+        }
+
         EggWars.instance.saveConfig();
         EggWars.instance.reloadConfig();
         EggWars.bungee.loadConfig(fileConf);
-        this.pointMultiplier = (float)fileConf.getDouble("gameplay.points.multiplier");
+        this.pointMultiplier = (float)fileConf.getDouble("game.points.multiplier");
         this.checkUpdates = fileConf.getBoolean("plugin.check_updates");
         this.canSpectStay = fileConf.getBoolean("spectator.can_stay_at_game");
         this.canSpectJoin = fileConf.getBoolean("spectator.can_enter_ingame");
         this.publicSpectChat = fileConf.getBoolean("spectator.public_chat");
-        this.respawnDelay = fileConf.getInt("gameplay.respawn_delay");
+        this.respawnDelay = fileConf.getInt("game.player.respawn_delay");
         this.hidePlayers = fileConf.getBoolean("plugin.hide_players");
         this.alwaysTpToLobby = fileConf.getBoolean("plugin.always_teleport_to_lobby");
-        this.moveTNTOnIgnite = fileConf.getBoolean("gameplay.move_tnt_on_ignition");
         this.useBelowBlock = fileConf.getBoolean("generator.use_below_block");
         this.enableAPSS = fileConf.getBoolean("generator.enable_apss") && EggWars.serverVersion.ordinal() >= Versions.V_1_16_R3.ordinal();
         this.vault = fileConf.getBoolean("plugin.vault") && DependencyUtils.vault();
-        this.balanceTeams = fileConf.getBoolean("gameplay.balance_teams");
-        this.skipSoloLobby = fileConf.getBoolean("gameplay.skip_solo_lobby");
-        this.showKills = fileConf.getBoolean("gameplay.show_kills");
-        this.keepInv = fileConf.getBoolean("gameplay.keep_inventory");
-        this.finishingTime = fileConf.getInt("gameplay.finishing_time");
-        this.invincibilityTime = fileConf.getInt("gameplay.invincible_time");
+        this.balanceTeams = fileConf.getBoolean("game.balance_teams");
+        this.skipSoloLobby = fileConf.getBoolean("game.skip_solo_lobby");
+        this.showKills = fileConf.getBoolean("game.show_kills");
+        this.dropInv = fileConf.getBoolean("game.player.drop_inventory");
+        this.keepInv = fileConf.getBoolean("game.player.keep_inventory");
+        this.finishingTime = fileConf.getInt("game.finishing_time");
+        this.invincibleTime = fileConf.getInt("game.player.invincible_time");
         EggWars.languageManager().loadConfig();
         LobbySigns.loadConfig();
         TeamUtils.loadConfig();
@@ -230,9 +266,10 @@ public class Config
         ArenaLoader.loadConfig();
         VoteUtils.loadConfig();
         GeneratorLoader.loadConfig();
+
         this.breakableBlocks.clear();
 
-        for (String s2 : fileConf.getStringList("gameplay.breakable_blocks"))
+        for (String s2 : fileConf.getStringList("game.breakable_blocks"))
         {
             BlockData blockdata = ItemUtils.getBlockData(String.format("{\"Name\":\"%s\"}", s2), null);
 
@@ -260,8 +297,14 @@ public class Config
         EggWars.instance.saveConfig();
     }
 
-    private static void createDeathMsgSection(Map map, String cause, String... strings)
+    private static void addMsgsToMap(Map map, String key, String... values)
     {
-        map.put("death_message_keys." + cause, strings);
+        map.put("death_message_keys." + key, values);
+    }
+
+    private static void convertOldToNewKey(FileConfiguration conf, String oldKey, String newKey)
+    {
+        conf.addDefault(newKey, conf.get(oldKey));
+        conf.addDefault(oldKey, null);
     }
 }

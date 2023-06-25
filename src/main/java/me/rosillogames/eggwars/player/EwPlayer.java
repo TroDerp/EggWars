@@ -36,7 +36,7 @@ public class EwPlayer
     @Nullable
     private EwInventory inv;
     private final EwPlayerMenu menu;
-    private final Cooldown invincibleTime = new Cooldown();
+    private final Cooldown invincibleRemain = new Cooldown();
     private final Cooldown lastDamagerRemain = new Cooldown();
     private final Cooldown kitCooldown = new Cooldown();
     @Nullable
@@ -179,17 +179,17 @@ public class EwPlayer
 
     public boolean isInvincible()
     {
-        return !this.invincibleTime.hasFinished();
+        return !this.invincibleRemain.hasFinished();
     }
 
     public void setInvincible()
     {
-        this.invincibleTime.setFinish(EggWars.config.invincibilityTime);
+        this.invincibleRemain.setFinish(EggWars.config.invincibleTime);
     }
 
     public void clearInvincible()
     {
-        this.invincibleTime.clear();
+        this.invincibleRemain.clear();
     }
 
     public boolean hasKit(Kit kit)

@@ -49,7 +49,7 @@ public class PlayerDeathListener implements Listener
 
             arena.sendBroadcast("gameplay.death." + cause + ".player", TeamUtils.colorizePlayerName(diedPlayer), TeamUtils.colorizePlayerName(killerPlayer.getPlayer(), diedPlayer.getLastDamagerTeam()));
             //Reward points message for killer comes before elimination message
-            PlayerUtils.addPoints(killerPlayer, fk ? EggWars.instance.getConfig().getInt("gameplay.points.on_final_kill") : EggWars.instance.getConfig().getInt("gameplay.points.on_kill"));
+            PlayerUtils.addPoints(killerPlayer, fk ? EggWars.instance.getConfig().getInt("game.points.on_final_kill") : EggWars.instance.getConfig().getInt("game.points.on_kill"));
         }
         else
         {
@@ -58,16 +58,17 @@ public class PlayerDeathListener implements Listener
 
         diedPlayer.getIngameStats().addStat(StatType.DEATHS, 1);
         diedPlayer.clearLastDamager();
-        deathevent.getDrops().clear();
+
+        if (!EggWars.config.dropInv)
+        {
+            deathevent.getDrops().clear();
+        }
+
         deathevent.setKeepInventory(true);
 
         if (!EggWars.config.keepInv)
         {
             diedPlayer.getPlayer().getInventory().clear();
-        }
-        else
-        {
-            deathevent.setKeepInventory(true);
         }
 
         deathevent.setDeathMessage(null);
@@ -182,10 +183,10 @@ public class PlayerDeathListener implements Listener
         ReflectionUtils.sendTitle(pl.getPlayer(), Integer.valueOf(0), Integer.valueOf(40), Integer.valueOf(5), TranslationUtils.getMessage("gameplay.ingame.respawning", pl.getPlayer()), "");
         TranslationUtils.sendMessage("gameplay.ingame.respawned_by_egg", pl.getPlayer());
 
-        if (EggWars.config.invincibilityTime > 0)
+        if (EggWars.config.invincibleTime > 0)
         {
             pl.setInvincible();
-            TranslationUtils.sendMessage("gameplay.ingame.invincible", pl.getPlayer(), TranslationUtils.translateTime(pl.getPlayer(), EggWars.config.invincibilityTime, true));
+            TranslationUtils.sendMessage("gameplay.ingame.invincible", pl.getPlayer(), TranslationUtils.translateTime(pl.getPlayer(), EggWars.config.invincibleTime, true));
         }
 
         Kit plKit = pl.getKit();

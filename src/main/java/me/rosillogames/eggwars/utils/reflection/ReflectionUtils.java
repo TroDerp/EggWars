@@ -3,7 +3,6 @@ package me.rosillogames.eggwars.utils.reflection;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.ArmorStand;
@@ -95,11 +94,6 @@ public class ReflectionUtils
     public static void sendActionBar(Player player, String s, Integer integer, Integer integer1, Integer integer2)
     {
         currentReflections.sendActionBar(player, s, integer, integer1, integer2);
-    }
-
-    public static List<Material> getWallSigns()
-    {
-        return currentReflections.getWallSigns();
     }
 
     public static void setReflections(Versions v)
