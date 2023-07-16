@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -12,10 +13,11 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
-
 import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
@@ -31,6 +33,7 @@ public class Team
     private final Set<Entity> villager = new HashSet();
     private final Arena arena;
     private final List<Location> cages = new ArrayList();
+    private final Inventory teamChest;
     private Location egg;
     private Location villagerLoc;
     private Location respawn;
@@ -40,6 +43,7 @@ public class Team
     {
         this.arena = arena;
         this.type = color;
+        this.teamChest = Bukkit.createInventory(null, InventoryType.ENDER_CHEST);
     }
 
     public void setArenaWorld()
@@ -184,6 +188,11 @@ public class Team
         this.type = typeIn;
     }
 
+    public Inventory getEnderChest()
+    {
+        return this.teamChest;
+    }
+
     public boolean canRespawn()
     {
         return this.egg.getBlock().getType().equals(Material.DRAGON_EGG);
@@ -279,7 +288,7 @@ public class Team
     {
         Material gls = Colorizer.colorize(Material.GLASS, this.getType().woolColor());
 
-        if (!this.players.isEmpty() && (this.arena.getGameCountdown() != 0 || this.arena.skipSoloLobby()))
+        if (!this.players.isEmpty() && (this.arena.getReleaseCountdown() != 0 || this.arena.skipSoloLobby()))
         {
             for (Location cage : this.cages)
             {
@@ -354,6 +363,7 @@ public class Team
         this.players.clear();
         this.removeCages();
         this.egg.getBlock().setType(Material.AIR);
+        this.teamChest.clear();
 
         //removeFromScore
         for (EwPlayer ewplayer : this.arena.getPlayers())

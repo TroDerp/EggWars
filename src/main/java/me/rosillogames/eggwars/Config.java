@@ -32,6 +32,7 @@ public class Config
     public boolean skipSoloLobby = true;
     public boolean showKills = true;
     public boolean balanceTeams = false;
+    public boolean shareTeamEC = false;
     public boolean useBelowBlock = true;
     //Version check for APSS is for an issue with item.setThrower(UUID) not being in early 1.16
     public boolean enableAPSS = true;
@@ -91,6 +92,7 @@ public class Config
         fileConf.addDefault("game.skip_solo_lobby", true);
         fileConf.addDefault("game.show_kills", true);
         fileConf.addDefault("game.drop_blocks", false);
+        fileConf.addDefault("game.share_team_ender_chest", false);
         fileConf.addDefault("game.finishing_time", 10);
         fileConf.addDefault("game.player.drop_inventory", false);
 
@@ -253,6 +255,7 @@ public class Config
         this.enableAPSS = fileConf.getBoolean("generator.enable_apss") && EggWars.serverVersion.ordinal() >= Versions.V_1_16_R3.ordinal();
         this.vault = fileConf.getBoolean("plugin.vault") && DependencyUtils.vault();
         this.balanceTeams = fileConf.getBoolean("game.balance_teams");
+        this.shareTeamEC = fileConf.getBoolean("game.share_team_ender_chest");
         this.skipSoloLobby = fileConf.getBoolean("game.skip_solo_lobby");
         this.showKills = fileConf.getBoolean("game.show_kills");
         this.dropInv = fileConf.getBoolean("game.player.drop_inventory");

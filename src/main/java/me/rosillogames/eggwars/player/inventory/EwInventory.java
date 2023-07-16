@@ -25,6 +25,14 @@ public class EwInventory
         this.handler = mcInv;
     }
 
+    public EwInventory(EwPlayer player1, Inventory mcInv, MenuType type)
+    {
+        this.player = player1;
+        this.invType = type;
+        this.mcInventory = mcInv;
+        this.handler = null;
+    }
+
     public void setParent(EwInventory parent)
     {
         this.parent = parent;
@@ -64,11 +72,21 @@ public class EwInventory
 
     public int getSize()
     {
+        if (this.handler == null)
+        {
+            return this.mcInventory.getSize();
+        }
+
         return this.handler.getSize();
     }
 
     public void updateHandler(@Nullable TranslatableInventory handlerIn, boolean reopen)
     {
+        if (this.handler == null)
+        {
+            return;
+        }
+
         if (handlerIn == null)
         {
             handlerIn = this.handler;

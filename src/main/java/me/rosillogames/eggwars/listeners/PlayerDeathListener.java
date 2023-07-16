@@ -72,11 +72,11 @@ public class PlayerDeathListener implements Listener
         }
 
         deathevent.setDeathMessage(null);
-        arena.getScores().updateScores(false);
 
         if (!diedPlayer.getTeam().canRespawn())
         {
             diedPlayer.setEliminated(true);
+            arena.getScores().updateScores(false);
             arena.sendBroadcast("gameplay.ingame.player_eliminated", diedPlayer.getPlayer().getDisplayName());
             Team diedTeam = diedPlayer.getTeam();
 
@@ -92,6 +92,10 @@ public class PlayerDeathListener implements Listener
             {
                 Finish.finish(arena, team);
             }
+        }
+        else
+        {
+            arena.getScores().updateScores(false);
         }
 
         (new BukkitRunnable()

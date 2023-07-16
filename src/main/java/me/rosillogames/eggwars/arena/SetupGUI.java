@@ -406,7 +406,7 @@ public class SetupGUI
                     }
 
                     arena.setLobby(player.getLocation().clone());
-                    TranslationUtils.sendMessage("commands.setArenaLobby.success", player, arena.getName());
+                    TranslationUtils.sendMessage("commands.setWaitingLobby.success", player, arena.getName());
                     flag = true;
                 }
 

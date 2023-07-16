@@ -101,13 +101,13 @@ public class Arena
     private int maxTeamPlayers;
     /** Min players required to start game */
     private int minPlayers;
-    /** Default count down (in seconds), when waiting on the arena's lobby and it's not full **/
-    private int defCountdown;
+    /** Start count down (in seconds), when waiting for the game to start (and players can still join). **/
+    private int startCountdown;
     /** Full count down (in seconds), when the arena is full the counter changes to this.
      ** It is optional in the configuration files. If not set, the counter will not change. **/
     private int fullCountdown;
-    /** Count down for the game (in seconds). It is used when waiting on cages **/
-    private int gameCountdown;
+    /** Release count down (in seconds). It is used when waiting on cages, after teleport to cages. **/
+    private int releaseCountdown;
     private final Scoreboards scores = new Scoreboards(this);
 
     public Arena(String name)
@@ -131,9 +131,9 @@ public class Arena
         this.boundaries = new Bounds(null, null);
         this.maxTeamPlayers = 0;
         this.minPlayers = 0;
-        this.defCountdown = -1;
+        this.startCountdown = -1;
         this.fullCountdown = -1;
-        this.gameCountdown = -1;
+        this.releaseCountdown = -1;
     }
 
     /** Only created when an arena is loaded or cloned.
@@ -160,9 +160,9 @@ public class Arena
         this.boundaries = Bounds.deserialize(fileconf.getString("Bounds"));
         this.maxTeamPlayers = fileconf.getInt("MaxPlayersPerTeam");
         this.minPlayers = fileconf.getInt("MinPlayers");
-        this.defCountdown = fileconf.getInt("Countdown");
+        this.startCountdown = fileconf.getInt("Countdown");
         this.fullCountdown = fileconf.getInt("FullCountdown", -1);
-        this.gameCountdown = fileconf.getInt("GameCountdown");
+        this.releaseCountdown = fileconf.getInt("GameCountdown");
         this.customTrades = fileconf.getBoolean("ArenaSpecificTrades", false);
 
         if (this.customTrades)
@@ -392,6 +392,11 @@ public class Arena
     public String getName()
     {
         return this.name;
+    }
+
+    public String getId()
+    {
+        return this.arenaFolder.getName();
     }
 
     public ArenaStatus getStatus()
@@ -681,14 +686,14 @@ public class Arena
         return this.minPlayers <= this.getAlivePlayers().size();
     }
 
-    public int getDefCountdown()
+    public int getStartCountdown()
     {
-        return this.defCountdown;
+        return this.startCountdown;
     }
 
-    public void setDefCountdown(int i)
+    public void setStartCountdown(int i)
     {
-        this.defCountdown = i;
+        this.startCountdown = i;
     }
 
     public Location getLobby()
@@ -721,14 +726,14 @@ public class Arena
         this.center = loc;
     }
 
-    public int getGameCountdown()
+    public int getReleaseCountdown()
     {
-        return this.gameCountdown;
+        return this.releaseCountdown;
     }
 
-    public void setGameCountdown(int i)
+    public void setReleaseCountdown(int i)
     {
-        this.gameCountdown = i;
+        this.releaseCountdown = i;
     }
 
     public Scoreboards getScores()
@@ -861,12 +866,12 @@ public class Arena
             return false;
         }
 
-        if (this.defCountdown < 0)
+        if (this.startCountdown < 0)
         {
             return false;
         }
 
-        if (this.gameCountdown < 0)
+        if (this.releaseCountdown < 0)
         {
             return false;
         }
@@ -921,7 +926,7 @@ public class Arena
 
         if (this.lobby == null)
         {
-            todoList.add(TranslationUtils.getMessage("setup.todo.set_arena_lobby", player, new Object[] {this.getName()}));
+            todoList.add(TranslationUtils.getMessage("setup.todo.set_waiting_lobby", player, new Object[] {this.getName()}));
         }
 
         if (!this.boundaries.areComplete())
@@ -940,9 +945,9 @@ public class Arena
             todoList.add(TranslationUtils.getMessage("setup.todo.set_max_team_players", player, new Object[] {this.getName()}));
         }
 
-        if (this.defCountdown < 0)
+        if (this.startCountdown < 0)
         {
-            todoList.add(TranslationUtils.getMessage("setup.todo.set_countdown", player, new Object[] {this.getName()}));
+            todoList.add(TranslationUtils.getMessage("setup.todo.set_start_countdown", player, new Object[] {this.getName()}));
         }
 
         /* Will keep fullCountdown here even if it is now fully optional, because
@@ -953,9 +958,9 @@ public class Arena
             optCount++;
         }
 
-        if (this.gameCountdown < 0)
+        if (this.releaseCountdown < 0)
         {
-            todoList.add(TranslationUtils.getMessage("setup.todo.set_game_countdown", player, new Object[] {this.getName()}));
+            todoList.add(TranslationUtils.getMessage("setup.todo.set_release_countdown", player, new Object[] {this.getName()}));
         }
 
         if (this.teams.size() < 2)
@@ -1017,12 +1022,12 @@ public class Arena
         fconfig.set("Name", this.getName());
         fconfig.set("MaxPlayersPerTeam", Integer.valueOf(this.maxTeamPlayers));
         fconfig.set("MinPlayers", Integer.valueOf(this.minPlayers));
-        fconfig.set("Countdown", Integer.valueOf(this.defCountdown));
+        fconfig.set("Countdown", Integer.valueOf(this.startCountdown));
         fconfig.set("FullCountdown", Integer.valueOf(this.fullCountdown));
+        fconfig.set("GameCountdown", Integer.valueOf(this.releaseCountdown));
         fconfig.set("Bounds", Bounds.serialize(this.boundaries));
         fconfig.set("Lobby", Locations.toString(this.lobby, true));
         fconfig.set("Center", Locations.toString(this.center, true));
-        fconfig.set("GameCountdown", Integer.valueOf(this.gameCountdown));
         fconfig.set("ArenaSpecificTrades", Boolean.valueOf(this.customTrades));
 
         for (Map.Entry<TeamType, Team> entry : this.teams.entrySet())

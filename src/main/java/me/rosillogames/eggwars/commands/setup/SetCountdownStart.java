@@ -9,9 +9,9 @@ import me.rosillogames.eggwars.commands.CommandArg;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.utils.NumericUtils;
 
-public class SetFullCountdown extends CommandArg
+public class SetCountdownStart extends CommandArg
 {
-    public SetFullCountdown()
+    public SetCountdownStart()
     {
         super(true);
     }
@@ -21,7 +21,7 @@ public class SetFullCountdown extends CommandArg
     {
         if (args.length != 2)
         {
-            TranslationUtils.sendMessage("commands.setFullCountdown.usage", commandSender);
+            TranslationUtils.sendMessage("commands.setStartCountdown.usage", commandSender);
             return false;
         }
 
@@ -33,15 +33,14 @@ public class SetFullCountdown extends CommandArg
             return false;
         }
 
-        //this count down can be set to -1, to disable it because the feature is now optional
-        if (!NumericUtils.isInteger(args[1]))
+        if (!NumericUtils.isInteger(args[1]) || Integer.parseInt(args[1]) < 0)
         {
             TranslationUtils.sendMessage("commands.error.invalid_number", commandSender);
             return false;
         }
 
-        arena.setFullCountdown(Integer.parseInt(args[1]));
-        TranslationUtils.sendMessage("commands.setFullCountdown.success", commandSender, arena.getName());
+        arena.setStartCountdown(Integer.parseInt(args[1]));
+        TranslationUtils.sendMessage("commands.setStartCountdown.success", commandSender, arena.getName());
         arena.sendToDo(player);
         return true;
     }

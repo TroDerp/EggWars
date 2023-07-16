@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -50,11 +51,6 @@ public class ReflectionUtils
         return currentReflections.parseBlockData(string);
     }
 
-    public static JsonObject getItemJson(ItemStack stack)
-    {
-        return currentReflections.getItemJson(stack);
-    }
-
     public static void hideDyeFlag(LeatherArmorMeta leatherArmorMeta)
     {
         currentReflections.hideDyeFlag(leatherArmorMeta);
@@ -79,6 +75,12 @@ public class ReflectionUtils
     public static void saveFullWorld(World world)
     {
         currentReflections.saveFullWorld(world);
+    }
+
+    @Nullable
+    public static Block getEndChestBlock(Player player)
+    {
+        return currentReflections.getEndChestBlock(player);
     }
 
     public static void sendPacket(Player player, Object packetObj)

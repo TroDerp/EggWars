@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -30,8 +31,6 @@ public interface Reflections
     @Nullable
     public BlockData parseBlockData(String string);
 
-    public JsonObject getItemJson(ItemStack stack);
-
     public void hideDyeFlag(LeatherArmorMeta leatherArmorMeta);
 
     @Nullable
@@ -42,6 +41,9 @@ public interface Reflections
     public void killOutOfWorld(Player p);
 
     public void saveFullWorld(World world);
+
+    @Nullable
+    public Block getEndChestBlock(Player player);
 
     public void sendPacket(Player player, Object packetObj);
 

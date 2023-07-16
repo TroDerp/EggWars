@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
@@ -25,7 +26,6 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Decoder;
-import com.mojang.serialization.Encoder;
 import com.mojang.serialization.JsonOps;
 import me.rosillogames.eggwars.EggWars;
 
@@ -99,7 +99,6 @@ public class Reflections_1_17 implements Reflections
                 catch (Exception var5)
                 {
                 }
-
             });
             return helpstack.object;
         }
@@ -132,34 +131,6 @@ public class Reflections_1_17 implements Reflections
         }
 
         return null;
-    }
-
-    @Override
-    public JsonObject getItemJson(ItemStack stack)
-    {
-        HelpObject<JsonObject> helpjson = new HelpObject<JsonObject>();
-        helpjson.object = new JsonObject();
-
-        try
-        {
-            Class cCraftItemStack = this.getOBCClass("inventory.CraftItemStack");
-            Object nmsStack = cCraftItemStack.getMethod("asNMSCopy", ItemStack.class).invoke(null, stack);
-            Class cItemStack = this.getNMSClass("world.item.ItemStack");
-            DataResult<JsonObject> result = ((Encoder)cItemStack.getField("a").get(null)).encode(nmsStack, JsonOps.INSTANCE, new JsonObject());
-            result.resultOrPartial((s) ->
-            {
-                EggWars.instance.getLogger().log(Level.WARNING, s);
-            }).ifPresent((jsonObj) ->
-            {
-                helpjson.object = jsonObj;
-            });
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
-        }
-
-        return helpjson.object;
     }
 
     @Override
@@ -252,6 +223,38 @@ public class Reflections_1_17 implements Reflections
         {
             exception.printStackTrace();
         }
+    }
+
+    @Nullable
+    @Override
+    public Block getEndChestBlock(Player p)
+    {
+        try
+        {
+            Object nmsP = p.getClass().getMethod("getHandle").invoke(p);
+            Object nmsEC = nmsP.getClass().getMethod("getEnderChest").invoke(nmsP);
+            Field field = nmsEC.getClass().getDeclaredFields()[0];
+            boolean accessible = field.isAccessible();
+            field.setAccessible(true);
+            Object ecTE = field.get(nmsEC);
+            field.setAccessible(accessible);
+
+            if (ecTE != null)
+            {
+                Object blockPos = ecTE.getClass().getMethod("getPosition").invoke(ecTE);
+                int x = (int)blockPos.getClass().getMethod("getX").invoke(blockPos);
+                int y = (int)blockPos.getClass().getMethod("getY").invoke(blockPos);
+                int z = (int)blockPos.getClass().getMethod("getZ").invoke(blockPos);
+                nmsEC.getClass().getMethod("closeContainer", this.getNMSClass("world.entity.player.EntityHuman")).invoke(nmsEC, nmsP);
+                return p.getWorld().getBlockAt(x, y, z);
+            }
+        }
+        catch (Exception exception)
+        {
+            exception.printStackTrace();
+        }
+
+        return null;
     }
 
     @Override

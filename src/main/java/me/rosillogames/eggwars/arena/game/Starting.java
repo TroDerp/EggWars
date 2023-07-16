@@ -49,10 +49,10 @@ public class Starting
         }
 
         arenaIn.getScores().updateScores(true);
-        Lobby.playCountDown(arenaIn, "release", arenaIn.getGameCountdown());
+        Lobby.playCountDown(arenaIn, "release", arenaIn.getReleaseCountdown());
         (new BukkitRunnable()
         {
-            private int countDown = arenaIn.getGameCountdown();
+            private int countDown = arenaIn.getReleaseCountdown();
 
             @Override
             public void run()
@@ -115,7 +115,7 @@ public class Starting
         arena.sendBroadcast("gameplay.lobby.go");
         arena.setStatus(ArenaStatus.IN_GAME);
 
-        if (arena.getGameCountdown() != 0 || arena.skipSoloLobby())//Solo doesn't use gameCountdown
+        if (arena.getReleaseCountdown() != 0 || arena.skipSoloLobby())//Solo doesn't use gameCountdown
         {
             arena.getTeams().values().forEach(team -> team.removeCages());
         }

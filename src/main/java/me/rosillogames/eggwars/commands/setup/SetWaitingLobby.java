@@ -7,11 +7,10 @@ import org.bukkit.entity.Player;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.commands.CommandArg;
 import me.rosillogames.eggwars.language.TranslationUtils;
-import me.rosillogames.eggwars.utils.NumericUtils;
 
-public class SetGameCountdown extends CommandArg
+public class SetWaitingLobby extends CommandArg
 {
-    public SetGameCountdown()
+    public SetWaitingLobby()
     {
         super(true);
     }
@@ -19,9 +18,9 @@ public class SetGameCountdown extends CommandArg
     @Override
     public boolean execute(CommandSender commandSender, String[] args)
     {
-        if (args.length != 2)
+        if (args.length != 1)
         {
-            TranslationUtils.sendMessage("commands.setGameCountdown.usage", commandSender);
+            TranslationUtils.sendMessage("commands.setWaitingLobby.usage", commandSender);
             return false;
         }
 
@@ -33,14 +32,8 @@ public class SetGameCountdown extends CommandArg
             return false;
         }
 
-        if (!NumericUtils.isInteger(args[1]) || Integer.parseInt(args[1]) < 0)
-        {
-            TranslationUtils.sendMessage("commands.error.invalid_number", commandSender);
-            return false;
-        }
-
-        arena.setGameCountdown(Integer.parseInt(args[1]));
-        TranslationUtils.sendMessage("commands.setGameCountdown.success", commandSender, arena.getName());
+        arena.setLobby(player.getLocation());
+        TranslationUtils.sendMessage("commands.setWaitingLobby.success", commandSender, arena.getName());
         arena.sendToDo(player);
         return true;
     }

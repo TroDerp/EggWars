@@ -19,10 +19,10 @@ public class Lobby
     public static void doStartingPhase(final Arena arenaIn)
     {
         arenaIn.setStatus(ArenaStatus.STARTING);
-        playCountDown(arenaIn, "starting", arenaIn.getDefCountdown());
+        playCountDown(arenaIn, "starting", arenaIn.getStartCountdown());
         (new BukkitRunnable()
         {
-            private int countDown = arenaIn.getDefCountdown();
+            private int countDown = arenaIn.getStartCountdown();
             private boolean full = false;
 
             @Override
