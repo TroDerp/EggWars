@@ -114,46 +114,40 @@ public class CmdEw implements TabExecutor
         }
 
         @Override
-        public boolean execute(CommandSender commandSender, String[] args)
+        public boolean execute(CommandSender sender, String[] args)
         {
-            Arena arena = commandSender instanceof Player ? PlayerUtils.getEwPlayer((Player)commandSender).getArena() : null;
+            Arena arena = sender instanceof Player ? PlayerUtils.getEwPlayer((Player)sender).getArena() : null;
 
-            if (args.length == 2)
+            if (args.length >= 2 && (arena = EggWars.getArenaManager().cmdArenaByIdOrName(sender, args, 1)) == null)
             {
-                arena = EggWars.getArenaManager().getArenaByName(args[1]);
-
-                if (arena == null)
-                {
-                    TranslationUtils.sendMessage("commands.error.arena_does_not_exist", commandSender, args[1]);
-                    return false;
-                }
+                return false;
             }
 
             if (arena == null)
             {
-                TranslationUtils.sendMessage("commands.force_start.usage", commandSender);
+                TranslationUtils.sendMessage("commands.force_start.usage", sender);
                 return false;
             }
 
             if (!arena.isSetup())
             {
-                TranslationUtils.sendMessage("commands.error.arena_not_set_up", commandSender);
+                TranslationUtils.sendMessage("commands.error.arena_not_set_up", sender);
                 return false;
             }
 
             if (arena.forceStart())
             {
-                TranslationUtils.sendMessage("commands.force_start.success", commandSender, arena.getName());
+                TranslationUtils.sendMessage("commands.force_start.success", sender, arena.getName());
                 return true;
             }
 
             if (!arena.getStatus().isLobby())
             {
-                TranslationUtils.sendMessage("commands.force_start.failed.not_in_lobby", commandSender);
+                TranslationUtils.sendMessage("commands.force_start.failed.not_in_lobby", sender);
                 return false;
             }
 
-            TranslationUtils.sendMessage("commands.force_start.failed.not_enough_players", commandSender);
+            TranslationUtils.sendMessage("commands.force_start.failed.not_enough_players", sender);
             return false;
         }
 
@@ -166,9 +160,10 @@ public class CmdEw implements TabExecutor
             {
                 for (Arena arena : EggWars.getArenaManager().getArenas())
                 {
-                    if (arena.getName().toLowerCase().startsWith(args[1].toLowerCase()))
+                    if (arena.getId().toLowerCase().startsWith(args[1].toLowerCase()))
                     {
                         list.add(arena.getName());
+                        list.add(arena.getId());
                     }
                 }
             }
@@ -212,27 +207,26 @@ public class CmdEw implements TabExecutor
         }
 
         @Override
-        public boolean execute(CommandSender commandSender, String[] args)
+        public boolean execute(CommandSender sender, String[] args)
         {
-            if (args.length == 1)
+            if (args.length <= 1)
             {
-                TranslationUtils.sendMessage("commands.join.usage", commandSender);
+                TranslationUtils.sendMessage("commands.join.usage", sender);
                 return false;
             }
 
-            Player player = (Player)commandSender;
+            Player player = (Player)sender;
 
             if (PlayerUtils.getEwPlayer(player).isInArena())
             {
-                TranslationUtils.sendMessage("commands.error.in_arena", commandSender);
+                TranslationUtils.sendMessage("commands.error.in_arena", sender);
                 return false;
             }
 
-            Arena arena = EggWars.getArenaManager().getArenaByName(args[1]);
+            Arena arena = EggWars.getArenaManager().cmdArenaByIdOrName(sender, args, 1);
 
             if (arena == null)
             {
-                TranslationUtils.sendMessage("commands.error.arena_does_not_exist", commandSender, args[1]);
                 return false;
             }
 
@@ -280,9 +274,10 @@ public class CmdEw implements TabExecutor
             {
                 for (Arena arena : EggWars.getArenaManager().getArenas())
                 {
-                    if (arena.getName().toLowerCase().startsWith(args[1].toLowerCase()))
+                    if (arena.getId().toLowerCase().startsWith(args[1].toLowerCase()))
                     {
                         list.add(arena.getName());
+                        list.add(arena.getId());
                     }
                 }
             }

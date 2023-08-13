@@ -42,10 +42,21 @@ public class PlayerUtils
             }
         }
 
-        //Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Couldn't find EwPlayer for player \"" + player.getName() + "\", creating new one.");
-        //EwPlayer newPl = new EwPlayer(player);
-        //EggWars.players.add(newPl);
-        return null;//newPl;
+        /*try
+        {
+            EggWars.getDB().loadPlayer(player);
+            EwPlayer newPl = new EwPlayer(player);
+            EggWars.players.add(newPl);
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Couldn't find EggWars instance of player \"" + player.getName() + "\", successfully created new one.");
+            new Exception().printStackTrace();
+            return newPl;
+        }
+        catch (Exception ex)
+        {
+            Bukkit.getPluginManager().disablePlugin(EggWars.instance);
+            throw new IllegalStateException("EGGWARS ERROR: Can't create Eggwars Player instance for \"" + player.getName() + "\", please review your server configuration.", ex);
+        }*/
+        return null;
     }
 
     @Nullable

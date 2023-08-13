@@ -23,19 +23,18 @@ public class RemoveArena extends CommandArg
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
-        if (args.length != 2)
+        if (args.length < 2)
         {
-            TranslationUtils.sendMessage("commands.removeArena.usage", commandSender);
+            TranslationUtils.sendMessage("commands.removeArena.usage", sender);
             return false;
         }
 
-        Arena arena = EggWars.getArenaManager().getArenaByName(args[1]);
+        Arena arena = EggWars.getArenaManager().cmdArenaByIdOrName(sender, args, 1);
 
         if (arena == null)
         {
-            TranslationUtils.sendMessage("commands.error.arena_does_not_exist", commandSender, args[1]);
             return false;
         }
 
@@ -80,8 +79,8 @@ public class RemoveArena extends CommandArg
 
         arena.setStatus(ArenaStatus.SETTING);
         WorldController.deleteFiles(arena.arenaFolder);
-        WorldController.deleteWorld(WorldController.formatTmpWorldName(arena.getName()));
-        TranslationUtils.sendMessage("commands.removeArena.success", commandSender, arena.getName());
+        WorldController.deleteWorld(WorldController.formatTmpWorldName(arena.getId()));
+        TranslationUtils.sendMessage("commands.removeArena.success", sender, arena.getName());
         return true;
     }
 
@@ -94,9 +93,10 @@ public class RemoveArena extends CommandArg
         {
             for (Arena arena : EggWars.getArenaManager().getArenas())
             {
-                if (arena.getName().toLowerCase().startsWith(args[1].toLowerCase()))
+                if (arena.getId().toLowerCase().startsWith(args[1].toLowerCase()))
                 {
                     list.add(arena.getName());
+                    list.add(arena.getId());
                 }
             }
         }

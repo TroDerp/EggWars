@@ -51,7 +51,7 @@ public class CmdSetup implements TabExecutor
         this.mainArgs.put("setBounds", new SetBounds());
         this.mainArgs.put("setCenter", new SetCenter());
         this.mainArgs.put("setStartCountdown", new SetCountdownStart());
-        this.mainArgs.put("setFullStartCountdown", new SetCountdownFull());
+        this.mainArgs.put("setFullCountdown", new SetCountdownFull());
         this.mainArgs.put("setReleaseCountdown", new SetCountdownRelease());
         this.mainArgs.put("setWaitingLobby", new SetWaitingLobby());
         this.mainArgs.put("setMaxPlayersPerTeam", new SetMaxPlayersPerTeam());

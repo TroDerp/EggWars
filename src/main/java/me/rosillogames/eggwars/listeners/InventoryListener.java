@@ -50,7 +50,7 @@ public class InventoryListener implements Listener
     @EventHandler
     public void updatePlayerInvWhenClosing(InventoryCloseEvent closeEvent)
     {
-        if (!(closeEvent.getPlayer() instanceof Player) || closeEvent.getPlayer() == null)
+        if (!(closeEvent.getPlayer() instanceof Player) || closeEvent.getPlayer() == null || !((Player)closeEvent.getPlayer()).isOnline())
         {
             return;
         }

@@ -1,9 +1,6 @@
 package me.rosillogames.eggwars.utils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 import java.util.Random;
 import org.bukkit.Difficulty;
@@ -15,6 +12,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.util.FileUtil;
 import com.google.common.collect.Lists;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
@@ -38,7 +36,7 @@ public class WorldController
         {
             File file0 = new File(EggWars.instance.getServer().getWorldContainer(), arenaName);
             File file1 = new File(EggWars.instance.getServer().getWorldContainer(), tempWorld);
-            copyWorld(file0, file1);
+            copyFiles(file0, file1);
         }
 
         return createWorld(tempWorld, existed);
@@ -47,7 +45,7 @@ public class WorldController
     public static World createBungeeArenaTempWorld(String arenaName)
     {
         String fileName = formatTmpWorldName(arenaName);
-        copyWorld(new File(EggWars.instance.getServer().getWorldContainer(), arenaName), new File(EggWars.instance.getServer().getWorldContainer(), fileName));
+        copyFiles(new File(EggWars.instance.getServer().getWorldContainer(), arenaName), new File(EggWars.instance.getServer().getWorldContainer(), fileName));
         return createWorld(fileName, true);
     }
 
@@ -110,48 +108,35 @@ public class WorldController
         return world;
     }
 
-    public static void copyWorld(File src, File dest)
+    public static boolean copyFiles(File in, File out)
     {
-        try
+        List<String> list = Lists.<String>newArrayList("uid.dat", "session.dat");
+        boolean copied = true;
+
+        if (!list.contains(in.getName()))
         {
-            List<String> list = Lists.<String>newArrayList("uid.dat", "session.dat");
-
-            if (!list.contains(src.getName()))
+            if (in.isDirectory())
             {
-                if (src.isDirectory())
+                if (!out.exists())
                 {
-                    if (!dest.exists())
-                    {
-                        dest.mkdirs();
-                    }
-
-                    for (String s : src.list())
-                    {
-                        File file2 = new File(src, s);
-                        File file3 = new File(dest, s);
-                        copyWorld(file2, file3);
-                    }
+                    out.mkdirs();
                 }
-                else
+
+                for (String s : in.list())
                 {
-                    FileInputStream fileinputstream = new FileInputStream(src);
-                    FileOutputStream fileoutputstream = new FileOutputStream(dest);
-                    byte abyte0[] = new byte[1024];
-                    int k;
-
-                    while ((k = fileinputstream.read(abyte0)) > 0)
+                    if (!copyFiles(new File(in, s), new File(out, s)))
                     {
-                        fileoutputstream.write(abyte0, 0, k);
+                        copied = false;
                     }
-
-                    fileinputstream.close();
-                    fileoutputstream.close();
                 }
             }
+            else
+            {
+                copied = FileUtil.copy(in, out);
+            }
         }
-        catch (IOException ioexception)
-        {
-        }
+
+        return copied;
     }
 
     /** Unloads and deletes a world **/
@@ -207,15 +192,15 @@ public class WorldController
         }
 
         ReflectionUtils.saveFullWorld(world);//use this because bukkit method does not save the full world at once, causing file corruption
-        copyWorld(new File(EggWars.instance.getServer().getWorldContainer(), formatTmpWorldName(arena.getName())), new File(arena.arenaFolder, "world"));
+        copyFiles(new File(EggWars.instance.getServer().getWorldContainer(), formatTmpWorldName(arena.getId())), new File(arena.arenaFolder, "world"));
     }
 
     public static World regenArena(Arena arena)
     {
-        String fileName = formatTmpWorldName(arena.getName());
+        String fileName = formatTmpWorldName(arena.getId());
         deleteWorld(fileName);
         File worldSave = new File(arena.arenaFolder, "world");
-        copyWorld(worldSave, new File(EggWars.instance.getServer().getWorldContainer(), fileName));
+        copyFiles(worldSave, new File(EggWars.instance.getServer().getWorldContainer(), fileName));
         return createWorld(fileName, new File(worldSave, "level.dat").exists());
     }
 

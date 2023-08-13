@@ -13,6 +13,8 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BoundingBox;
+
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Team;
@@ -80,17 +82,28 @@ public class EggInteractListener implements Listener
             }
 
             ItemStack copy = event.getPlayer().getInventory().getItemInMainHand().clone();
-            placing.setType(event.getPlayer().getInventory().getItemInMainHand().getType());
+            placing.setType(copy.getType());
+            BoundingBox playerBox = event.getPlayer().getBoundingBox();
+
+            for (BoundingBox box : placing.getState().getBlock().getCollisionShape().getBoundingBoxes())
+            {
+                if (box.shift(placing.getLocation()).overlaps(playerBox))
+                {
+                    placing.setType(replacedBS.getType());
+                    return;
+                }
+            }
+
             arena.addPlacedBlock(placing.getLocation());
             ewplayer.getIngameStats().addStat(StatType.BLOCKS_PLACED, 1);
 
-            if ((event.getPlayer().getInventory().getItemInMainHand().getAmount() - 1) == 0)
+            if ((copy.getAmount() - 1) == 0)
             {
                 event.getPlayer().getInventory().setItemInMainHand(null);
             }
             else
             {
-                event.getPlayer().getInventory().getItemInMainHand().setAmount(event.getPlayer().getInventory().getItemInMainHand().getAmount() - 1);
+                event.getPlayer().getInventory().getItemInMainHand().setAmount(copy.getAmount() - 1);
             }
 
             event.setUseItemInHand(Result.ALLOW);
@@ -115,17 +128,28 @@ public class EggInteractListener implements Listener
             }
 
             ItemStack copy = event.getPlayer().getInventory().getItemInOffHand().clone();
-            placing.setType(event.getPlayer().getInventory().getItemInOffHand().getType());
+            placing.setType(copy.getType());
+            BoundingBox playerBox = event.getPlayer().getBoundingBox();
+
+            for (BoundingBox box : placing.getState().getBlock().getCollisionShape().getBoundingBoxes())
+            {
+                if (box.shift(placing.getLocation()).overlaps(playerBox))
+                {
+                    placing.setType(rBS.getType());
+                    return;
+                }
+            }
+
             arena.addPlacedBlock(placing.getLocation());
             ewplayer.getIngameStats().addStat(StatType.BLOCKS_PLACED, 1);
 
-            if ((event.getPlayer().getInventory().getItemInOffHand().getAmount() - 1) == 0)
+            if ((copy.getAmount() - 1) == 0)
             {
                 event.getPlayer().getInventory().setItemInOffHand(null);
             }
             else
             {
-                event.getPlayer().getInventory().getItemInOffHand().setAmount(event.getPlayer().getInventory().getItemInOffHand().getAmount() - 1);
+                event.getPlayer().getInventory().getItemInOffHand().setAmount(copy.getAmount() - 1);
             }
 
             event.setUseItemInHand(Result.ALLOW);

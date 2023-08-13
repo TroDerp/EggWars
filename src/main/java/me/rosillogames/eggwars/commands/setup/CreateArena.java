@@ -11,6 +11,7 @@ import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.commands.CommandArg;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.loaders.ArenaLoader;
 import me.rosillogames.eggwars.utils.PlayerUtils;
 import me.rosillogames.eggwars.utils.WorldController;
 
@@ -30,23 +31,24 @@ public class CreateArena extends CommandArg
             return false;
         }
 
-        if (args.length != 2)
+        if (args.length < 2)
         {
             TranslationUtils.sendMessage("commands.createArena.usage", commandSender);
             return false;
         }
 
         Player player = (Player)commandSender;
+        String name = ArenaLoader.formulateName(args, 1);
 
-        if (EggWars.getArenaManager().getArenaByName(args[1]) != null)
+        if (EggWars.getArenaManager().getArenaByName(name) != null)
         {
-            TranslationUtils.sendMessage("commands.error.arena_already_exists", commandSender, args[1]);
+            TranslationUtils.sendMessage("commands.error.arena_already_exists", commandSender, name);
             return false;
         }
         else
         {
-            boolean flag = WorldController.worldFolderExists(args[1]);
-            Arena arena = new Arena(args[1]);
+            boolean flag = WorldController.worldFolderExists(name);
+            Arena arena = new Arena(name);
 
             if (!flag)
             {
@@ -73,11 +75,11 @@ public class CreateArena extends CommandArg
     {
         List<String> list = new ArrayList();
 
-        if (args.length == 2)
+        if (args.length >= 2)
         {
             for (Arena arena : EggWars.getArenaManager().getArenas())
             {
-                if (arena.getName().toLowerCase().startsWith(args[1].toLowerCase()))
+                if (arena.getName().toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
                 {
                     list.add(arena.getName());
                 }

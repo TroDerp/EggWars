@@ -4,11 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import org.bukkit.command.CommandSender;
-import org.bukkit.util.FileUtil;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.commands.CommandArg;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.loaders.ArenaLoader;
+import me.rosillogames.eggwars.utils.WorldController;
 
 public class CloneArena extends CommandArg
 {
@@ -20,13 +21,13 @@ public class CloneArena extends CommandArg
     @Override
     public boolean execute(CommandSender commandSender, String[] args)
     {
-        if (args.length != 3)
+        if (args.length < 3)
         {
             TranslationUtils.sendMessage("commands.cloneArena.usage", commandSender);
             return false;
         }
 
-        Arena arena = EggWars.getArenaManager().getArenaByName(args[1]);
+        Arena arena = EggWars.getArenaManager().getArenaById(args[1]);
 
         if (arena == null)
         {
@@ -40,9 +41,9 @@ public class CloneArena extends CommandArg
             return false;
         }
 
-        String cloneName = args[2];
+        String cloneName = ArenaLoader.formulateName(args, 2);
 
-        if (EggWars.getArenaManager().getArenaByName(cloneName) != null)
+        if (EggWars.getArenaManager().getArenaById(ArenaLoader.getValidArenaID(cloneName)) != null)
         {
             TranslationUtils.sendMessage("commands.error.arena_already_exists", commandSender, cloneName);
             return false;
@@ -50,9 +51,9 @@ public class CloneArena extends CommandArg
         else
         {
             TranslationUtils.sendMessage("commands.cloneArena.cloning", commandSender, arena.getName(), cloneName);
-            File cloneFile = new File(EggWars.arenasFolder, cloneName);
+            File cloneFile = new File(EggWars.arenasFolder, ArenaLoader.getValidArenaID(cloneName));
 
-            if (FileUtil.copy(arena.arenaFolder, cloneFile))
+            if (WorldController.copyFiles(arena.arenaFolder, cloneFile))
             {
                 EggWars.getArenaManager().addArena(new Arena(cloneFile, cloneName));
                 TranslationUtils.sendMessage("commands.cloneArena.success", commandSender, arena.getName(), cloneName);
@@ -75,17 +76,17 @@ public class CloneArena extends CommandArg
         {
             for (Arena arena : EggWars.getArenaManager().getArenas())
             {
-                if (arena.getName().toLowerCase().startsWith(args[1].toLowerCase()))
+                if (arena.getId().toLowerCase().startsWith(args[1].toLowerCase()))
                 {
-                    list.add(arena.getName());
+                    list.add(arena.getId());
                 }
             }
         }
-        else if (args.length == 3)
+        else if (args.length >= 3)
         {
             for (Arena arena : EggWars.getArenaManager().getArenas())
             {
-                if (arena.getName().toLowerCase().startsWith(args[2].toLowerCase()))
+                if (arena.getName().toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
                 {
                     list.add(arena.getName());
                 }

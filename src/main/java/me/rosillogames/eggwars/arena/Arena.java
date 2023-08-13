@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
@@ -47,6 +48,7 @@ import me.rosillogames.eggwars.enums.Mode;
 import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.events.EwPlayerJoinArenaEvent;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.loaders.ArenaLoader;
 import me.rosillogames.eggwars.loaders.TradingLoader;
 import me.rosillogames.eggwars.objects.ArenaSign;
 import me.rosillogames.eggwars.player.EwPlayer;
@@ -69,6 +71,7 @@ public class Arena
     //Universal
     public final File arenaFolder;
     private final String name;
+    private final String identifier;
     private final Map<TeamType, Team> teams = Maps.newEnumMap(TeamType.class);
     //Use vector instead of location to skip an issue with worlds when used loc.equals(other)
     private final Map<Vector, Generator> generators = Maps.newHashMap();
@@ -91,6 +94,7 @@ public class Arena
     private final List<TranslatableInventory> shopInvs = new ArrayList();
     private final List<Map<Integer, Category>> shopCategsSlots = new ArrayList();
     private boolean forced = false;
+    private boolean saving = false;
     private int currCountdown;
 
     //Constant stored settings
@@ -113,7 +117,8 @@ public class Arena
     public Arena(String name)
     {
         this.name = name;
-        this.arenaFolder = new File(EggWars.arenasFolder, name);
+        this.identifier = ArenaLoader.getValidArenaID(name);
+        this.arenaFolder = new File(EggWars.arenasFolder, this.identifier);
 
         if (!this.arenaFolder.exists())
         {
@@ -125,7 +130,7 @@ public class Arena
             this.arenaFolder.mkdirs();
         }
 
-        this.world = WorldController.createArenaInitWorld(name);
+        this.world = WorldController.createArenaInitWorld(this.identifier);
         this.lobby = null;
         this.center = null;
         this.boundaries = new Bounds(null, null);
@@ -143,6 +148,7 @@ public class Arena
     public Arena(File fldrIn, @Nullable String newName)
     {
         this.arenaFolder = fldrIn;
+        this.identifier = fldrIn.getName();
         ConfigAccessor configaccessor = new ConfigAccessor(EggWars.instance, new File(fldrIn, "arena.yml"));
         FileConfiguration fileconf = configaccessor.getConfig();
 
@@ -160,9 +166,9 @@ public class Arena
         this.boundaries = Bounds.deserialize(fileconf.getString("Bounds"));
         this.maxTeamPlayers = fileconf.getInt("MaxPlayersPerTeam");
         this.minPlayers = fileconf.getInt("MinPlayers");
-        this.startCountdown = fileconf.getInt("Countdown");
+        boolean isUpToDate = loadOldNew(fileconf, (conf, key) -> fileconf.getInt(key), "Countdown", "StartCountdown", this::setStartCountdown);
         this.fullCountdown = fileconf.getInt("FullCountdown", -1);
-        this.releaseCountdown = fileconf.getInt("GameCountdown");
+        isUpToDate = loadOldNew(fileconf, (conf, key) -> fileconf.getInt(key), "GameCountdown", "ReleaseCountdown", this::setReleaseCountdown) && isUpToDate;
         this.customTrades = fileconf.getBoolean("ArenaSpecificTrades", false);
 
         if (this.customTrades)
@@ -180,23 +186,13 @@ public class Arena
             }
 
             Team team = new Team(this, teamtype);
-            String cagekey = ".Glasses.";//LEGACY KEY
-
-            if (!fileconf.isConfigurationSection(teamtypeid + cagekey))//if legacy not present then use new key
+            isUpToDate = loadOldNew(fileconf, (conf, key) -> fileconf.getConfigurationSection(key), teamtypeid + ".Glasses", teamtypeid + ".Cages", (confsec) ->
             {
-                cagekey = ".Cages.";
-            }
-
-            ConfigurationSection cages;
-
-            if ((cages = fileconf.getConfigurationSection(teamtypeid + cagekey)) != null)
-            {
-                for (String key : cages.getKeys(false))
+                for (String key : confsec.getKeys(false))
                 {
-                    team.addCage(Locations.fromString(fileconf.getString(teamtypeid + cagekey + key)));
+                    team.addCage(Locations.fromString(fileconf.getString(confsec.getParent().getCurrentPath() + "." + confsec.getName() + "." + key)));
                 }
-            }
-
+            }) && isUpToDate;
             loadIfPresent(fileconf, teamtypeid + ".Respawn", team::setRespawn);
             loadIfPresent(fileconf, teamtypeid + ".Villager", team::setVillager);
             loadIfPresent(fileconf, teamtypeid + ".Egg", team::setEgg);
@@ -215,6 +211,13 @@ public class Arena
         }
 
         this.setWorld(world);
+
+        if (!isUpToDate)
+        {
+            this.saving = true;//set to already true to turn on convert mode
+            this.saveArena();
+        }
+
         this.reset(!this.isSetup());
     }
 
@@ -223,6 +226,20 @@ public class Arena
         if (config.contains(key))
         {
             cons.accept(Locations.fromString(config.getString(key)));
+        }
+    }
+
+    private static <T> boolean loadOldNew(FileConfiguration config, BiFunction<FileConfiguration, String, T> func, String oldKey, String newKey, Consumer<T> cons)
+    {
+        if (config.contains(newKey) || config.isConfigurationSection(newKey))
+        {
+            cons.accept(func.apply(config, newKey));
+            return true;
+        }
+        else
+        {
+            cons.accept(func.apply(config, oldKey));
+            return false;
         }
     }
 
@@ -396,7 +413,7 @@ public class Arena
 
     public String getId()
     {
-        return this.arenaFolder.getName();
+        return this.identifier;
     }
 
     public ArenaStatus getStatus()
@@ -776,6 +793,7 @@ public class Arena
         }
 
         this.forced = false;
+        this.saving = false;
         this.itemsVotes.clear();
         this.itemType = ItemType.NORMAL;
         this.healthVotes.clear();
@@ -1016,15 +1034,17 @@ public class Arena
 
     public boolean saveArena()
     {
+        boolean converting = this.saving;//TODO: remove this after ensuring everyone converted
+        this.saving = true;
         ConfigAccessor accessor = new ConfigAccessor(EggWars.instance, new File(this.arenaFolder, "arena.yml"));
         accessor.createNewConfig();
         FileConfiguration fconfig = accessor.getConfig();
         fconfig.set("Name", this.getName());
         fconfig.set("MaxPlayersPerTeam", Integer.valueOf(this.maxTeamPlayers));
         fconfig.set("MinPlayers", Integer.valueOf(this.minPlayers));
-        fconfig.set("Countdown", Integer.valueOf(this.startCountdown));
+        fconfig.set("StartCountdown", Integer.valueOf(this.startCountdown));
         fconfig.set("FullCountdown", Integer.valueOf(this.fullCountdown));
-        fconfig.set("GameCountdown", Integer.valueOf(this.releaseCountdown));
+        fconfig.set("ReleaseCountdown", Integer.valueOf(this.releaseCountdown));
         fconfig.set("Bounds", Bounds.serialize(this.boundaries));
         fconfig.set("Lobby", Locations.toString(this.lobby, true));
         fconfig.set("Center", Locations.toString(this.center, true));
@@ -1059,7 +1079,13 @@ public class Arena
         }
 
         accessor.saveConfig();
-        WorldController.saveArenaWorld(this);
+
+        if (!converting)
+        {
+            WorldController.saveArenaWorld(this);
+        }
+
+        this.saving = false;
         return true;
     }
 
@@ -1407,6 +1433,11 @@ public class Arena
     public boolean beenForced()
     {
         return this.forced;
+    }
+
+    public boolean isSaving()
+    {
+        return this.saving;
     }
 
     public boolean skipSoloLobby()

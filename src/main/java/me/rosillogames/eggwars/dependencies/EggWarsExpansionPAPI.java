@@ -57,7 +57,7 @@ public class EggWarsExpansionPAPI extends PlaceholderExpansion
                 return null;
             }
 
-            Arena arena = EggWars.getArenaManager().getArenaByName(s[1]);
+            Arena arena = EggWars.getArenaManager().getArenaById(s[1]);
 
             if (arena != null)
             {
@@ -142,7 +142,7 @@ public class EggWarsExpansionPAPI extends PlaceholderExpansion
         if (params.equalsIgnoreCase("id_arena"))
         {
             Arena arena = PlayerUtils.getEwPlayer(player).getArena();
-            return arena == null ? "" : arena.getName();
+            return arena == null ? "" : arena.getId();
         }
         else if (params.equalsIgnoreCase("id_team"))
         {

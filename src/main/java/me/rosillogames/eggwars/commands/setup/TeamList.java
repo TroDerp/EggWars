@@ -27,25 +27,19 @@ public class TeamList extends CommandArg
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
-        Player player = (Player)commandSender;
+        Player player = (Player)sender;
         Arena arena = EggWars.getArenaManager().getArenaByWorld(player.getWorld());
 
-        if (args.length == 2)
+        if (args.length >= 2 && (arena = EggWars.getArenaManager().cmdArenaByIdOrName(sender, args, 1)) == null)
         {
-            arena = EggWars.getArenaManager().getArenaByName(args[1]);
-
-            if (arena == null)
-            {
-                TranslationUtils.sendMessage("commands.error.arena_does_not_exist", commandSender, args[1]);
-                return false;
-            }
+            return false;
         }
 
         if (arena == null)
         {
-            TranslationUtils.sendMessage("commands.error.not_in_arena_world", commandSender);
+            TranslationUtils.sendMessage("commands.error.not_in_arena_world", sender);
             return false;
         }
 
@@ -90,9 +84,10 @@ public class TeamList extends CommandArg
         {
             for (Arena arena : EggWars.getArenaManager().getArenas())
             {
-                if (arena.getName().toLowerCase().startsWith(args[1].toLowerCase()))
+                if (arena.getId().toLowerCase().startsWith(args[1].toLowerCase()))
                 {
                     list.add(arena.getName());
+                    list.add(arena.getId());
                 }
             }
         }

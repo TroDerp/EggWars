@@ -21,20 +21,19 @@ public class ToggleEditMode extends CommandArg
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
-        if (args.length != 2)
+        if (args.length < 2)
         {
-            TranslationUtils.sendMessage("commands.toggleEditMode.usage", commandSender);
+            TranslationUtils.sendMessage("commands.toggleEditMode.usage", sender);
             return false;
         }
 
-        Player player = (Player)commandSender;
-        Arena arena = EggWars.getArenaManager().getArenaByName(args[1]);
+        Player player = (Player)sender;
+        Arena arena = EggWars.getArenaManager().cmdArenaByIdOrName(sender, args, 1);
 
         if (arena == null)
         {
-            TranslationUtils.sendMessage("commands.error.arena_does_not_exist", commandSender, args[1]);
             return false;
         }
 
@@ -50,34 +49,38 @@ public class ToggleEditMode extends CommandArg
         {
             if (!arena.isSetup())
             {
-                TranslationUtils.sendMessage("commands.error.arena_not_set_up", commandSender, arena.getName());
+                TranslationUtils.sendMessage("commands.error.arena_not_set_up", sender, arena.getName());
                 return false;
             }
 
-            TranslationUtils.sendMessage("commands.toggleEditMode.success.saving", commandSender, new Object[] {arena.getName()});
+            TranslationUtils.sendMessage("commands.toggleEditMode.success.saving", sender, new Object[] {arena.getName()});
             (new BukkitRunnable()
             {
                 public void run()
                 {
                     arena.saveArena();
                 }
-            }).runTaskLater(EggWars.instance, 50L);
+            }).runTaskLater(EggWars.instance, 40L);
             (new BukkitRunnable()
             {
                 public void run()
                 {
-                    arena.reset(false);
-                    TranslationUtils.sendMessage("commands.toggleEditMode.success.saved", commandSender, arena.getName());
+                    if (!arena.isSaving())
+                    {
+                        arena.reset(false);
+                        TranslationUtils.sendMessage("commands.toggleEditMode.success.saved", sender, arena.getName());
+                        this.cancel();
+                    }
                 }
-            }).runTaskLater(EggWars.instance, 100L);
+            }).runTaskTimer(EggWars.instance, 50L, 10L);
             ewplayer.setSettingArena(null);
         }
         else
         {
-            TranslationUtils.sendMessage("commands.toggleEditMode.success.preparing", commandSender, arena.getName());
+            TranslationUtils.sendMessage("commands.toggleEditMode.success.preparing", sender, arena.getName());
             arena.reset(true);
             player.teleport(arena.getLobby() != null ? arena.getLobby() : arena.getWorld().getSpawnLocation());
-            TranslationUtils.sendMessage("commands.toggleEditMode.success", commandSender, arena.getName());
+            TranslationUtils.sendMessage("commands.toggleEditMode.success", sender, arena.getName());
             ewplayer.setSettingArena(arena);
         }
 
@@ -93,9 +96,10 @@ public class ToggleEditMode extends CommandArg
         {
             for (Arena arena : EggWars.getArenaManager().getArenas())
             {
-                if (arena.getName().toLowerCase().startsWith(args[1].toLowerCase()))
+                if (arena.getId().toLowerCase().startsWith(args[1].toLowerCase()))
                 {
                     list.add(arena.getName());
+                    list.add(arena.getId());
                 }
             }
         }
