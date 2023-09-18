@@ -101,27 +101,37 @@ public class PlayerDeathListener implements Listener
         (new BukkitRunnable()
         {
             public void run()
-            {
+            {//it has to be executed later due to a bug
                 diedPlayer.getPlayer().spigot().respawn();
             }
-
-        }).runTaskLater(EggWars.instance, 1L);
+        }).runTaskLater(EggWars.instance, 0L);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void respawn(PlayerRespawnEvent event)
     {
-        final EwPlayer pl = PlayerUtils.getEwPlayer(event.getPlayer());
+        EwPlayer player = PlayerUtils.getEwPlayer(event.getPlayer());
 
-        if (!pl.isInArena())
+        if (!player.isInArena())
         {
             return;
         }
 
+        event.setRespawnLocation(EggWars.config.respawnDelay < 1 && !player.isEliminated() ? Locations.toMiddle(player.getTeam().getRespawn()) : player.getArena().getCenter());
+
+        (new BukkitRunnable()
+        {
+            public void run()
+            {//it has to be executed later due to a bug, too
+                prepareRespawn(player);
+            }
+        }).runTaskLater(EggWars.instance, 0L);
+    }
+
+    private static void prepareRespawn(EwPlayer pl)
+    {
         if (pl.isEliminated())
         {
-            event.setRespawnLocation(pl.getArena().getCenter());
-
             if (EggWars.config.canSpectStay)
             {
                 ReflectionUtils.sendTitle(pl.getPlayer(), Integer.valueOf(20), Integer.valueOf(40), Integer.valueOf(20), TranslationUtils.getMessage("gameplay.ingame.you_died", pl.getPlayer()), TranslationUtils.getMessage("gameplay.ingame.you_died_exit", pl.getPlayer()));
@@ -132,53 +142,41 @@ public class PlayerDeathListener implements Listener
                 pl.getArena().leaveArena(pl, true, false);
             }
         }
+        else if (EggWars.config.respawnDelay > 0)
+        {
+            pl.getPlayer().setGameMode(GameMode.SPECTATOR);
+            ReflectionUtils.sendTitle(pl.getPlayer(), Integer.valueOf(5), Integer.valueOf(22), Integer.valueOf(5), TranslationUtils.getMessage("gameplay.ingame.you_died", pl.getPlayer()), TranslationUtils.getMessage("gameplay.ingame.you_died_respawning", pl.getPlayer(), TranslationUtils.translateTime(pl.getPlayer(), EggWars.config.respawnDelay, false)));
+            (new BukkitRunnable()
+            {
+                private int countDown = EggWars.config.respawnDelay;
+
+                public void run()
+                {
+                    if (!pl.getPlayer().isOnline() || !pl.isInArena())
+                    {
+                        this.cancel();
+                        return;
+                    }
+
+                    this.countDown--;
+
+                    if (this.countDown > 0)
+                    {
+                        ReflectionUtils.sendTitle(pl.getPlayer(), Integer.valueOf(0), Integer.valueOf(22), Integer.valueOf(0), TranslationUtils.getMessage("gameplay.ingame.you_died", pl.getPlayer()), TranslationUtils.getMessage("gameplay.ingame.you_died_respawning", pl.getPlayer(), TranslationUtils.translateTime(pl.getPlayer(), this.countDown, false)));
+                    }
+                    else
+                    {
+                        pl.getPlayer().setGameMode(GameMode.SURVIVAL);
+                        pl.getPlayer().teleport(Locations.toMiddle(pl.getTeam().getRespawn()));
+                        performRespawn(pl);
+                        this.cancel();
+                    }
+                }
+            }).runTaskTimer(EggWars.instance, 20L, 20L);
+        }
         else
         {
-            if (EggWars.config.respawnDelay < 1)
-            {
-                event.setRespawnLocation(Locations.toMiddle(pl.getTeam().getRespawn()));
-                performRespawn(pl);
-            }
-            else
-            {
-                event.setRespawnLocation(pl.getArena().getCenter());
-                pl.getPlayer().setGameMode(GameMode.SPECTATOR);
-                ReflectionUtils.sendTitle(pl.getPlayer(), Integer.valueOf(5), Integer.valueOf(22), Integer.valueOf(5), TranslationUtils.getMessage("gameplay.ingame.you_died", pl.getPlayer()), TranslationUtils.getMessage("gameplay.ingame.you_died_respawning", pl.getPlayer(), TranslationUtils.translateTime(pl.getPlayer(), EggWars.config.respawnDelay, false)));
-                (new BukkitRunnable()
-                {
-                    private int countDown = EggWars.config.respawnDelay;
-
-                    public void run()
-                    {
-                        if (!pl.getPlayer().isOnline() || !pl.isInArena())
-                        {
-                            this.cancel();
-                            return;
-                        }
-
-                        this.countDown--;
-
-                        switch (this.countDown)
-                        {
-                            case 1:
-                            case 2:
-                            case 3:
-                            case 4:
-                            case 5:
-                            case 10:
-                            case 15:
-                                ReflectionUtils.sendTitle(pl.getPlayer(), Integer.valueOf(0), Integer.valueOf(22), Integer.valueOf(0), TranslationUtils.getMessage("gameplay.ingame.you_died", pl.getPlayer()), TranslationUtils.getMessage("gameplay.ingame.you_died_respawning", pl.getPlayer(), TranslationUtils.translateTime(pl.getPlayer(), this.countDown, false)));
-                                break;
-                            case 0:
-                                pl.getPlayer().setGameMode(GameMode.SURVIVAL);
-                                pl.getPlayer().teleport(Locations.toMiddle(pl.getTeam().getRespawn()));
-                                performRespawn(pl);
-                                this.cancel();
-                                return;
-                        }
-                    }
-                }).runTaskTimer(EggWars.instance, 20L, 20L);
-            }
+            performRespawn(pl);
         }
     }
 

@@ -13,9 +13,9 @@ import me.rosillogames.eggwars.objects.ArenaSign;
 public class LobbySigns
 {
     public static boolean activeSign;
-    public static BlockData lobby;
+    public static BlockData waiting;
     public static BlockData starting;
-    public static BlockData ingame;
+    public static BlockData in_game;
     public static BlockData finished;
     public static BlockData setting;
 
@@ -23,10 +23,10 @@ public class LobbySigns
     {
         FileConfiguration fileconf = EggWars.instance.getConfig();
         activeSign = fileconf.getBoolean("lobby.sign_status.active");
-        lobby = ItemUtils.getBlockData(fileconf.getString("lobby.sign_status.lobby"), Material.LIME_STAINED_GLASS.createBlockData());
+        waiting = ItemUtils.getBlockData(fileconf.getString("lobby.sign_status.waiting"), Material.LIME_STAINED_GLASS.createBlockData());
         starting = ItemUtils.getBlockData(fileconf.getString("lobby.sign_status.starting"), Material.YELLOW_STAINED_GLASS.createBlockData());
-        ingame = ItemUtils.getBlockData(fileconf.getString("lobby.sign_status.ingame"), Material.RED_STAINED_GLASS.createBlockData());
-        finished = ItemUtils.getBlockData(fileconf.getString("lobby.sign_status.finished"), Material.MAGENTA_STAINED_GLASS.createBlockData());
+        in_game = ItemUtils.getBlockData(fileconf.getString("lobby.sign_status.in_game"), Material.RED_STAINED_GLASS.createBlockData());
+        finished = ItemUtils.getBlockData(fileconf.getString("lobby.sign_status.finishing"), Material.MAGENTA_STAINED_GLASS.createBlockData());
         setting = ItemUtils.getBlockData(fileconf.getString("lobby.sign_status.setting"), Material.CYAN_STAINED_GLASS.createBlockData());
     }
 
@@ -41,15 +41,15 @@ public class LobbySigns
 
         switch (sign.getArena().getStatus())
         {
-            case LOBBY:
-                block.setBlockData(lobby);
+            case WAITING:
+                block.setBlockData(waiting);
                 break;
             case STARTING:
                 block.setBlockData(starting);
                 break;
-            case IN_GAME:
             case STARTING_GAME:
-                block.setBlockData(ingame);
+            case IN_GAME:
+                block.setBlockData(in_game);
                 break;
             case FINISHING:
                 block.setBlockData(finished);

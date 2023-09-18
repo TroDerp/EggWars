@@ -43,7 +43,6 @@ import me.rosillogames.eggwars.enums.Versions;
 import me.rosillogames.eggwars.language.LanguageManager;
 import me.rosillogames.eggwars.listeners.BlockBreakListener;
 import me.rosillogames.eggwars.listeners.BlockPlaceListener;
-import me.rosillogames.eggwars.listeners.ClickInventoryListener;
 import me.rosillogames.eggwars.listeners.EggInteractListener;
 import me.rosillogames.eggwars.listeners.EggWarsListener;
 import me.rosillogames.eggwars.listeners.EntityExplodeListener;
@@ -207,7 +206,6 @@ public class EggWars extends JavaPlugin
         pluginmanager.registerEvents(new BlockBreakListener(), this);
         pluginmanager.registerEvents(new BlockPlaceListener(), this);
         pluginmanager.registerEvents(new EggWarsListener(), this);
-        pluginmanager.registerEvents(new ClickInventoryListener(), this);
         pluginmanager.registerEvents(new EggInteractListener(), this);
         pluginmanager.registerEvents(new EntityExplodeListener(), this);
         pluginmanager.registerEvents(new EntityHurtListener(), this);

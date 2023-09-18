@@ -157,7 +157,7 @@
   "voting.health.triple.item_name": "&aTriple de Vida",
   "voting.health.triple.item_lore": "&7El triple de vida (30 corazones)\n\n&7{0}",
   "status.setting": "&3Ajustando",
-  "status.lobby": "&2En Espera",
+  "status.waiting": "&2En Espera",
   "status.starting": "&6Empezando",
   "status.starting_game": "&6Empezando Juego",
   "status.in_game": "&4En Juego",

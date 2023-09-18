@@ -2,7 +2,7 @@ package me.rosillogames.eggwars.enums;
 
 public enum ArenaStatus
 {
-    LOBBY("lobby"),
+    WAITING("waiting"),
     STARTING("starting"),
     STARTING_GAME("starting_game"),
     SETTING("setting"),
@@ -18,7 +18,7 @@ public enum ArenaStatus
 
     public boolean isLobby()
     {
-        return this.equals(LOBBY) || this.equals(STARTING);
+        return this.equals(WAITING) || this.equals(STARTING);
     }
 
     public boolean isGame()

@@ -1,19 +1,21 @@
 package me.rosillogames.eggwars.listeners;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Map;
 import org.bukkit.Sound;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.EnderChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import me.rosillogames.eggwars.EggWars;
-import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Generator;
 import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.arena.shop.Category;
@@ -29,12 +31,14 @@ import me.rosillogames.eggwars.objects.Kit;
 import me.rosillogames.eggwars.objects.KitsMenu;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.player.EwPlayerMenu;
+import me.rosillogames.eggwars.player.inventory.EwInventory;
 import me.rosillogames.eggwars.player.inventory.InventoryController;
 import me.rosillogames.eggwars.utils.PlayerUtils;
 import me.rosillogames.eggwars.utils.TeamUtils;
 import me.rosillogames.eggwars.utils.VoteUtils;
+import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
-public class ClickInventoryListener implements Listener
+public class InventoryListener implements Listener
 {
     @EventHandler
     public void cancelIllegalInventoryChanges(InventoryClickEvent clickEvent)
@@ -49,11 +53,13 @@ public class ClickInventoryListener implements Listener
                 return;
             }
 
-            if (clickEvent.getClickedInventory().getType() == InventoryType.FURNACE)
-            {
-                clickEvent.setCancelled(true);
-                return;
-            }
+            //TODO: Store original contents of containers modified during the game to fix a bug
+            //where containers are saved between games (also happens to chests), in new arena class
+            //if (clickEvent.getClickedInventory().getType() == InventoryType.FURNACE)
+            //{
+                //clickEvent.setCancelled(true);
+                //return;
+            //}
         }
     }
 
@@ -71,6 +77,68 @@ public class ClickInventoryListener implements Listener
         {
             return;
         }
+    }
+
+    @EventHandler
+    public void openTeamEC(InventoryOpenEvent openEvent)
+    {
+        if (!(openEvent.getPlayer() instanceof Player) || openEvent.getPlayer() == null)
+        {
+            return;
+        }
+
+        EwPlayer ewply = PlayerUtils.getEwPlayer((Player)openEvent.getPlayer());
+
+        if (ewply != null && ewply.getTeam() != null && openEvent.getInventory().getType() == InventoryType.ENDER_CHEST && ewply.getInv() == null && EggWars.config.shareTeamEC)
+        {
+            openEvent.setCancelled(true);
+            EwInventory ewInv = new EwInventory(ewply, ewply.getTeam().getEnderChest(), MenuType.TEAM_ENDER_CHEST);
+            Block block = ReflectionUtils.getEndChestBlock(ewply.getPlayer());
+
+            if (block != null && block.getState() instanceof EnderChest)
+            {
+                ((EnderChest)block.getState()).open();
+                ewInv.setExtraData(block);
+            }
+
+            ewply.setInv(ewInv);
+            ewply.getPlayer().openInventory(ewInv.getInventory());
+        }
+
+        return;
+    }
+
+    @EventHandler
+    public void updatePlayerInvWhenClosing(InventoryCloseEvent closeEvent)
+    {
+        if (!(closeEvent.getPlayer() instanceof Player) || closeEvent.getPlayer() == null || !((Player)closeEvent.getPlayer()).isOnline())
+        {
+            return;
+        }
+
+        EwPlayer ewply = PlayerUtils.getEwPlayer((Player)closeEvent.getPlayer());
+
+        if (ewply == null || ewply.getInv() == null)
+        {
+            return;
+        }
+
+        if (ewply.getInv().getInventoryType() == MenuType.TEAM_ENDER_CHEST && ewply.getInv().getExtraData() != null)
+        {
+            BlockState state = ((Block)ewply.getInv().getExtraData()).getLocation().getBlock().getState();
+
+            if (state instanceof EnderChest)
+            {
+                ((EnderChest)state).close();
+            }
+        }
+
+        if (ewply.getInv().getInventory() == closeEvent.getInventory())
+        {
+            ewply.setInv(null);
+        }
+
+        return;
     }
 
     @EventHandler
@@ -108,28 +176,25 @@ public class ClickInventoryListener implements Listener
     {
         EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)clickEvent.getWhoClicked());
 
-        if (ewplayer.getInv() == null || clickEvent.isCancelled())
+        if (ewplayer.getInv() == null || clickEvent.isCancelled() || !ewplayer.isInArena())
         {
             return;
         }
 
-        if (!ewplayer.isInArena())
+        if (ewplayer.getInv().getInventoryType() != MenuType.VILLAGER_MENU && ewplayer.getInv().getInventoryType() != MenuType.VILLAGER_TRADING)
         {
             return;
         }
 
-        if (ewplayer.getInv().getInventoryType() == MenuType.VILLAGER_MENU || ewplayer.getInv().getInventoryType() == MenuType.VILLAGER_TRADING)
-        {//this controls whether if shift click is invalid in the current slot (inside villager container)
-            if (clickEvent.getRawSlot() > (clickEvent.getInventory().getSize() - 1))
+        if (clickEvent.getRawSlot() > (clickEvent.getInventory().getSize() - 1))
+        {//this controls whether if shif click is invalid in the current slot (inside villager container)
+            if (clickEvent.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY)
             {
-                if (clickEvent.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY)
-                {
-                    clickEvent.setCancelled(true);
-                    return;
-                }
-
+                clickEvent.setCancelled(true);
                 return;
             }
+
+            return;
         }
 
         clickEvent.setCancelled(true);
@@ -214,7 +279,7 @@ public class ClickInventoryListener implements Listener
             return;
         }
 
-        if (!ewplayer.getArena().getStatus().equals(ArenaStatus.STARTING_GAME) && !ewplayer.getArena().getStatus().equals(ArenaStatus.STARTING) && !ewplayer.getArena().getStatus().equals(ArenaStatus.LOBBY))
+        if (!ewplayer.getArena().getStatus().equals(ArenaStatus.STARTING_GAME) && !ewplayer.getArena().getStatus().equals(ArenaStatus.STARTING) && !ewplayer.getArena().getStatus().equals(ArenaStatus.WAITING))
         {
             return;
         }
@@ -407,7 +472,7 @@ public class ClickInventoryListener implements Listener
             return;
         }
 
-        if (!ewplayer.getArena().getStatus().equals(ArenaStatus.STARTING) && !ewplayer.getArena().getStatus().equals(ArenaStatus.LOBBY))
+        if (!ewplayer.getArena().getStatus().equals(ArenaStatus.STARTING) && !ewplayer.getArena().getStatus().equals(ArenaStatus.WAITING))
         {
             return;
         }
@@ -433,7 +498,7 @@ public class ClickInventoryListener implements Listener
             return;
         }
 
-        if (!this.canJoin(team))
+        if (!team.canJoin())
         {
             TranslationUtils.sendMessage("gameplay.teams.full", ewplayer.getPlayer());
             return;
@@ -576,27 +641,5 @@ public class ClickInventoryListener implements Listener
         }
 
         return false;
-    }
-
-    public boolean canJoin(Team team)
-    {
-        Arena arena = team.getArena();
-
-        if (team.getPlayers().size() >= arena.getMaxTeamPlayers())
-        {
-            return false;
-        }
-
-        if (!EggWars.config.balanceTeams)
-        {
-            return true;
-        }
-        else
-        {
-            ArrayList arraylist = new ArrayList(arena.getPlayers());
-            Collections.shuffle(arraylist);
-            int i = (int)Math.floor(arraylist.size() / arena.getTeams().size());
-            return team.getPlayers().size() <= i && arena.getMaxTeamPlayers() > team.getPlayers().size();
-        }
     }
 }

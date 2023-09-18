@@ -562,7 +562,7 @@ public class Arena
             this.scores.updateScores(true);
         }
 
-        if (this.hasEnoughPlayers() && this.status.equals(ArenaStatus.LOBBY))
+        if (this.hasEnoughPlayers() && this.status.equals(ArenaStatus.WAITING))
         {
             Lobby.doStartingPhase(this);
         }
@@ -839,7 +839,7 @@ public class Arena
 
         this.itemType = ItemType.NORMAL;
         this.healthType = HealthType.NORMAL;
-        this.status = enterSetup ? ArenaStatus.SETTING : ArenaStatus.LOBBY;
+        this.status = enterSetup ? ArenaStatus.SETTING : ArenaStatus.WAITING;
         this.updateInvs();
 
         for (ArenaSign ewsign : EggWars.signs)
@@ -1321,7 +1321,7 @@ public class Arena
         {
             return false;
         }
-        else if (this.status == ArenaStatus.LOBBY || this.status == ArenaStatus.STARTING || this.status == ArenaStatus.STARTING_GAME)
+        else if (this.status == ArenaStatus.WAITING || this.status == ArenaStatus.STARTING || this.status == ArenaStatus.STARTING_GAME)
         {
             this.itemsVotes.put(ewplayer, itemtype);
             return true;
@@ -1353,7 +1353,7 @@ public class Arena
         {
             return false;
         }
-        else if (this.status == ArenaStatus.LOBBY || this.status == ArenaStatus.STARTING || this.status == ArenaStatus.STARTING_GAME)
+        else if (this.status == ArenaStatus.WAITING || this.status == ArenaStatus.STARTING || this.status == ArenaStatus.STARTING_GAME)
         {
             this.healthVotes.put(ewplayer, healthtype);
             return true;

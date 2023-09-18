@@ -24,7 +24,7 @@ public class PlayerMoveListener implements Listener
 
         if (ewplayer.isInArena() && !ewplayer.isJoining() && !ewplayer.isEliminated())
         {
-            if ((ewplayer.getArena().getStatus().equals(ArenaStatus.LOBBY) || ewplayer.getArena().getStatus().equals(ArenaStatus.STARTING)) && ewplayer.getPlayer().getLocation().getY() < (ewplayer.getArena().getLobby().getY() < 0.0 ? -65.0 : 1.0))
+            if ((ewplayer.getArena().getStatus().equals(ArenaStatus.WAITING) || ewplayer.getArena().getStatus().equals(ArenaStatus.STARTING)) && ewplayer.getPlayer().getLocation().getY() < (ewplayer.getArena().getLobby().getY() < 0.0 ? -65.0 : 1.0))
             {
                 ewplayer.getPlayer().setFallDistance(0.0f);
                 ewplayer.getPlayer().teleport(ewplayer.getArena().getLobby());

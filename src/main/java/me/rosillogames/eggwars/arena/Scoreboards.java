@@ -40,7 +40,7 @@ public class Scoreboards
     {
         switch (this.arena.getStatus())
         {
-            case LOBBY:
+            case WAITING:
             case STARTING:
                 this.setLobbyScore(ewplayer);
                 break;

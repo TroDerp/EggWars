@@ -24,7 +24,7 @@ public class PlayerJoinListener implements Listener
 
         Arena arena = EggWars.bungee.getArena();
 
-        if (arena.getStatus().equals(ArenaStatus.LOBBY) || arena.getStatus().equals(ArenaStatus.STARTING))
+        if (arena.getStatus().equals(ArenaStatus.WAITING) || arena.getStatus().equals(ArenaStatus.STARTING))
         {
             if (arena.isFull())
             {

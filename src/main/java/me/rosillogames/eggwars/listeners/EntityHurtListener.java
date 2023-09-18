@@ -21,7 +21,7 @@ import me.rosillogames.eggwars.utils.PlayerUtils;
 public class EntityHurtListener implements Listener
 {
     @EventHandler
-    public void cancelHurtOutsideGame(EntityDamageEvent dmgEvent)
+    public void cancelIllegalDamage(EntityDamageEvent dmgEvent)
     {
         if (!(dmgEvent.getEntity() instanceof Player))
         {
@@ -43,7 +43,14 @@ public class EntityHurtListener implements Listener
                 return;
             }
 
+            //Cancel all damage except for void when invincible
             if (ewplayer.isInvincible() && dmgEvent.getCause() != EntityDamageEvent.DamageCause.VOID)
+            {
+                dmgEvent.setCancelled(true);
+                return;
+            }
+
+            if (dmgEvent.getCause() == EntityDamageEvent.DamageCause.STARVATION && !EggWars.instance.getConfig().getBoolean("game.player.allow_starving"))
             {
                 dmgEvent.setCancelled(true);
                 return;

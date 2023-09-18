@@ -55,8 +55,11 @@ public class Config
         EggWars.instance.reloadConfig();
         FileConfiguration fileConf = EggWars.instance.getConfig();
         boolean converted = false;
+        boolean converted2 = false;
+        boolean converted3 = false;
+        boolean converted4 = false;
 
-        //TODO: remove this in next version
+        //TODO: remove these in next version
         if (fileConf.isConfigurationSection("gameplay"))
         {
             ConfigurationSection cs = fileConf.getConfigurationSection("gameplay");
@@ -67,6 +70,24 @@ public class Config
             convertOldToNewKey(fileConf, "game.invincible_time", "game.player.invincible_time");
             convertOldToNewKey(fileConf, "game.move_tnt_on_ignition", "game.tnt.move_when_ignited");
             converted = true;
+        }
+
+        if (fileConf.contains("lobby.sign_status.lobby"))
+        {
+            convertOldToNewKey(fileConf, "lobby.sign_status.lobby", "lobby.sign_status.waiting");
+            converted2 = true;
+        }
+
+        if (fileConf.contains("lobby.sign_status.ingame"))
+        {
+            convertOldToNewKey(fileConf, "lobby.sign_status.ingame", "lobby.sign_status.in_game");
+            converted3 = true;
+        }
+
+        if (fileConf.contains("lobby.sign_status.finished"))
+        {
+            convertOldToNewKey(fileConf, "lobby.sign_status.finished", "lobby.sign_status.finishing");
+            converted4 = true;
         }
 
         fileConf.options().header("###########################################\n#               - EggWars -               #\n#         - By gaelitoelquesito -         #\n#      - Remastered by RosilloGames -     #\n###########################################\n");
@@ -100,9 +121,10 @@ public class Config
         {
             fileConf.addDefault("game.player.keep_inventory", false);
             fileConf.addDefault("game.player.respawn_delay", 4);
-            fileConf.addDefault("game.player.invincible_time", 10);;
+            fileConf.addDefault("game.player.invincible_time", 10);
         }
 
+        fileConf.addDefault("game.player.allow_starving", false);
         fileConf.addDefault("game.tnt.auto_ignite", true);
 
         if (!converted)
@@ -159,11 +181,26 @@ public class Config
 
         fileConf.addDefault("lobby.location", "null");
         fileConf.addDefault("lobby.sign_status.active", true);
-        fileConf.addDefault("lobby.sign_status.lobby", "{\"Name\":\"minecraft:lime_stained_glass\"}");
+
+        if (!converted2)
+        {
+            fileConf.addDefault("lobby.sign_status.waiting", "{\"Name\":\"minecraft:lime_stained_glass\"}");
+        }
+
         fileConf.addDefault("lobby.sign_status.starting", "{\"Name\":\"minecraft:yellow_stained_glass\"}");
-        fileConf.addDefault("lobby.sign_status.ingame", "{\"Name\":\"minecraft:red_stained_glass\"}");
-        fileConf.addDefault("lobby.sign_status.finished", "{\"Name\":\"minecraft:magenta_stained_glass\"}");
+
+        if (!converted3)
+        {
+
+            fileConf.addDefault("lobby.sign_status.in_game", "{\"Name\":\"minecraft:red_stained_glass\"}");
+        }
+
         fileConf.addDefault("lobby.sign_status.setting", "{\"Name\":\"minecraft:cyan_stained_glass\"}");
+
+        if (!converted4)
+        {
+            fileConf.addDefault("lobby.sign_status.finishing", "{\"Name\":\"minecraft:magenta_stained_glass\"}");
+        }
 
         fileConf.addDefault("inventory.generator_upgrading", "{\"id\":\"minecraft:experience_bottle\"}");
         fileConf.addDefault("inventory.kit_selection.item", "{\"id\":\"minecraft:paper\"}");

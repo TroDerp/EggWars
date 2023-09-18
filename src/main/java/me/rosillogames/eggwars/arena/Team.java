@@ -18,6 +18,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
+import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
@@ -191,6 +192,24 @@ public class Team
     public Inventory getEnderChest()
     {
         return this.teamChest;
+    }
+
+    public boolean canJoin()
+    {
+        if (this.players.size() >= this.arena.getMaxTeamPlayers())
+        {
+            return false;
+        }
+
+        if (!EggWars.config.balanceTeams)
+        {
+            return true;
+        }
+        else
+        {
+            int i = (int)Math.floor(this.arena.getPlayers().size() / this.arena.getTeams().size());
+            return this.players.size() <= i && this.arena.getMaxTeamPlayers() > this.players.size();
+        }
     }
 
     public boolean canRespawn()
@@ -375,9 +394,9 @@ public class Team
 
     public void broadcastEliminated()
     {
-        for (EwPlayer ewplayer1 : this.arena.getPlayers())
+        for (EwPlayer ewpl : this.arena.getPlayers())
         {
-            Player pl = ewplayer1.getPlayer();
+            Player pl = ewpl.getPlayer();
             TranslationUtils.sendMessage("gameplay.ingame.team_eliminated", pl, TeamUtils.translateTeamType(this.type, pl, false));
             pl.playSound(pl.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 0.0F);
         }

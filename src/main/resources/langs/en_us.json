@@ -157,7 +157,7 @@
   "voting.health.triple.item_name": "&aTriple",
   "voting.health.triple.item_lore": "&7Triple health (30 hearts)\n\n&7{0}",
   "status.setting": "&3Setting",
-  "status.lobby": "&2Waiting",
+  "status.waiting": "&2Waiting",
   "status.starting": "&6Starting",
   "status.starting_game": "&6Starting Game",
   "status.in_game": "&4In-game",

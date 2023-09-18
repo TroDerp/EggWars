@@ -42,7 +42,7 @@ public class TempGameData
         this.xpLevel = playerIn.getLevel();
         this.allowFlight = playerIn.getAllowFlight();
         this.flying = playerIn.isFlying();
-        this.compassTarget = playerIn.getCompassTarget();//for some reason compass target can be null
+        this.compassTarget = playerIn.getCompassTarget();
         this.customName = playerIn.getDisplayName();
     }
 
@@ -63,7 +63,7 @@ public class TempGameData
         this.player.setAllowFlight(this.allowFlight);
         this.player.setFlying(this.flying);
 
-        if (this.compassTarget != null)
+        if (this.compassTarget != null)//for some reason compass target CAN be null
         {
             this.player.setCompassTarget(this.compassTarget);
         }

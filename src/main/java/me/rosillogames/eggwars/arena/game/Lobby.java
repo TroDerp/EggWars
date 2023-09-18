@@ -45,7 +45,7 @@ public class Lobby
                     }
 
                     arenaIn.sendBroadcast("gameplay.lobby.not_enough_players");
-                    arenaIn.setStatus(ArenaStatus.LOBBY);
+                    arenaIn.setStatus(ArenaStatus.WAITING);
                     this.cancel();
                     return;
                 }
