@@ -24,7 +24,6 @@ import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.HealthType;
 import me.rosillogames.eggwars.enums.ItemType;
 import me.rosillogames.eggwars.enums.MenuType;
-import me.rosillogames.eggwars.language.Language;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.loaders.KitLoader;
 import me.rosillogames.eggwars.objects.Kit;
@@ -187,7 +186,7 @@ public class InventoryListener implements Listener
         }
 
         if (clickEvent.getRawSlot() > (clickEvent.getInventory().getSize() - 1))
-        {//this controls whether if shif click is invalid in the current slot (inside villager container)
+        {//this controls whether if shift click is invalid in the current slot (inside villager container)
             if (clickEvent.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY)
             {
                 clickEvent.setCancelled(true);
@@ -607,11 +606,11 @@ public class InventoryListener implements Listener
         }
 
         int page = ((Integer)ewplayer.getInv().getExtraData()).intValue();
-        Language lang;
+        String langId;
 
-        if ((lang = ewplayer.getMenu().getLang(page, clickEvent.getRawSlot())) != null)
+        if ((langId = ewplayer.getMenu().getLangId(page, clickEvent.getRawSlot())) != null)
         {
-            ewplayer.setLanguage(lang);
+            ewplayer.setLangId(langId);
             ewplayer.getMenu().openLanguageInv(page);
             return;
         }

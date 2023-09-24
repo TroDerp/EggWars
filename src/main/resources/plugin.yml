@@ -58,6 +58,9 @@ permissions:
     eggwars.command.forcestart:
         description: Gives access to the "/ew forcestart" command.
         default: op
+    eggwars.command.lang:
+        description: Gives access to the "/ew lang" command.
+        default: true
     eggwars.command.menu:
         description: Gives access to the "/ew menu" command.
         default: true

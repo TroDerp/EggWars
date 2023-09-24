@@ -93,10 +93,7 @@ public class Reflections_1_19 implements Reflections
             HelpObject<ItemStack> helpstack = new HelpObject<ItemStack>();
             Class cCraftItemStack = this.getOBCClass("inventory.CraftItemStack");
             helpstack.object = new ItemStack(Material.AIR);
-            result.resultOrPartial((s) ->
-            {
-                EggWars.instance.getLogger().log(Level.WARNING, s);
-            }).ifPresent((legacystack) ->
+            result.resultOrPartial(s -> EggWars.instance.getLogger().log(Level.WARNING, s)).ifPresent((legacystack) ->
             {
                 try
                 {

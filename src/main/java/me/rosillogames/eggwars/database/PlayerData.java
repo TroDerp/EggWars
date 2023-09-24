@@ -36,7 +36,7 @@ public class PlayerData
         }
 
         this.points = 0;
-        this.locale = "";
+        this.locale = "default";
         this.currentKit = "";
         this.classicShop = false;
     }

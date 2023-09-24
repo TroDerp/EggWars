@@ -12,7 +12,7 @@ public class TranslationUtils
     /** WARNING! use full option only when we are sure it's going to fit at the message **/
     public static String translateTime(Player player, int seconds, boolean full)
     {
-        return translateTime(LanguageUtils.getPlayerLanguage(player), seconds, full);
+        return translateTime(LanguageManager.getPlayerLanguage(player), seconds, full);
     }
 
     public static String translateTime(Language lang, int seconds, boolean full)
@@ -100,13 +100,13 @@ public class TranslationUtils
 
     public static void sendMessagePrefix(String msg, CommandSender sender, boolean prefix, Object... args)
     {
-        Language lang = (sender != null && sender instanceof Player) ? LanguageUtils.getPlayerLanguage((Player)sender) : LanguageManager.getDefaultLanguage();
+        Language lang = (sender != null && sender instanceof Player) ? LanguageManager.getPlayerLanguage((Player)sender) : LanguageManager.getDefaultLanguage();
         sender.sendMessage(lang != null ? MessageFactory.factGetMessages(lang.getOrDefault(msg), prefix, args) : new String[] {msg});
     }
 
     public static boolean hasMessage(String msg, Player player)
     {
-        return (player != null ? LanguageUtils.getPlayerLanguage(player) : LanguageManager.getDefaultLanguage()).has(msg);
+        return (player != null ? LanguageManager.getPlayerLanguage(player) : LanguageManager.getDefaultLanguage()).has(msg);
     }
 
     public static String getMessage(String msg)
@@ -121,12 +121,12 @@ public class TranslationUtils
 
     public static String getMessage(String msg, Player player)
     {
-        return getMessage(msg, (player != null ? LanguageUtils.getPlayerLanguage(player) : LanguageManager.getDefaultLanguage()));
+        return getMessage(msg, (player != null ? LanguageManager.getPlayerLanguage(player) : LanguageManager.getDefaultLanguage()));
     }
 
     public static String getMessage(String msg, Player player, Object... args)
     {
-        return getMessage(msg, (player != null ? LanguageUtils.getPlayerLanguage(player) : LanguageManager.getDefaultLanguage()), args);
+        return getMessage(msg, (player != null ? LanguageManager.getPlayerLanguage(player) : LanguageManager.getDefaultLanguage()), args);
     }
 
     public static String getMessage(String msg, Language lang, Object... args)

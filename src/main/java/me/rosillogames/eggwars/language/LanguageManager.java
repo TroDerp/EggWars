@@ -10,12 +10,14 @@ import java.util.Random;
 import java.util.logging.Level;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import com.google.gson.JsonParseException;
 import me.rosillogames.eggwars.EggWars;
 
 public class LanguageManager
 {
+    public static final String DEFAULT_NAME = "default";
     private final Map<String, Language> languages = new HashMap();
     private final Map<DamageCause, List<String>> deathMessages = new EnumMap(DamageCause.class);
     private Language defaultLanguage = null;
@@ -64,9 +66,9 @@ public class LanguageManager
                 {
                     String locale = file.getName().replaceFirst(".json", "");
 
-                    if (locale.equals("default"))
+                    if (locale.equals(DEFAULT_NAME))
                     {
-                        EggWars.instance.getLogger().log(Level.WARNING, "A language cannot be called \"default\"; skipping");
+                        EggWars.instance.getLogger().log(Level.WARNING, "A language cannot be called \"" + DEFAULT_NAME + "\"; skipping");
                         continue;
                     }
 
@@ -91,7 +93,7 @@ public class LanguageManager
         if (!this.languages.isEmpty())
         {
             //do NOT add "default" language to lang map to avoid further issues with player loading
-            this.defaultLanguage = new Language("default", this.languages.getOrDefault(defLocale, this.languages.values().iterator().next()));
+            this.defaultLanguage = new Language(DEFAULT_NAME, this.languages.getOrDefault(defLocale, this.languages.values().iterator().next()));
         }
     }
 
@@ -105,11 +107,6 @@ public class LanguageManager
         return this.languages.getOrDefault(locale, getDefaultLanguage());
     }
 
-    public static Language getDefaultLanguage()
-    {
-        return EggWars.languageManager().defaultLanguage;
-    }
-
     public String getDeathMsgKey(DamageCause cause)
     {
         List<String> list = this.deathMessages.get(cause);
@@ -120,5 +117,27 @@ public class LanguageManager
         }
 
         return cause.name().toLowerCase();
+    }
+
+    public static Language getDefaultLanguage()
+    {
+        return EggWars.languageManager().defaultLanguage;
+    }
+
+    public static Language getPlayerLanguage(Player player)
+    {
+        String locale = EggWars.getDB().getPlayerData(player).getLocale();
+
+        if (locale.equals(LanguageManager.DEFAULT_NAME))
+        {
+            if (EggWars.languageManager().ignoreClientLanguage)
+            {
+                return LanguageManager.getDefaultLanguage();
+            }
+
+            locale = player.getLocale();
+        }
+
+        return EggWars.languageManager().getLanguageOrDefault(locale);
     }
 }

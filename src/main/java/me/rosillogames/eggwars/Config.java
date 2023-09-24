@@ -191,7 +191,6 @@ public class Config
 
         if (!converted3)
         {
-
             fileConf.addDefault("lobby.sign_status.in_game", "{\"Name\":\"minecraft:red_stained_glass\"}");
         }
 
@@ -208,7 +207,7 @@ public class Config
         fileConf.addDefault("inventory.kit_selection.slot_in_cage", 0);
         fileConf.addDefault("inventory.team_selection.item", "{\"id\":\"minecraft:nether_star\"}");
         fileConf.addDefault("inventory.team_selection.slot", 0);
-        fileConf.addDefault("inventory.leave.item", "{\"id\":\"minecraft:red_bed\"}");
+        fileConf.addDefault("inventory.leave.item", "{\"id\":\"minecraft:red_dye\"}");
         fileConf.addDefault("inventory.leave.slot", 8);
         fileConf.addDefault("inventory.voting.item", "{\"id\":\"minecraft:end_crystal\"}");
         fileConf.addDefault("inventory.voting.slot", 2);

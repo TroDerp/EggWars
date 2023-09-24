@@ -72,6 +72,7 @@ import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.Colorizer;
 import me.rosillogames.eggwars.utils.ConfigAccessor;
 import me.rosillogames.eggwars.utils.GsonHelper;
+import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.LobbySigns;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
@@ -86,9 +87,6 @@ public class EggWars extends JavaPlugin
     public static Set<ArenaSign> signs;
     public static Config config = new Config();
     public static Versions serverVersion;
-    public static NamespacedKey genType;
-    public static NamespacedKey genLevel;
-    public static NamespacedKey openMenu;
     private ArenaLoader arenaLoader;
     private KitLoader kitLoader;
     private TokenLoader tokenLoader;
@@ -188,9 +186,9 @@ public class EggWars extends JavaPlugin
 
     private void loadNamespaces()
     {
-        genType = new NamespacedKey(this, "GEN_TYPE");
-        genLevel = new NamespacedKey(this, "GEN_LEVEL");
-        openMenu = new NamespacedKey(this, "OPEN_MENU");
+        ItemUtils.genType = new NamespacedKey(this, "GEN_TYPE");
+        ItemUtils.genLevel = new NamespacedKey(this, "GEN_LEVEL");
+        ItemUtils.openMenu = new NamespacedKey(this, "OPEN_MENU");
     }
 
     private void loadLists()

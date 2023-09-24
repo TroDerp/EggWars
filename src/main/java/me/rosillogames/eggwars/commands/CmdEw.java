@@ -17,6 +17,8 @@ import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.ReloadType;
 import me.rosillogames.eggwars.events.EwPluginReloadEvent;
+import me.rosillogames.eggwars.language.Language;
+import me.rosillogames.eggwars.language.LanguageManager;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.PlayerUtils;
@@ -30,6 +32,7 @@ public class CmdEw implements TabExecutor
         this.mainArgs.put("forceStart", new ForceStart());
         this.mainArgs.put("help", new Help());
         this.mainArgs.put("join", new Join());
+        this.mainArgs.put("lang", new Lang());
         this.mainArgs.put("lobby", new Lobby());
         this.mainArgs.put("menu", new Menu());
         this.mainArgs.put("randomJoin", new RandomJoin());
@@ -186,9 +189,9 @@ public class CmdEw implements TabExecutor
         }
 
         @Override
-        public boolean execute(CommandSender commandSender, String[] args)
+        public boolean execute(CommandSender sender, String[] args)
         {
-            TranslationUtils.sendMessage("commands.ew.help", commandSender);
+            TranslationUtils.sendMessage("commands.ew.help", sender);
             return true;
         }
 
@@ -215,9 +218,9 @@ public class CmdEw implements TabExecutor
                 return false;
             }
 
-            Player player = (Player)sender;
+            EwPlayer player = PlayerUtils.getEwPlayer((Player)sender);
 
-            if (PlayerUtils.getEwPlayer(player).isInArena())
+            if (player.isInArena())
             {
                 TranslationUtils.sendMessage("commands.error.in_arena", sender);
                 return false;
@@ -232,13 +235,13 @@ public class CmdEw implements TabExecutor
 
             if (!arena.isSetup())
             {
-                TranslationUtils.sendMessage("commands.error.arena_not_set_up", player, arena.getName());
+                TranslationUtils.sendMessage("commands.error.arena_not_set_up", sender, arena.getName());
                 return false;
             }
 
             if (arena.getStatus().equals(ArenaStatus.SETTING))
             {
-                TranslationUtils.sendMessage("commands.error.arena_in_edit_mode", player);
+                TranslationUtils.sendMessage("commands.error.arena_in_edit_mode", sender);
                 return false;
             }
 
@@ -246,22 +249,22 @@ public class CmdEw implements TabExecutor
             {
                 if (arena.isFull())
                 {
-                    TranslationUtils.sendMessage("gameplay.lobby.cant_join.full", player.getPlayer());
+                    TranslationUtils.sendMessage("gameplay.lobby.cant_join.full", sender);
                     return false;
                 }
                 else
                 {
-                    arena.joinArena(PlayerUtils.getEwPlayer(player), false, false);
+                    arena.joinArena(player, false, false);
                     return true;
                 }
             }
             else if (arena.getStatus().equals(ArenaStatus.FINISHING) || !EggWars.config.canSpectJoin)
             {
-                TranslationUtils.sendMessage("gameplay.lobby.cant_join.ingame", player.getPlayer());
+                TranslationUtils.sendMessage("gameplay.lobby.cant_join.ingame", sender);
                 return false;
             }
 
-            arena.joinArena(PlayerUtils.getEwPlayer(player), true, true);
+            arena.joinArena(player, true, true);
             return true;
         }
 
@@ -292,6 +295,81 @@ public class CmdEw implements TabExecutor
         }
     }
 
+    public static class Lang extends CommandArg
+    {
+        public Lang()
+        {
+            super(true);
+        }
+
+        @Override
+        public boolean execute(CommandSender sender, String[] args)
+        {
+            if (args.length <= 1)
+            {
+                TranslationUtils.sendMessage("commands.lang.usage", sender);
+                return false;
+            }
+
+            EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)sender);
+            Language lang = EggWars.languageManager().getLanguages().get(args[1]);
+
+            if (args[1].equals(LanguageManager.DEFAULT_NAME))
+            {
+                lang = LanguageManager.getDefaultLanguage();
+            }
+
+            if (lang == null)
+            {
+                TranslationUtils.sendMessage("commands.lang.failed.invalid", sender);
+                return false;
+            }
+
+            String prevLang = ewplayer.getLangId();
+            String newLang = lang.getLocale();
+
+            if (prevLang.equals(newLang))
+            {
+                TranslationUtils.sendMessage("commands.lang.failed.no_change", sender);
+                return false;
+            }
+
+            ewplayer.setLangId(newLang);
+            TranslationUtils.sendMessage("commands.lang.success", sender, prevLang, newLang);
+            return true;
+        }
+
+        @Override
+        public List<String> getCompleteArgs(CommandSender commandSender, String[] args)
+        {
+            List<String> list = new ArrayList<>();
+
+            if (args.length == 2)
+            {
+                for (String s : EggWars.languageManager().getLanguages().keySet())
+                {
+                    if (s.toLowerCase().startsWith(args[1].toLowerCase()))
+                    {
+                        list.add(s);
+                    }
+                }
+
+                if (LanguageManager.DEFAULT_NAME.toLowerCase().startsWith(args[1].toLowerCase()))
+                {
+                    list.add(LanguageManager.DEFAULT_NAME);
+                }
+            }
+
+            return list;
+        }
+
+        @Override
+        public String getPermission()
+        {
+            return "eggwars.command.lang";
+        }
+    }
+
     public static class Lobby extends CommandArg
     {
         public Lobby()
@@ -300,9 +378,9 @@ public class CmdEw implements TabExecutor
         }
 
         @Override
-        public boolean execute(CommandSender commandSender, String[] args)
+        public boolean execute(CommandSender sender, String[] args)
         {
-            EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)commandSender);
+            EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)sender);
 
             if (ewplayer.isInArena())
             {
@@ -337,14 +415,14 @@ public class CmdEw implements TabExecutor
         }
 
         @Override
-        public boolean execute(CommandSender commandSender, String[] args)
+        public boolean execute(CommandSender sender, String[] args)
         {
-            Player player = (Player)commandSender;
+            Player player = (Player)sender;
             EwPlayer ewplayer = PlayerUtils.getEwPlayer(player);
 
             if (ewplayer.isInArena())
             {
-                TranslationUtils.sendMessage("commands.error.in_arena", commandSender);
+                TranslationUtils.sendMessage("commands.error.in_arena", sender);
                 return false;
             }
 
@@ -368,11 +446,11 @@ public class CmdEw implements TabExecutor
     public static class RandomJoin extends Join //same join permission
     {
         @Override
-        public boolean execute(CommandSender commandSender, String[] args)
+        public boolean execute(CommandSender sender, String[] args)
         {
-            if (PlayerUtils.getEwPlayer((Player)commandSender).isInArena())
+            if (PlayerUtils.getEwPlayer((Player)sender).isInArena())
             {
-                TranslationUtils.sendMessage("commands.error.in_arena", commandSender);
+                TranslationUtils.sendMessage("commands.error.in_arena", sender);
                 return false;
             }
 
@@ -390,7 +468,7 @@ public class CmdEw implements TabExecutor
 
             if (list.isEmpty())
             {
-                TranslationUtils.sendMessage("commands.error.no_arenas", commandSender);
+                TranslationUtils.sendMessage("commands.error.no_arenas", sender);
                 return false;
             }
 
@@ -398,17 +476,17 @@ public class CmdEw implements TabExecutor
             {
                 if (!randomarena.isFull() && (randomarena.getStatus().equals(ArenaStatus.WAITING) || randomarena.getStatus().equals(ArenaStatus.STARTING)))
                 {
-                    randomarena.joinArena(PlayerUtils.getEwPlayer((Player)commandSender), false, false);
+                    randomarena.joinArena(PlayerUtils.getEwPlayer((Player)sender), false, false);
                     return true;
                 }
                 else if (randomarena.getStatus().equals(ArenaStatus.IN_GAME) && EggWars.config.canSpectJoin)
                 {
-                    randomarena.joinArena(PlayerUtils.getEwPlayer((Player)commandSender), true, true);
+                    randomarena.joinArena(PlayerUtils.getEwPlayer((Player)sender), true, true);
                     return true;
                 }
             }
 
-            TranslationUtils.sendMessage("commands.error.no_arenas", commandSender);
+            TranslationUtils.sendMessage("commands.error.no_arenas", sender);
             return false;
         }
 

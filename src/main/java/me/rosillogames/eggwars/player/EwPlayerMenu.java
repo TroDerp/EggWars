@@ -25,7 +25,7 @@ public class EwPlayerMenu
     private TranslatableInventory statsInv;
     private TranslatableInventory settingsInv;
     private final List<TranslatableInventory> langInvs = new ArrayList<TranslatableInventory>();
-    private final List<Map<Integer, Language>> langsPerPage = new ArrayList<Map<Integer, Language>>();
+    private final List<Map<Integer, String>> langsPerPage = new ArrayList<Map<Integer, String>>();
     private final EwPlayer player;
 
     public EwPlayerMenu(EwPlayer playerIn)
@@ -128,7 +128,7 @@ public class EwPlayerMenu
         {
             MenuSize menusize = (MenuSize)sizes.get(pages);
             TranslatableInventory translatableinv = new TranslatableInventory(menusize.getSlots(), "menu.languages.title");
-            Map<Integer, Language> pageLangs = new HashMap();
+            Map<Integer, String> pageLangs = new HashMap();
             expected += menusize.getFilledSlots();
 
             for (int i = 0; i < menusize.getFilledSlots() && counter < languages.size() && counter <= expected; ++i, ++counter)
@@ -136,7 +136,7 @@ public class EwPlayerMenu
                 int slot = (9 * ((i / 7) + 1)) + ((i % 7) + 1);
                 Language language = languages.get(counter);
                 translatableinv.setItem(slot, this.getLanguageItem(language));
-                pageLangs.put(slot, language);
+                pageLangs.put(slot, language.getLocale());
             }
 
             if (pages < sizes.size() - 1)
@@ -156,15 +156,14 @@ public class EwPlayerMenu
     }
 
     @Nullable
-    public Language getLang(int page, int slot)
+    public String getLangId(int page, int slot)
     {
         return this.langsPerPage.get(page).get(slot);
     }
 
     public TranslatableItem getLanguageItem(Language language)
     {
-        String currentlocale = EggWars.getDB().getPlayerData(this.player.getPlayer()).getLocale();
-        ItemStack stack = ItemUtils.hideStackAttributes(new ItemStack(currentlocale.equals(language.getLocale()) ? Material.WRITTEN_BOOK : Material.WRITABLE_BOOK));
+        ItemStack stack = ItemUtils.hideStackAttributes(new ItemStack(this.player.getLangId().equals(language.getLocale()) ? Material.WRITTEN_BOOK : Material.WRITABLE_BOOK));
 
         if (language.equals(LanguageManager.getDefaultLanguage()))
         {

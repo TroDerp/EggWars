@@ -2,6 +2,7 @@ package me.rosillogames.eggwars.enums;
 
 public enum MenuType
 {
+    LEAVE_ARENA("leave_arena"),//TODO: remove this one when item identifiers are added
     TEAM_SELECTION("team_selection"),
     VOTING("voting"),
     ITEM_VOTING("item_voting"),

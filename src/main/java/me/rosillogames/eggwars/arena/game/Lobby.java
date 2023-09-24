@@ -139,7 +139,7 @@ public class Lobby
     }
 
     public static void onEnter(Arena arenaIn, EwPlayer ewplayer)
-    {
+    {//TODO: Add a way to auto-update these item's when config or lang is changed
         if (arenaIn.skipSoloLobby())
         {
             for (Team team : arenaIn.getTeams().values())

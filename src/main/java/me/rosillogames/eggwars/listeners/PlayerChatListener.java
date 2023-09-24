@@ -18,6 +18,19 @@ import me.rosillogames.eggwars.utils.reflection.HelpObject;
 
 public class PlayerChatListener implements Listener
 {
+    /*@EventHandler //Cannot be done because Spigot applies the new locale AFTER the event, so the setLangId hack won't work.
+    public void onClientChangeLang(PlayerLocaleChangeEvent event)
+    {
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
+
+        //Don't check if we have to ignore client language, because if it is switched off, there
+        //would be no way of detecting if players have changed their client language before.
+        if (ewplayer.getLangId().equals(LanguageManager.DEFAULT_NAME))
+        {
+            ewplayer.setLangId(ewplayer.getLangId());//Hack to create a playerChangeLang event
+        }
+    }*/
+
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
     public void chat(AsyncPlayerChatEvent event)
     {

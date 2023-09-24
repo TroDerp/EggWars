@@ -13,8 +13,6 @@ import me.rosillogames.eggwars.enums.Mode;
 import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.events.EwPlayerChangeLangEvent;
-import me.rosillogames.eggwars.language.Language;
-import me.rosillogames.eggwars.language.LanguageManager;
 import me.rosillogames.eggwars.objects.Cooldown;
 import me.rosillogames.eggwars.objects.Kit;
 import me.rosillogames.eggwars.player.inventory.EwInventory;
@@ -68,8 +66,6 @@ public class EwPlayer
         {
             ex.printStackTrace();
         }
-
-        this.setLanguage(this.getLanguage());//this is to detect language for new players
     }
 
     public void setArena(Arena arena)
@@ -290,21 +286,14 @@ public class EwPlayer
         this.trackedPlayer = player;
     }
 
-    public Language getLanguage()
+    public String getLangId()
     {
-        String locale = EggWars.getDB().getPlayerData(this.player).getLocale();
-
-        if (locale.isEmpty() || locale.equals("default"))
-        {
-            return EggWars.languageManager().ignoreClientLanguage ? LanguageManager.getDefaultLanguage() : EggWars.languageManager().getLanguageOrDefault(this.player.getLocale());
-        }
-
-        return EggWars.languageManager().getLanguageOrDefault(locale);
+        return EggWars.getDB().getPlayerData(this.player).getLocale();
     }
 
-    public void setLanguage(Language language)
+    public void setLangId(String langCode)
     {
-        EggWars.getDB().getPlayerData(this.player).setLocale(language.getLocale());
+        EggWars.getDB().getPlayerData(this.player).setLocale(langCode);
 
         try
         {

@@ -328,8 +328,8 @@ public class SetupGUI
                 int slot = (9 * ((counter / 7) + 1)) + ((counter % 7) + 1);
                 ItemStack itemstack = new ItemStack(type.droppedToken().getMaterial(), 1);
                 ItemMeta meta = itemstack.getItemMeta();
-                meta.getPersistentDataContainer().set(EggWars.genType, PersistentDataType.STRING, type.getId());
-                meta.getPersistentDataContainer().set(EggWars.genLevel, PersistentDataType.INTEGER, i);
+                meta.getPersistentDataContainer().set(ItemUtils.genType, PersistentDataType.STRING, type.getId());
+                meta.getPersistentDataContainer().set(ItemUtils.genLevel, PersistentDataType.INTEGER, i);
                 itemstack.setItemMeta(meta);
                 final int fnl = i;
                 TranslatableItem tItem = new TranslatableItem(itemstack);
@@ -656,8 +656,8 @@ public class SetupGUI
             try
             {
                 ItemMeta meta = itemstack.getItemMeta();
-                type = meta.getPersistentDataContainer().get(EggWars.genType, PersistentDataType.STRING);
-                level = meta.getPersistentDataContainer().get(EggWars.genLevel, PersistentDataType.INTEGER);
+                type = meta.getPersistentDataContainer().get(ItemUtils.genType, PersistentDataType.STRING);
+                level = meta.getPersistentDataContainer().get(ItemUtils.genLevel, PersistentDataType.INTEGER);
             }
             catch (Exception ex)
             {

@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -22,6 +23,10 @@ import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class ItemUtils
 {
+    public static NamespacedKey genType;
+    public static NamespacedKey genLevel;
+    public static NamespacedKey openMenu;
+
     public static int countItems(Player player, Material material)
     {
         org.bukkit.inventory.PlayerInventory inv = player.getInventory();
@@ -249,7 +254,7 @@ public class ItemUtils
     public static void setOpensMenu(ItemStack stack, MenuType menu)
     {
         ItemMeta meta = stack.getItemMeta();
-        meta.getPersistentDataContainer().set(EggWars.openMenu, PersistentDataType.STRING, menu.name());
+        meta.getPersistentDataContainer().set(openMenu, PersistentDataType.STRING, menu.name());
         stack.setItemMeta(meta);
     }
 
@@ -258,7 +263,7 @@ public class ItemUtils
         try
         {
             ItemMeta meta = stack.getItemMeta();
-            return MenuType.valueOf(meta.getPersistentDataContainer().get(EggWars.openMenu, PersistentDataType.STRING));
+            return MenuType.valueOf(meta.getPersistentDataContainer().get(openMenu, PersistentDataType.STRING));
         }
         catch (Exception ex)
         {

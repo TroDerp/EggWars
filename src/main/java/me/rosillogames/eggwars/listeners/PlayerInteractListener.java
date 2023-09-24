@@ -17,7 +17,6 @@ import me.rosillogames.eggwars.arena.SetupGUI;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
-import me.rosillogames.eggwars.loaders.ArenaLoader;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.PlayerUtils;
@@ -191,7 +190,7 @@ public class PlayerInteractListener implements Listener
 
         ItemStack itemstack = event.getPlayer().getInventory().getItemInMainHand();
 
-        if (itemstack.equals(ArenaLoader.getLeaveItem(event.getPlayer())))
+        if (ItemUtils.getOpensMenu(itemstack) == MenuType.LEAVE_ARENA)
         {
             event.setCancelled(true);
             ewplayer.getArena().leaveArena(ewplayer, true, false);
