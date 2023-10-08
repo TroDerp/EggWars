@@ -380,7 +380,7 @@
   "menu.kits.kit_lore.full": "&7{0}\n{1}\n\n&5Contenido:{2}\n{3}",
   "menu.kits.kit_lore.desc": "&7{0}\n",
   "menu.kits.kit_lore.price": "&5Precio: {0} puntos",
-  "menu.kits.kit_lore.unlocked": "&5Desbloqueado &ahace {0}",
+  "menu.kits.kit_lore.unlocked": "&5Desbloqueado: &aHace {0}",
   "menu.kits.kit_lore.content": "\n&7- &b{0} &3x &b{1} {2}",
   "menu.kits.kit_lore.enchanted": "&7(Encantado)",
   "menu.kits.kit_lore.select": "\n&6Haz clic para seleccionar este kit.",

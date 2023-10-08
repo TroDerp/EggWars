@@ -10,14 +10,12 @@ import java.util.UUID;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -106,22 +104,6 @@ public class Reflections_1_16 implements Reflections
         {
             exception.printStackTrace();
         }
-    }
-
-    @Override
-    public <T extends Entity> T createEntity(World world, Location location, Class<? extends Entity> clazz, T fallback)
-    {
-        try
-        {
-            Object obj = world.getClass().getMethod("createEntity", Location.class, Class.class).invoke(world, location, clazz);
-            fallback = (T)obj.getClass().getMethod("getBukkitEntity").invoke(obj);
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
-        }
-
-        return fallback;
     }
 
     @Override

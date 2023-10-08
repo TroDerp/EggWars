@@ -20,6 +20,21 @@ public class ReflectionUtils
 {
     private static Reflections currentReflections;
 
+    public static <T extends Entity> T createEntity(World world, Location location, Class<? extends Entity> clazz, T fallback)
+    {
+        try
+        {
+            Object obj = world.getClass().getMethod("createEntity", Location.class, Class.class).invoke(world, location, clazz);
+            return (T)obj.getClass().getMethod("getBukkitEntity").invoke(obj);
+        }
+        catch (Exception exception)
+        {
+            exception.printStackTrace();
+        }
+
+        return fallback;
+    }
+
     public static void setArmorStandInvisible(ArmorStand stand)
     {
         currentReflections.setArmorStandInvisible(stand);
@@ -33,11 +48,6 @@ public class ReflectionUtils
     public static void setItemAge(Item item, int age)
     {
         currentReflections.setItemAge(item, age);
-    }
-
-    public static <T extends Entity> T createEntity(World world, Location location, Class<? extends Entity> clazz, T fallback)
-    {
-        return currentReflections.createEntity(world, location, clazz, fallback);
     }
 
     public static ItemStack parseItemStack(JsonObject json)
@@ -127,9 +137,11 @@ public class ReflectionUtils
             case V_1_19_R3:
                 currentReflections = new Reflections_1_19((byte)2);
                 return;
-            case OTHER:
             case V_1_20_R1:
-                currentReflections = new Reflections_1_20();
+                currentReflections = new Reflections_1_20(false);
+            case OTHER:
+            case V_1_20_R2:
+                currentReflections = new Reflections_1_20(true);
         }
     }
 }

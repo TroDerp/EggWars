@@ -7,14 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -30,6 +28,17 @@ import me.rosillogames.eggwars.EggWars;
 
 public class Reflections_1_20 implements Reflections
 {
+    private final String fl_1;
+    private final String fl_2;
+    private final String fl_3;
+
+    public Reflections_1_20(boolean newV)
+    {
+        this.fl_1 = newV ? "dM" : "dJ";
+        this.fl_2 = newV ? "ge" : "ga";
+        this.fl_3 = newV ? "b" : "a";
+    }
+
     @Override
     public void setArmorStandInvisible(ArmorStand stand)
     {
@@ -58,22 +67,6 @@ public class Reflections_1_20 implements Reflections
         {
             exception.printStackTrace();
         }
-    }
-
-    @Override
-    public <T extends Entity> T createEntity(World world, Location location, Class<? extends Entity> clazz, T fallback)
-    {
-        try
-        {
-            Object obj = world.getClass().getMethod("createEntity", Location.class, Class.class).invoke(world, location, clazz);
-            fallback = (T)obj.getClass().getMethod("getBukkitEntity").invoke(obj);
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
-        }
-
-        return fallback;
     }
 
     @Override
@@ -195,7 +188,7 @@ public class Reflections_1_20 implements Reflections
         {
             Object nmsP = p.getClass().getMethod("getHandle").invoke(p);
             Class cDmgSource = this.getNMSClass("world.damagesource.DamageSource");
-            Object dmgSources = nmsP.getClass().getMethod("dJ").invoke(nmsP);
+            Object dmgSources = nmsP.getClass().getMethod(this.fl_1).invoke(nmsP);
             Object dmgSource = dmgSources.getClass().getMethod("m").invoke(dmgSources);
             nmsP.getClass().getMethod("a", cDmgSource, float.class).invoke(nmsP, dmgSource, 10000F);
         }
@@ -234,7 +227,7 @@ public class Reflections_1_20 implements Reflections
         try
         {
             Object nmsP = p.getClass().getMethod("getHandle").invoke(p);
-            Object nmsEC = nmsP.getClass().getMethod("ga").invoke(nmsP);
+            Object nmsEC = nmsP.getClass().getMethod(this.fl_2).invoke(nmsP);
             Field field = nmsEC.getClass().getDeclaredFields()[0];
             boolean accessible = field.isAccessible();
             field.setAccessible(true);
@@ -261,12 +254,12 @@ public class Reflections_1_20 implements Reflections
 
     @Override
     public void sendPacket(Player player, Object packetObj)
-    {
+    {//as of 1.20.2 packet sender class is ServerCommonPacketListenerImpl
         try
         {
             Object nmsPlayer = player.getClass().getMethod("getHandle").invoke(player);
             Object nmsConnection = nmsPlayer.getClass().getField("c").get(nmsPlayer);
-            nmsConnection.getClass().getMethod("a", this.getNMSClass("network.protocol.Packet")).invoke(nmsConnection, packetObj);
+            nmsConnection.getClass().getMethod(this.fl_3, this.getNMSClass("network.protocol.Packet")).invoke(nmsConnection, packetObj);
         }
         catch (Exception exception)
         {

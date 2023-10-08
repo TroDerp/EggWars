@@ -3,12 +3,10 @@ package me.rosillogames.eggwars.utils.reflection;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
@@ -23,8 +21,6 @@ public interface Reflections
     public void setTNTSource(TNTPrimed tnt, Player player);
 
     public void setItemAge(Item item, int age);
-
-    public <T extends Entity> T createEntity(World world, Location location, Class<? extends Entity> clazz, T fallback);
 
     public ItemStack parseItemStack(JsonObject json);
 

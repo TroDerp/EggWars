@@ -55,7 +55,7 @@ public class Offer
         boolean hasBought = false;
 
         while (this.canAfford(player))
-        {//contents must be cloned one by one as well because they are "live" items from inventory
+        {//stacks must be cloned one by one as well because they are "live" items from inventory
             ItemStack[] prev = ItemUtils.copyContents(player.getInventory().getContents());
             ItemStack stack = adjustForRecipe(player, this.result, this.colorize);
             EquipmentSlot slot = ItemUtils.getTradeSlot(player, stack);
