@@ -23,6 +23,7 @@ public class RemoveArena extends CommandArg
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean execute(CommandSender sender, String[] args)
     {
         if (args.length < 2)

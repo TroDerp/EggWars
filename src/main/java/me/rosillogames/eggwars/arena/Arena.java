@@ -22,7 +22,6 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -81,8 +80,7 @@ public class Arena
     //For game
     private World world;
     private final Set<EwPlayer> players = Sets.newHashSet();
-    private final Set<Location> placedBlocks = Sets.newHashSet();
-    private final Set<BlockState> brokenBlocks = Sets.newHashSet();
+    private final Map<Location, BlockState> replacedBlocks = Maps.<Location, BlockState>newHashMap();
     private ItemType itemType = ItemType.NORMAL;
     private HealthType healthType = HealthType.NORMAL;
     private final Map<EwPlayer, ItemType> itemsVotes = new HashMap();
@@ -325,30 +323,16 @@ public class Arena
         });
     }
 
-    public Set getPlacedBlocks()
+    public Map<Location, BlockState> getReplacedBlocks()
     {
-        return new HashSet(this.placedBlocks);
+        return new HashMap(this.replacedBlocks);
     }
 
-    public void addPlacedBlock(Location location)
+    public void addReplacedBlock(BlockState block)
     {
-        this.placedBlocks.add(location);
-    }
-
-    public void addBrokenBlock(BlockState state)
-    {
-        this.brokenBlocks.add(state);
-    }
-
-    public void removePlacedBlock(Block block)
-    {
-        if (!this.placedBlocks.contains(block.getLocation()))
-        {
-            this.brokenBlocks.add(block.getState());
-        }
-        else
-        {
-            this.placedBlocks.remove(block.getLocation());
+        if (!this.replacedBlocks.containsKey(block.getLocation()))
+        {//check is very important for locations that had changed blocks multiple times
+            this.replacedBlocks.put(block.getLocation(), block);
         }
     }
 
@@ -808,27 +792,20 @@ public class Arena
         //The status check serves to fix an internal issue when an incomplete arena is loaded, be able to set enterSetup=true to correctly set the world to edit mode without regenerating the world again on server startup
         if (this.status != ArenaStatus.SETTING && (enterSetup || EggWars.instance.getConfig().getBoolean("plugin.regenerate_worlds")))
         {
-            this.placedBlocks.clear();
-            this.brokenBlocks.clear();
+            this.replacedBlocks.clear();
             this.world.removePluginChunkTickets(EggWars.instance);
             this.setWorld(WorldController.regenArena(this));
         }
         else
         {
-            for (Location loc : this.placedBlocks)
+            for (BlockState state : this.replacedBlocks.values())
             {
-                loc.getBlock().setType(Material.AIR);
+                //Get location and then get block from that location in order to get the proper block
+                state.getLocation().getBlock().setType(state.getType());
+                state.getLocation().getBlock().setBlockData(state.getBlockData());
             }
 
-            for (BlockState state : this.brokenBlocks)
-            {
-                //Get block location and then get block from that location in order to get the proper block
-                state.getBlock().getLocation().getBlock().setType(state.getType());
-                state.getBlock().getLocation().getBlock().setBlockData(state.getBlockData());
-            }
-
-            this.brokenBlocks.clear();
-            this.placedBlocks.clear();
+            this.replacedBlocks.clear();
             this.world.removePluginChunkTickets(EggWars.instance);
         }
 

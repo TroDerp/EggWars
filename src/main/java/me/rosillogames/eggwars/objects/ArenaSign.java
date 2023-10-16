@@ -22,6 +22,7 @@ public class ArenaSign
         this.support = sign.getBlock().getRelative(((WallSign)sign.getBlockData()).getFacing().getOppositeFace()).getLocation();
     }
 
+    @SuppressWarnings("deprecation")
     public void update()
     {
         if (this.location.getBlock().getState() instanceof Sign)

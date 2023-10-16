@@ -67,6 +67,18 @@ public class PlayerJoinListener implements Listener
             player.setCustomName(player.getName());
         }
 
+        if (!EggWars.bungee.isEnabled() && EggWars.config.hidePlayers)
+        {
+            for (EwPlayer pl2 : EggWars.players)
+            {
+                if (pl2.isInArena())
+                {
+                    ewplayer.getPlayer().hidePlayer(EggWars.instance, pl2.getPlayer());
+                    pl2.getPlayer().hidePlayer(EggWars.instance, ewplayer.getPlayer());
+                }
+            }
+        }
+
         if (EggWars.bungee.isEnabled())
         {
             Arena arena = EggWars.bungee.getArena();

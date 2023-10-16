@@ -633,14 +633,14 @@ public class SetupGUI
         }
 
         @EventHandler
-        public void putGeneratorSign(PlayerInteractEvent interactEvent)
+        public void putGeneratorSign(PlayerInteractEvent event)
         {
-            if (interactEvent.getPlayer() == null || !interactEvent.getAction().equals(Action.RIGHT_CLICK_BLOCK) || interactEvent.getItem() == null || !(interactEvent.getClickedBlock().getState() instanceof Sign))
+            if (event.getPlayer() == null || !event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getItem() == null || !(event.getClickedBlock().getState() instanceof Sign))
             {
                 return;
             }
 
-            EwPlayer ewplayer = PlayerUtils.getEwPlayer(interactEvent.getPlayer());
+            EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
             Arena arena = ewplayer.getSettingArena();
 
             if (arena == null || !arena.getStatus().equals(ArenaStatus.SETTING) || !ewplayer.getPlayer().getWorld().equals(arena.getWorld()))
@@ -649,7 +649,7 @@ public class SetupGUI
                 return;
             }
 
-            ItemStack itemstack = interactEvent.getItem();
+            ItemStack itemstack = event.getItem();
             String type = null;
             int level = 0;
 
@@ -667,11 +667,12 @@ public class SetupGUI
 
             if (type != null && generators.containsKey(type) && level <= generators.get(type).getMaxLevel())
             {
-                Generator generator = new Generator(interactEvent.getClickedBlock().getLocation(), level, type, arena);
+                event.setCancelled(true);
+                Generator generator = new Generator(event.getClickedBlock().getLocation(), level, type, arena);
 
                 if (!generator.equals(arena.putGenerator(generator)))
                 {
-                    TranslationUtils.sendMessage("setup.generator.added", interactEvent.getPlayer());
+                    TranslationUtils.sendMessage("setup.generator.added", event.getPlayer());
                 }
 
                 generator.updateSign();

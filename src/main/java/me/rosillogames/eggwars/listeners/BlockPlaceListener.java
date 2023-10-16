@@ -3,6 +3,7 @@ package me.rosillogames.eggwars.listeners;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,17 +37,25 @@ public class BlockPlaceListener implements Listener
         {
             Arena arena = ewplayer.getArena();
 
-            if (!arena.getStatus().equals(ArenaStatus.IN_GAME))
+            if (!arena.getStatus().equals(ArenaStatus.IN_GAME) || !arena.getWorld().equals(eventIn.getBlock().getWorld()))
             {
                 eventIn.setCancelled(true);
                 return;
             }
 
-            if (eventIn.getBlock().getType() == Material.TNT && EggWars.instance.getConfig().getBoolean("game.tnt.auto_ignite"))
+            if (!arena.getBounds().canPlaceAt(eventIn.getBlock().getLocation()))
             {
-                eventIn.getBlock().setType(Material.AIR);
-                TNTPrimed tnt = eventIn.getBlock().getWorld().spawn(Locations.toMiddle(eventIn.getBlock().getLocation()), TNTPrimed.class);
-                ReflectionUtils.setTNTSource(tnt, eventIn.getPlayer());
+                eventIn.setCancelled(true);
+                TranslationUtils.sendMessage("gameplay.ingame.cant_place_outside", ewplayer.getPlayer());
+                return;
+            }
+
+            BlockState replaced = eventIn.getBlockReplacedState();
+
+            if (!EggWars.config.breakableBlocks.contains(replaced.getType()) && !replaced.getType().isAir() && !replaced.getBlock().isLiquid())
+            {
+                eventIn.setCancelled(true);
+                TranslationUtils.sendMessage("gameplay.ingame.cant_break_not_placed", ewplayer.getPlayer());
                 return;
             }
 
@@ -88,23 +97,16 @@ public class BlockPlaceListener implements Listener
                 }
             }
 
-            if (!arena.getBounds().canPlaceAt(eventIn.getBlock().getLocation()))
+            if (eventIn.getBlock().getType() == Material.TNT && EggWars.instance.getConfig().getBoolean("game.tnt.auto_ignite"))
             {
-                eventIn.setCancelled(true);
-                TranslationUtils.sendMessage("gameplay.ingame.cant_place_outside", ewplayer.getPlayer());
-                return;
+                eventIn.getBlock().setType(Material.AIR);
+                TNTPrimed tnt = eventIn.getBlock().getWorld().spawn(Locations.toMiddle(eventIn.getBlock().getLocation()), TNTPrimed.class);
+                ReflectionUtils.setTNTSource(tnt, eventIn.getPlayer());
             }
 
-            if (arena.getWorld().equals(eventIn.getBlock().getWorld()))
-            {
-                arena.addBrokenBlock(eventIn.getBlockReplacedState());
-                arena.addPlacedBlock(eventIn.getBlock().getLocation());
-                ewplayer.getIngameStats().addStat(StatType.BLOCKS_PLACED, 1);
-            }
-            else
-            {
-                eventIn.setCancelled(true);
-            }
+            arena.addReplacedBlock(replaced);
+            ewplayer.getIngameStats().addStat(StatType.BLOCKS_PLACED, 1);
+            return;
         }
         else
         {

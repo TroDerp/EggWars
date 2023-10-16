@@ -286,7 +286,7 @@
   "commands.toggleEditMode.success": "&aNow arena &e{0}&a is in edit mode!",
   "commands.toggleEditMode.success.preparing": "&aPreparing arena &e{0}&a...",
   "commands.toggleEditMode.success.saved": "&aArena &e{0}&a saved!",
-  "commands.toggleEditMode.success.saving": "&aSaving arena &e{0}...",
+  "commands.toggleEditMode.success.saving": "&aSaving arena &e{0}&a...",
   "commands.toggleEditMode.usage": "&cUsage: /ews toggleEditMode <arena name/id>",
   "commands.addTeam.success": "&aTeam &e{0} added!",
   "commands.addTeam.usage": "&cUsage: /ews addTeam <color>",

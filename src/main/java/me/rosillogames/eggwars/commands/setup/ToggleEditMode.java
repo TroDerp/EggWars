@@ -78,7 +78,7 @@ public class ToggleEditMode extends CommandArg
         else
         {
             TranslationUtils.sendMessage("commands.toggleEditMode.success.preparing", sender, arena.getName());
-            arena.reset(true);
+            arena.reset(true);//TODO can sometimes fail!?
             player.teleport(arena.getLobby() != null ? arena.getLobby() : arena.getWorld().getSpawnLocation());
             TranslationUtils.sendMessage("commands.toggleEditMode.success", sender, arena.getName());
             ewplayer.setSettingArena(arena);

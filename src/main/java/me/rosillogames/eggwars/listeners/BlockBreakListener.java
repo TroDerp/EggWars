@@ -112,7 +112,7 @@ public class BlockBreakListener implements Listener
                 return;
             }
 
-            if (!arena.getPlacedBlocks().contains(eventIn.getBlock().getLocation()) && !EggWars.config.breakableBlocks.contains(eventIn.getBlock().getType()))
+            if (!arena.getReplacedBlocks().containsKey(eventIn.getBlock().getLocation()) && !EggWars.config.breakableBlocks.contains(eventIn.getBlock().getType()))
             {
                 eventIn.setCancelled(true);
                 TranslationUtils.sendMessage("gameplay.ingame.cant_break_not_placed", player.getPlayer());
@@ -129,7 +129,7 @@ public class BlockBreakListener implements Listener
                     }
                 }
 
-                arena.removePlacedBlock(eventIn.getBlock());
+                arena.addReplacedBlock(eventIn.getBlock().getState());
 
                 if (!EggWars.instance.getConfig().getBoolean("game.drop_blocks"))
                 {

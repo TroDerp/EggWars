@@ -38,8 +38,18 @@ public class SignClickListener implements Listener
         {
             Arena arena = EggWars.getArenaManager().getArenaByWorld(clickLoc.getWorld());
 
-            if (arena == null || arena.getStatus().equals(ArenaStatus.SETTING))
+            if (arena == null)
             {
+                return;
+            }
+
+            if (arena.getStatus().equals(ArenaStatus.SETTING))
+            {
+                if (isSign && arena.getGenerators().containsKey(clickLoc.toVector()))
+                {
+                    event.setCancelled(true);
+                }
+
                 return;
             }
 
@@ -78,14 +88,9 @@ public class SignClickListener implements Listener
                 }
             }
 
-            if (!arena.getPlacedBlocks().contains(clickLoc))
+            if (isSign && !arena.getReplacedBlocks().containsKey(clickLoc))
             {
-                if (isSign)
-                {
-                    event.setCancelled(true);
-                }
-
-                return;
+                event.setCancelled(true);
             }
 
             return;

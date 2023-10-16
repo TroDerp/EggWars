@@ -275,7 +275,7 @@ public class PlayerInteractListener implements Listener
         {
             Arena arena = EggWars.getArenaManager().getArenaByWorld(event.getClickedBlock().getWorld());
 
-            if (arena == null || arena.getStatus() == ArenaStatus.SETTING || arena.getPlacedBlocks().contains(event.getClickedBlock().getLocation()))
+            if (arena == null || arena.getStatus() == ArenaStatus.SETTING || arena.getReplacedBlocks().containsKey(event.getClickedBlock().getLocation()))
             {
                 return;
             }

@@ -84,7 +84,7 @@ public class EwPlayer
         this.settingArena = arena;
     }
 
-    @Nullable
+    @Nullable//TODO Remove for next version, this will only create bugs on the future
     public Arena getSettingArena()
     {
         return this.settingArena;

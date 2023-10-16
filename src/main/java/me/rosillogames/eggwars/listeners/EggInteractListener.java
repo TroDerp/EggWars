@@ -12,6 +12,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
 
@@ -65,113 +67,33 @@ public class EggInteractListener implements Listener
             return;
         }
 
-        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && team.equals(ewplayer.getTeam()) && isPlaceableBlockItem(event.getPlayer().getInventory().getItemInMainHand()))
-        {
-            if (event.getPlayer().isSneaking())
-            {
-                return;
-            }
-
-            event.setCancelled(true);
-            Block placing = event.getClickedBlock().getRelative(event.getBlockFace());
-            BlockState replacedBS = placing.getState();
-
-            if (!placing.isEmpty())
-            {
-                return;
-            }
-
-            ItemStack copy = event.getPlayer().getInventory().getItemInMainHand().clone();
-            placing.setType(copy.getType());
-            BoundingBox playerBox = event.getPlayer().getBoundingBox();
-
-            for (BoundingBox box : placing.getState().getBlock().getCollisionShape().getBoundingBoxes())
-            {
-                if (box.shift(placing.getLocation()).overlaps(playerBox))
-                {
-                    placing.setType(replacedBS.getType());
-                    return;
-                }
-            }
-
-            arena.addPlacedBlock(placing.getLocation());
-            ewplayer.getIngameStats().addStat(StatType.BLOCKS_PLACED, 1);
-
-            if ((copy.getAmount() - 1) == 0)
-            {
-                event.getPlayer().getInventory().setItemInMainHand(null);
-            }
-            else
-            {
-                event.getPlayer().getInventory().getItemInMainHand().setAmount(copy.getAmount() - 1);
-            }
-
-            event.setUseItemInHand(Result.ALLOW);
-            event.getPlayer().playSound(placing.getLocation(), Sound.BLOCK_METAL_PLACE, 1.0f, 1.0f);
-            Bukkit.getPluginManager().callEvent(new BlockPlaceEvent(placing, replacedBS, event.getClickedBlock(), copy, event.getPlayer(), true, event.getHand()));
-            return;
-        }
-        else if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && team.equals(ewplayer.getTeam()) && isPlaceableBlockItem(event.getPlayer().getInventory().getItemInOffHand()))
-        {
-            if (event.getPlayer().isSneaking())
-            {
-                return;
-            }
-
-            event.setCancelled(true);
-            Block placing = event.getClickedBlock().getRelative(event.getBlockFace());
-            BlockState rBS = placing.getState();
-
-            if (!placing.isEmpty())
-            {
-                return;
-            }
-
-            ItemStack copy = event.getPlayer().getInventory().getItemInOffHand().clone();
-            placing.setType(copy.getType());
-            BoundingBox playerBox = event.getPlayer().getBoundingBox();
-
-            for (BoundingBox box : placing.getState().getBlock().getCollisionShape().getBoundingBoxes())
-            {
-                if (box.shift(placing.getLocation()).overlaps(playerBox))
-                {
-                    placing.setType(rBS.getType());
-                    return;
-                }
-            }
-
-            arena.addPlacedBlock(placing.getLocation());
-            ewplayer.getIngameStats().addStat(StatType.BLOCKS_PLACED, 1);
-
-            if ((copy.getAmount() - 1) == 0)
-            {
-                event.getPlayer().getInventory().setItemInOffHand(null);
-            }
-            else
-            {
-                event.getPlayer().getInventory().getItemInOffHand().setAmount(copy.getAmount() - 1);
-            }
-
-            event.setUseItemInHand(Result.ALLOW);
-            event.getPlayer().playSound(placing.getLocation(), Sound.BLOCK_METAL_PLACE, 1.0f, 1.0f);
-            Bukkit.getPluginManager().callEvent(new BlockPlaceEvent(placing, rBS, event.getClickedBlock(), copy, event.getPlayer(), true, event.getHand()));
-            return;
-        }
-
-        event.setCancelled(true);
-
         if (team.equals(ewplayer.getTeam()))
         {
-            TranslationUtils.sendMessage("gameplay.ingame.cant_destroy_your_egg", ewplayer.getPlayer());
+            event.setCancelled(true);
+
+            for (EquipmentSlot hand : new EquipmentSlot[] {EquipmentSlot.HAND, EquipmentSlot.OFF_HAND})
+            {
+                if (tryPlaceBlockItem(event, arena, hand))
+                {
+                    ewplayer.getIngameStats().addStat(StatType.BLOCKS_PLACED, 1);
+                    return;
+                }
+            }
+
+            if (event.getHand() == EquipmentSlot.HAND)
+            {
+                TranslationUtils.sendMessage("gameplay.ingame.cant_destroy_your_egg", ewplayer.getPlayer());
+            }
+
             return;
         }
 
         try
         {
-            EwPlayerRemoveEggEvent ewplayerremoveeggevent = new EwPlayerRemoveEggEvent(ewplayer, team);
-            Bukkit.getPluginManager().callEvent(ewplayerremoveeggevent);
+            EwPlayerRemoveEggEvent removeEggEvent = new EwPlayerRemoveEggEvent(ewplayer, team);
+            Bukkit.getPluginManager().callEvent(removeEggEvent);
 
-            if (ewplayerremoveeggevent.isCancelled())
+            if (removeEggEvent.isCancelled())
             {
                 return;
             }
@@ -180,6 +102,7 @@ public class EggInteractListener implements Listener
         {
         }
 
+        event.setCancelled(true);
         ewplayer.getIngameStats().addStat(StatType.EGGS_BROKEN, 1);
 
         for (EwPlayer player : team.getArena().getPlayers())
@@ -208,8 +131,59 @@ public class EggInteractListener implements Listener
         }
     }
 
-    private static boolean isPlaceableBlockItem(ItemStack stack)
+    private static boolean tryPlaceBlockItem(PlayerInteractEvent event, Arena arena, EquipmentSlot hand)
     {
-        return stack != null && stack.getType().isBlock() && stack.getType() != Material.AIR;
+        ItemStack copy = event.getPlayer().getInventory().getItem(hand).clone();
+
+        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || !copy.getType().isBlock() || copy.getType() == Material.AIR || event.getPlayer().isSneaking())
+        {
+            return false;
+        }
+
+        Block placing = event.getClickedBlock().getRelative(event.getBlockFace());
+
+        if (!placing.isEmpty())
+        {//Should add support for replaceable blocks (not possible due to Spigot API)
+            return false;
+        }
+
+        BlockState replacedBS = placing.getState();
+        placing.setType(copy.getType());
+
+        for (BoundingBox box : placing.getState().getBlock().getCollisionShape().getBoundingBoxes())
+        {//should check for entities with blocksBuilding=true, but cannot due to it being an NMS field, should implement more NMS?
+            if (!placing.getWorld().getNearbyEntities(box.shift(placing.getLocation()), entity -> entity instanceof HumanEntity).isEmpty())
+            {
+                placing.setType(replacedBS.getType());
+                return false;
+            }
+        }
+
+        BlockPlaceEvent placeEvent = new BlockPlaceEvent(placing, replacedBS, event.getClickedBlock(), copy, event.getPlayer(), true, hand);
+        Bukkit.getPluginManager().callEvent(placeEvent);
+
+        if (!placeEvent.isCancelled())
+        {
+            arena.addReplacedBlock(replacedBS);
+
+            if ((copy.getAmount() - 1) == 0)
+            {
+                event.getPlayer().getInventory().setItem(hand, null);
+            }
+            else
+            {
+                event.getPlayer().getInventory().getItem(hand).setAmount(copy.getAmount() - 1);
+            }
+
+            event.setUseItemInHand(Result.ALLOW);
+            event.getPlayer().playSound(placing.getLocation(), Sound.BLOCK_METAL_PLACE, 1.0F, 1.0F);
+            Bukkit.getPluginManager().callEvent(new BlockPlaceEvent(placing, replacedBS, event.getClickedBlock(), copy, event.getPlayer(), true, hand));
+            return true;
+        }
+        else
+        {
+            placing.setType(replacedBS.getType());
+            return false;
+        }
     }
 }

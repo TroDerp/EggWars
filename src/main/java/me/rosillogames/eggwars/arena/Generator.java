@@ -298,6 +298,7 @@ public class Generator
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void updateSign()
     {
         if (this.block.getBlock().getState() instanceof Sign && this.hasCachedType())
