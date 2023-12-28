@@ -1,4 +1,4 @@
-package me.rosillogames.eggwars.loaders;
+package me.rosillogames.eggwars.managers;
 
 import java.io.File;
 import java.util.HashSet;
@@ -16,13 +16,13 @@ import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.ItemUtils;
 
-public class ArenaLoader
+public class ArenaManager
 {
     public static final char[] REPLACE_FILE_CHARS = new char[] {' ', '/', '\n', '\r', '\t', '\u0000', '\f', '`', '?', '*', '\\', '<', '>', '|', '"', ':'};
     private static TranslatableItem leaveItem;
     private Set<Arena> arenas = Sets.<Arena>newHashSet();
 
-    public ArenaLoader()
+    public ArenaManager()
     {
     }
 

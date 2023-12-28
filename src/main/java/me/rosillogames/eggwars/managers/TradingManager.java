@@ -1,4 +1,4 @@
-package me.rosillogames.eggwars.loaders;
+package me.rosillogames.eggwars.managers;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -24,12 +24,12 @@ import me.rosillogames.eggwars.player.EwPlayerMenu;
 import me.rosillogames.eggwars.utils.GsonHelper;
 import me.rosillogames.eggwars.utils.ItemUtils;
 
-public class TradingLoader
+public class TradingManager
 {
     public static final String SPEC_TRADES_FILE = "trades_specific.json";
     private final List<Category> merchants = new ArrayList();
 
-    public TradingLoader()
+    public TradingManager()
     {
     }
 

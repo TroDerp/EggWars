@@ -14,9 +14,9 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import me.rosillogames.eggwars.dependencies.DependencyUtils;
 import me.rosillogames.eggwars.enums.Versions;
-import me.rosillogames.eggwars.loaders.ArenaLoader;
-import me.rosillogames.eggwars.loaders.GeneratorLoader;
-import me.rosillogames.eggwars.loaders.KitLoader;
+import me.rosillogames.eggwars.managers.ArenaManager;
+import me.rosillogames.eggwars.managers.GeneratorManager;
+import me.rosillogames.eggwars.managers.KitManager;
 import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.LobbySigns;
 import me.rosillogames.eggwars.utils.Locations;
@@ -301,10 +301,10 @@ public class Config
         EggWars.languageManager().loadConfig();
         LobbySigns.loadConfig();
         TeamUtils.loadConfig();
-        KitLoader.loadConfig();
-        ArenaLoader.loadConfig();
+        KitManager.loadConfig();
+        ArenaManager.loadConfig();
         VoteUtils.loadConfig();
-        GeneratorLoader.loadConfig();
+        GeneratorManager.loadConfig();
 
         this.breakableBlocks.clear();
 

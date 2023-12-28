@@ -1,4 +1,4 @@
-package me.rosillogames.eggwars.loaders;
+package me.rosillogames.eggwars.managers;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,12 +22,12 @@ import me.rosillogames.eggwars.objects.Token;
 import me.rosillogames.eggwars.utils.GsonHelper;
 import me.rosillogames.eggwars.utils.ItemUtils;
 
-public class GeneratorLoader
+public class GeneratorManager
 {
     private static ItemStack upgradeItem;
     private final Map<String, GeneratorType> generators = new HashMap();
 
-    public GeneratorLoader()
+    public GeneratorManager()
     {
     }
 

@@ -11,7 +11,7 @@ import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.commands.CommandArg;
 import me.rosillogames.eggwars.language.TranslationUtils;
-import me.rosillogames.eggwars.loaders.ArenaLoader;
+import me.rosillogames.eggwars.managers.ArenaManager;
 import me.rosillogames.eggwars.utils.WorldController;
 
 public class CreateArena extends CommandArg
@@ -37,7 +37,7 @@ public class CreateArena extends CommandArg
         }
 
         Player player = (Player)commandSender;
-        String name = ArenaLoader.formulateName(args, 1);
+        String name = ArenaManager.formulateName(args, 1);
 
         if (EggWars.getArenaManager().getArenaByName(name) != null)
         {

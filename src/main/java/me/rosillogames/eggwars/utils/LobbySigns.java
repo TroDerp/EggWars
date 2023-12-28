@@ -31,7 +31,7 @@ public class LobbySigns
 
     public static void setBlock(ArenaSign sign)
     {
-        if (!activeSign || sign.getLocation().getBlock().getBlockData() instanceof WallSign)
+        if (!activeSign || !(sign.getLocation().getBlock().getBlockData() instanceof WallSign))
         {
             return;
         }

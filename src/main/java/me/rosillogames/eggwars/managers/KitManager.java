@@ -1,4 +1,4 @@
-package me.rosillogames.eggwars.loaders;
+package me.rosillogames.eggwars.managers;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,14 +27,14 @@ import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.GsonHelper;
 import me.rosillogames.eggwars.utils.ItemUtils;
 
-public class KitLoader
+public class KitManager
 {
     private static TranslatableItem invItem;
     public static int cooldownSeconds;
     private final List<Kit> kits = new ArrayList();
     private final KitsMenu kitsMenu = new KitsMenu();
 
-    public KitLoader()
+    public KitManager()
     {
     }
 

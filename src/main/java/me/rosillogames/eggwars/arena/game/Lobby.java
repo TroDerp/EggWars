@@ -8,8 +8,8 @@ import me.rosillogames.eggwars.arena.Generator;
 import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.language.TranslationUtils;
-import me.rosillogames.eggwars.loaders.ArenaLoader;
-import me.rosillogames.eggwars.loaders.KitLoader;
+import me.rosillogames.eggwars.managers.ArenaManager;
+import me.rosillogames.eggwars.managers.KitManager;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.TeamUtils;
 import me.rosillogames.eggwars.utils.VoteUtils;
@@ -140,12 +140,12 @@ public class Lobby
                 }
             }
 
-            ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.kit_selection.slot_in_cage"), KitLoader.getInvItem(ewplayer.getPlayer()));
+            ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.kit_selection.slot_in_cage"), KitManager.getInvItem(ewplayer.getPlayer()));
             ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.voting.slot_in_cage"), VoteUtils.getInvItem(ewplayer.getPlayer()));
         }
         else
         {
-            ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.kit_selection.slot"), KitLoader.getInvItem(ewplayer.getPlayer()));
+            ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.kit_selection.slot"), KitManager.getInvItem(ewplayer.getPlayer()));
             ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.voting.slot"), VoteUtils.getInvItem(ewplayer.getPlayer()));
             ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.team_selection.slot"), TeamUtils.getInvItem(ewplayer.getPlayer()));
         }
@@ -156,7 +156,7 @@ public class Lobby
             {
                 if (ewplayer.isInArena() && !arenaIn.getStatus().isGame())
                 {
-                    ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.leave.slot"), ArenaLoader.getLeaveItem(ewplayer.getPlayer()));
+                    ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.leave.slot"), ArenaManager.getLeaveItem(ewplayer.getPlayer()));
                 }
             }
         }).runTaskLater(EggWars.instance, 30L);

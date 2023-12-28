@@ -1,4 +1,4 @@
-package me.rosillogames.eggwars.loaders;
+package me.rosillogames.eggwars.managers;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,7 +16,7 @@ import me.rosillogames.eggwars.objects.Token;
 import me.rosillogames.eggwars.utils.GsonHelper;
 import me.rosillogames.eggwars.utils.ItemUtils;
 
-public class TokenLoader
+public class TokenManager
 {
     private static final String TOKENS_FILE_PATH = "custom/tokens.json";
     private final Map<String, Token> tokenTypes = new HashMap();

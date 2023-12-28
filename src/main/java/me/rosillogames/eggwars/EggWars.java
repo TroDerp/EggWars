@@ -60,11 +60,11 @@ import me.rosillogames.eggwars.listeners.PlayerMoveListener;
 import me.rosillogames.eggwars.listeners.ServerListPingListener;
 import me.rosillogames.eggwars.listeners.SignListener;
 import me.rosillogames.eggwars.listeners.TickClock;
-import me.rosillogames.eggwars.loaders.ArenaLoader;
-import me.rosillogames.eggwars.loaders.GeneratorLoader;
-import me.rosillogames.eggwars.loaders.KitLoader;
-import me.rosillogames.eggwars.loaders.TokenLoader;
-import me.rosillogames.eggwars.loaders.TradingLoader;
+import me.rosillogames.eggwars.managers.ArenaManager;
+import me.rosillogames.eggwars.managers.GeneratorManager;
+import me.rosillogames.eggwars.managers.KitManager;
+import me.rosillogames.eggwars.managers.TokenManager;
+import me.rosillogames.eggwars.managers.TradingManager;
 import me.rosillogames.eggwars.objects.ArenaSign;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.Colorizer;
@@ -85,11 +85,11 @@ public class EggWars extends JavaPlugin
     public static Set<ArenaSign> signs;
     public static Config config = new Config();
     public static Versions serverVersion;
-    private ArenaLoader arenaLoader;
-    private KitLoader kitLoader;
-    private TokenLoader tokenLoader;
-    private GeneratorLoader generatorLoader;
-    private TradingLoader tradingLoader;
+    private ArenaManager arenaManager;
+    private KitManager kitLManager;
+    private TokenManager tokenManager;
+    private GeneratorManager generatorManager;
+    private TradingManager tradingManager;
     private LanguageManager languageManager;
     private Database database;
     private Gson gson;
@@ -106,7 +106,7 @@ public class EggWars extends JavaPlugin
             return;
         }
 
-        for (Arena arena : this.arenaLoader.getArenas())
+        for (Arena arena : this.arenaManager.getArenas())
         {
             arena.closeArena();
         }
@@ -157,14 +157,14 @@ public class EggWars extends JavaPlugin
         this.eventRegister();
         this.commandRegister();
         DependencyUtils.registerEggWarsPlaceHolders();
-        this.loadLoaders();
+        this.loadManagers();
         this.loadArenas();
         this.loadSigns();
         TickClock.start();
-        this.kitLoader.loadKits();
-        this.tokenLoader.loadTokens();
-        this.generatorLoader.loadGenerators();
-        this.tradingLoader.loadTrades();
+        this.kitLManager.loadKits();
+        this.tokenManager.loadTokens();
+        this.generatorManager.loadGenerators();
+        this.tradingManager.loadTrades();
 
         for (Player player : Bukkit.getOnlinePlayers())
         {
@@ -172,13 +172,13 @@ public class EggWars extends JavaPlugin
         }
     }
 
-    private void loadLoaders()
+    private void loadManagers()
     {
-        this.kitLoader = new KitLoader();
-        this.arenaLoader = new ArenaLoader();
-        this.tokenLoader = new TokenLoader();
-        this.generatorLoader = new GeneratorLoader();
-        this.tradingLoader = new TradingLoader();
+        this.kitLManager = new KitManager();
+        this.arenaManager = new ArenaManager();
+        this.tokenManager = new TokenManager();
+        this.generatorManager = new GeneratorManager();
+        this.tradingManager = new TradingManager();
         this.database = new Database(this);
     }
 
@@ -274,7 +274,7 @@ public class EggWars extends JavaPlugin
 
                 try
                 {
-                    this.arenaLoader.addArena(ArenaLoader.loadArena(file));
+                    this.arenaManager.addArena(ArenaManager.loadArena(file));
                 }
                 catch (Exception exception)
                 {
@@ -312,8 +312,8 @@ public class EggWars extends JavaPlugin
 
                 if (file1.getName().equals("Bungee"))
                 {
-                    Arena arena = ArenaLoader.loadArena(file1);
-                    this.arenaLoader.addArena(arena);
+                    Arena arena = ArenaManager.loadArena(file1);
+                    this.arenaManager.addArena(arena);
                     bungee.setArena(arena);
                     break;
                 }
@@ -325,7 +325,7 @@ public class EggWars extends JavaPlugin
             if (bungee.getArena() == null)
             {
                 Arena arena1 = new Arena("Bungee");
-                this.arenaLoader.addArena(arena1);
+                this.arenaManager.addArena(arena1);
                 arena1.setStatus(ArenaStatus.SETTING);
                 arena1.getWorld().getBlockAt(0, 99, 0).setType(Material.STONE);
                 bungee.setArena(arena1);
@@ -347,8 +347,8 @@ public class EggWars extends JavaPlugin
         }
 
         Collections.shuffle(list1);
-        Arena arena = ArenaLoader.loadArena((File)list1.get(0));
-        this.arenaLoader.addArena(arena);
+        Arena arena = ArenaManager.loadArena((File)list1.get(0));
+        this.arenaManager.addArena(arena);
         bungee.setArena(arena);
     }
 
@@ -379,7 +379,7 @@ public class EggWars extends JavaPlugin
                 double d1 = (double)GsonHelper.getAsFloat(locjson, "y");
                 double d2 = (double)GsonHelper.getAsFloat(locjson, "z");
                 location = new Location(world, d0, d1, d2);
-                arena = this.arenaLoader.getArenaByName(GsonHelper.getAsString(entryjson, "arena"));
+                arena = this.arenaManager.getArenaByName(GsonHelper.getAsString(entryjson, "arena"));
             }
             catch (Exception ex)
             {
@@ -423,29 +423,29 @@ public class EggWars extends JavaPlugin
         return this.gson;
     }
 
-    public static ArenaLoader getArenaManager()
+    public static ArenaManager getArenaManager()
     {
-        return instance.arenaLoader;
+        return instance.arenaManager;
     }
 
-    public static KitLoader getKitManager()
+    public static KitManager getKitManager()
     {
-        return instance.kitLoader;
+        return instance.kitLManager;
     }
 
-    public static TokenLoader getTokenManager()
+    public static TokenManager getTokenManager()
     {
-        return instance.tokenLoader;
+        return instance.tokenManager;
     }
 
-    public static GeneratorLoader getGeneratorManager()
+    public static GeneratorManager getGeneratorManager()
     {
-        return instance.generatorLoader;
+        return instance.generatorManager;
     }
 
-    public static TradingLoader getTradingManager()
+    public static TradingManager getTradingManager()
     {
-        return instance.tradingLoader;
+        return instance.tradingManager;
     }
 
     public static Database getDB()

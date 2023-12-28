@@ -14,7 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.mojang.datafixers.util.Pair;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.language.TranslationUtils;
-import me.rosillogames.eggwars.loaders.KitLoader;
+import me.rosillogames.eggwars.managers.KitManager;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.player.EwPlayerMenu;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
@@ -146,7 +146,7 @@ public class KitsMenu
             }
             else
             {
-                lock = TranslationUtils.getMessage("menu.kits.kit_lore.price", player, ((KitLoader.canBuy(ewplayer, kit) ? "&a" : "&c") + kit.price()));
+                lock = TranslationUtils.getMessage("menu.kits.kit_lore.price", player, ((KitManager.canBuy(ewplayer, kit) ? "&a" : "&c") + kit.price()));
             }
 
             String contents = "";
@@ -157,7 +157,7 @@ public class KitsMenu
                 contents = contents + TranslationUtils.getMessage("menu.kits.kit_lore.content", player, pair.getSecond().getAmount(), itemName, (!pair.getSecond().getEnchantments().isEmpty() ? TranslationUtils.getMessage("menu.kits.kit_lore.enchanted", player) : ""));
             }
 
-            String selection = TranslationUtils.getMessage("menu.kits.kit_lore." + (ewplayer.getKit() == kit ? "selected" : ewplayer.hasKit(kit) ? "select" : KitLoader.canBuy(ewplayer, kit) ? "buy" : "cant_afford"), player);
+            String selection = TranslationUtils.getMessage("menu.kits.kit_lore." + (ewplayer.getKit() == kit ? "selected" : ewplayer.hasKit(kit) ? "select" : KitManager.canBuy(ewplayer, kit) ? "buy" : "cant_afford"), player);
             return TranslationUtils.getMessage("menu.kits.kit_lore.full", player, kit_desc, lock, contents, selection);
         }, (player) -> TranslationUtils.getMessage("menu.item_title", player, TranslationUtils.getMessage(kit.getName(), player)));
     }

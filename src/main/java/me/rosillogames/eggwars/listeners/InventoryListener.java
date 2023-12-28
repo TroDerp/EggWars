@@ -28,7 +28,7 @@ import me.rosillogames.eggwars.enums.HealthType;
 import me.rosillogames.eggwars.enums.ItemType;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
-import me.rosillogames.eggwars.loaders.KitLoader;
+import me.rosillogames.eggwars.managers.KitManager;
 import me.rosillogames.eggwars.objects.Kit;
 import me.rosillogames.eggwars.objects.KitsMenu;
 import me.rosillogames.eggwars.player.EwPlayer;
@@ -410,7 +410,7 @@ public class InventoryListener implements Listener
 
             if (!ewplayer.hasKit(kit))
             {
-                if (KitLoader.buyKit(ewplayer, kit))
+                if (KitManager.buyKit(ewplayer, kit))
                 {
                     TranslationUtils.sendMessage("gameplay.kits.bought", player, kitname);
                     TranslationUtils.sendMessage("gameplay.kits.selected", player, kitname);

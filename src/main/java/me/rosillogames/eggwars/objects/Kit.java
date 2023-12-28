@@ -7,7 +7,8 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import com.mojang.datafixers.util.Pair;
-import me.rosillogames.eggwars.loaders.KitLoader;
+
+import me.rosillogames.eggwars.managers.KitManager;
 
 public class Kit
 {
@@ -63,7 +64,7 @@ public class Kit
 
     public int cooldownTime()
     {
-        return this.cooldown < 0 ? KitLoader.cooldownSeconds : this.cooldown;
+        return this.cooldown < 0 ? KitManager.cooldownSeconds : this.cooldown;
     }
 
     public void equip(Player player)

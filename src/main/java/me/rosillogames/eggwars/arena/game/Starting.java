@@ -12,7 +12,7 @@ import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.language.TranslationUtils;
-import me.rosillogames.eggwars.loaders.KitLoader;
+import me.rosillogames.eggwars.managers.KitManager;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.TeamUtils;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
@@ -31,7 +31,7 @@ public class Starting
             ewplayer.getPlayer().setLevel(0);
             ewplayer.getPlayer().setExp(0.0F);
             ewplayer.getPlayer().getInventory().clear();
-            ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.kit_selection.slot_in_cage"), KitLoader.getInvItem(ewplayer.getPlayer()));
+            ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.kit_selection.slot_in_cage"), KitManager.getInvItem(ewplayer.getPlayer()));
         }
 
         arenaIn.sendBroadcast("gameplay.lobby.teleporting");

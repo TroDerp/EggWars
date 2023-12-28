@@ -8,7 +8,7 @@ import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.commands.CommandArg;
 import me.rosillogames.eggwars.language.TranslationUtils;
-import me.rosillogames.eggwars.loaders.ArenaLoader;
+import me.rosillogames.eggwars.managers.ArenaManager;
 import me.rosillogames.eggwars.utils.WorldController;
 
 public class CloneArena extends CommandArg
@@ -41,9 +41,9 @@ public class CloneArena extends CommandArg
             return false;
         }
 
-        String cloneName = ArenaLoader.formulateName(args, 2);
+        String cloneName = ArenaManager.formulateName(args, 2);
 
-        if (EggWars.getArenaManager().getArenaById(ArenaLoader.getValidArenaID(cloneName)) != null)
+        if (EggWars.getArenaManager().getArenaById(ArenaManager.getValidArenaID(cloneName)) != null)
         {
             TranslationUtils.sendMessage("commands.error.arena_already_exists", commandSender, cloneName);
             return false;
@@ -51,7 +51,7 @@ public class CloneArena extends CommandArg
         else
         {
             TranslationUtils.sendMessage("commands.cloneArena.cloning", commandSender, arena.getName(), cloneName);
-            File cloneFile = new File(EggWars.arenasFolder, ArenaLoader.getValidArenaID(cloneName));
+            File cloneFile = new File(EggWars.arenasFolder, ArenaManager.getValidArenaID(cloneName));
 
             if (WorldController.copyFiles(arena.arenaFolder, cloneFile))
             {

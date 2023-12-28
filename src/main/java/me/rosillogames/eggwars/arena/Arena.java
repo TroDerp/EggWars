@@ -47,8 +47,8 @@ import me.rosillogames.eggwars.enums.Mode;
 import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.events.EwPlayerJoinArenaEvent;
 import me.rosillogames.eggwars.language.TranslationUtils;
-import me.rosillogames.eggwars.loaders.ArenaLoader;
-import me.rosillogames.eggwars.loaders.TradingLoader;
+import me.rosillogames.eggwars.managers.ArenaManager;
+import me.rosillogames.eggwars.managers.TradingManager;
 import me.rosillogames.eggwars.objects.ArenaSign;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.player.EwPlayerMenu;
@@ -116,7 +116,7 @@ public class Arena
     public Arena(String name)
     {
         this.name = name;
-        this.identifier = ArenaLoader.getValidArenaID(name);
+        this.identifier = ArenaManager.getValidArenaID(name);
         this.arenaFolder = new File(EggWars.arenasFolder, this.identifier);
 
         if (!this.arenaFolder.exists())
@@ -173,7 +173,7 @@ public class Arena
 
         if (this.customTrades)
         {
-            EggWars.instance.saveCustomResource("custom/" + TradingLoader.SPEC_TRADES_FILE, new File(this.arenaFolder, TradingLoader.SPEC_TRADES_FILE), false);
+            EggWars.instance.saveCustomResource("custom/" + TradingManager.SPEC_TRADES_FILE, new File(this.arenaFolder, TradingManager.SPEC_TRADES_FILE), false);
         }
 
         for (TeamType teamtype : TeamType.values())
@@ -261,8 +261,8 @@ public class Arena
             try
             {
                 EggWars.instance.getLogger().log(Level.INFO, "Loading data for arena \"" + this.getName() + "\" specific trades...");
-                BufferedReader buffer = Files.newBufferedReader((new File(this.arenaFolder, TradingLoader.SPEC_TRADES_FILE)).toPath());
-                specific = TradingLoader.loadCategory(GsonHelper.convertToJsonObject(GsonHelper.parse(buffer), "trades"));
+                BufferedReader buffer = Files.newBufferedReader((new File(this.arenaFolder, TradingManager.SPEC_TRADES_FILE)).toPath());
+                specific = TradingManager.loadCategory(GsonHelper.convertToJsonObject(GsonHelper.parse(buffer), "trades"));
                 buffer.close();
             }
             catch (Exception ex)
