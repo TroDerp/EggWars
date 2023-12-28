@@ -31,12 +31,18 @@ public class Reflections_1_20 implements Reflections
     private final String fl_1;
     private final String fl_2;
     private final String fl_3;
+    private final String fl_4;
+    private final String fl_5;
+    private final String fl_6;
 
-    public Reflections_1_20(boolean newV)
+    public Reflections_1_20(byte v)
     {
-        this.fl_1 = newV ? "dM" : "dJ";
-        this.fl_2 = newV ? "ge" : "ga";
-        this.fl_3 = newV ? "b" : "a";
+        this.fl_1 = v > 0 ? v > 1 ? "dN" : "dM" : "dJ";
+        this.fl_2 = v > 0 ? v > 1 ? "gf" : "ge" : "ga";
+        this.fl_3 = v > 0 ? "b" : "a";
+        this.fl_4 = v > 1 ? "e" : "f";
+        this.fl_5 = v > 1 ? "aB_" : "p";
+        this.fl_6 = v > 1 ? "bukkitToMinecraft" : "getRaw";
     }
 
     @Override
@@ -112,7 +118,7 @@ public class Reflections_1_20 implements Reflections
             Class cGameProfileSerializer = this.getNMSClass("nbt.GameProfileSerializer");
             Class cHolderGetter = this.getNMSClass("core.HolderGetter");
             Class cBIR = this.getNMSClass("core.registries.BuiltInRegistries");
-            Object registry = cBIR.getField("f").get((Object)null);
+            Object registry = cBIR.getField(this.fl_4).get((Object)null);
             Object holdLook = registry.getClass().getMethod("p").invoke(registry);
             Object blockData = cGameProfileSerializer.getMethod("a", cHolderGetter, cNBTCompound).invoke(null, holdLook, blockNbt);
             Class cIBlockData = this.getNMSClass("world.level.block.state.IBlockData");
@@ -165,7 +171,7 @@ public class Reflections_1_20 implements Reflections
             for (Map.Entry<Enchantment, Integer> entry : stack.getEnchantments().entrySet())
             {
                 Class cCraftEnch = this.getOBCClass("enchantments.CraftEnchantment");
-                Object nmsEnch = cCraftEnch.getMethod("getRaw", Enchantment.class).invoke(null, entry.getKey());
+                Object nmsEnch = cCraftEnch.getMethod(this.fl_6, Enchantment.class).invoke(null, entry.getKey());
                 Class cEnch = this.getNMSClass("world.item.enchantment.Enchantment");
                 Object nameComponent = cEnch.getMethod("d", int.class).invoke(nmsEnch, entry.getValue());
                 Class cIChatBase = this.getNMSClass("network.chat.IChatBaseComponent");
@@ -236,7 +242,7 @@ public class Reflections_1_20 implements Reflections
 
             if (ecTE != null)
             {
-                Object blockPos = ecTE.getClass().getMethod("p").invoke(ecTE);
+                Object blockPos = ecTE.getClass().getMethod(this.fl_5).invoke(ecTE);
                 int x = (int)blockPos.getClass().getMethod("u").invoke(blockPos);
                 int y = (int)blockPos.getClass().getMethod("v").invoke(blockPos);
                 int z = (int)blockPos.getClass().getMethod("w").invoke(blockPos);

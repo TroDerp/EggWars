@@ -13,7 +13,8 @@ public enum Versions
     V_1_19_R2(true, "v1_19_R2"), //1.19.3
     V_1_19_R3(true, "v1_19_R3"), //1.19.4
     V_1_20_R1(true, "v1_20_R1"), //1.20.1
-    V_1_20_R2(true, "v1_20_R2"); //1.20.2
+    V_1_20_R2(true, "v1_20_R2"), //1.20.2
+    V_1_20_R3(true, "v1_20_R3"); //1.20.4
 
     public static final String SUPPORTED_TEXT = "1.16.1 - 1.20.2";
     private final String[] packageIds;

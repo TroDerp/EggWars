@@ -138,10 +138,12 @@ public class ReflectionUtils
                 currentReflections = new Reflections_1_19((byte)2);
                 return;
             case V_1_20_R1:
-                currentReflections = new Reflections_1_20(false);
-            case OTHER:
+                currentReflections = new Reflections_1_20((byte)0);
             case V_1_20_R2:
-                currentReflections = new Reflections_1_20(true);
+                currentReflections = new Reflections_1_20((byte)1);
+            case OTHER:
+            case V_1_20_R3:
+                currentReflections = new Reflections_1_20((byte)2);
         }
     }
 }
