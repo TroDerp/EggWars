@@ -45,7 +45,7 @@ public class EggInteractListener implements Listener
         {
             Arena arena = EggWars.getArenaManager().getArenaByWorld(ewplayer.getPlayer().getWorld());
 
-            if (arena != null && (ewplayer.getSettingArena() != arena || ewplayer.getSettingArena().getStatus() != ArenaStatus.SETTING))
+            if (arena != null && arena.getStatus() != ArenaStatus.SETTING)
             {
                 event.setCancelled(true);
             }
@@ -112,7 +112,7 @@ public class EggInteractListener implements Listener
 
             if (player.getTeam() == team)
             {
-                ReflectionUtils.sendTitle(player.getPlayer(), Integer.valueOf(5), Integer.valueOf(20), Integer.valueOf(5), "", TranslationUtils.getMessage("gameplay.ingame.your_egg_destroyed", player.getPlayer()));
+                ReflectionUtils.sendTitle(player.getPlayer(), 5, 20, 5, "", TranslationUtils.getMessage("gameplay.ingame.your_egg_destroyed", player.getPlayer()));
                 TranslationUtils.sendMessage("gameplay.ingame.your_egg_destroyed", player.getPlayer());
             }
         }

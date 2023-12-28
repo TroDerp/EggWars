@@ -182,7 +182,6 @@ public class WorldController
         {
             if (entity instanceof Player)
             {
-                PlayerUtils.getEwPlayer((Player)entity).setSettingArena(null);
                 PlayerUtils.tpToLobby((Player)entity, true);
             }
             else

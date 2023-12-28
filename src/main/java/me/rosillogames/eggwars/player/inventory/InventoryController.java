@@ -51,6 +51,17 @@ public class InventoryController
         ewplayer.setInv(null);
     }
 
+    public static void closeInventories(Predicate<EwPlayer> predicate, MenuType type, boolean goToParent)
+    {
+        for (EwPlayer ewplayer : EggWars.players)
+        {
+            if (ewplayer.getInv() != null && (type == null || ewplayer.getInv().getInventoryType() == type) && predicate.test(ewplayer))
+            {
+                closeInventory(ewplayer.getPlayer(), goToParent);
+            }
+        }
+    }
+
     public static void updateInventory(EwPlayer ewplayer, @Nullable TranslatableInventory inv, boolean reopen)
     {
         if (ewplayer.getInv() != null)
@@ -62,8 +73,8 @@ public class InventoryController
     public static void updateInventories(Predicate<EwPlayer> predicate, @Nullable TranslatableInventory inv, MenuType type)
     {
         for (EwPlayer ewplayer : EggWars.players)
-        {
-            if (predicate.test(ewplayer) && ewplayer.getInv() != null && ewplayer.getInv().getInventoryType() == type)
+        {//put predicate test the last so we can skip "p.getInv() != null" check on predicate
+            if (ewplayer.getInv() != null && (type == null || ewplayer.getInv().getInventoryType() == type) && predicate.test(ewplayer))
             {
                 ewplayer.getInv().updateHandler(inv, true);
             }

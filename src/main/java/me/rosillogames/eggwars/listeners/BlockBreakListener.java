@@ -39,7 +39,7 @@ public class BlockBreakListener implements Listener
 
         if ((ewsign = LobbySigns.getSignByLocation(location, true)) != null)
         {
-            if (!eventIn.getPlayer().hasPermission("eggwars.sign.break"))
+            if (!eventIn.getPlayer().hasPermission("eggwars.arenaSign.break"))
             {
                 eventIn.setCancelled(true);
                 return;
@@ -77,7 +77,7 @@ public class BlockBreakListener implements Listener
                     TranslationUtils.sendMessage("commands.error.arena_needs_edit_mode", eventIn.getPlayer());
                     return;
                 }
-                else if (!eventIn.getPlayer().hasPermission("eggwars.gen.break"))
+                else if (!eventIn.getPlayer().hasPermission("eggwars.genSign.break"))
                 {
                     eventIn.setCancelled(true);
                     return;

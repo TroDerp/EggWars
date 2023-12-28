@@ -8,13 +8,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import me.rosillogames.eggwars.EggWars;
+import me.rosillogames.eggwars.enums.Mode;
+import me.rosillogames.eggwars.enums.StatType;
 
 public class Database
 {
@@ -22,7 +26,7 @@ public class Database
     private final EggWars plugin;
     private Connection connection;
 
-    //adding parameters doesn't reset the database
+    //adding parameters to PlayerData doesn't reset the database, but remember "ALTER TABLE" for outside
     public Database(EggWars plugin)
     {
         this.plugin = plugin;
@@ -53,7 +57,7 @@ public class Database
                 this.connection = DriverManager.getConnection(plugin.getConfig().getString("database.url"), plugin.getConfig().getString("database.username"), plugin.getConfig().getString("database.password"));
             }
 
-            this.createTable();
+            this.createTables();
         }
         catch (SQLException ex1)
         {
@@ -62,7 +66,7 @@ public class Database
         }
     }
 
-    public void loadPlayer(Player p)
+    public void loadPlayer(OfflinePlayer p)
     {
         try
         {
@@ -73,7 +77,7 @@ public class Database
 
             if (result.next())
             {
-                bw = Database.this.plugin.getGson().<PlayerData>fromJson(result.getString("Data"), PlayerData.class);
+                bw = this.plugin.getGson().<PlayerData>fromJson(result.getString("Data"), PlayerData.class);
             }
             else
             {
@@ -81,13 +85,48 @@ public class Database
                 final PreparedStatement insert = this.connection.prepareStatement("INSERT INTO ew_players (`UUID`, `Name`, `Data`) VALUES (?, ?, ?);");
                 insert.setString(1, p.getUniqueId().toString());
                 insert.setString(2, p.getName());
-                insert.setString(3, Database.this.plugin.getGson().toJson(bw, PlayerData.class));
+                insert.setString(3, this.plugin.getGson().toJson(bw, PlayerData.class));
                 insert.execute();
-                Database.this.close(insert, null);
+                this.close(insert, null);
             }
 
-            Database.this.close(select, result);
-            Database.this.players.put(p.getUniqueId(), bw);
+            this.close(select, result);
+            this.players.put(p.getUniqueId(), bw);
+
+            if (!bw.hasMigratedStats())
+            {
+                StringBuilder sb = new StringBuilder("INSERT INTO ew_stats (`UUID`, `Name`");
+                StringBuilder sb1 = new StringBuilder(") VALUES (?, ?");
+
+                for (StatType stattype : StatType.values())
+                {
+                    for (String mode1 : Arrays.asList("total", "solo", "teams"))
+                    {//TODO refactor Mode to StatMode and add "total"
+                        sb.append(", `").append(mode1).append("_").append(stattype.name().toLowerCase()).append("`");
+                        sb1.append(", ?");
+                    }
+                }
+
+                sb.append(sb1).append(");");
+                PreparedStatement insert = this.connection.prepareStatement(sb.toString());
+                insert.setString(1, p.toString());
+                insert.setString(2, p.getName());
+                int idx = 3;
+
+                for (StatType stattype : StatType.values())
+                {
+                    for (int mode1 = 0; mode1 < 3; mode1++)
+                    {
+                        int statvalue = mode1 == 0 ? bw.getTotalStat(stattype) : bw.getStat(stattype, mode1 == 1 ? Mode.SOLO : Mode.TEAM);
+                        insert.setInt(idx, statvalue);
+                        idx++;
+                    }
+                }
+
+                insert.execute();
+                this.close(insert, null);
+                bw.migratedStats();
+            }
         }
         catch (SQLException e)
         {
@@ -108,6 +147,7 @@ public class Database
                 statement.setString(2, entry.getKey().toString());
                 statement.execute();
                 this.close(statement, null);
+                this.saveStats(entry.getKey(), entry.getValue());
             }
             catch (SQLException ex)
             {
@@ -134,7 +174,70 @@ public class Database
             statement.setString(2, p.getUniqueId().toString());
             statement.execute();
             this.close(statement, null);
+            this.saveStats(p.getUniqueId(), bw);
             this.players.remove(p.getUniqueId());
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public int loadStat(OfflinePlayer p, String mode, String stat)
+    {
+        int value = -1;
+
+        try
+        {
+            PreparedStatement select = this.connection.prepareStatement("SELECT * FROM ew_stats WHERE UUID=?;");
+            select.setString(1, p.getUniqueId().toString());
+            ResultSet result = select.executeQuery();
+
+            if (result.next())
+            {
+                value = result.getInt(mode.toString().toLowerCase() + "_" + stat.toLowerCase());
+            }//also create stats entry when querying offline?
+
+            this.close(select, result);
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+        return value;
+    }
+
+    public void saveStats(UUID uuid, PlayerData data)
+    {//NEVER remove saveStats from savePlayer(s) to make sure they always get saved
+        try
+        {
+            StringBuilder sb = new StringBuilder("UPDATE ew_stats SET Name=?");
+
+            for (StatType stattype : StatType.values())
+            {
+                for (String mode : Arrays.asList("total", "solo", "teams"))
+                {
+                    sb.append(", ").append(mode).append("_").append(stattype.name().toLowerCase()).append("=?");
+                }
+            }
+
+            sb.append(" WHERE UUID=?;");
+            PreparedStatement update = this.connection.prepareStatement(sb.toString());
+            update.setString(1, uuid.toString());
+            int idx = 1;
+
+            for (StatType stattype : StatType.values())
+            {
+                for (int mode = 0; mode < 3; mode++)
+                {
+                    int statvalue = mode == 0 ? data.getTotalStat(stattype) : data.getStat(stattype, mode == 1 ? Mode.SOLO : Mode.TEAM);
+                    update.setInt(idx++, statvalue);
+                }
+            }
+
+            update.execute();
+            this.close(update, null);
         }
         catch (SQLException e)
         {
@@ -157,12 +260,23 @@ public class Database
         }
     }
 
-    private void createTable()
+    private void createTables()
     {
         try
         {
             final Statement statement = this.connection.createStatement();
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS ew_players(UUID varchar(36) primary key, Name varchar(20), Data LONGTEXT);");
+            StringBuilder sb = new StringBuilder();
+
+            for (StatType stattype : StatType.values())
+            {
+                for (String mode : Arrays.asList("total", "solo", "teams"))
+                {
+                    sb.append(", ").append(mode + "_").append(stattype.name().toLowerCase()).append(" INT");
+                }
+            }
+
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS ew_stats(UUID varchar(36) primary key, Name varchar(20)" + sb.toString().trim() + ");");
             this.close(statement);
         }
         catch (SQLException e)

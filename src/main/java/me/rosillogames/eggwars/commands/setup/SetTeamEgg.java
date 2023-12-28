@@ -35,15 +35,16 @@ public class SetTeamEgg extends CommandArg
             return false;
         }
 
-        TeamType teamtypes = TeamUtils.typeByIdAndValidateForArena(arena, args[1], commandSender);
+        TeamType teamtype = TeamUtils.typeByIdAndValidateForArena(arena, args[1], commandSender);
 
-        if (teamtypes == null)
+        if (teamtype == null)
         {
             return false;
         }
 
-        arena.getTeams().get(teamtypes).setEgg(player.getLocation());
-        TranslationUtils.sendMessage("commands.setTeamEgg.success", commandSender, teamtypes.id());
+        arena.getTeams().get(teamtype).setEgg(player.getLocation());
+        TranslationUtils.sendMessage("commands.setTeamEgg.success", commandSender, teamtype.id());
+        arena.updateSetupTeam(teamtype);
         arena.sendToDo(player);
         return true;
     }

@@ -35,15 +35,16 @@ public class SetTeamCageRemove extends CommandArg
             return false;
         }
 
-        TeamType teamtypes = TeamUtils.typeByIdAndValidateForArena(arena, args[1], commandSender);
+        TeamType teamtype = TeamUtils.typeByIdAndValidateForArena(arena, args[1], commandSender);
 
-        if (teamtypes == null)
+        if (teamtype == null)
         {
             return false;
         }
 
-        boolean removed = arena.getTeams().get(teamtypes).removeLastCage();
-        TranslationUtils.sendMessage("commands.removeTeamCage." + (removed ? "success" : "failed"), commandSender, teamtypes.id());
+        boolean removed = arena.getTeams().get(teamtype).removeLastCage();
+        TranslationUtils.sendMessage("commands.removeTeamCage." + (removed ? "success" : "failed"), commandSender, teamtype.id());
+        arena.updateSetupTeam(teamtype);
         arena.sendToDo(player);
         return true;
     }

@@ -49,16 +49,12 @@ public class Starting
         }
 
         arenaIn.getScores().updateScores(true);
-        Lobby.playCountDown(arenaIn, "release", arenaIn.getReleaseCountdown());
+        arenaIn.setCurrentCountdown(arenaIn.getReleaseCountdown() + 1);
         (new BukkitRunnable()
         {
-            private int countDown = arenaIn.getReleaseCountdown();
-
             @Override
             public void run()
             {
-                this.countDown--;
-
                 if (!arenaIn.getStatus().equals(ArenaStatus.STARTING_GAME))
                 {
                     this.cancel();
@@ -72,33 +68,28 @@ public class Starting
                     return;
                 }
 
+                int countDown = arenaIn.getCurrentCountdown() - 1;
+
+                if (countDown != 0 && (countDown % 5 == 0 || countDown <= 5) || countDown == arenaIn.getReleaseCountdown())
+                {
+                    Lobby.playCountDown(arenaIn, "release", countDown);
+                }
+
                 for (EwPlayer ewplayer1 : arenaIn.getPlayers())
                 {
-                    ewplayer1.getPlayer().setLevel(this.countDown);
+                    ewplayer1.getPlayer().setLevel(countDown);
                     ewplayer1.getPlayer().setExp(0.0F);
                 }
 
-                arenaIn.setCurrentCountdown(this.countDown);
-
-                switch (this.countDown)
+                if (countDown <= 0)
                 {
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 10:
-                    case 15:
-                        Lobby.playCountDown(arenaIn, "release", this.countDown);
-                        break;
-                    case 0:
-                        Lobby.playCountDownSound(arenaIn);
-                        releasePlayersAndStartGame(arenaIn);
-                        this.cancel();
-                        return;
-                    default:
-                        break;
+                    this.cancel();
+                    Lobby.playCountDownSound(arenaIn);
+                    releasePlayersAndStartGame(arenaIn);
+                    return;
                 }
+
+                arenaIn.setCurrentCountdown(countDown);
             }
 
             @Override
@@ -107,7 +98,7 @@ public class Starting
                 super.cancel();
                 arenaIn.setCurrentCountdown(0);
             }
-        }).runTaskTimer(EggWars.instance, 20L, 20L);
+        }).runTaskTimer(EggWars.instance, 0L, 20L);
     }
 
     public static void releasePlayersAndStartGame(Arena arena)
@@ -124,7 +115,7 @@ public class Starting
 
         for (EwPlayer ewplayer : arena.getAlivePlayers())
         {
-            ReflectionUtils.sendTitle(ewplayer.getPlayer(), Integer.valueOf(5), Integer.valueOf(10), Integer.valueOf(5), TranslationUtils.getMessage("gameplay.lobby.go", ewplayer.getPlayer()), null);
+            ReflectionUtils.sendTitle(ewplayer.getPlayer(), 5, 10, 5, TranslationUtils.getMessage("gameplay.lobby.go", ewplayer.getPlayer()), null);
             arena.setPlayerMaxHealth(ewplayer);
             ewplayer.setInvincible();
             ewplayer.getPlayer().playSound(ewplayer.getPlayer().getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1.0F, 2.0F);

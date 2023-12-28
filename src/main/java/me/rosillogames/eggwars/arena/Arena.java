@@ -111,6 +111,7 @@ public class Arena
     /** Release count down (in seconds). It is used when waiting on cages, after teleport to cages. **/
     private int releaseCountdown;
     private final Scoreboards scores = new Scoreboards(this);
+    private final SetupGUI setupGUI;
 
     public Arena(String name)
     {
@@ -137,6 +138,7 @@ public class Arena
         this.startCountdown = -1;
         this.fullCountdown = -1;
         this.releaseCountdown = -1;
+        this.setupGUI = new SetupGUI(this);
     }
 
     /** Only created when an arena is loaded or cloned.
@@ -216,6 +218,7 @@ public class Arena
             this.saveArena();
         }
 
+        this.setupGUI = new SetupGUI(this);
         this.reset(!this.isSetup());
     }
 
@@ -314,13 +317,7 @@ public class Arena
 
     private static TranslatableItem createCategoryItem(Category category)
     {
-        return TranslatableItem.translatableNameLore(ItemUtils.hideStackAttributes(category.getDisplayItem().clone()), (player) ->
-        {
-            return TranslationUtils.getMessage(category.getTranslation() + ".desc", player);
-        }, (player) ->
-        {
-            return TranslationUtils.getMessage(category.getTranslation() + ".name", player);
-        });
+        return TranslatableItem.translatableNameLore(ItemUtils.hideStackAttributes(category.getDisplayItem().clone()), category.getTranslation() + ".desc", category.getTranslation() + ".name");
     }
 
     public Map<Location, BlockState> getReplacedBlocks()
@@ -352,20 +349,24 @@ public class Arena
     }
 
     public boolean moveTeam(TeamType oldTeam, TeamType newTeam)
-    {
+    {//There are a lot of "updateTeam" to solve a problem where the setupGui used the wrong team color
         Team team = this.teams.remove(oldTeam);
+        this.setupGUI.updateTeamInv(oldTeam, false);
         boolean flag = false;
 
         if (this.teams.containsKey(newTeam))
         {
             Team team1 = this.teams.remove(newTeam);
+            this.setupGUI.updateTeamInv(newTeam, false);
             team1.setType(oldTeam);
             this.teams.put(oldTeam, team1);
+            this.updateSetupTeam(oldTeam);
             flag = true;
         }
 
         team.setType(newTeam);
         this.teams.put(newTeam, team);
+        this.updateSetupTeam(newTeam);
         return flag;
     }
 
@@ -429,6 +430,7 @@ public class Arena
             this.center.setWorld(worldIn);
         }
 
+        this.boundaries.setWorld(worldIn);
         this.getTeams().values().forEach(team -> team.setArenaWorld());
         this.getGenerators().values().forEach(gen -> gen.setArenaWorld());
     }
@@ -466,11 +468,6 @@ public class Arena
     public Bounds getBounds()
     {
         return this.boundaries;
-    }
-
-    public void setBounds(Bounds bounds)
-    {
-        this.boundaries = bounds;
     }
 
     public void removePlayer(EwPlayer ewplayer)
@@ -584,7 +581,7 @@ public class Arena
                 player.getArena().sendBroadcast("gameplay.ingame.player_eliminated", player.getPlayer().getCustomName());
             }
 
-            if (team.isEliminated())
+            if (team.isEliminated())//player is already removed from team, due to arena.removePlayer, and player may not be eliminated yet
             {
                 if (team.canRespawn())
                 {
@@ -742,6 +739,17 @@ public class Arena
         return this.scores;
     }
 
+    public SetupGUI getSetupGUI()
+    {
+        return this.setupGUI;
+    }
+
+    public void updateSetupTeam(TeamType team)
+    { 
+        this.setupGUI.updateTeamInv(team, true);
+        InventoryController.updateInventories((p) -> this.equals(((Arena)p.getInv().getExtraData()[0])), null, MenuType.TEAMS_SETUP);
+    }
+
     /** Calculates the winner team of the game from the last remaining alive team **/
     public Team getWinner()
     {
@@ -818,6 +826,14 @@ public class Arena
         this.healthType = HealthType.NORMAL;
         this.status = enterSetup ? ArenaStatus.SETTING : ArenaStatus.WAITING;
         this.updateInvs();
+
+        for (EwPlayer ewplayer : EggWars.players)
+        {
+            if (ewplayer.getInv() != null && MenuType.isSetupMenu(ewplayer.getInv().getInventoryType()) && this.equals((Arena)ewplayer.getInv().getExtraData()[0]))
+            {
+                this.setupGUI.openArenaGUI(ewplayer.getPlayer());
+            }
+        }
 
         for (ArenaSign ewsign : EggWars.signs)
         {

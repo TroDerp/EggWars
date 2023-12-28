@@ -19,17 +19,14 @@ public class Lobby
     public static void doStartingPhase(final Arena arenaIn)
     {
         arenaIn.setStatus(ArenaStatus.STARTING);
-        playCountDown(arenaIn, "starting", arenaIn.getStartCountdown());
+        arenaIn.setCurrentCountdown(arenaIn.getStartCountdown() + 1);
         (new BukkitRunnable()
         {
-            private int countDown = arenaIn.getStartCountdown();
             private boolean full = false;
 
             @Override
             public void run()
             {
-                this.countDown--;
-
                 if (!arenaIn.getStatus().equals(ArenaStatus.STARTING))
                 {
                     this.cancel();
@@ -50,56 +47,46 @@ public class Lobby
                     return;
                 }
 
+                int countDown = arenaIn.getCurrentCountdown() - 1;
+                boolean changedToFull = false;
+
                 if (arenaIn.isFull() && !this.full && arenaIn.getFullCountdown() >= 0)
                 {
                     this.full = true;
                     int fullCD = arenaIn.getFullCountdown();
 
-                    if (this.countDown > fullCD)
+                    if (countDown > fullCD)
                     {
-                        this.countDown = fullCD;
+                        countDown = fullCD;
                     }
 
-                    for (EwPlayer ewplayer : arenaIn.getPlayers())
-                    {
-                        TranslationUtils.sendMessage("gameplay.lobby.full_countdown", ewplayer.getPlayer(), TranslationUtils.translateTime(ewplayer.getPlayer(), this.countDown, true));
-                    }
+                    changedToFull = true;
+                }
+
+                if (countDown != 0 && (countDown % 30 == 0 || (countDown < 30 && countDown % 10 == 0) || countDown <= 5) || countDown == arenaIn.getStartCountdown())
+                {
+                    playCountDown(arenaIn, "starting", countDown);
                 }
 
                 for (EwPlayer ewplayer1 : arenaIn.getPlayers())
                 {
-                    ewplayer1.getPlayer().setLevel(this.countDown);
+                    ewplayer1.getPlayer().setLevel(countDown);
                     ewplayer1.getPlayer().setExp(0.0F);
+
+                    if (changedToFull)
+                    {
+                        TranslationUtils.sendMessage("gameplay.lobby.full_countdown", ewplayer1.getPlayer(), TranslationUtils.translateTime(ewplayer1.getPlayer(), countDown, true));
+                    }
                 }
 
-                arenaIn.setCurrentCountdown(this.countDown);
-
-                switch (this.countDown)
+                if (countDown <= 0)
                 {
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 10:
-                    case 20:
-                    case 30:
-                    case 60:
-                    case 90:
-                    case 120:
-                    case 150:
-                    case 180:
-                        playCountDown(arenaIn, "starting", this.countDown);
-                        return;
-                    default:
-                        break;
-                }
-
-                if (this.countDown <= 0)
-                {
-                    endStartingPhase(arenaIn);
                     this.cancel();
+                    endStartingPhase(arenaIn);
+                    return;
                 }
+
+                arenaIn.setCurrentCountdown(countDown);
             }
 
             @Override
@@ -108,7 +95,7 @@ public class Lobby
                 super.cancel();
                 arenaIn.setCurrentCountdown(0);
             }
-        }).runTaskTimer(EggWars.instance, 20L, 20L);
+        }).runTaskTimer(EggWars.instance, 0L, 20L);
     }
 
     public static void endStartingPhase(Arena arenaIn)
@@ -182,10 +169,11 @@ public class Lobby
 
     public static void playCountDown(Arena arenaIn, String type, int countdown)
     {
-        arenaIn.getPlayers().forEach((ewplayer) ->
+        for (EwPlayer ewplayer : arenaIn.getPlayers())
         {
             TranslationUtils.sendMessage("gameplay.lobby." + type + "_countdown", ewplayer.getPlayer(), TranslationUtils.translateTime(ewplayer.getPlayer(), countdown, true));
-        });
+        }
+
         playCountDownSound(arenaIn);
     }
 }

@@ -54,6 +54,7 @@ public class AddTeam extends CommandArg
 
         arena.addTeam(teamType);
         TranslationUtils.sendMessage("commands.addTeam.success", commandSender, teamType.id());
+        arena.updateSetupTeam(teamType);
         arena.sendToDo(player);
         return true;
     }

@@ -12,6 +12,7 @@ public class PlayerData
     private HashMap<String, KitData> kits;
     private HashMap<String, HashMap<String, Integer>> stats;
     private HashMap<String, Integer> totalStats;
+    private boolean migratedStats;//not sure if new field will break everything (will remove later)
     private String locale;
     private String currentKit;
     private int points;
@@ -39,6 +40,7 @@ public class PlayerData
         this.locale = "default";
         this.currentKit = "";
         this.classicShop = false;
+        this.migratedStats = false;
     }
 
     public void addStat(StatType stat, Mode mode, int amount)
@@ -88,7 +90,7 @@ public class PlayerData
         }
 
         long boughtTime = this.kits.get(kitID).unlockTime;
-        return (int)((System.currentTimeMillis() - boughtTime) / 1000);
+        return (int)((System.currentTimeMillis() - boughtTime) / 1000L);
     }
 
     public HashMap<String, KitData> getKits()
@@ -125,6 +127,11 @@ public class PlayerData
     public boolean isClassicShop()
     {
         return this.classicShop;
+    }
+
+    public boolean hasMigratedStats()
+    {
+        return this.migratedStats;
     }
 
     public void setKits(HashMap<String, KitData> kits)
@@ -166,6 +173,11 @@ public class PlayerData
     public void setClassicShop(boolean classicShop)
     {
         this.classicShop = classicShop;
+    }
+
+    public void migratedStats()
+    {
+        this.migratedStats = true;
     }
 
     static class KitData

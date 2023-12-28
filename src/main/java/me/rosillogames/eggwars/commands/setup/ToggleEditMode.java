@@ -10,14 +10,13 @@ import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.commands.CommandArg;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.language.TranslationUtils;
-import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.PlayerUtils;
 
 public class ToggleEditMode extends CommandArg
 {
     public ToggleEditMode()
     {
-        super(true);
+        super(false);
     }
 
     @Override
@@ -29,7 +28,6 @@ public class ToggleEditMode extends CommandArg
             return false;
         }
 
-        Player player = (Player)sender;
         Arena arena = EggWars.getArenaManager().cmdArenaByIdOrName(sender, args, 1);
 
         if (arena == null)
@@ -37,11 +35,9 @@ public class ToggleEditMode extends CommandArg
             return false;
         }
 
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer(player);
-
-        if (ewplayer.isInArena())
+        if (sender instanceof Player && (PlayerUtils.getEwPlayer((Player)sender)).isInArena())
         {
-            TranslationUtils.sendMessage("commands.error.in_arena", player);
+            TranslationUtils.sendMessage("commands.error.in_arena", sender);
             return false;
         }
 
@@ -73,15 +69,18 @@ public class ToggleEditMode extends CommandArg
                     }
                 }
             }).runTaskTimer(EggWars.instance, 50L, 10L);
-            ewplayer.setSettingArena(null);
         }
         else
         {
             TranslationUtils.sendMessage("commands.toggleEditMode.success.preparing", sender, arena.getName());
             arena.reset(true);//TODO can sometimes fail!?
-            player.teleport(arena.getLobby() != null ? arena.getLobby() : arena.getWorld().getSpawnLocation());
+
+            if (sender instanceof Player)
+            {
+                ((Player)sender).teleport(arena.getLobby() != null ? arena.getLobby() : arena.getWorld().getSpawnLocation());
+            }
+
             TranslationUtils.sendMessage("commands.toggleEditMode.success", sender, arena.getName());
-            ewplayer.setSettingArena(arena);
         }
 
         return true;

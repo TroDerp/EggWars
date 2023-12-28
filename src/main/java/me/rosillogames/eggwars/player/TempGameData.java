@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scoreboard.Scoreboard;
 
 public class TempGameData
 {
@@ -23,6 +24,8 @@ public class TempGameData
     private final int foodLevel;
     private final boolean flying;
     private final boolean allowFlight;
+    private final boolean collidable;
+    private final Scoreboard scoreboard;
     private final Location compassTarget;
     private final String customName;
 
@@ -42,6 +45,8 @@ public class TempGameData
         this.xpLevel = playerIn.getLevel();
         this.allowFlight = playerIn.getAllowFlight();
         this.flying = playerIn.isFlying();
+        this.scoreboard = playerIn.getScoreboard();
+        this.collidable = playerIn.isCollidable(); 
         this.compassTarget = playerIn.getCompassTarget();
         this.customName = playerIn.getDisplayName();
     }
@@ -62,6 +67,8 @@ public class TempGameData
         this.player.setExp(this.xp);
         this.player.setAllowFlight(this.allowFlight);
         this.player.setFlying(this.flying);
+        this.player.setScoreboard(this.scoreboard);
+        this.player.setCollidable(this.collidable);
 
         if (this.compassTarget != null)//for some reason compass target CAN be null
         {

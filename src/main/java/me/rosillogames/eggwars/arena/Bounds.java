@@ -1,6 +1,8 @@
 package me.rosillogames.eggwars.arena;
 
 import org.bukkit.Location;
+import org.bukkit.World;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import me.rosillogames.eggwars.utils.GsonHelper;
@@ -16,6 +18,26 @@ public class Bounds
         this.start = startIn;
         this.end = endIn;
         this.fix();
+    }
+
+    public void setBounds(Location s, Location e)
+    {
+        this.start = s;
+        this.end = e;
+        this.fix();
+    }
+
+    public void setWorld(World w)
+    {
+        if (this.start != null)
+        {
+            this.start.setWorld(w);
+        }
+
+        if (this.end != null)
+        {
+            this.end.setWorld(w);
+        }
     }
 
     public Location getStart()

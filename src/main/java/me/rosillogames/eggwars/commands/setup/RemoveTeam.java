@@ -35,15 +35,16 @@ public class RemoveTeam extends CommandArg
             return false;
         }
 
-        TeamType teamtypes = TeamUtils.typeByIdAndValidateForArena(arena, args[1], commandSender);
+        TeamType teamtype = TeamUtils.typeByIdAndValidateForArena(arena, args[1], commandSender);
 
-        if (teamtypes == null)
+        if (teamtype == null)
         {
             return false;
         }
 
-        arena.removeTeam(teamtypes);
-        TranslationUtils.sendMessage("commands.removeTeam.success", commandSender, teamtypes.id());
+        arena.removeTeam(teamtype);
+        TranslationUtils.sendMessage("commands.removeTeam.success", commandSender, teamtype.id());
+        arena.updateSetupTeam(teamtype);
         arena.sendToDo(player);
         return true;
     }

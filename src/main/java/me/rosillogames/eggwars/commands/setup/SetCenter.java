@@ -34,6 +34,7 @@ public class SetCenter extends CommandArg
 
         arena.setCenter(player.getLocation());
         TranslationUtils.sendMessage("commands.setCenter.success", commandSender, arena.getName());
+        arena.getSetupGUI().updateBasicSetupInv();
         arena.sendToDo(player);
         return true;
     }

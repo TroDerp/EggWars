@@ -21,10 +21,10 @@ permissions:
     eggwars.admin:
         description: Gives access to all EggWars permissions.
         children:
-            eggwars.sign.place: true
-            eggwars.sign.break: true
-            eggwars.gen.place: true
-            eggwars.gen.break: true
+            eggwars.arenaSign.place: true
+            eggwars.arenaSign.break: true
+            eggwars.genSign.place: true
+            eggwars.genSign.break: true
             eggwars.setup: true
             eggwars.command.forcestart: true
             eggwars.command.join: true
@@ -34,17 +34,17 @@ permissions:
             eggwars.command.reload: true
             eggwars.chatcolor: true
         default: op
-    eggwars.sign.place:
-        description: Gives access to place signs.
+    eggwars.arenaSign.place:
+        description: Gives access to place arena-joining signs.
         default: op
-    eggwars.sign.break:
-        description: Gives access to break sign.
+    eggwars.arenaSign.break:
+        description: Gives access to break arena-joining signs.
         default: op
-    eggwars.gen.place:
-        description: Gives access to place generators.
+    eggwars.genSign.place:
+        description: Gives access to place generators on signs.
         default: op
-    eggwars.gen.break:
-        description: Gives access to break generators.
+    eggwars.genSign.break:
+        description: Gives access to break generator signs.
         default: op
     eggwars.setup:
         description: Gives access to "/ews" commands and other setup features.

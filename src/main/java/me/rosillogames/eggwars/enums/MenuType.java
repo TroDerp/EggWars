@@ -1,8 +1,10 @@
 package me.rosillogames.eggwars.enums;
 
+import javax.annotation.Nullable;
+
 public enum MenuType
 {
-    LEAVE_ARENA("leave_arena"),//TODO: remove this one when item identifiers are added
+    LEAVE_ARENA("leave_arena"),//TODO: remove this one if item identifiers get added
     TEAM_SELECTION("team_selection"),
     VOTING("voting"),
     ITEM_VOTING("item_voting"),
@@ -23,15 +25,34 @@ public enum MenuType
     SELECT_GENERATOR_LEVEL("select_generator_level"),
     TEAM_ENDER_CHEST("team_ender_chest");
 
-    private final String nameKey;
+    private final String name;
 
     private MenuType(String nameIn)
     {
-        this.nameKey = nameIn;
+        this.name = nameIn;
+    }
+
+    @Nullable
+    public static MenuType parse(String s)
+    {
+        for (MenuType type : values())
+        {
+            if (type.name.equalsIgnoreCase(s))
+            {
+                return type;
+            }
+        }
+
+        return null;
+    }
+
+    public static boolean isSetupMenu(MenuType type)
+    {
+        return type == MenuType.ARENA_SETUP || type == MenuType.BASIC_SETTINGS || type == MenuType.TEAMS_SETUP || type == MenuType.SINGLE_TEAM_SETUP;
     }
 
     public String toString()
     {
-        return this.nameKey;
+        return this.name;
     }
 }

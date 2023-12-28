@@ -3,6 +3,9 @@ package me.rosillogames.eggwars.utils;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+
+import javax.annotation.Nullable;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -26,6 +29,7 @@ public class ItemUtils
     public static NamespacedKey genType;
     public static NamespacedKey genLevel;
     public static NamespacedKey openMenu;
+    public static NamespacedKey arenaId;
 
     public static int countItems(Player player, Material material)
     {
@@ -254,7 +258,7 @@ public class ItemUtils
     public static void setOpensMenu(ItemStack stack, MenuType menu)
     {
         ItemMeta meta = stack.getItemMeta();
-        meta.getPersistentDataContainer().set(openMenu, PersistentDataType.STRING, menu.name());
+        meta.getPersistentDataContainer().set(openMenu, PersistentDataType.STRING, menu.toString());
         stack.setItemMeta(meta);
     }
 
@@ -262,8 +266,20 @@ public class ItemUtils
     {
         try
         {
-            ItemMeta meta = stack.getItemMeta();
-            return MenuType.valueOf(meta.getPersistentDataContainer().get(openMenu, PersistentDataType.STRING));
+            return MenuType.parse(getPersistentData(stack, openMenu, PersistentDataType.STRING));
+        }
+        catch (Exception ex)
+        {
+            return null;
+        }
+    }
+
+    @Nullable
+    public static <T, Z> Z getPersistentData(ItemStack stack, NamespacedKey key, PersistentDataType<T, Z> type)
+    {
+        try
+        {
+            return stack.getItemMeta().getPersistentDataContainer().get(key, type);
         }
         catch (Exception ex)
         {

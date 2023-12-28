@@ -34,10 +34,9 @@ public class TranslatableItem
         return this.item.translate(null);
     }
 
-    public TranslatableItem dontResetLore()
+    public void dontResetLore()
     {
         this.resetLore = false;
-        return this;
     }
 
     public void setName(Translatable<String> nameIn)
@@ -118,6 +117,11 @@ public class TranslatableItem
         translatableitem.name = this.name;
         translatableitem.lore = this.lore;
         return translatableitem;
+    }
+
+    public boolean equalsItem(ItemStack stack, Player player)
+    {
+        return stack.equals(this.getTranslated(player));
     }
 
     public static TranslatableItem translatableName(ItemStack rawIn, String name)

@@ -12,7 +12,6 @@ import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.commands.CommandArg;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.loaders.ArenaLoader;
-import me.rosillogames.eggwars.utils.PlayerUtils;
 import me.rosillogames.eggwars.utils.WorldController;
 
 public class CreateArena extends CommandArg
@@ -62,9 +61,9 @@ public class CreateArena extends CommandArg
 
             player.teleport(arena.getWorld().getSpawnLocation());
             player.setGameMode(GameMode.CREATIVE);
+            player.getInventory().addItem(arena.getSetupGUI().getItem(player));
             TranslationUtils.sendMessage("commands.createArena.success", commandSender, arena.getName());
             EggWars.getArenaManager().addArena(arena);
-            PlayerUtils.getEwPlayer(player).setSettingArena(arena);
             arena.sendToDo(player);
             return false;
         }

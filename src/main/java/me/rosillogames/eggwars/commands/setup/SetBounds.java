@@ -34,16 +34,18 @@ public class SetBounds extends CommandArg
             return false;
         }
 
+        Bounds bounds = arena.getBounds();
+
         if (args.length == 2 && args[1].equals("remove"))
         {
-            arena.setBounds(new Bounds(null, null));
+            bounds.setBounds(null, null);
             TranslationUtils.sendMessage("commands.setBounds.success.removed", commandSender, arena.getName());
         }
         else
         {
             try
             {
-                arena.setBounds(new Bounds(new Location(null, Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3])), new Location(null, Integer.parseInt(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6]))));
+                bounds.setBounds(new Location(null, Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3])), new Location(null, Integer.parseInt(args[4]), Integer.parseInt(args[5]), Integer.parseInt(args[6])));
             }
             catch (NumberFormatException ex)
             {
@@ -55,6 +57,7 @@ public class SetBounds extends CommandArg
             TranslationUtils.sendMessage("commands.setBounds.success", commandSender, arena.getName());
         }
 
+        arena.getSetupGUI().updateBasicSetupInv();
         arena.sendToDo(player);
         return true;
     }

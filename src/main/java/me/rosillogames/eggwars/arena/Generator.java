@@ -169,14 +169,14 @@ public class Generator
                 }
             }
         }).runTaskTimer(EggWars.instance, 0L, this.level != 0 ? 1L : 20L);
-        this.genInv = new TranslatableInventory(27, (player) -> getName(player, this.cachedType, this.level, false));
+        this.genInv = new TranslatableInventory(27, (player) -> getGeneratorName(player, this.cachedType, this.level, true));
         TranslatableItem tInfoItem = TranslatableItem.translatableNameLore(new ItemStack(this.cachedType.droppedToken().getMaterial(), this.level <= 0 ? 1 : this.level), (player) ->
         {
             Token token = this.cachedType.droppedToken();
             String interval = TranslationUtils.getMessage("generator.info.interval", player, Double.valueOf((double)this.cachedType.tickRate(this.level) / 20.0));
             String capacity = TranslationUtils.getMessage("generator.info.capacity", player, token.getColor().toString() + this.cachedType.maxItems(this.level), token.getFormattedName(player));
             return TranslationUtils.getMessage("generator.info_lore", player, interval, capacity);
-        }, (player) -> getName(player, this.cachedType, this.level, true));
+        }, (player) -> getGeneratorName(player, this.cachedType, this.level, false));
         ItemStack upgradeItem = EggWars.getGeneratorManager().getUpgradeItem();
         upgradeItem.setAmount((this.isMaxLevel()) ? 1 : this.level + 1);
         TranslatableItem tUpgradeItem = TranslatableItem.translatableNameLore(upgradeItem, (player) ->
@@ -189,24 +189,24 @@ public class Generator
                 String capacity = TranslationUtils.getMessage("generator.info.capacity", player, token.getColor().toString() + this.cachedType.maxItems(nextLevel), token.getFormattedName(player));
                 Price price = this.cachedType.getPriceFor(nextLevel);
                 String cost = TranslationUtils.getMessage("generator.info.cost", player, price.getToken().getColor().toString() + price.getAmount(), price.getToken().getFormattedName(player));
-                return TranslationUtils.getMessage("generator.upgrade_lore_normal", player, interval, capacity, cost);
+                return TranslationUtils.getMessage("generator.upgrade.lore_normal", player, interval, capacity, cost);
             }
 
-            return TranslationUtils.getMessage("generator.upgrade_lore_max", player);
+            return TranslationUtils.getMessage("generator.upgrade.lore_max", player);
         }, (player) ->
         {
             if (this.isMaxLevel())
             {
-                return TranslationUtils.getMessage("generator.upgrade_name_max", player);
+                return TranslationUtils.getMessage("generator.upgrade.name_max", player);
             }
 
-            return TranslationUtils.getMessage("generator.upgrade_title", player, getName(player, this.cachedType, this.level + 1, true));
+            return TranslationUtils.getMessage("generator.upgrade.name_normal", player, getGeneratorName(player, this.cachedType, this.level + 1, false));
         });
 
         this.genInv.setItem(11, tInfoItem);
         this.genInv.setItem(15, tUpgradeItem);
         this.genInv.setItem(22, EwPlayerMenu.getCloseItem());
-        InventoryController.updateInventories((p) -> p.getArena() == this.arena && p.getInv() != null && p.getInv().getExtraData() instanceof Generator && ((Generator)p.getInv().getExtraData()).getBlock().equals(this.getBlock()), this.genInv, MenuType.GENERATOR_INFO);
+        InventoryController.updateInventories((p) -> p.getArena() == this.arena && ((Location)p.getInv().getExtraData()[0]).equals(this.getBlock()), this.genInv, MenuType.GENERATOR_INFO);
     }
 
     public void stop()
@@ -321,7 +321,7 @@ public class Generator
 
     public void openInventory(Player player)
     {
-        InventoryController.openInventory(player, this.genInv, MenuType.GENERATOR_INFO).setExtraData(this);
+        InventoryController.openInventory(player, this.genInv, MenuType.GENERATOR_INFO).setExtraData(this.getBlock());
     }
 
     public boolean tryUpgrade(Player playerIn)
@@ -402,10 +402,10 @@ public class Generator
         }
     }
 
-    public static String getName(Player player, GeneratorType type, int level, boolean color)
+    public static String getGeneratorName(Player player, GeneratorType type, int level, boolean title)
     {
         String lvl = level == 0 ? TranslationUtils.getMessage("generator.info.broken", player) : TranslationUtils.getMessage("generator.info.level", player, level);
-        return TranslationUtils.getMessage("generator.title", player, color ? (ChatColor.YELLOW + "" + ChatColor.BOLD) : "", (color ? type.droppedToken().getColor() + "" + ChatColor.BOLD : "") + TranslationUtils.getMessage(type.droppedToken().getTypeName(), player), lvl);
+        return TranslationUtils.getMessage("generator." + (title ? "title" : "name"), player, TranslationUtils.getMessage(type.droppedToken().getTypeName(), player), lvl, type.droppedToken().getColor());
     }
 
     public int hashCode()

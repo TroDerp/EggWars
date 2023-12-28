@@ -15,7 +15,7 @@ public class EwInventory
     private Inventory mcInventory;
     private TranslatableInventory handler;
     @Nullable
-    private Object extraData;
+    private Object[] extraData;
 
     public EwInventory(EwPlayer player1, TranslatableInventory mcInv, MenuType type)
     {
@@ -59,13 +59,13 @@ public class EwInventory
         return this.mcInventory;
     }
 
-    public void setExtraData(@Nullable Object data)
+    public void setExtraData(@Nullable Object... data)
     {
         this.extraData = data;
     }
 
     @Nullable
-    public Object getExtraData()
+    public Object[] getExtraData()
     {
         return this.extraData;
     }

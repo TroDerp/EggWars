@@ -24,8 +24,6 @@ public class EwPlayer
     @Nullable
     private Arena arena;
     @Nullable
-    private Arena settingArena;
-    @Nullable
     private Team team;
     private boolean eliminated;
     private boolean joining;
@@ -49,7 +47,6 @@ public class EwPlayer
     {
         this.player = player1;
         this.arena = null;
-        this.settingArena = null;
         this.team = null;
         this.eliminated = false;
         this.joining = false;
@@ -77,17 +74,6 @@ public class EwPlayer
     public Arena getArena()
     {
         return this.arena;
-    }
-
-    public void setSettingArena(Arena arena)
-    {
-        this.settingArena = arena;
-    }
-
-    @Nullable//TODO Remove for next version, this will only create bugs on the future
-    public Arena getSettingArena()
-    {
-        return this.settingArena;
     }
 
     public Player getPlayer()
@@ -323,7 +309,11 @@ public class EwPlayer
         {
             for (Map.Entry<StatType, Integer> entry : this.stats.entrySet())
             {
-                EggWars.getDB().getPlayerData(EwPlayer.this.player).addStat(entry.getKey(), mode, entry.getValue());
+                me.rosillogames.eggwars.database.PlayerData playerData = EggWars.getDB().getPlayerData(EwPlayer.this.player);
+                playerData.addStat(entry.getKey(), mode, entry.getValue());
+                //TODO Re-make this (DONT FORGET ABOUT ADDSTAT!!) when completed migration
+                //also maybe add option to determine if a player saves stats to DB on game end
+                EggWars.getDB().saveStats(EwPlayer.this.player.getUniqueId(), playerData);
             }
 
             this.stats.clear();

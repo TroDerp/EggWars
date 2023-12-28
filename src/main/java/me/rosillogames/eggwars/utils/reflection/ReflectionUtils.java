@@ -98,9 +98,9 @@ public class ReflectionUtils
         currentReflections.sendPacket(player, packetObj);
     }
 
-    public static void sendTitle(Player player, Integer fadeInTime, Integer stayTime, Integer fadeOutTime, String title, String subtitle)
+    public static void sendTitle(Player player, int fadeInTime, int stayTime, int fadeOutTime, String title, String subtitle)
     {
-        currentReflections.sendTitle(player, fadeInTime, stayTime, fadeOutTime, title, subtitle);
+        currentReflections.sendTitle(player, Integer.valueOf(fadeInTime), Integer.valueOf(stayTime), Integer.valueOf(fadeOutTime), title, subtitle);
     }
 
     public static void sendActionBar(Player player, String s, Integer integer, Integer integer1, Integer integer2)

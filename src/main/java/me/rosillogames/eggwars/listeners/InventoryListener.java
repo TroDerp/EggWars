@@ -1,6 +1,8 @@
 package me.rosillogames.eggwars.listeners;
 
 import java.util.Map;
+
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -16,6 +18,7 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 import me.rosillogames.eggwars.EggWars;
+import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Generator;
 import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.arena.shop.Category;
@@ -81,7 +84,7 @@ public class InventoryListener implements Listener
     @EventHandler
     public void openTeamEC(InventoryOpenEvent openEvent)
     {
-        if (!(openEvent.getPlayer() instanceof Player) || openEvent.getPlayer() == null)
+        if (!(openEvent.getPlayer() instanceof Player))
         {
             return;
         }
@@ -110,7 +113,7 @@ public class InventoryListener implements Listener
     @EventHandler
     public void updatePlayerInvWhenClosing(InventoryCloseEvent closeEvent)
     {
-        if (!(closeEvent.getPlayer() instanceof Player) || closeEvent.getPlayer() == null || !((Player)closeEvent.getPlayer()).isOnline())
+        if (!(closeEvent.getPlayer() instanceof Player) || !((Player)closeEvent.getPlayer()).isOnline())
         {
             return;
         }
@@ -124,7 +127,7 @@ public class InventoryListener implements Listener
 
         if (ewply.getInv().getInventoryType() == MenuType.TEAM_ENDER_CHEST && ewply.getInv().getExtraData() != null)
         {
-            BlockState state = ((Block)ewply.getInv().getExtraData()).getLocation().getBlock().getState();
+            BlockState state = ((Block)ewply.getInv().getExtraData()[0]).getLocation().getBlock().getState();
 
             if (state instanceof EnderChest)
             {
@@ -205,7 +208,7 @@ public class InventoryListener implements Listener
 
         if (ewplayer.getInv().getInventoryType() == MenuType.VILLAGER_MENU)
         {
-            int page = ((Integer)ewplayer.getInv().getExtraData()).intValue();
+            int page = ((Integer)ewplayer.getInv().getExtraData()[0]).intValue();
             Category cat = ewplayer.getArena().getShopSlots(page, clickEvent.getRawSlot());
 
             if (cat != null)
@@ -215,21 +218,21 @@ public class InventoryListener implements Listener
                 return;
             }
 
-            if (clickEvent.getCurrentItem().equals(EwPlayerMenu.getClassicShopItem().getTranslated(ewplayer.getPlayer())))
+            if (EwPlayerMenu.getClassicShopItem().equalsItem(clickEvent.getCurrentItem(), ewplayer.getPlayer()))
             {
                 EggWars.getDB().getPlayerData(ewplayer.getPlayer()).setClassicShop(!EggWars.getDB().getPlayerData(ewplayer.getPlayer()).isClassicShop());
                 InventoryController.updateInventory(ewplayer, null, false);
                 return;
             }
 
-            if (clickEvent.getCurrentItem().equals(EwPlayerMenu.getNextItem().getTranslated(ewplayer.getPlayer())))
+            if (EwPlayerMenu.getNextItem().equalsItem(clickEvent.getCurrentItem(), ewplayer.getPlayer()))
             {
                 ewplayer.getArena().openVillagerInv(ewplayer.getPlayer(), page + 1);
                 clickEvent.setCurrentItem(null);
                 return;
             }
 
-            if (clickEvent.getCurrentItem().equals(EwPlayerMenu.getPreviousItem().getTranslated(ewplayer.getPlayer())))
+            if (EwPlayerMenu.getPreviousItem().equalsItem(clickEvent.getCurrentItem(), ewplayer.getPlayer()))
             {
                 ewplayer.getArena().openVillagerInv(ewplayer.getPlayer(), page - 1);
                 clickEvent.setCurrentItem(null);
@@ -239,7 +242,7 @@ public class InventoryListener implements Listener
 
         if (ewplayer.getInv().getInventoryType() == MenuType.VILLAGER_TRADING)
         {
-            Map<Integer, Offer> map = (Map<Integer, Offer>)ewplayer.getInv().getExtraData();
+            Map<Integer, Offer> map = (Map<Integer, Offer>)ewplayer.getInv().getExtraData()[0];
             Offer trade = map.get(clickEvent.getRawSlot());
 
             if (trade != null)
@@ -352,9 +355,17 @@ public class InventoryListener implements Listener
         }
 
         clickEvent.setCancelled(true);
-        Generator gen = (Generator)ewplayer.getInv().getExtraData();
 
         if (clickEvent.getCurrentItem() == null || useCloseMenu(clickEvent))
+        {
+            return;
+        }
+
+        Location loc = (Location)ewplayer.getInv().getExtraData()[0];
+        Arena arena = EggWars.getArenaManager().getArenaByWorld(loc.getWorld());
+        Generator gen;
+
+        if (arena == null || (gen = arena.getGenerators().get(loc.toVector())) == null)
         {
             return;
         }
@@ -384,7 +395,7 @@ public class InventoryListener implements Listener
         }
 
         Player player = (Player)clickEvent.getWhoClicked();
-        int page = ((Integer)ewplayer.getInv().getExtraData()).intValue();
+        int page = ((Integer)ewplayer.getInv().getExtraData()[0]).intValue();
         Kit kit;
 
         if ((kit = EggWars.getKitManager().getKitsMenu().getKit(page, clickEvent.getRawSlot())) != null)
@@ -431,7 +442,7 @@ public class InventoryListener implements Listener
             }
         }
 
-        if (clickEvent.getCurrentItem().equals(KitsMenu.getDeselectItem().getTranslated(player)) && EggWars.getDB().getPlayerData(player).setKit(""))
+        if (KitsMenu.getDeselectItem().equalsItem(clickEvent.getCurrentItem(), player) && EggWars.getDB().getPlayerData(player).setKit(""))
         {
             TranslationUtils.sendMessage("gameplay.kits.deselected", player);
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100F, 100F);
@@ -439,14 +450,14 @@ public class InventoryListener implements Listener
             return;
         }
 
-        if (clickEvent.getCurrentItem().equals(EwPlayerMenu.getNextItem().getTranslated(player)))
+        if (EwPlayerMenu.getNextItem().equalsItem(clickEvent.getCurrentItem(), player))
         {
             EggWars.getKitManager().openKitsInv(player, page + 1);
             clickEvent.setCurrentItem(null);
             return;
         }
 
-        if (clickEvent.getCurrentItem().equals(EwPlayerMenu.getPreviousItem().getTranslated(player)))
+        if (EwPlayerMenu.getPreviousItem().equalsItem(clickEvent.getCurrentItem(), player))
         {
             EggWars.getKitManager().openKitsInv(player, page - 1);
             clickEvent.setCurrentItem(null);
@@ -605,7 +616,7 @@ public class InventoryListener implements Listener
             return;
         }
 
-        int page = ((Integer)ewplayer.getInv().getExtraData()).intValue();
+        int page = ((Integer)ewplayer.getInv().getExtraData()[0]).intValue();
         String langId;
 
         if ((langId = ewplayer.getMenu().getLangId(page, clickEvent.getRawSlot())) != null)
@@ -615,14 +626,14 @@ public class InventoryListener implements Listener
             return;
         }
 
-        if (clickEvent.getCurrentItem().equals(EwPlayerMenu.getNextItem().getTranslated(ewplayer.getPlayer())))
+        if (EwPlayerMenu.getNextItem().equalsItem(clickEvent.getCurrentItem(), ewplayer.getPlayer()))
         {
             ewplayer.getMenu().openLanguageInv(page + 1);
             clickEvent.setCurrentItem(null);
             return;
         }
 
-        if (clickEvent.getCurrentItem().equals(EwPlayerMenu.getPreviousItem().getTranslated(ewplayer.getPlayer())))
+        if (EwPlayerMenu.getPreviousItem().equalsItem(clickEvent.getCurrentItem(), ewplayer.getPlayer()))
         {
             ewplayer.getMenu().openLanguageInv(page - 1);
             clickEvent.setCurrentItem(null);
@@ -632,7 +643,7 @@ public class InventoryListener implements Listener
 
     public static boolean useCloseMenu(InventoryClickEvent clickEvent)
     {
-        if (EwPlayerMenu.getCloseItem().getTranslated((Player)clickEvent.getWhoClicked()).equals(clickEvent.getCurrentItem()))
+        if (EwPlayerMenu.getCloseItem().equalsItem(clickEvent.getCurrentItem(), (Player)clickEvent.getWhoClicked()))
         {
             InventoryController.closeInventory((Player)clickEvent.getWhoClicked(), true);
             clickEvent.setCurrentItem(null);

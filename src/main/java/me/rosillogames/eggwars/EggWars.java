@@ -22,7 +22,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
-import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -59,8 +58,7 @@ import me.rosillogames.eggwars.listeners.PlayerJoinListener;
 import me.rosillogames.eggwars.listeners.PlayerLeaveListener;
 import me.rosillogames.eggwars.listeners.PlayerMoveListener;
 import me.rosillogames.eggwars.listeners.ServerListPingListener;
-import me.rosillogames.eggwars.listeners.SignChangeListener;
-import me.rosillogames.eggwars.listeners.SignClickListener;
+import me.rosillogames.eggwars.listeners.SignListener;
 import me.rosillogames.eggwars.listeners.TickClock;
 import me.rosillogames.eggwars.loaders.ArenaLoader;
 import me.rosillogames.eggwars.loaders.GeneratorLoader;
@@ -189,6 +187,7 @@ public class EggWars extends JavaPlugin
         ItemUtils.genType = new NamespacedKey(this, "GEN_TYPE");
         ItemUtils.genLevel = new NamespacedKey(this, "GEN_LEVEL");
         ItemUtils.openMenu = new NamespacedKey(this, "OPEN_MENU");
+        ItemUtils.arenaId = new NamespacedKey(this, "ARENA_ID");
     }
 
     private void loadLists()
@@ -220,8 +219,7 @@ public class EggWars extends JavaPlugin
         pluginmanager.registerEvents(new PlayerMoveListener(), this);
         pluginmanager.registerEvents(new ServerListPingListener(), this);
         pluginmanager.registerEvents(new SetupGUI.Listener(), this);
-        pluginmanager.registerEvents(new SignChangeListener(), this);
-        pluginmanager.registerEvents(new SignClickListener(), this);
+        pluginmanager.registerEvents(new SignListener(), this);
     }
 
     private void commandRegister()
@@ -388,7 +386,7 @@ public class EggWars extends JavaPlugin
                 continue;
             }
 
-            if (location.getWorld() != null && location.getBlock().getState() instanceof Sign && LobbySigns.isValidWallSign((Sign)location.getBlock().getState()))
+            if (location.getWorld() != null && LobbySigns.isValidWallSign(location.getBlock()))
             {
                 signs.add(new ArenaSign(arena, location));
             }

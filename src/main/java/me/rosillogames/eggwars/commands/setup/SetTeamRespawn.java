@@ -35,15 +35,16 @@ public class SetTeamRespawn extends CommandArg
             return false;
         }
 
-        TeamType teamtypes = TeamUtils.typeByIdAndValidateForArena(arena, args[1], commandSender);
+        TeamType teamtype = TeamUtils.typeByIdAndValidateForArena(arena, args[1], commandSender);
 
-        if (teamtypes == null)
+        if (teamtype == null)
         {
             return false;
         }
 
-        arena.getTeams().get(teamtypes).setRespawn(player.getLocation());
-        TranslationUtils.sendMessage("commands.setTeamRespawn.success", commandSender, teamtypes.id());
+        arena.getTeams().get(teamtype).setRespawn(player.getLocation());
+        TranslationUtils.sendMessage("commands.setTeamRespawn.success", commandSender, teamtype.id());
+        arena.updateSetupTeam(teamtype);
         arena.sendToDo(player);
         return true;
     }

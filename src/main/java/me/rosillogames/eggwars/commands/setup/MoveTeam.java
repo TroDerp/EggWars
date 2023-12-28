@@ -54,10 +54,10 @@ public class MoveTeam extends CommandArg
             return false;
         }
 
-        boolean flag = arena.moveTeam(team1, team2);
+        boolean switched = arena.moveTeam(team1, team2);
         TranslationUtils.sendMessage("commands.moveTeam.success", commandSender, team1.id(), team2.id());
 
-        if (flag)
+        if (switched)
         {
             TranslationUtils.sendMessage("commands.moveTeam.success", commandSender, team2.id(), team1.id());
         }

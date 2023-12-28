@@ -11,14 +11,15 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
-import me.rosillogames.eggwars.arena.SetupGUI;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.ItemUtils;
+import me.rosillogames.eggwars.utils.LobbySigns;
 import me.rosillogames.eggwars.utils.PlayerUtils;
 
 public class PlayerInteractListener implements Listener
@@ -244,27 +245,48 @@ public class PlayerInteractListener implements Listener
             return;
         }
 
-        ItemStack itemstack;
+        Player player = event.getPlayer();
+        ItemStack stack;
 
-        if ((itemstack = event.getPlayer().getInventory().getItemInMainHand()) == null)
+        if ((stack = player.getInventory().getItemInMainHand()) == null)
         {
             return;
         }
 
-        if (ItemUtils.getOpensMenu(itemstack) == MenuType.ARENA_SETUP)
+        if (ItemUtils.getOpensMenu(stack) == MenuType.ARENA_SETUP)
         {
-            EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
-            Arena arena = EggWars.getArenaManager().getArenaByWorld(ewplayer.getPlayer().getWorld());
             event.setCancelled(true);
+            String arenaId = ItemUtils.getPersistentData(stack, ItemUtils.arenaId, PersistentDataType.STRING);
+            Arena arena;
+            Arena idArena = EggWars.getArenaManager().getArenaById(arenaId);
+            Arena worldArena = EggWars.getArenaManager().getArenaByWorld(player.getWorld());
 
-            if (arena == null || !arena.getStatus().equals(ArenaStatus.SETTING))
+            if (idArena == null && arenaId != null)
             {
-                TranslationUtils.sendMessage("commands.error.not_in_arena_world", event.getPlayer());
+                TranslationUtils.sendMessage("commands.error.arena_does_not_exist", player, arenaId);
                 return;
             }
+            else if (arenaId == null)
+            {//Old behavior (when arenaId didn't exist)
+                if (worldArena == null)
+                {
+                    TranslationUtils.sendMessage("commands.error.not_in_arena_world", player);
+                    return;
+                }
 
-            ewplayer.setSettingArena(arena);
-            SetupGUI.openArenaGUI(ewplayer.getPlayer(), arena);
+                arena = worldArena;
+            }
+            else
+            {
+                if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && worldArena == null && LobbySigns.isValidWallSign(event.getClickedBlock()))
+                {//return if so, to prevent conflict with SetupGUI.Listener.signClick()
+                    return;
+                }
+
+                arena = idArena;
+            }
+
+            arena.getSetupGUI().openArenaGUI(player);
         }
     }
 

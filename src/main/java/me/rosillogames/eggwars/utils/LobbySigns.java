@@ -3,7 +3,6 @@ package me.rosillogames.eggwars.utils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.WallSign;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -32,7 +31,7 @@ public class LobbySigns
 
     public static void setBlock(ArenaSign sign)
     {
-        if (!activeSign || !isValidWallSign(sign.getLocation().getBlock().getState()))
+        if (!activeSign || sign.getLocation().getBlock().getBlockData() instanceof WallSign)
         {
             return;
         }
@@ -68,12 +67,7 @@ public class LobbySigns
                 return ewsign;
             }
 
-            if (!allowSupport)
-            {
-                continue;
-            }
-
-            if (ewsign.getSupport().equals(location.getBlock().getLocation()))
+            if (allowSupport && ewsign.getSupport().equals(location.getBlock().getLocation()))
             {
                 return ewsign;
             }
@@ -82,8 +76,10 @@ public class LobbySigns
         return null;
     }
 
-    public static boolean isValidWallSign(BlockState state)
+    /** Whether if it is a valid block to place an arena sign (IMPORTANT! it also checks if
+     * the place is already used by another arena-joining sign) **/
+    public static boolean isValidWallSign(Block block)
     {
-        return state.getBlockData() instanceof WallSign;
+        return block.getBlockData() instanceof WallSign && LobbySigns.getSignByLocation(block.getLocation(), false) == null;
     }
 }

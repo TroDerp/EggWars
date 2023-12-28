@@ -97,7 +97,7 @@ public class TradingLoader
         return category;
     }
 
-    private static Merchant loadMerchant(JsonObject tradesJson, Merchant def)
+    private static Merchant loadMerchant(JsonObject tradesJson, Merchant def)//def null check?
     {
         JsonArray armorSlots = GsonHelper.getAsJsonArray(tradesJson, "armor_slots", new JsonArray());
         int[] armor = null;//these can be null
