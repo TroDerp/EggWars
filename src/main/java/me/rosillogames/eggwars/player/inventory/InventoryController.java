@@ -20,29 +20,39 @@ public class InventoryController
         return newInventory;
     }
 
-    public static void closeInventory(Player player, boolean goToParent)
+    public static void closeInventory(Player player, int parentTarget)
     {
         EwPlayer ewplayer = PlayerUtils.getEwPlayer(player);
 
-        if (goToParent && ewplayer.getInv() != null && ewplayer.getInv().getParent() != null)
+        if (parentTarget > 0 && ewplayer.getInv() != null && ewplayer.getInv().getParent() != null)
         {
-            EwInventory parentInventory = ewplayer.getInv().getParent();
+            EwInventory parentInv = ewplayer.getInv();
+            MenuType parentType = parentInv.getInventoryType();
 
-            while (true)
+            for (int i = 0; i < parentTarget && parentInv != null; ++i)
             {
-                if (parentInventory != null && parentInventory.getInventoryType().equals(ewplayer.getInv().getInventoryType()))
-                {
-                    parentInventory = parentInventory.getParent();
-                    continue;
-                }
+                parentInv = parentInv.getParent();
 
-                break;
+                while (true)
+                {//if it is same inventory type, but a different page
+                    if (parentInv != null && parentInv.getInventoryType().equals(parentType))
+                    {
+                        parentInv = parentInv.getParent();
+                        continue;
+                    }
+                    else if (parentInv != null)
+                    {
+                        parentType = parentInv.getInventoryType();
+                    }
+
+                    break;
+                }
             }
 
-            if (parentInventory != null)
+            if (parentInv != null)
             {
-                ewplayer.setInv(parentInventory);
-                parentInventory.updateHandler(null, true);
+                ewplayer.setInv(parentInv);
+                parentInv.updateHandler(null, true);
                 return;
             }
         }
@@ -51,13 +61,13 @@ public class InventoryController
         ewplayer.setInv(null);
     }
 
-    public static void closeInventories(Predicate<EwPlayer> predicate, MenuType type, boolean goToParent)
+    public static void closeInventories(Predicate<EwPlayer> predicate, MenuType type, int parentTarget)
     {
         for (EwPlayer ewplayer : EggWars.players)
         {
             if (ewplayer.getInv() != null && (type == null || ewplayer.getInv().getInventoryType() == type) && predicate.test(ewplayer))
             {
-                closeInventory(ewplayer.getPlayer(), goToParent);
+                closeInventory(ewplayer.getPlayer(), parentTarget);
             }
         }
     }

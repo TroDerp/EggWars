@@ -1,18 +1,24 @@
 package me.rosillogames.eggwars.listeners;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+import com.mojang.datafixers.util.Pair;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.arena.game.Finish;
 import me.rosillogames.eggwars.enums.StatType;
+import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.objects.AttackInstance;
 import me.rosillogames.eggwars.objects.Cooldown;
 import me.rosillogames.eggwars.objects.Kit;
 import me.rosillogames.eggwars.player.EwPlayer;
@@ -20,6 +26,9 @@ import me.rosillogames.eggwars.utils.Locations;
 import me.rosillogames.eggwars.utils.PlayerUtils;
 import me.rosillogames.eggwars.utils.TeamUtils;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 
 public class PlayerDeathListener implements Listener
 {
@@ -40,6 +49,43 @@ public class PlayerDeathListener implements Listener
         {
             boolean fk = !diedPlayer.getTeam().canRespawn();
             EwPlayer killerPlayer = diedPlayer.getLastDamager();
+            TeamType killerTeam = diedPlayer.getLastDamagerTeam();
+            float killerDmg = 0.0F;
+            float totalDmg = 0.0F;
+            Map<EwPlayer, Pair<TeamType, Float>> assists = new HashMap();
+
+            //TODO: Cleanup when replacing EwPlayer with ArenaPlayer
+            if (EggWars.config.enableAssists.applies(arena.getMode()))
+            {
+                for (AttackInstance atck : diedPlayer.getAssists())
+                {
+                    float damage;
+                    totalDmg += (damage = atck.getDamage());
+                    EwPlayer attacker = atck.getAttacker();
+                    assists.put(attacker, new Pair(atck.getTeamColor(), (assists.containsKey(attacker) ? assists.get(attacker).getSecond() : 0.0F) + damage));
+                }
+
+                if (assists.size() >= 2)
+                {
+                    if (EggWars.config.bestAssistIsKiller)
+                    {
+                        float highestDamage = 0.0F;
+
+                        for (Map.Entry<EwPlayer, Pair<TeamType, Float>> entry : assists.entrySet())
+                        {
+                            if (entry.getValue().getSecond() >= highestDamage)
+                            {
+                                killerPlayer = entry.getKey();
+                                killerTeam = entry.getValue().getFirst();
+                                highestDamage = entry.getValue().getSecond();
+                            }
+                        }
+                    }
+
+                    killerDmg = assists.remove(killerPlayer).getSecond();
+                }
+            }
+
             killerPlayer.getIngameStats().addStat(StatType.KILLS, 1);
 
             if (fk)
@@ -47,7 +93,27 @@ public class PlayerDeathListener implements Listener
                 killerPlayer.getIngameStats().addStat(StatType.ELIMINATIONS, 1);
             }
 
-            arena.sendBroadcast("gameplay.death." + cause + ".player", TeamUtils.colorizePlayerName(diedPlayer), TeamUtils.colorizePlayerName(killerPlayer.getPlayer(), diedPlayer.getLastDamagerTeam()));
+            for (EwPlayer ewpl : arena.getPlayers())
+            {
+                TextComponent txt = new TextComponent("");
+
+                if (assists.size() >= 2)
+                {
+                    Player player = ewpl.getPlayer();
+                    txt = new TextComponent(TranslationUtils.getMessage(assists.size() == 1 ? "gameplay.one_assist" : "gameplay.assists", player, assists.size()));
+                    StringBuilder contents = new StringBuilder("");
+
+                    for (Map.Entry<EwPlayer, Pair<TeamType, Float>> entry : assists.entrySet())
+                    {
+                        contents.append(TranslationUtils.getMessage("assists.entry", player, TeamUtils.colorizePlayerName(entry.getKey().getPlayer(), entry.getValue().getFirst()), String.format("%.1f", (entry.getValue().getSecond() * 100.0F) / totalDmg)));
+                    }
+
+                    txt.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TranslationUtils.getMessage("assists.container", player, TeamUtils.colorizePlayerName(killerPlayer.getPlayer(), killerTeam), String.format("%.1f", (killerDmg * 100.0F) / totalDmg), contents.toString()))));
+                }
+
+                ewpl.getPlayer().spigot().sendMessage(new TextComponent(new TextComponent(TranslationUtils.getMessage("gameplay.death." + cause + ".player", ewpl.getPlayer(), TeamUtils.colorizePlayerName(diedPlayer), TeamUtils.colorizePlayerName(killerPlayer.getPlayer(), killerTeam))), txt));
+            }
+
             //Reward points message for killer comes before elimination message
             PlayerUtils.addPoints(killerPlayer, fk ? EggWars.instance.getConfig().getInt("game.points.on_final_kill") : EggWars.instance.getConfig().getInt("game.points.on_kill"));
         }
@@ -58,6 +124,7 @@ public class PlayerDeathListener implements Listener
 
         diedPlayer.getIngameStats().addStat(StatType.DEATHS, 1);
         diedPlayer.clearLastDamager();
+        diedPlayer.clearAssists();
 
         if (!EggWars.config.dropInv)
         {

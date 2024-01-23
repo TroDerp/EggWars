@@ -23,4 +23,11 @@ public class Cooldown
     {
         this.finishMillis = -1L;
     }
+
+    public Cooldown clone()
+    {
+        Cooldown copy = new Cooldown();
+        copy.finishMillis = this.finishMillis;
+        return copy;
+    }
 }

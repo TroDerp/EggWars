@@ -26,6 +26,7 @@ import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.objects.ArenaSign;
+import me.rosillogames.eggwars.objects.Cage;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.player.EwPlayerMenu;
 import me.rosillogames.eggwars.player.inventory.InventoryController;
@@ -173,7 +174,7 @@ public class SetupGUI
         tInv.setItem(15, getLocationSetting("setup.gui.basic.bounds_end", bounds.getEnd(), bounds.getEnd() != null ? Material.STRUCTURE_VOID : Material.BARRIER));
         tInv.setItem(16, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.TARGET, 1), (player) -> TranslationUtils.getMessage("setup.gui.basic.bounds_info.item_lore", player, (bounds.getStart() == null && bounds.getEnd() == null ? "" : TranslationUtils.getMessage("setup.gui.basic.bounds_info.remove", player))), (player) -> TranslationUtils.getMessage("setup.gui.basic.bounds_info.item_name", player)));
         tInv.setItem(22, EwPlayerMenu.getCloseItem());
-        InventoryController.updateInventories((p) -> this.arena.equals(((Arena)p.getInv().getExtraData()[0])), tInv, MenuType.SINGLE_TEAM_SETUP);
+        InventoryController.updateInventories((p) -> this.arena.equals(((Arena)p.getInv().getExtraData()[0])), tInv, MenuType.SETUP_SINGLE_TEAM);
     }
 
     protected void updateTeamInv(TeamType type, boolean sendUpdate)
@@ -199,7 +200,7 @@ public class SetupGUI
 
             if (sendUpdate)
             {
-                InventoryController.updateInventories(invPredicate, teamInv, MenuType.SINGLE_TEAM_SETUP);
+                InventoryController.updateInventories(invPredicate, teamInv, MenuType.SETUP_SINGLE_TEAM);
             }
         }
         else
@@ -208,7 +209,7 @@ public class SetupGUI
 
             if (sendUpdate)
             {
-                InventoryController.closeInventories(invPredicate, MenuType.SINGLE_TEAM_SETUP, true);
+                InventoryController.closeInventories(invPredicate, MenuType.SETUP_SINGLE_TEAM, 1);
             }
         }
     }
@@ -255,12 +256,12 @@ public class SetupGUI
 
     private void openTeamsSetupGUI(Player player)
     {
-        InventoryController.openInventory(player, this.teamsSetupInv, MenuType.TEAMS_SETUP).setExtraData(this.arena);
+        InventoryController.openInventory(player, this.teamsSetupInv, MenuType.SETUP_TEAMS).setExtraData(this.arena);
     }
 
     private void openSingleTeamSetupGUI(Player player, TeamType teamType)
     {
-        InventoryController.openInventory(player, this.teamInvs.get(teamType), MenuType.SINGLE_TEAM_SETUP).setExtraData(this.arena, teamType);
+        InventoryController.openInventory(player, this.teamInvs.get(teamType), MenuType.SETUP_SINGLE_TEAM).setExtraData(this.arena, teamType);
     }
 
     private static TranslatableItem getLocationSetting(String tKey, Location setting, Material mat)
@@ -289,8 +290,11 @@ public class SetupGUI
     /* TODO
      * Remove this in the future, will create new gui of multiple items with single locations
      * to add support for right+click to teleport to cages
+     * "setup.gui.cages.title": "{0}&r's cages ({1}/{2})",
+     * "setup.gui.cages.cage.item_name": "Cage {0}",
+     * "setup.gui.cages.cage.item_lore": "&7Cage settings:\n&f\n&7Location: {0}\n&7Mirror Structure: {1}\n&7Rotate Structure: {2}\n\n&3Click to open settings\n&4Shift click to remove this cage"
      */
-    private static TranslatableItem getMultipleSetting(String tKey, Collection<Location> setting, Material mat, int set, int toSet)
+    private static TranslatableItem getMultipleSetting(String tKey, Collection<Cage> setting, Material mat, int set, int toSet)
     {
         TranslatableItem settingItem = new TranslatableItem((player) ->
         {
@@ -305,8 +309,9 @@ public class SetupGUI
 
             if (setting != null && !setting.isEmpty())
             {
-                for (Location loc : setting)
+                for (Cage cage : setting)
                 {
+                    Location loc = cage.getLocation();
                     settingLore.append(TranslationUtils.getMessage("setup.gui.multi_locations.value", player, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
                 }
             }
@@ -365,7 +370,7 @@ public class SetupGUI
         InventoryController.openInventory(player1, tInv, MenuType.SELECT_GENERATOR).setExtraData(page, typeMap);
     }
 
-    private static void openGeneratorLevelsGUI(Player player1, GeneratorType type, int page)
+    private static void openGeneratorLevelsGUI(Player player, GeneratorType type, int page)
     {
         List<EwPlayerMenu.MenuSize> sizes = EwPlayerMenu.MenuSize.fromChestSize(type.getMaxLevel());
         TranslatableInventory tInv = new TranslatableInventory(sizes.get(page).getSlots(), "setup.gui.gen_level.title");
@@ -405,10 +410,10 @@ public class SetupGUI
                 itemstack.setItemMeta(meta);
                 final int fnl = i;
                 TranslatableItem tItem = new TranslatableItem(itemstack);
-                tItem.setName((player) ->
+                tItem.setName(pl ->
                 {
-                    String lvl = fnl == 0 ? TranslationUtils.getMessage("generator.info.broken", player) : TranslationUtils.getMessage("generator.info.level", player, fnl);
-                    return TranslationUtils.getMessage("setup.gui.gen_level.level.item_name", player, TranslationUtils.getMessage(type.droppedToken().getTypeName(), player), lvl, type.droppedToken().getColor());
+                    String lvl = fnl == 0 ? TranslationUtils.getMessage("generator.info.broken", pl) : TranslationUtils.getMessage("generator.info.level", pl, fnl);
+                    return TranslationUtils.getMessage("setup.gui.gen_level.level.item_name", pl, TranslationUtils.getMessage(type.droppedToken().getTypeName(), pl), lvl, type.droppedToken().getColor());
                 });
                 tItem.addLoreString("setup.gui.gen_level.level.item_lore", true);
                 tInv.setItem(slot, tItem);
@@ -418,7 +423,7 @@ public class SetupGUI
             counter++;
         }
 
-        InventoryController.openInventory(player1, tInv, MenuType.SELECT_GENERATOR_LEVEL).setExtraData(page, type, typeMap);
+        InventoryController.openInventory(player, tInv, MenuType.SELECT_GENERATOR_LEVEL).setExtraData(page, type, typeMap);
     }
 
     public static class Listener implements org.bukkit.event.Listener
@@ -613,7 +618,7 @@ public class SetupGUI
                 return;
             }
 
-            if (menu == MenuType.TEAMS_SETUP)
+            if (menu == MenuType.SETUP_TEAMS)
             {
                 Map<Integer, TeamType> map = arena.getSetupGUI().teamsSlots;
                 TeamType teamtype;
@@ -645,11 +650,12 @@ public class SetupGUI
                 return;
             }
 
-            if (menu == MenuType.SINGLE_TEAM_SETUP)
+            Player player = ewplayer.getPlayer();
+
+            if (menu == MenuType.SETUP_SINGLE_TEAM)
             {
                 TeamType teamtype = (TeamType)ewplayer.getInv().getExtraData()[1];
                 Team team = arena.getTeams().get(teamtype);
-                Player player = ewplayer.getPlayer();
                 boolean flag = false;
 
                 if (clickEvent.getRawSlot() == 10)
@@ -789,7 +795,7 @@ public class SetupGUI
             {
                 click.setCurrentItem(null);
                 Player clicker = (Player)click.getWhoClicked();
-                InventoryController.closeInventory(clicker, false);
+                InventoryController.closeInventory(clicker, 0);
                 clicker.teleport(Locations.toMiddle(loc));
                 return true;
             }
@@ -803,7 +809,7 @@ public class SetupGUI
             {
                 clickEvent.setCancelled(true);
                 clickEvent.setCurrentItem(null);
-                InventoryController.closeInventory((Player)clickEvent.getWhoClicked(), true);
+                InventoryController.closeInventory((Player)clickEvent.getWhoClicked(), 1);
                 return true;
             }
 

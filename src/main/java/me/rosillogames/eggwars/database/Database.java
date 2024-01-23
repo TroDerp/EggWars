@@ -11,7 +11,6 @@ import java.sql.Statement;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -22,7 +21,7 @@ import me.rosillogames.eggwars.enums.StatType;
 
 public class Database
 {
-    private final Map<UUID, PlayerData> players = new HashMap<>();
+    private final Map<OfflinePlayer, PlayerData> players = new HashMap<>();
     private final EggWars plugin;
     private Connection connection;
 
@@ -66,12 +65,12 @@ public class Database
         }
     }
 
-    public void loadPlayer(OfflinePlayer p)
+    public void loadPlayer(OfflinePlayer pl)
     {
         try
         {
             PreparedStatement select = this.connection.prepareStatement("SELECT * FROM ew_players WHERE UUID=?;");
-            select.setString(1, p.getUniqueId().toString());
+            select.setString(1, pl.getUniqueId().toString());
             ResultSet result = select.executeQuery();
             PlayerData bw;
 
@@ -83,15 +82,15 @@ public class Database
             {
                 bw = new PlayerData();
                 final PreparedStatement insert = this.connection.prepareStatement("INSERT INTO ew_players (`UUID`, `Name`, `Data`) VALUES (?, ?, ?);");
-                insert.setString(1, p.getUniqueId().toString());
-                insert.setString(2, p.getName());
+                insert.setString(1, pl.getUniqueId().toString());
+                insert.setString(2, pl.getName());
                 insert.setString(3, this.plugin.getGson().toJson(bw, PlayerData.class));
                 insert.execute();
                 this.close(insert, null);
             }
 
             this.close(select, result);
-            this.players.put(p.getUniqueId(), bw);
+            this.players.put(pl, bw);
 
             if (!bw.hasMigratedStats())
             {
@@ -109,8 +108,8 @@ public class Database
 
                 sb.append(sb1).append(");");
                 PreparedStatement insert = this.connection.prepareStatement(sb.toString());
-                insert.setString(1, p.toString());
-                insert.setString(2, p.getName());
+                insert.setString(1, pl.getUniqueId().toString());
+                insert.setString(2, pl.getName());
                 int idx = 3;
 
                 for (StatType stattype : StatType.values())
@@ -138,13 +137,13 @@ public class Database
 
     public void savePlayers()
     {
-        for (Map.Entry<UUID, PlayerData> entry : this.players.entrySet())
+        for (Map.Entry<OfflinePlayer, PlayerData> entry : this.players.entrySet())
         {
             try
             {
                 PreparedStatement statement = this.connection.prepareStatement(SAVE);
                 statement.setString(1, this.plugin.getGson().toJson(entry.getValue(), PlayerData.class));
-                statement.setString(2, entry.getKey().toString());
+                statement.setString(2, entry.getKey().getUniqueId().toString());
                 statement.execute();
                 this.close(statement, null);
                 this.saveStats(entry.getKey(), entry.getValue());
@@ -158,9 +157,9 @@ public class Database
         this.players.clear();
     }
 
-    public void savePlayer(Player p)
+    public void savePlayer(OfflinePlayer pl)
     {
-        PlayerData bw = this.players.get(p.getUniqueId());
+        PlayerData bw = this.players.get(pl);
 
         if (bw == null)
         {
@@ -171,11 +170,11 @@ public class Database
         {
             PreparedStatement statement = this.connection.prepareStatement(SAVE);
             statement.setString(1, this.plugin.getGson().toJson(bw, PlayerData.class));
-            statement.setString(2, p.getUniqueId().toString());
+            statement.setString(2, pl.getUniqueId().toString());
             statement.execute();
             this.close(statement, null);
-            this.saveStats(p.getUniqueId(), bw);
-            this.players.remove(p.getUniqueId());
+            this.saveStats(pl, bw);
+            this.players.remove(pl);
         }
         catch (SQLException e)
         {
@@ -208,7 +207,7 @@ public class Database
         return value;
     }
 
-    public void saveStats(UUID uuid, PlayerData data)
+    public void saveStats(OfflinePlayer pl, PlayerData data)
     {//NEVER remove saveStats from savePlayer(s) to make sure they always get saved
         try
         {
@@ -224,18 +223,20 @@ public class Database
 
             sb.append(" WHERE UUID=?;");
             PreparedStatement update = this.connection.prepareStatement(sb.toString());
-            update.setString(1, uuid.toString());
-            int idx = 1;
+            update.setString(1, pl.getName());
+            int idx = 2;
 
             for (StatType stattype : StatType.values())
             {
                 for (int mode = 0; mode < 3; mode++)
                 {
                     int statvalue = mode == 0 ? data.getTotalStat(stattype) : data.getStat(stattype, mode == 1 ? Mode.SOLO : Mode.TEAM);
-                    update.setInt(idx++, statvalue);
+                    update.setInt(idx, statvalue);
+                    idx++;
                 }
             }
 
+            update.setString(idx, pl.getUniqueId().toString());
             update.execute();
             this.close(update, null);
         }
@@ -329,6 +330,6 @@ public class Database
 
     public PlayerData getPlayerData(Player p)
     {
-        return this.players.get(p.getUniqueId());
+        return this.players.get(p);
     }
 }

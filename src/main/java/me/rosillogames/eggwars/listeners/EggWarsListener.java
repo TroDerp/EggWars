@@ -27,7 +27,7 @@ public class EggWarsListener implements Listener
                 {
                     if (player.getInv().getInventoryType() == MenuType.LANGUAGES)
                     {
-                        InventoryController.closeInventory(player.getPlayer(), true);//add warning?
+                        InventoryController.closeInventory(player.getPlayer(), 1);//add warning?
                     }
                     else
                     {
@@ -48,7 +48,7 @@ public class EggWarsListener implements Listener
             {
                 if (player.getInv() != null && player.getInv().getInventoryType() == MenuType.KIT_SELECTION)
                 {
-                    InventoryController.closeInventory(player.getPlayer(), true);//add warning?
+                    InventoryController.closeInventory(player.getPlayer(), 1);//add warning?
                 }
             }
         }
@@ -59,7 +59,7 @@ public class EggWarsListener implements Listener
             {
                 if (player.getInv() != null && (player.getInv().getInventoryType() == MenuType.GENERATOR_INFO || player.getInv().getInventoryType() == MenuType.SELECT_GENERATOR_LEVEL || player.getInv().getInventoryType() == MenuType.SELECT_GENERATOR))
                 {
-                    InventoryController.closeInventory(player.getPlayer(), false);//add warning?
+                    InventoryController.closeInventory(player.getPlayer(), 0);//add warning?
                 }
             }
         }

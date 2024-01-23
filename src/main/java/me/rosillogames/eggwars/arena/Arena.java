@@ -50,6 +50,7 @@ import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.managers.ArenaManager;
 import me.rosillogames.eggwars.managers.TradingManager;
 import me.rosillogames.eggwars.objects.ArenaSign;
+import me.rosillogames.eggwars.objects.Cage;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.player.EwPlayerMenu;
 import me.rosillogames.eggwars.player.EwPlayerMenu.MenuSize;
@@ -472,11 +473,6 @@ public class Arena
 
     public void removePlayer(EwPlayer ewplayer)
     {
-        if (ewplayer.getTeam() != null)
-        {
-            ewplayer.getTeam().removePlayer(ewplayer);
-        }
-
         this.players.remove(ewplayer);
     }
 
@@ -554,6 +550,12 @@ public class Arena
     public void leaveArena(EwPlayer player, boolean sendBungee, boolean silent)
     {
         Team team = player.getTeam();
+
+        if (team != null)
+        {
+            team.removePlayer(player);
+        }
+
         this.removePlayer(player);
         this.scores.clearScoreboard(player.getPlayer());
 
@@ -747,7 +749,7 @@ public class Arena
     public void updateSetupTeam(TeamType team)
     { 
         this.setupGUI.updateTeamInv(team, true);
-        InventoryController.updateInventories((p) -> this.equals(((Arena)p.getInv().getExtraData()[0])), null, MenuType.TEAMS_SETUP);
+        InventoryController.updateInventories((p) -> this.equals(((Arena)p.getInv().getExtraData()[0])), null, MenuType.SETUP_TEAMS);
     }
 
     /** Calculates the winner team of the game from the last remaining alive team **/
@@ -1049,9 +1051,9 @@ public class Arena
             Team team = entry.getValue();
             int i = 0;//Cages will be saved with in the order of the list their locations are in
 
-            for (Location cage : team.getCages())
+            for (Cage cage : team.getCages())
             {
-                fconfig.set("Team." + id + ".Cages." + i, Locations.toString(cage, true));
+                fconfig.set("Team." + id + ".Cages." + i, Locations.toString(cage.getLocation(), true));
                 i++;
             }
 
@@ -1433,9 +1435,9 @@ public class Arena
         return this.saving;
     }
 
-    public boolean skipSoloLobby()
+    public boolean skipsLobby()
     {
-        return this.getMode() == Mode.SOLO && EggWars.config.skipSoloLobby;
+        return EggWars.config.skipsLobby.applies(this.getMode());
     }
 
     public int hashCode()

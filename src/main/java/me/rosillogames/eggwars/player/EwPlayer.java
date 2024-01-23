@@ -1,6 +1,8 @@
 package me.rosillogames.eggwars.player;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
@@ -13,6 +15,7 @@ import me.rosillogames.eggwars.enums.Mode;
 import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.events.EwPlayerChangeLangEvent;
+import me.rosillogames.eggwars.objects.AttackInstance;
 import me.rosillogames.eggwars.objects.Cooldown;
 import me.rosillogames.eggwars.objects.Kit;
 import me.rosillogames.eggwars.player.inventory.EwInventory;
@@ -39,6 +42,7 @@ public class EwPlayer
     private EwPlayer lastDamager;
     @Nullable//cache last damager team to prevent a bug with message
     private TeamType lastDamagerTeam;
+    private List<AttackInstance> assists = new ArrayList();
     @Nullable
     private EwPlayer trackedPlayer;
     private float votePower = 1.0F;
@@ -53,6 +57,7 @@ public class EwPlayer
         this.outsideDat = null;
         this.inv = null;
         this.lastDamager = null;
+        this.lastDamagerTeam = null;
         this.menu = new EwPlayerMenu(this);
 
         try
@@ -134,6 +139,7 @@ public class EwPlayer
 
         this.clearInvincible();
         this.clearLastDamager();
+        this.clearAssists();
         this.kitCooldown.clear();
     }
 
@@ -186,11 +192,12 @@ public class EwPlayer
         }
     }
 
-    public void setLastDamager(EwPlayer ewplayer)
+    public void setLastDamager(EwPlayer ewplayer, float damage)
     {
         this.lastDamager = ewplayer;
         this.lastDamagerTeam = ewplayer.getTeam().getType();
-        this.lastDamagerRemain.setFinish(20);
+        this.lastDamagerRemain.setFinish(EggWars.config.dmgForgetTime);
+        this.assists.add(new AttackInstance(ewplayer, this.lastDamagerRemain.clone(), damage));
     }
 
     public void clearLastDamager()
@@ -209,6 +216,43 @@ public class EwPlayer
         }
 
         return this.lastDamager;
+    }
+
+    public List<AttackInstance> getAssists()
+    {
+        this.recalculateAssists(0.0F);
+        return new ArrayList<>(this.assists);
+    }
+
+    public void recalculateAssists(float heal)
+    {
+        (new ArrayList<>(this.assists)).stream().filter(attack -> attack.hasExpired()).forEach(attack -> this.assists.remove(attack));
+
+        if (heal > 0.0F)
+        {
+            float remain = heal;
+
+            for (int i = this.assists.size() - 1; i >= 0 && remain > 0.0F; --i)//backwards (don't need to copy)
+            {
+                AttackInstance atck = this.assists.get(i);
+                remain = atck.getDamage() - remain;
+
+                if (remain <= 0.0F)
+                {
+                    this.assists.remove(i);
+                    remain = -remain;
+                }
+                else
+                {
+                    atck.setDamage(remain);
+                }
+            }
+        }
+    }
+
+    public void clearAssists()
+    {
+        this.assists.clear();
     }
 
     @Nullable
@@ -293,7 +337,7 @@ public class EwPlayer
 
     public class IngameStats
     {
-        private final HashMap<StatType, Integer> stats = new HashMap<StatType, Integer>();
+        private final Map<StatType, Integer> stats = new HashMap<StatType, Integer>();
 
         public void addStat(StatType stat, int amount)
         {
@@ -313,7 +357,7 @@ public class EwPlayer
                 playerData.addStat(entry.getKey(), mode, entry.getValue());
                 //TODO Re-make this (DONT FORGET ABOUT ADDSTAT!!) when completed migration
                 //also maybe add option to determine if a player saves stats to DB on game end
-                EggWars.getDB().saveStats(EwPlayer.this.player.getUniqueId(), playerData);
+                EggWars.getDB().saveStats(EwPlayer.this.player, playerData);
             }
 
             this.stats.clear();

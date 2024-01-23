@@ -22,7 +22,10 @@ public class MessageFactory
 
         for (final Integer index : msgParams)
         {
-            msg = msg.replace("{" + index + "}", args[index].toString());
+            if (index >= 0 && index < args.length)
+            {
+                msg = msg.replace("{" + index + "}", args[index].toString());
+            }
         }
 
         final String[] msga = ChatColor.translateAlternateColorCodes('&', msg).split("\\n");

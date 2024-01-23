@@ -645,7 +645,7 @@ public class InventoryListener implements Listener
     {
         if (EwPlayerMenu.getCloseItem().equalsItem(clickEvent.getCurrentItem(), (Player)clickEvent.getWhoClicked()))
         {
-            InventoryController.closeInventory((Player)clickEvent.getWhoClicked(), true);
+            InventoryController.closeInventory((Player)clickEvent.getWhoClicked(), 1);
             clickEvent.setCurrentItem(null);
             return true;
         }

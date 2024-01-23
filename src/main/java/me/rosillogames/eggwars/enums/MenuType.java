@@ -19,8 +19,8 @@ public enum MenuType
     LANGUAGES("languages"),
     ARENA_SETUP("arena_setup"),
     BASIC_SETTINGS("basic_settings"),
-    TEAMS_SETUP("teams_setup"),
-    SINGLE_TEAM_SETUP("single_team_setup"),
+    SETUP_TEAMS("setup_teams"),
+    SETUP_SINGLE_TEAM("setup_single_team"),
     SELECT_GENERATOR("select_generator"),
     SELECT_GENERATOR_LEVEL("select_generator_level"),
     TEAM_ENDER_CHEST("team_ender_chest");
@@ -48,7 +48,7 @@ public enum MenuType
 
     public static boolean isSetupMenu(MenuType type)
     {
-        return type == MenuType.ARENA_SETUP || type == MenuType.BASIC_SETTINGS || type == MenuType.TEAMS_SETUP || type == MenuType.SINGLE_TEAM_SETUP;
+        return type == MenuType.ARENA_SETUP || type == MenuType.BASIC_SETTINGS || type == MenuType.SETUP_TEAMS || type == MenuType.SETUP_SINGLE_TEAM;
     }
 
     public String toString()

@@ -11,6 +11,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
@@ -20,6 +21,23 @@ import me.rosillogames.eggwars.utils.PlayerUtils;
 
 public class EntityHurtListener implements Listener
 {
+    @EventHandler
+    public void clearAssists(EntityRegainHealthEvent healEvent)
+    {
+        if (!(healEvent.getEntity() instanceof Player))
+        {
+            return;
+        }
+
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)healEvent.getEntity());
+
+        if (ewplayer != null && ewplayer.isInArena())
+        {
+            ewplayer.recalculateAssists((float)healEvent.getAmount());
+            return;
+        }
+    }
+
     @EventHandler
     public void cancelIllegalDamage(EntityDamageEvent dmgEvent)
     {
@@ -106,7 +124,7 @@ public class EntityHurtListener implements Listener
             }
             else
             {
-                ewVictim.setLastDamager(ewDamager);
+                ewVictim.setLastDamager(ewDamager, (float)event.getDamage());
                 ewDamager.clearInvincible();
                 return;
             }

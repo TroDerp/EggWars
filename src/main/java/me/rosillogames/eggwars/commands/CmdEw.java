@@ -1,7 +1,6 @@
 package me.rosillogames.eggwars.commands;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +16,6 @@ import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.ReloadType;
-import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.events.EwPluginReloadEvent;
 import me.rosillogames.eggwars.language.Language;
 import me.rosillogames.eggwars.language.LanguageManager;
@@ -32,7 +30,6 @@ public class CmdEw implements TabExecutor
     public CmdEw()
     {
         this.mainArgs.put("forceStart", new ForceStart());
-        this.mainArgs.put("getStat", new GetStat());
         this.mainArgs.put("help", new Help());
         this.mainArgs.put("join", new Join());
         this.mainArgs.put("lang", new Lang());
@@ -295,60 +292,6 @@ public class CmdEw implements TabExecutor
         public String getPermission()
         {
             return "eggwars.command.join";
-        }
-    }
-
-    public static class GetStat extends CommandArg
-    {
-        public GetStat()
-        {
-            super(true);
-        }
-
-        @Override
-        public boolean execute(CommandSender sender, String[] args)
-        {
-            if (args.length <= 1)
-            {
-                TranslationUtils.sendMessage("&cUse /ew getStat <stat mode> <stat type>", sender);
-                return false;
-            }
-
-            EwPlayer player = PlayerUtils.getEwPlayer((Player)sender);
-            int val = EggWars.getDB().loadStat(player.getPlayer(), args[1], args[2]);
-            sender.sendMessage(args[1] + " " + args[2] + ": " + val);
-            return true;
-        }
-
-        @Override
-        public List<String> getCompleteArgs(CommandSender commandSender, String[] args)
-        {
-            List<String> list = new ArrayList();
-
-            if (args.length == 2)
-            {
-                for (String mode : Arrays.asList("total", "solo", "teams"))
-                {
-                    if (mode.startsWith(args[1].toLowerCase()))
-                    {
-                        list.add(mode);
-                    }
-                }
-            }
-            else if (args.length == 3)
-            {
-                for (StatType type : StatType.values())
-                {
-                    String stat = type.name().toLowerCase();
-
-                    if (stat.startsWith(args[2].toLowerCase()))
-                    {
-                        list.add(stat);
-                    }
-                }
-            }
-
-            return list;
         }
     }
 

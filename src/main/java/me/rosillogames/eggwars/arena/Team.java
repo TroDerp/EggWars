@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -21,8 +20,8 @@ import org.bukkit.scoreboard.Scoreboard;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.objects.Cage;
 import me.rosillogames.eggwars.player.EwPlayer;
-import me.rosillogames.eggwars.utils.Colorizer;
 import me.rosillogames.eggwars.utils.Locations;
 import me.rosillogames.eggwars.utils.TeamUtils;
 import me.rosillogames.eggwars.utils.WorldController;
@@ -33,7 +32,7 @@ public class Team
     private final Set<EwPlayer> players = new HashSet();
     private final Set<Entity> villager = new HashSet();
     private final Arena arena;
-    private final List<Location> cages = new ArrayList();
+    private final List<Cage> cages = new ArrayList();
     private final Inventory teamChest;
     private Location egg;
     private Location villagerLoc;
@@ -64,7 +63,7 @@ public class Team
             this.respawn.setWorld(this.arena.getWorld());
         }
 
-        for (Location cage : this.cages)
+        for (Cage cage : this.cages)
         {
             cage.setWorld(this.arena.getWorld());
         }
@@ -98,7 +97,7 @@ public class Team
     /** Returns a copy of the list of all glass locations.
      ** WARNING: The locations on the list aren't clones!
      **/
-    public List<Location> getCages()
+    public List<Cage> getCages()
     {
         return new ArrayList(this.cages);
     }
@@ -108,7 +107,9 @@ public class Team
      **/
     public void addCage(Location location)
     {
-        this.cages.add(Locations.toBlock(location, false));
+        Cage cage = new Cage(this);
+        cage.setLocation(location);//TODO better customization for cages
+        this.cages.add(cage);
     }
 
     public boolean removeLastCage()
@@ -201,15 +202,13 @@ public class Team
             return false;
         }
 
-        if (!EggWars.config.balanceTeams)
-        {
-            return true;
-        }
-        else
+        if (EggWars.config.balanceTeams || (this.arena.getMode().isTeam() && this.arena.skipsLobby()))
         {
             int i = (int)Math.floor(this.arena.getPlayers().size() / this.arena.getTeams().size());
             return this.players.size() <= i && this.arena.getMaxTeamPlayers() > this.players.size();
         }
+
+        return true;
     }
 
     public boolean canRespawn()
@@ -226,6 +225,17 @@ public class Team
     public void removePlayer(EwPlayer ewplayer)
     {
         this.players.remove(ewplayer);
+
+        if (this.arena.getStatus().isLobby() && this.arena.skipsLobby())
+        {
+            for (Cage cage : this.cages)
+            {
+                if (cage.getInhabitor() == ewplayer.getPlayer())
+                {
+                    cage.remove();
+                }
+            }
+        }
 
         if (ewplayer.getTeam().equals(this))
         {
@@ -284,74 +294,45 @@ public class Team
         this.villager.add(blw);
     }
 
-    public void tpPlayersToCages()
+    public void placeInBestCage(Player player)
     {
-        int spawned = 0;
-
-        for (EwPlayer ewplayer : this.players)
+        for (int i = 0; i < this.cages.size(); ++i)
         {
-            if (spawned < this.cages.size())
+            Cage cage = this.cages.get(i);
+
+            if (cage.getInhabitor() != null)
             {
-                ewplayer.getPlayer().teleport(Locations.toMiddle(this.cages.get(spawned)));
-            }
-            else
-            {
-                ewplayer.getPlayer().teleport(Locations.toMiddle(this.respawn));
+                continue;
             }
 
-            spawned++;
+            cage.place(player);
         }
     }
 
     public void placeCages()
-    {
-        Material gls = Colorizer.colorize(Material.GLASS, this.getType().woolColor());
-
-        if (!this.players.isEmpty() && (this.arena.getReleaseCountdown() != 0 || this.arena.skipSoloLobby()))
+    {//Fix cages when skipLobby is enabled in teams mode.
+        if (!this.players.isEmpty() && (this.arena.getReleaseCountdown() != 0 || this.arena.skipsLobby()))
         {
-            for (Location cage : this.cages)
+            int i = 0;
+
+            for (EwPlayer ewplayer : this.players)
             {
-                for (int i = -1; i <= 1; i++)
+                if (i >= this.cages.size())//Remove check after adding everything
                 {
-                    for (int j = -1; j <= 3; j++)
-                    {
-                        for (int k = -1; k <= 1; k++)
-                        {
-                            BlockState state = cage.clone().add(i, j, k).getBlock().getState();
-
-                            if ((i > -1 && i < 1 && j > -1 && j < 3 && k > -1 && k < 1) || ((j == -1 || j == 3) && (i == -1 || k == -1 || i == 1 || k == 1)) || ((i == -1 && k == -1) || (i == -1 && k == 1) || (i == 1 && k == -1) || (i == 1 && k == 1)))
-                            {
-                                state.setType(Material.AIR);
-                            }
-                            else
-                            {
-                                state.setType(gls);
-                            }
-
-                            state.update(true);
-                        }
-                    }
+                    break;
                 }
+
+                this.cages.get(i).place(ewplayer.getPlayer());
+                i++;
             }
         }
     }
 
     public void removeCages()
     {
-        for (Location spawn : this.cages)
+        for (Cage spawn : this.cages)
         {
-            for (int i = -1; i <= 1; i++)
-            {
-                for (int j = -1; j <= 3; j++)
-                {
-                    for (int k = -1; k <= 1; k++)
-                    {
-                        BlockState blockstate = spawn.clone().add(i, j, k).getBlock().getState();
-                        blockstate.setType(Material.AIR);
-                        blockstate.update(true);
-                    }
-                }
-            }
+            spawn.remove();
         }
     }
 

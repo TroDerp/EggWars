@@ -29,7 +29,7 @@ public class Lobby
             {
                 if (!arenaIn.getStatus().equals(ArenaStatus.STARTING))
                 {
-                    this.cancel();
+                    super.cancel();//to prevent a conflict with forceStart
                     return;
                 }
 
@@ -100,7 +100,7 @@ public class Lobby
 
     public static void endStartingPhase(Arena arenaIn)
     {
-        if (arenaIn.skipSoloLobby())
+        if (arenaIn.skipsLobby())
         {
             //"solo" start has to skip ArenaStatus.STARTING_GAME and should use defCountdown
             arenaIn.setupVotedResults();
@@ -125,38 +125,37 @@ public class Lobby
         }
     }
 
-    public static void onEnter(Arena arenaIn, EwPlayer ewplayer)
-    {//TODO: Add a way to auto-update these item's when config or lang is changed
-        if (arenaIn.skipSoloLobby())
+    public static void onEnter(Arena arenaIn, EwPlayer ewpl)
+    {//TODO: Add a way to auto-update item translatables when config or lang is changed
+        if (arenaIn.skipsLobby())
         {
             for (Team team : arenaIn.getTeams().values())
             {
-                if (team.getPlayers().size() <= 0)
+                if (team.canJoin())
                 {
-                    team.addPlayer(ewplayer);
-                    team.placeCages();
-                    team.tpPlayersToCages();
+                    team.addPlayer(ewpl);
+                    team.placeInBestCage(ewpl.getPlayer());
                     break;
                 }
             }
 
-            ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.kit_selection.slot_in_cage"), KitManager.getInvItem(ewplayer.getPlayer()));
-            ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.voting.slot_in_cage"), VoteUtils.getInvItem(ewplayer.getPlayer()));
+            ewpl.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.kit_selection.slot_in_cage"), KitManager.getInvItem(ewpl.getPlayer()));
+            ewpl.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.voting.slot_in_cage"), VoteUtils.getInvItem(ewpl.getPlayer()));
         }
         else
         {
-            ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.kit_selection.slot"), KitManager.getInvItem(ewplayer.getPlayer()));
-            ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.voting.slot"), VoteUtils.getInvItem(ewplayer.getPlayer()));
-            ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.team_selection.slot"), TeamUtils.getInvItem(ewplayer.getPlayer()));
+            ewpl.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.kit_selection.slot"), KitManager.getInvItem(ewpl.getPlayer()));
+            ewpl.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.voting.slot"), VoteUtils.getInvItem(ewpl.getPlayer()));
+            ewpl.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.team_selection.slot"), TeamUtils.getInvItem(ewpl.getPlayer()));
         }
 
         (new BukkitRunnable()
         {
             public void run()
             {
-                if (ewplayer.isInArena() && !arenaIn.getStatus().isGame())
+                if (ewpl.isInArena() && !arenaIn.getStatus().isGame())
                 {
-                    ewplayer.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.leave.slot"), ArenaManager.getLeaveItem(ewplayer.getPlayer()));
+                    ewpl.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.leave.slot"), ArenaManager.getLeaveItem(ewpl.getPlayer()));
                 }
             }
         }).runTaskLater(EggWars.instance, 30L);

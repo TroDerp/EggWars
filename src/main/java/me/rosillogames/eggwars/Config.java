@@ -13,6 +13,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import me.rosillogames.eggwars.dependencies.DependencyUtils;
+import me.rosillogames.eggwars.enums.ModeOption;
 import me.rosillogames.eggwars.enums.Versions;
 import me.rosillogames.eggwars.managers.ArenaManager;
 import me.rosillogames.eggwars.managers.GeneratorManager;
@@ -29,7 +30,7 @@ public class Config
     public boolean hidePlayers = true;
     public boolean alwaysTpToLobby = true;
     public boolean vault = false;
-    public boolean skipSoloLobby = true;
+    public ModeOption skipsLobby = ModeOption.SOLO;
     public boolean showKills = true;
     public boolean balanceTeams = false;
     public boolean shareTeamEC = false;
@@ -39,6 +40,9 @@ public class Config
     public boolean keepInv = false;
     public boolean dropInv = false;
     public boolean publicSpectChat = true;
+    public boolean bestAssistIsKiller = false;
+    public ModeOption enableAssists = ModeOption.TEAM;
+    public int dmgForgetTime = 20;
     public int respawnDelay = 4;
     public int finishingTime = 10;
     public int invincibleTime = 10;
@@ -110,6 +114,18 @@ public class Config
         fileConf.addDefault("database.password", "walrus");
 
         fileConf.addDefault("game.balance_teams", false);
+        String skipSoloLobby = "game.skip_solo_lobby";
+
+        if (fileConf.contains(skipSoloLobby))
+        {
+            fileConf.addDefault("game.skip_lobby", (fileConf.getBoolean(skipSoloLobby) ? ModeOption.SOLO : ModeOption.NONE).toString());
+            fileConf.addDefault(skipSoloLobby, null);
+        }
+        else
+        {
+            fileConf.addDefault("game.skip_lobby", ModeOption.SOLO.toString());
+        }
+
         fileConf.addDefault("game.skip_solo_lobby", true);
         fileConf.addDefault("game.show_kills", true);
         fileConf.addDefault("game.drop_blocks", false);
@@ -125,6 +141,9 @@ public class Config
         }
 
         fileConf.addDefault("game.player.allow_starving", false);
+        fileConf.addDefault("game.assists.enable", ModeOption.TEAM.toString());
+        fileConf.addDefault("game.assists.grant_kill_to_best", false);
+        fileConf.addDefault("game.assists.forget_time", 20);
         fileConf.addDefault("game.tnt.auto_ignite", true);
 
         if (!converted)
@@ -284,6 +303,9 @@ public class Config
         this.canSpectStay = fileConf.getBoolean("spectator.can_stay_at_game");
         this.canSpectJoin = fileConf.getBoolean("spectator.can_enter_ingame");
         this.publicSpectChat = fileConf.getBoolean("spectator.public_chat");
+        this.bestAssistIsKiller = fileConf.getBoolean("game.assists.grant_kill_to_best");
+        this.enableAssists = ModeOption.getOrDefault(fileConf.getString("game.assists.enable"), ModeOption.TEAM);
+        this.dmgForgetTime = fileConf.getInt("game.assists.forget_time");
         this.respawnDelay = fileConf.getInt("game.player.respawn_delay");
         this.hidePlayers = fileConf.getBoolean("plugin.hide_players");
         this.alwaysTpToLobby = fileConf.getBoolean("plugin.always_teleport_to_lobby");
@@ -292,7 +314,7 @@ public class Config
         this.vault = fileConf.getBoolean("plugin.vault") && DependencyUtils.vault();
         this.balanceTeams = fileConf.getBoolean("game.balance_teams");
         this.shareTeamEC = fileConf.getBoolean("game.share_team_ender_chest");
-        this.skipSoloLobby = fileConf.getBoolean("game.skip_solo_lobby");
+        this.skipsLobby = ModeOption.getOrDefault(fileConf.getString("game.skip_lobby"), ModeOption.SOLO);
         this.showKills = fileConf.getBoolean("game.show_kills");
         this.dropInv = fileConf.getBoolean("game.player.drop_inventory");
         this.keepInv = fileConf.getBoolean("game.player.keep_inventory");

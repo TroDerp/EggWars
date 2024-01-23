@@ -39,7 +39,6 @@ public class Starting
         for (Team team : arenaIn.getTeams().values())
         {
             team.placeCages();
-            team.tpPlayersToCages();
             team.prepareForGame();
         }
 
@@ -106,7 +105,7 @@ public class Starting
         arena.sendBroadcast("gameplay.lobby.go");
         arena.setStatus(ArenaStatus.IN_GAME);
 
-        if (arena.getReleaseCountdown() != 0 || arena.skipSoloLobby())//Solo doesn't use gameCountdown
+        if (arena.getReleaseCountdown() != 0 || arena.skipsLobby())//When skipping lobby we don't use releaseCountdown
         {
             arena.getTeams().values().forEach(team -> team.removeCages());
         }
