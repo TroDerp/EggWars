@@ -37,7 +37,7 @@ public class TickClock
                         }
                     }
                 }
-            }).runTaskTimer(EggWars.instance, 0L, 20L);
+            }).runTaskTimer(EggWars.instance, 0L, 10L);
         }
     }
 }

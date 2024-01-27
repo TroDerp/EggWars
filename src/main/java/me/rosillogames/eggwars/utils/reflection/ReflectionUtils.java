@@ -98,14 +98,14 @@ public class ReflectionUtils
         currentReflections.sendPacket(player, packetObj);
     }
 
-    public static void sendTitle(Player player, int fadeInTime, int stayTime, int fadeOutTime, String title, String subtitle)
+    public static void sendTitle(Player player, int fadeIn, int stay, int fadeOut, String title, String subtitle)
     {
-        currentReflections.sendTitle(player, Integer.valueOf(fadeInTime), Integer.valueOf(stayTime), Integer.valueOf(fadeOutTime), title, subtitle);
+        currentReflections.sendTitle(player, Integer.valueOf(fadeIn), Integer.valueOf(stay), Integer.valueOf(fadeOut), title, subtitle);
     }
 
-    public static void sendActionBar(Player player, String s, Integer integer, Integer integer1, Integer integer2)
+    public static void sendActionBar(Player player, String s, int fadeIn, int stay, int fadeOut)
     {
-        currentReflections.sendActionBar(player, s, integer, integer1, integer2);
+        currentReflections.sendActionBar(player, s, Integer.valueOf(fadeIn), Integer.valueOf(stay), Integer.valueOf(fadeOut));
     }
 
     public static void setReflections(Versions v)
@@ -139,11 +139,14 @@ public class ReflectionUtils
                 return;
             case V_1_20_R1:
                 currentReflections = new Reflections_1_20((byte)0);
+                return;
             case V_1_20_R2:
                 currentReflections = new Reflections_1_20((byte)1);
+                return;
             case OTHER:
             case V_1_20_R3:
                 currentReflections = new Reflections_1_20((byte)2);
+                return;
         }
     }
 }

@@ -40,9 +40,9 @@ public class Cage
         return null;
     }
 
-    public void setLocation(Location location)
+    public void setLocation(Location loc)
     {
-        this.location = Locations.toBlock(location, false);
+        this.location = Locations.toBlock(loc, false);
     }
 
     public boolean getRotate()
