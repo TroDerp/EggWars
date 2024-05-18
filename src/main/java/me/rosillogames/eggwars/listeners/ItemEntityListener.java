@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Generator;
 import me.rosillogames.eggwars.enums.ArenaStatus;
@@ -13,8 +14,24 @@ import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.PlayerUtils;
 
-public class ItemPickupListener implements Listener
+public class ItemEntityListener implements Listener
 {
+    @EventHandler
+    public void drop(PlayerDropItemEvent dropEvent)
+    {
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer(dropEvent.getPlayer());
+
+        if (ewplayer.isInArena() && !ewplayer.getArena().getStatus().equals(ArenaStatus.IN_GAME))
+        {
+            dropEvent.setCancelled(true);
+            return;
+        }
+        else
+        {
+            return;
+        }
+    }
+
     @EventHandler
     public void onPickup(EntityPickupItemEvent pickUpEvent)
     {
