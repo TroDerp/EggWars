@@ -1102,9 +1102,11 @@ public class Arena
 
     public void updateInvs()
     {
-        if (this.teamInv == null)
+        int teamInvSize = (int)Math.ceil((double)(this.teams.size() + 1) / 9D) * 9;
+
+        if (this.teamInv == null || this.teamInv.getSize() != teamInvSize)//it may get changed during edit
         {
-            this.teamInv = new TranslatableInventory((int)Math.ceil((double)(this.teams.size() + 1) / 9D) * 9, "teams.menu_title");
+            this.teamInv = new TranslatableInventory(teamInvSize, "teams.menu_title");
         }
 
         this.teamInv.clear();

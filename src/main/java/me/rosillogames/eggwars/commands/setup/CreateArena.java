@@ -53,7 +53,7 @@ public class CreateArena extends CommandArg
             {
                 arena.getWorld().setSpawnLocation(new Location(arena.getWorld(), 0.5, 100.0, 0.5));
 
-                if (arena.getWorld().getBlockAt(0, 99, 0).getType() == Material.AIR)
+                if (arena.getWorld().getBlockAt(0, 99, 0).getType().isAir())
                 {
                     arena.getWorld().getBlockAt(0, 99, 0).setType(Material.STONE);
                 }

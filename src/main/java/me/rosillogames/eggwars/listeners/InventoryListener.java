@@ -1,7 +1,6 @@
 package me.rosillogames.eggwars.listeners;
 
 import java.util.Map;
-
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -27,6 +26,7 @@ import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.HealthType;
 import me.rosillogames.eggwars.enums.ItemType;
 import me.rosillogames.eggwars.enums.MenuType;
+import me.rosillogames.eggwars.enums.Versions;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.managers.KitManager;
 import me.rosillogames.eggwars.objects.Kit;
@@ -99,7 +99,11 @@ public class InventoryListener implements Listener
 
             if (block != null && block.getState() instanceof EnderChest)
             {
-                ((EnderChest)block.getState()).open();
+                if (EggWars.serverVersion.ordinal() >= Versions.V_1_19_R1.ordinal())
+                {
+                    ((EnderChest)block.getState()).open();
+                }
+
                 ewInv.setExtraData(block);
             }
 
@@ -129,7 +133,7 @@ public class InventoryListener implements Listener
         {
             BlockState state = ((Block)ewply.getInv().getExtraData()[0]).getLocation().getBlock().getState();
 
-            if (state instanceof EnderChest)
+            if (state instanceof EnderChest && EggWars.serverVersion.ordinal() >= Versions.V_1_19_R1.ordinal())
             {
                 ((EnderChest)state).close();
             }

@@ -313,7 +313,7 @@ public class Config
         this.enableAPSS = fileConf.getBoolean("generator.enable_apss") && EggWars.serverVersion.ordinal() >= Versions.V_1_16_R3.ordinal();
         this.vault = fileConf.getBoolean("plugin.vault") && DependencyUtils.vault();
         this.balanceTeams = fileConf.getBoolean("game.balance_teams");
-        this.shareTeamEC = fileConf.getBoolean("game.share_team_ender_chest");
+        this.shareTeamEC = fileConf.getBoolean("game.share_team_ender_chest");//TODO unavailable in 1.16 (and newer?)
         this.skipsLobby = ModeOption.getOrDefault(fileConf.getString("game.skip_lobby"), ModeOption.SOLO);
         this.showKills = fileConf.getBoolean("game.show_kills");
         this.dropInv = fileConf.getBoolean("game.player.drop_inventory");
