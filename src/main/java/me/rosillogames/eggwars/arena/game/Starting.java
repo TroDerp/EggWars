@@ -60,7 +60,7 @@ public class Starting
                     return;
                 }
 
-                if (!arenaIn.beenForced() && (arenaIn.getWinner() != null || arenaIn.getAlivePlayers() == null))
+                if (!arenaIn.beenForced() && (arenaIn.getWinner() != null || arenaIn.getAliveTeams().isEmpty()))
                 {
                     this.cancel();
                     Finish.finish(arenaIn, arenaIn.getWinner());

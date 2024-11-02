@@ -44,16 +44,17 @@ public class Generator
     private static final int TAG_PROGRESS_BAR_LENGHT = 30;
     private final Arena arena;
     private final Location block;
-    private final int defLevel;
+    private int defLevel;
     private final String type;
     @Nullable
     private GeneratorType cachedType = null;
     private int level;
     @Nullable
     private BukkitTask tickTask = null;
+    //Keep generator ticks (if reloadCache functions during game, they will keep progress)
     private int genTicks;
     @Nullable
-    private ArmorStand armorStand = null;
+    private ArmorStand stand = null;
     private TranslatableInventory genInv;
     //Awesome Produce Sharing System as described by CubeCraft
     //When more than a single player are next to the generator, its product will be given to the player their turn corresponds with.
@@ -66,7 +67,6 @@ public class Generator
         this.level = lvl;
         this.type = typeIn;
         this.arena = arenaIn;
-        this.reloadCache();
     }
 
     public Location getBlock()
@@ -114,21 +114,21 @@ public class Generator
 
         if (this.cachedType.showTimeTag())
         {
-            this.armorStand = (ArmorStand)this.block.getWorld().spawn(this.block.clone().add(0.5, 0.475, 0.5), org.bukkit.entity.ArmorStand.class);
-            ReflectionUtils.setArmorStandInvisible(this.armorStand);
-            this.armorStand.setAI(false);
-            this.armorStand.setMarker(true);
-            this.armorStand.teleport(this.block.clone().add(0.5, 0.475, 0.5));
+            this.stand = (ArmorStand)this.block.getWorld().spawn(this.block.clone().add(0.5, 0.475, 0.5), org.bukkit.entity.ArmorStand.class);
+            ReflectionUtils.setArmorStandInvisible(this.stand);
+            this.stand.setAI(false);
+            this.stand.setMarker(true);
+            this.stand.teleport(this.block.clone().add(0.5, 0.475, 0.5));
             //Using stringbuilder for optimization
-            StringBuilder sb = new StringBuilder("");
+            StringBuilder sb = new StringBuilder();
 
             for (int i = 0; i < TAG_PROGRESS_BAR_LENGHT; ++i)
             {
-                sb.append(ChatColor.RED + TAG_PROGRESS_DOT);
+                sb.append(ChatColor.RED).append(TAG_PROGRESS_DOT);
             }
 
-            this.armorStand.setCustomName(sb.toString());
-            this.armorStand.setCustomNameVisible(true);
+            this.stand.setCustomName(sb.toString());
+            this.stand.setCustomNameVisible(true);
         }
 
         final int tickRate = this.cachedType.tickRate(this.level);
@@ -155,16 +155,16 @@ public class Generator
                 }
                 else
                 {
-                    if (Generator.this.armorStand != null)
+                    if (Generator.this.stand != null)
                     {
-                        StringBuilder sb = new StringBuilder("");
+                        StringBuilder sb = new StringBuilder();
 
                         for (int i = 0; i < TAG_PROGRESS_BAR_LENGHT; ++i)
                         {
-                            sb.append(((((float)Generator.this.genTicks / (float)tickRate) > ((float)i / (float)TAG_PROGRESS_BAR_LENGHT)) ? ChatColor.GREEN : ChatColor.RED) + TAG_PROGRESS_DOT);
+                            sb.append(((float)Generator.this.genTicks / (float)tickRate) > ((float)i / (float)TAG_PROGRESS_BAR_LENGHT) ? ChatColor.GREEN : ChatColor.RED).append(TAG_PROGRESS_DOT);
                         }
 
-                        Generator.this.armorStand.setCustomName(sb.toString());
+                        Generator.this.stand.setCustomName(sb.toString());
                     }
                 }
             }
@@ -211,10 +211,10 @@ public class Generator
 
     public void stop()
     {
-        if (this.armorStand != null)
+        if (this.stand != null)
         {
-            this.armorStand.remove();
-            this.armorStand = null;
+            this.stand.remove();
+            this.stand = null;
         }
 
         if (this.tickTask != null)
@@ -361,7 +361,13 @@ public class Generator
         fwbuilder.withTrail();
         meta.addEffect(fwbuilder.build());
         firework.setFireworkMeta(meta);
-        firework.detonate();
+        (new BukkitRunnable()
+        {//Don't detonate immediately so the "launch" sound can play. Can't use "firework.setMaxLife(1)" because it was added in bukkit 1.19.
+            public void run()
+            {
+                firework.detonate();
+            }
+        }).runTaskLater(EggWars.instance, 1L);
         this.updateSign();
         return true;
     }
@@ -386,14 +392,17 @@ public class Generator
 
             if (newType != null)
             {
+                this.defLevel = Math.min(this.defLevel, newType.getMaxLevel());
                 this.level = Math.min(this.level, newType.getMaxLevel());
 
                 //Checks if there was a tick task active before (by checking if it's not null, because it is removed only on arena reset)
-                //to know if it has to start generating again
+                //to know if it has to start generating again (so it can re/spawn armor stand, menu, etc.)
                 if (this.tickTask != null)
                 {
                     this.start();
                 }
+
+                this.updateSign();
             }
             else
             {

@@ -1,5 +1,7 @@
 package me.rosillogames.eggwars.arena.game;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import org.bukkit.Sound;
 import org.bukkit.scheduler.BukkitRunnable;
 import me.rosillogames.eggwars.EggWars;
@@ -129,7 +131,10 @@ public class Lobby
     {//TODO: Add a way to auto-update item translatables when config or lang is changed
         if (arenaIn.skipsLobby())
         {
-            for (Team team : arenaIn.getTeams().values())
+            ArrayList<Team> list = new ArrayList(arenaIn.getTeams().values());
+            Collections.shuffle(list);
+
+            for (Team team : list)
             {
                 if (team.canJoin())
                 {

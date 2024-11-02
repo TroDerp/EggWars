@@ -243,6 +243,7 @@ public class Team
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void prepareForGame()
     {
         WorldController.addPluginChunkTicket(this.villagerLoc);
@@ -263,7 +264,7 @@ public class Team
         Villager vill = middleLoc.getWorld().spawn(middleLoc, Villager.class);
         vill.setAdult();
         vill.setProfession(Villager.Profession.NONE);
-        vill.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 255, false, false));
+        vill.addPotionEffect(new PotionEffect(PotionEffectType.getById(2 /* SLOW or SLOWNESS */), Integer.MAX_VALUE, 255, false, false));
         vill.setGravity(false);
         vill.setCustomName(TranslationUtils.getMessage("gameplay.villager.name"));
         vill.setCustomNameVisible(true);
@@ -332,7 +333,7 @@ public class Team
     {
         for (Cage spawn : this.cages)
         {
-            spawn.remove();
+            spawn.remove();//despawns cage blocks
         }
     }
 
@@ -342,6 +343,8 @@ public class Team
         {
             entity.remove();
         }
+
+        this.villager.clear();
     }
 
     public boolean isEliminated()

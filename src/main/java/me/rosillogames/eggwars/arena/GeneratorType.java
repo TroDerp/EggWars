@@ -99,7 +99,7 @@ public class GeneratorType
 
         GeneratorType other = (GeneratorType)othr;
 
-        //these values *should* never be null so there is no check
+        //these values *must* never be null so there is no check
         if (!this.maxItems.equals(other.maxItems) || !this.tickRates.equals(other.tickRates) || !this.prices.equals(other.prices) || !this.name.equalsIgnoreCase(other.name) || this.showTimeTag != other.showTimeTag || this.requiresNearbyPlayer != other.requiresNearbyPlayer || !this.droppedToken.equals(other.droppedToken) || this.maxLevel != other.maxLevel || this.color != other.color)
         {
             return false;

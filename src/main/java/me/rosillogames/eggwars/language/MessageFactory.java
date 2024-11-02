@@ -65,5 +65,49 @@ public class MessageFactory
         }
 
         return ChatColor.translateAlternateColorCodes('&', msg);
-    }
+    }/*
+    Brown team test
+    @NotNull
+    public static String translateAlternateColorCodes(char altColorChar, @NotNull String textToTranslate)
+    {
+        Validate.notNull(textToTranslate, "Cannot translate null text");
+        char[] b = textToTranslate.toCharArray();
+        List<Character> charList = new ArrayList();
+        boolean dontAddNext = false;
+
+        for (int i = 0; i < b.length; i++)
+        {
+            if (dontAddNext)
+            {
+                dontAddNext = false;
+                continue;
+            }
+
+            if (i < (b.length - 1) && b[i] == altColorChar && "0123456789AaBbCcDdEeFfGgKkLlMmNnOoRrXx".indexOf(b[i + 1]) > -1)
+            {
+                b[i] = '§';
+                b[i + 1] = Character.toLowerCase(b[i + 1]);
+                charList.add(b[i]);
+
+                if (b[i + 1] == 'g')
+                {
+                    charList.addAll(Arrays.asList('x', '§', '7', '§', '2', '§', '3', '§', 'd', '§', '0', '§', 'd'));
+                    dontAddNext = true;
+                }
+            }
+            else
+            {
+                charList.add(b[i]);
+            }
+        }
+
+        char[] newCharArr = new char[charList.size()];
+
+        for (int i = 0; i < newCharArr.length; i++)
+        {
+            newCharArr[i] = charList.get(i).charValue();
+        }
+
+        return new String(newCharArr);
+    }*/
 }

@@ -9,7 +9,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionEffect;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import me.rosillogames.eggwars.EggWars;
@@ -169,9 +169,9 @@ public class PlayerUtils
 
     public static void removePotionEffects(Player player)
     {
-        for (PotionEffectType type : PotionEffectType.values())
+        for (PotionEffect effect : player.getActivePotionEffects())
         {
-            player.removePotionEffect(type);
+            player.removePotionEffect(effect.getType());
         }
     }
 

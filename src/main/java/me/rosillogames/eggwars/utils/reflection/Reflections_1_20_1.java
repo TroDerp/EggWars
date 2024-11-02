@@ -4,13 +4,14 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -22,15 +23,8 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import com.google.gson.JsonObject;
 
-public class Reflections_1_19 implements Reflections
+public class Reflections_1_20_1 implements Reflections
 {
-    private final byte version;
-
-    public Reflections_1_19(byte v)
-    {
-        this.version = v;
-    }
-
     @Override
     public void setArmorStandInvisible(ArmorStand stand)
     {
@@ -62,13 +56,18 @@ public class Reflections_1_19 implements Reflections
     {
         try
         {
-            Class cMojangsonParser = this.getNMSClass("nbt.MojangsonParser");
-            Object itemNbt = cMojangsonParser.getMethod("a", String.class).invoke(null, json.toString());
+            Class cHoldLookA = this.getNMSClass("core.HolderLookup").getDeclaredClasses()[0];
+            Object holdLookA = this.getNMSClass("server.MinecraftServer").getMethod("getDefaultRegistryAccess").invoke(null);
             Class cItemStack = this.getNMSClass("world.item.ItemStack");
-            Class cNBTCompound = this.getNMSClass("nbt.NBTTagCompound");
-            Object itemStack = cItemStack.getMethod("a", cNBTCompound).invoke(null, itemNbt);
-            Class cCraftItemStack = this.getOBCClass("inventory.CraftItemStack");
-            return (ItemStack)cCraftItemStack.getMethod("asBukkitCopy", cItemStack).invoke((Object)null, itemStack);
+            Object itemNbt = this.getNMSClass("nbt.MojangsonParser").getMethod("a", String.class).invoke(null, json.toString());
+            Class cNBTBase = this.getNMSClass("nbt.NBTBase");
+            Optional stack = (Optional)cItemStack.getMethod("a", cHoldLookA, cNBTBase).invoke(null, holdLookA, itemNbt);
+
+            if (stack.isPresent())
+            {
+                Class cCraftItemStack = this.getOBCClass("inventory.CraftItemStack");
+                return (ItemStack)cCraftItemStack.getMethod("asBukkitCopy", cItemStack).invoke((Object)null, stack.get());
+            }
         }
         catch (Exception exception)
         {
@@ -88,23 +87,11 @@ public class Reflections_1_19 implements Reflections
             Object blockNbt = cMojangsonParser.getMethod("a", String.class).invoke(null, string);
             Class cNBTCompound = this.getNMSClass("nbt.NBTTagCompound");
             Class cGameProfileSerializer = this.getNMSClass("nbt.GameProfileSerializer");
-            Object blockData;
-
-            if (this.version > 0)
-            {
-                //Now I'm starting to HATE that HolderLookup thing
-                //BuiltInRegistries.BLOCK.asLookup(); = BuiltInRegistries.f.p();
-                Class cHolderGetter = this.getNMSClass("core.HolderGetter");
-                Class cBIR = this.getNMSClass("core.registries.BuiltInRegistries");
-                Object registry = cBIR.getField("f").get((Object)null);
-                Object holdLook = registry.getClass().getMethod("p").invoke(registry);
-                blockData = cGameProfileSerializer.getMethod("a", cHolderGetter, cNBTCompound).invoke(null, holdLook, blockNbt);
-            }
-            else
-            {
-                blockData = cGameProfileSerializer.getMethod("c", cNBTCompound).invoke(null, blockNbt);
-            }
-
+            Class cHolderGetter = this.getNMSClass("core.HolderGetter");
+            Class cBIR = this.getNMSClass("core.registries.BuiltInRegistries");
+            Object registry = cBIR.getField("e").get((Object)null);
+            Object holdLook = registry.getClass().getMethod("p").invoke(registry);
+            Object blockData = cGameProfileSerializer.getMethod("a", cHolderGetter, cNBTCompound).invoke(null, holdLook, blockNbt);
             Class cIBlockData = this.getNMSClass("world.level.block.state.IBlockData");
             Class cCraftBlockData = this.getOBCClass("block.data.CraftBlockData");
             return (BlockData)cCraftBlockData.getMethod("fromData", cIBlockData).invoke(null, blockData);
@@ -146,71 +133,31 @@ public class Reflections_1_19 implements Reflections
     }
 
     @Override
+    @Deprecated
     public List<String> getEnchantmentsLore(ItemStack stack)
-    {
-        List<String> list = new ArrayList();
-
-        try
-        {
-            for (Map.Entry<Enchantment, Integer> entry : stack.getEnchantments().entrySet())
-            {
-                Class cCraftEnch = this.getOBCClass("enchantments.CraftEnchantment");
-                Object nmsEnch = cCraftEnch.getMethod("getRaw", Enchantment.class).invoke(null, entry.getKey());
-                Class cEnch = this.getNMSClass("world.item.enchantment.Enchantment");
-                Object nameComponent = cEnch.getMethod("d", int.class).invoke(nmsEnch, entry.getValue());
-                Class cIChatBase = this.getNMSClass("network.chat.IChatBaseComponent");
-                Object string = cIChatBase.getMethod("getString").invoke(nameComponent);
-                list.add("§7" + (String)string);
-            }
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
-        }
-
-        return list;
+    {//no longer used
+        return new ArrayList<String>();
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public void setEnchantGlint(ItemStack stack, boolean glint, boolean force)
     {
-        if (!glint)
-        {
+        ItemMeta meta = stack.getItemMeta();
+        Material mat = stack.getType();
+
+        if (!force && (mat == Material.ENCHANTED_GOLDEN_APPLE || mat == Material.NETHER_STAR || mat == Material.END_CRYSTAL || mat == Material.EXPERIENCE_BOTTLE || mat == Material.ENCHANTED_BOOK || mat == Material.WRITTEN_BOOK || mat == Material.DEBUG_STICK))
+        {//don't apply to potions because they disabled it)
             return;
         }
 
-        ItemMeta meta = stack.getItemMeta();
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        meta.setEnchantmentGlintOverride(glint);
         stack.setItemMeta(meta);
-        stack.addUnsafeEnchantment(Enchantment.getByName("WATER_WORKER"), 1);
     }
 
     @Override
     public void killOutOfWorld(Player p)
     {
-        try
-        {
-            Object nmsP = p.getClass().getMethod("getHandle").invoke(p);
-            Class cDmgSource = this.getNMSClass("world.damagesource.DamageSource");
-            Object dmgSource;
-
-            if (this.version > 1)
-            {
-                Object dmgSources = nmsP.getClass().getMethod("dG").invoke(nmsP);
-                dmgSource = dmgSources.getClass().getMethod("m").invoke(dmgSources);
-            }
-            else
-            {
-                dmgSource = cDmgSource.getField("m").get(null);
-            }
-
-            nmsP.getClass().getMethod("a", cDmgSource, float.class).invoke(nmsP, dmgSource, 10000F);
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
-        }
+        p.damage((double)Float.MAX_VALUE, DamageSource.builder(DamageType.OUT_OF_WORLD).build());
     }
 
     @Override
@@ -219,7 +166,7 @@ public class Reflections_1_19 implements Reflections
         try
         {
             Object obj = world.getClass().getMethod("getHandle").invoke(world);
-            Field field = obj.getClass().getField(this.version > 1 ? "e" : "b");
+            Field field = obj.getClass().getField("e");
             boolean accessible = field.isAccessible();
             field.setAccessible(true);
             boolean boolVal = field.getBoolean(obj);
@@ -242,7 +189,7 @@ public class Reflections_1_19 implements Reflections
         try
         {
             Object nmsP = p.getClass().getMethod("getHandle").invoke(p);
-            Object nmsEC = nmsP.getClass().getMethod(this.version < 1 ? "fO" : this.version < 2 ? "fR" : "fW").invoke(nmsP);
+            Object nmsEC = nmsP.getClass().getMethod("gp").invoke(nmsP);
             Field field = nmsEC.getClass().getDeclaredFields()[0];
             boolean accessible = field.isAccessible();
             field.setAccessible(true);
@@ -251,11 +198,11 @@ public class Reflections_1_19 implements Reflections
 
             if (ecTE != null)
             {
-                Object blockPos = ecTE.getClass().getMethod("p").invoke(ecTE);
+                Object blockPos = ecTE.getClass().getMethod("ay_").invoke(ecTE);
                 int x = (int)blockPos.getClass().getMethod("u").invoke(blockPos);
                 int y = (int)blockPos.getClass().getMethod("v").invoke(blockPos);
                 int z = (int)blockPos.getClass().getMethod("w").invoke(blockPos);
-                nmsEC.getClass().getMethod(this.version < 1 ? "c_" : this.version < 2 ? "d_" : "c", this.getNMSClass("world.entity.player.EntityHuman")).invoke(nmsEC, nmsP);
+                nmsEC.getClass().getMethod("c", this.getNMSClass("world.entity.player.EntityHuman")).invoke(nmsEC, nmsP);
                 return p.getWorld().getBlockAt(x, y, z);
             }
         }
@@ -269,12 +216,12 @@ public class Reflections_1_19 implements Reflections
 
     @Override
     public void sendPacket(Player player, Object packetObj)
-    {
+    {//as of 1.20.2 packet sender class is ServerCommonPacketListenerImpl
         try
         {
             Object nmsPlayer = player.getClass().getMethod("getHandle").invoke(player);
-            Object nmsConnection = nmsPlayer.getClass().getField("b").get(nmsPlayer);
-            nmsConnection.getClass().getMethod("a", this.getNMSClass("network.protocol.Packet")).invoke(nmsConnection, packetObj);
+            Object nmsConnection = nmsPlayer.getClass().getField("c").get(nmsPlayer);
+            nmsConnection.getClass().getMethod("b", this.getNMSClass("network.protocol.Packet")).invoke(nmsConnection, packetObj);
         }
         catch (Exception exception)
         {
@@ -285,36 +232,7 @@ public class Reflections_1_19 implements Reflections
     @Override
     public void sendTitle(Player player, Integer fadeInTime, Integer stayTime, Integer fadeOutTime, String title, String subtitle)
     {
-        try
-        {
-            Class cTitleAnimPacket = this.getNMSClass("network.protocol.game.ClientboundSetTitlesAnimationPacket");
-            Constructor constructor = cTitleAnimPacket.getConstructor(Integer.TYPE, Integer.TYPE, Integer.TYPE);
-            Object packet = constructor.newInstance(fadeInTime, stayTime, fadeOutTime);
-            this.sendPacket(player, packet);
-            Class cIChatBase = this.getNMSClass("network.chat.IChatBaseComponent");
-
-            if (title != null)
-            {
-                Class cTitleTextPacket = this.getNMSClass("network.protocol.game.ClientboundSetTitleTextPacket");
-                Constructor constructor1 = cTitleTextPacket.getConstructor(cIChatBase);
-                Object chatcomponent = cIChatBase.getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\":\"" + title + "\"}");
-                Object packet1 = constructor1.newInstance(chatcomponent);
-                this.sendPacket(player, packet1);
-            }
-
-            if (subtitle != null)
-            {
-                Class cSubtitleTextPacket = this.getNMSClass("network.protocol.game.ClientboundSetSubtitleTextPacket");
-                Constructor constructor2 = cSubtitleTextPacket.getConstructor(cIChatBase);
-                Object chatcomponent1 = cIChatBase.getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\":\"" + subtitle + "\"}");
-                Object packet2 = constructor2.newInstance(chatcomponent1);
-                this.sendPacket(player, packet2);
-            }
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
-        }
+        player.sendTitle(title, subtitle, fadeInTime, stayTime, fadeOutTime);
     }
 
     @Override
@@ -327,7 +245,7 @@ public class Reflections_1_19 implements Reflections
             Object packet = constructor.newInstance(integer, integer1, integer2);
             this.sendPacket(player, packet);
 
-            player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(s));
+            player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacy(s));
         }
         catch (Exception exception)
         {

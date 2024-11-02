@@ -5,10 +5,10 @@ import java.util.Map;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import com.mojang.datafixers.util.Pair;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.objects.Price;
 import me.rosillogames.eggwars.utils.ItemUtils;
+import me.rosillogames.eggwars.utils.Pair;
 
 public class MultiOffer extends Offer
 {
@@ -40,7 +40,7 @@ public class MultiOffer extends Offer
 
         for (Pair<Boolean, ItemStack> result : this.results)
         {
-            ItemStack stack = Offer.adjustForRecipe(player, result.getSecond(), result.getFirst());
+            ItemStack stack = Offer.adjustForRecipe(player, result.getRight(), result.getLeft());
             EquipmentSlot slot = ItemUtils.getTradeSlot(player, stack);
 
             if (slot != EquipmentSlot.HAND)

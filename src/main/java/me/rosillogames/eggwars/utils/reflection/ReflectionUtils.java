@@ -25,6 +25,12 @@ public class ReflectionUtils
         try
         {
             Object obj = world.getClass().getMethod("createEntity", Location.class, Class.class).invoke(world, location, clazz);
+
+            if (obj instanceof Entity)
+            {
+                return (T)obj;
+            }
+
             return (T)obj.getClass().getMethod("getBukkitEntity").invoke(obj);
         }
         catch (Exception exception)
@@ -72,9 +78,19 @@ public class ReflectionUtils
         return currentReflections.getStackName(stack);
     }
 
+    @Deprecated
+    /**
+     * Used in < 1.20.5 to copy all enchantments lore when skipping the enchant glint,
+     * however it is now possible by disabling enchantment glint without removing enchs
+     */
     public static List<String> getEnchantmentsLore(ItemStack stack)
     {
         return currentReflections.getEnchantmentsLore(stack);
+    }
+
+    public static void setEnchantGlint(ItemStack stack, boolean enable, boolean force)
+    {
+        currentReflections.setEnchantGlint(stack, enable, force);
     }
 
     public static void killOutOfWorld(Player p)
@@ -138,14 +154,23 @@ public class ReflectionUtils
                 currentReflections = new Reflections_1_19((byte)2);
                 return;
             case V_1_20_R1:
-                currentReflections = new Reflections_1_20((byte)0);
+                currentReflections = new Reflections_1_20_0((byte)0);
                 return;
             case V_1_20_R2:
-                currentReflections = new Reflections_1_20((byte)1);
+                currentReflections = new Reflections_1_20_0((byte)1);
+                return;
+            case V_1_20_R3:
+                currentReflections = new Reflections_1_20_0((byte)2);
+                return;
+            case V_1_20_R4:
+                currentReflections = new Reflections_1_20_1();
+                return;
+            case V_1_21_R1:
+                currentReflections = new Reflections_1_21(false);
                 return;
             case OTHER:
-            case V_1_20_R3:
-                currentReflections = new Reflections_1_20((byte)2);
+            case V_1_21_R2:
+                currentReflections = new Reflections_1_21(true);
                 return;
         }
     }

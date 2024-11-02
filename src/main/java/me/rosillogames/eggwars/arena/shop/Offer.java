@@ -12,6 +12,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MerchantRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import me.rosillogames.eggwars.EggWars;
+import me.rosillogames.eggwars.enums.Versions;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.objects.Price;
 import me.rosillogames.eggwars.objects.Token;
@@ -146,6 +148,7 @@ public class Offer
         return Price.amountOf(this.price, player);
     }
 
+    @SuppressWarnings("deprecation")
     public static Map<Integer, Offer> fillInventory(TranslatableInventory translatableInv, List<Offer> merchantOffers)
     {
         Map<Integer, Offer> map = new HashMap();
@@ -155,26 +158,35 @@ public class Offer
             TranslatableItem tItem = TranslatableItem.fullTranslatable((player1) ->
             {
                 ItemStack stack = offer.getDisplayItem(player1).clone();
-                List<String> list = ReflectionUtils.getEnchantmentsLore(stack);
 
-                for (Enchantment ench : Enchantment.values())
+                if (EggWars.serverVersion.ordinal() >= Versions.V_1_20_R4.ordinal())
                 {
-                    stack.removeEnchantment(ench);
+                    ReflectionUtils.setEnchantGlint(stack, offer.canAfford(player1), false);
                 }
-
-                ItemMeta meta = stack.getItemMeta();
-                meta.setLore(list);
-
-                if (offer.canAfford(player1))
+                else
                 {
-                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                }
+                    List<String> list = ReflectionUtils.getEnchantmentsLore(stack);
 
-                stack.setItemMeta(meta);
+                    for (Enchantment ench : Enchantment.values())
+                    {
+                        stack.removeEnchantment(ench);
+                    }
 
-                if (offer.canAfford(player1))
-                {
-                    stack.addUnsafeEnchantment(Enchantment.WATER_WORKER, 1);
+                    ItemMeta meta = stack.getItemMeta();
+
+                    if (meta.hasLore())
+                    {
+                        list.add("");
+                        list.addAll(meta.getLore());
+                    }
+
+                    meta.setLore(list);
+                    stack.setItemMeta(meta);
+
+                    if (offer.canAfford(player1))
+                    {/* Works differently for older versions */
+                        ReflectionUtils.setEnchantGlint(stack, true, false);
+                    }
                 }
 
                 return stack;

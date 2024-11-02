@@ -62,6 +62,8 @@ public class SignListener implements Listener
                 TranslationUtils.sendMessage("setup.sign.arena.added", eventIn.getPlayer());
                 EggWars.saveSigns();
             }
+
+            return;
         }
 
         if (eventIn.getLine(0).equalsIgnoreCase("[EggGen]"))
@@ -95,7 +97,8 @@ public class SignListener implements Listener
             Generator generator = new Generator(eventIn.getBlock().getLocation(), Integer.parseInt(eventIn.getLine(2)), eventIn.getLine(1).toLowerCase(), arena1);
             arena1.putGenerator(generator);
             TranslationUtils.sendMessage("setup.generator.added", eventIn.getPlayer());
-            generator.updateSign();
+            generator.reloadCache();
+            return;
         }
     }
 

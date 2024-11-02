@@ -10,13 +10,11 @@ import java.util.function.Predicate;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -37,6 +35,7 @@ import me.rosillogames.eggwars.utils.LobbySigns;
 import me.rosillogames.eggwars.utils.Locations;
 import me.rosillogames.eggwars.utils.PlayerUtils;
 import me.rosillogames.eggwars.utils.TeamUtils;
+import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class SetupGUI
 {
@@ -86,10 +85,7 @@ public class SetupGUI
 
                     if (to_conf == 1)
                     {
-                        ItemMeta meta = stack.getItemMeta();
-                        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                        stack.setItemMeta(meta);
-                        stack.addUnsafeEnchantment(Enchantment.WATER_WORKER, 1);
+                        ReflectionUtils.setEnchantGlint(stack, true, true);
                     }
                 }
 
@@ -784,7 +780,7 @@ public class SetupGUI
                         TranslationUtils.sendMessage(prevGen != null ? "setup.generator.changed" : "setup.generator.added", event.getPlayer());
                     }
 
-                    generator.updateSign();
+                    generator.reloadCache();
                 }
             }
         }

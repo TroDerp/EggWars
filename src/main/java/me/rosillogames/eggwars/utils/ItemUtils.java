@@ -1,11 +1,10 @@
 package me.rosillogames.eggwars.utils;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 import java.util.logging.Level;
-
 import javax.annotation.Nullable;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -22,6 +21,7 @@ import com.google.gson.JsonObject;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.enums.TeamType;
+import me.rosillogames.eggwars.enums.Versions;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class ItemUtils
@@ -60,6 +60,8 @@ public class ItemUtils
     public static void removeItems(Player player, Material material, int i)
     {
         org.bukkit.inventory.PlayerInventory inv = player.getInventory();
+        ArrayList<Map.Entry<Integer, ItemStack>> list = new ArrayList(inv.all(material).entrySet());
+        Collections.sort(list, (obj0, obj1) -> ((ItemStack)((Map.Entry)obj0).getValue()).getAmount() - ((ItemStack)((Map.Entry)obj1).getValue()).getAmount());
         int j = 0;
 
         do
@@ -69,30 +71,28 @@ public class ItemUtils
                 break;
             }
 
-            ItemStack itemstack = inv.getItem(j);
-            j++;
+            int slot = list.get(j).getKey().intValue();
+            ItemStack itemstack = inv.getItem(slot);
+            boolean flag = true;
 
-            if (itemstack != null && itemstack.getType().equals(material))
+            while (i > 0 && flag)
             {
-                boolean flag = true;
+                i--;
 
-                while (i > 0 && flag)
+                if (itemstack.getAmount() <= 1)
                 {
-                    i--;
-
-                    if (itemstack.getAmount() <= 1)
-                    {
-                        itemstack.setType(Material.AIR);
-                        inv.setItem(j - 1, itemstack);
-                        flag = false;
-                        player.updateInventory();
-                    }
-                    else
-                    {
-                        itemstack.setAmount(itemstack.getAmount() - 1);
-                    }
+                    itemstack.setType(Material.AIR);
+                    inv.setItem(slot, itemstack);
+                    flag = false;
+                    player.updateInventory();
+                }
+                else
+                {
+                    itemstack.setAmount(itemstack.getAmount() - 1);
                 }
             }
+
+            j++;
         }
         while (true);
 
@@ -153,56 +153,26 @@ public class ItemUtils
         return stack1;
     }
 
-    public static Set getNearbyItems(Location location, double d)
+    public static int getNearbyItemCount(Location loc, double radius, Material mat)
     {
-        int i = (int)d >= 16 ? ((int)d - (int)d % 16) / 16 : 1;
-        HashSet hashset = new HashSet();
-
-        for (int j = 0 - i; j <= i; j++)
-        {
-            for (int k = 0 - i; k <= i; k++)
-            {
-                int l = (int)location.getX();
-                int i1 = (int)location.getY();
-                int j1 = (int)location.getZ();
-                Entity aentity[] = (new Location(location.getWorld(), l + j * 16, i1, j1 + k * 16)).getChunk().getEntities();
-                int k1 = aentity.length;
-
-                for (int l1 = 0; l1 < k1; l1++)
-                {
-                    Entity entity = aentity[l1];
-
-                    if (entity.getLocation().distance(location) <= d && (entity instanceof Item))
-                    {
-                        hashset.add((Item)entity);
-                    }
-                }
-            }
-        }
-
-        return hashset;
-    }
-
-    public static int getNearbyItemCount(Location location, double d, Material material)
-    {
+        int chunkRadius = (int)radius >= 16 ? ((int)radius - (int)radius % 16) / 16 : 1;
         int count = 0;
-        int i = (int)d >= 16 ? ((int)d - (int)d % 16) / 16 : 1;
 
-        for (int j = 0 - i; j <= i; j++)
+        for (int xChunk = 0 - chunkRadius; xChunk <= chunkRadius; xChunk++)
         {
-            for (int k = 0 - i; k <= i; k++)
+            for (int zChunk = 0 - chunkRadius; zChunk <= chunkRadius; zChunk++)
             {
-                int l = (int)location.getX();
-                int i1 = (int)location.getY();
-                int j1 = (int)location.getZ();
-                Entity aentity[] = (new Location(location.getWorld(), l + j * 16, i1, j1 + k * 16)).getChunk().getEntities();
+                int x = (int)loc.getX();
+                int y = (int)loc.getY();
+                int z = (int)loc.getZ();
+                Entity aentity[] = (new Location(loc.getWorld(), x + xChunk * 16, y, z + zChunk * 16)).getChunk().getEntities();
                 int k1 = aentity.length;
 
                 for (int l1 = 0; l1 < k1; l1++)
                 {
                     Entity entity = aentity[l1];
 
-                    if (entity.getLocation().distance(location) <= d && (entity instanceof Item) && ((Item)entity).getItemStack().getType().equals(material))
+                    if (entity.getLocation().distance(loc) <= radius && (entity instanceof Item) && ((Item)entity).getItemStack().getType().equals(mat))
                     {
                         count += ((Item)entity).getItemStack().getAmount();
                     }
@@ -211,36 +181,6 @@ public class ItemUtils
         }
 
         return count;
-    }
-
-    public static Set getNearbyItems(Location location, double d, Material material)
-    {
-        int i = (int)d >= 16 ? ((int)d - (int)d % 16) / 16 : 1;
-        HashSet hashset = new HashSet();
-
-        for (int j = 0 - i; j <= i; j++)
-        {
-            for (int k = 0 - i; k <= i; k++)
-            {
-                int l = (int)location.getX();
-                int i1 = (int)location.getY();
-                int j1 = (int)location.getZ();
-                Entity aentity[] = (new Location(location.getWorld(), l + j * 16, i1, j1 + k * 16)).getChunk().getEntities();
-                int k1 = aentity.length;
-
-                for (int l1 = 0; l1 < k1; l1++)
-                {
-                    Entity entity = aentity[l1];
-
-                    if (entity.getLocation().distance(location) <= d && (entity instanceof Item) && ((Item)entity).getItemStack().getType().equals(material))
-                    {
-                        hashset.add((Item)entity);
-                    }
-                }
-            }
-        }
-
-        return hashset;
     }
 
     public static BlockData getBlockData(String s, BlockData def)
@@ -298,8 +238,8 @@ public class ItemUtils
     {
         ItemMeta itemmeta = itemstack.getItemMeta();
         itemmeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        itemmeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-        itemmeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+        itemmeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);;
+        itemmeta.addItemFlags(EggWars.serverVersion.ordinal() >= Versions.V_1_20_R4.ordinal() ? ItemFlag.HIDE_ADDITIONAL_TOOLTIP : ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
         itemstack.setItemMeta(itemmeta);
         return itemstack;
     }

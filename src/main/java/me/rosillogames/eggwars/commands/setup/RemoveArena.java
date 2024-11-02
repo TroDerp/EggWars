@@ -77,6 +77,7 @@ public class RemoveArena extends CommandArg
             }
         }
 
+        EggWars.saveSigns();
         arena.setStatus(ArenaStatus.SETTING);
         WorldController.deleteFiles(arena.arenaFolder);
         WorldController.deleteWorld(WorldController.formatTmpWorldName(arena.getId()));

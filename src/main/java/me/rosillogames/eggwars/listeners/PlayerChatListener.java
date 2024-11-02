@@ -1,5 +1,6 @@
 package me.rosillogames.eggwars.listeners;
 
+import java.util.concurrent.atomic.AtomicReference;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,7 +15,6 @@ import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.PlayerUtils;
 import me.rosillogames.eggwars.utils.TeamUtils;
-import me.rosillogames.eggwars.utils.reflection.HelpObject;
 
 public class PlayerChatListener implements Listener
 {
@@ -62,8 +62,7 @@ public class PlayerChatListener implements Listener
             event.setMessage(ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', event.getMessage())));
         }
 
-        HelpObject<String> msg = new HelpObject();
-        msg.object = event.getMessage();
+        AtomicReference<String> msg = new AtomicReference(event.getMessage());
         Arena arena = ewplayer.getArena();
 
         if (ewplayer.isEliminated())
@@ -135,12 +134,12 @@ public class PlayerChatListener implements Listener
         }
     }
 
-    private static boolean talksGloballier(HelpObject<String> msg)
+    private static boolean talksGloballier(AtomicReference<String> msg)
     {
         if (msg.get().startsWith("!"))
         {
             //test if message resets
-            msg.object = msg.get().replaceFirst("!", "");
+            msg.set(msg.get().replaceFirst("!", ""));
             return true;
         }
 

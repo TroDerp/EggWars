@@ -14,6 +14,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import com.google.gson.JsonObject;
 
+import me.rosillogames.eggwars.EggWars;
+
 public interface Reflections
 {
     public void setArmorStandInvisible(ArmorStand stand);
@@ -34,6 +36,8 @@ public interface Reflections
 
     public List<String> getEnchantmentsLore(ItemStack stack);
 
+    public void setEnchantGlint(ItemStack stack, boolean enable, boolean force);
+
     public void killOutOfWorld(Player p);
 
     public void saveFullWorld(World world);
@@ -52,13 +56,18 @@ public interface Reflections
         return "net.minecraft";
     }
 
-    default Class getNMSClass(String className) throws ClassNotFoundException
+    default Class getNMSClass(String classPath) throws ClassNotFoundException
     {
-        return Class.forName(this.getNMSPackageName() + "." + className);
+        return Class.forName(this.getNMSPackageName() + "." + classPath);
     }
 
-    default Class getOBCClass(String className) throws ClassNotFoundException
+    default Class getOBCClass(String classPath) throws ClassNotFoundException
     {
-        return Class.forName("org.bukkit.craftbukkit." + Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + "." + className);
+        if (EggWars.fixPaperOBC)
+        {
+            return Class.forName("org.bukkit.craftbukkit." + classPath);
+        }
+
+        return Class.forName("org.bukkit.craftbukkit." + Bukkit.getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3] + "." + classPath);
     }
 }

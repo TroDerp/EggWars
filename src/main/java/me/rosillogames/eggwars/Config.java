@@ -58,41 +58,6 @@ public class Config
     {
         EggWars.instance.reloadConfig();
         FileConfiguration fileConf = EggWars.instance.getConfig();
-        boolean converted = false;
-        boolean converted2 = false;
-        boolean converted3 = false;
-        boolean converted4 = false;
-
-        //TODO: remove these in next version
-        if (fileConf.isConfigurationSection("gameplay"))
-        {
-            ConfigurationSection cs = fileConf.getConfigurationSection("gameplay");
-            fileConf.addDefault("game", cs);
-            fileConf.set("gameplay", null);
-            convertOldToNewKey(fileConf, "game.keep_inventory", "game.player.keep_inventory");
-            convertOldToNewKey(fileConf, "game.respawn_delay", "game.player.respawn_delay");
-            convertOldToNewKey(fileConf, "game.invincible_time", "game.player.invincible_time");
-            convertOldToNewKey(fileConf, "game.move_tnt_on_ignition", "game.tnt.move_when_ignited");
-            converted = true;
-        }
-
-        if (fileConf.contains("lobby.sign_status.lobby"))
-        {
-            convertOldToNewKey(fileConf, "lobby.sign_status.lobby", "lobby.sign_status.waiting");
-            converted2 = true;
-        }
-
-        if (fileConf.contains("lobby.sign_status.ingame"))
-        {
-            convertOldToNewKey(fileConf, "lobby.sign_status.ingame", "lobby.sign_status.in_game");
-            converted3 = true;
-        }
-
-        if (fileConf.contains("lobby.sign_status.finished"))
-        {
-            convertOldToNewKey(fileConf, "lobby.sign_status.finished", "lobby.sign_status.finishing");
-            converted4 = true;
-        }
 
         fileConf.options().header("###########################################\n#               - EggWars -               #\n#         - By gaelitoelquesito -         #\n#      - Remastered by RosilloGames -     #\n###########################################\n");
 
@@ -114,7 +79,7 @@ public class Config
         fileConf.addDefault("database.password", "walrus");
 
         fileConf.addDefault("game.balance_teams", false);
-        String skipSoloLobby = "game.skip_solo_lobby";
+        String skipSoloLobby = "game.skip_solo_lobby";//keep this due to a bug in previous version
 
         if (fileConf.contains(skipSoloLobby))
         {
@@ -126,31 +91,20 @@ public class Config
             fileConf.addDefault("game.skip_lobby", ModeOption.SOLO.toString());
         }
 
-        fileConf.addDefault("game.skip_solo_lobby", true);
         fileConf.addDefault("game.show_kills", true);
         fileConf.addDefault("game.drop_blocks", false);
         fileConf.addDefault("game.share_team_ender_chest", false);
         fileConf.addDefault("game.finishing_time", 10);
         fileConf.addDefault("game.player.drop_inventory", false);
-
-        if (!converted)
-        {
-            fileConf.addDefault("game.player.keep_inventory", false);
-            fileConf.addDefault("game.player.respawn_delay", 4);
-            fileConf.addDefault("game.player.invincible_time", 10);
-        }
-
+        fileConf.addDefault("game.player.keep_inventory", false);
+        fileConf.addDefault("game.player.respawn_delay", 4);
+        fileConf.addDefault("game.player.invincible_time", 10);
         fileConf.addDefault("game.player.allow_starving", false);
         fileConf.addDefault("game.assists.enable", ModeOption.TEAM.toString());
         fileConf.addDefault("game.assists.grant_kill_to_best", false);
         fileConf.addDefault("game.assists.forget_time", 20);
         fileConf.addDefault("game.tnt.auto_ignite", true);
-
-        if (!converted)
-        {
-            fileConf.addDefault("game.tnt.move_when_ignited", true);
-        }
-
+        fileConf.addDefault("game.tnt.move_when_ignited", true);
         fileConf.addDefault("game.tnt.strenght", 3.0D);
         fileConf.addDefault("game.tnt.fuse_ticks", 80);
         List<String> list = new ArrayList();
@@ -201,24 +155,11 @@ public class Config
         fileConf.addDefault("lobby.location", "null");
         fileConf.addDefault("lobby.sign_status.active", true);
 
-        if (!converted2)
-        {
-            fileConf.addDefault("lobby.sign_status.waiting", "{\"Name\":\"minecraft:lime_stained_glass\"}");
-        }
-
+        fileConf.addDefault("lobby.sign_status.waiting", "{\"Name\":\"minecraft:lime_stained_glass\"}");
         fileConf.addDefault("lobby.sign_status.starting", "{\"Name\":\"minecraft:yellow_stained_glass\"}");
-
-        if (!converted3)
-        {
-            fileConf.addDefault("lobby.sign_status.in_game", "{\"Name\":\"minecraft:red_stained_glass\"}");
-        }
-
+        fileConf.addDefault("lobby.sign_status.in_game", "{\"Name\":\"minecraft:red_stained_glass\"}");
         fileConf.addDefault("lobby.sign_status.setting", "{\"Name\":\"minecraft:cyan_stained_glass\"}");
-
-        if (!converted4)
-        {
-            fileConf.addDefault("lobby.sign_status.finishing", "{\"Name\":\"minecraft:magenta_stained_glass\"}");
-        }
+        fileConf.addDefault("lobby.sign_status.finishing", "{\"Name\":\"minecraft:magenta_stained_glass\"}");
 
         fileConf.addDefault("inventory.generator_upgrading", "{\"id\":\"minecraft:experience_bottle\"}");
         fileConf.addDefault("inventory.kit_selection.item", "{\"id\":\"minecraft:paper\"}");
@@ -313,7 +254,7 @@ public class Config
         this.enableAPSS = fileConf.getBoolean("generator.enable_apss") && EggWars.serverVersion.ordinal() >= Versions.V_1_16_R3.ordinal();
         this.vault = fileConf.getBoolean("plugin.vault") && DependencyUtils.vault();
         this.balanceTeams = fileConf.getBoolean("game.balance_teams");
-        this.shareTeamEC = fileConf.getBoolean("game.share_team_ender_chest");//TODO unavailable in 1.16 (and newer?)
+        this.shareTeamEC = fileConf.getBoolean("game.share_team_ender_chest");
         this.skipsLobby = ModeOption.getOrDefault(fileConf.getString("game.skip_lobby"), ModeOption.SOLO);
         this.showKills = fileConf.getBoolean("game.show_kills");
         this.dropInv = fileConf.getBoolean("game.player.drop_inventory");
@@ -353,7 +294,6 @@ public class Config
     public void setMainLobby(Location location)
     {
         this.lobby = location;
-        //Keep LocationSerializer.toStringNew ??
         EggWars.instance.getConfig().set("lobby.location", Locations.toStringWithWorld(location, true));
         EggWars.instance.saveConfig();
     }
@@ -361,11 +301,5 @@ public class Config
     private static void addMsgsToMap(Map map, String key, String... values)
     {
         map.put("death_message_keys." + key, values);
-    }
-
-    private static void convertOldToNewKey(FileConfiguration conf, String oldKey, String newKey)
-    {
-        conf.addDefault(newKey, conf.get(oldKey));
-        conf.addDefault(oldKey, null);
     }
 }

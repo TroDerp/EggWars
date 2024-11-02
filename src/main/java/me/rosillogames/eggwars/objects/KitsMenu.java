@@ -8,10 +8,7 @@ import javax.annotation.Nullable;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import com.mojang.datafixers.util.Pair;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.managers.KitManager;
@@ -19,6 +16,7 @@ import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.player.EwPlayerMenu;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
+import me.rosillogames.eggwars.utils.Pair;
 import me.rosillogames.eggwars.utils.PlayerUtils;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
@@ -103,10 +101,7 @@ public class KitsMenu
 
             if (ewplayer.getKit() == null)
             {
-                ItemMeta meta = stack.getItemMeta();
-                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                stack.setItemMeta(meta);
-                stack.addUnsafeEnchantment(Enchantment.WATER_WORKER, 1);
+                ReflectionUtils.setEnchantGlint(stack, true, false);
             }
 
             return stack;
@@ -120,17 +115,14 @@ public class KitsMenu
             EwPlayer ewplayer = PlayerUtils.getEwPlayer(player);
             ItemStack stack = kit.displayItem().clone();
 
-            for (Enchantment ench : Enchantment.values())
+            for (Enchantment ench : stack.getEnchantments().keySet())
             {
                 stack.removeEnchantment(ench);
             }
 
             if (ewplayer.getKit() == kit)
             {
-                ItemMeta meta = stack.getItemMeta();
-                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                stack.setItemMeta(meta);
-                stack.addUnsafeEnchantment(Enchantment.WATER_WORKER, 1);
+                ReflectionUtils.setEnchantGlint(stack, true, false);
             }
 
             return stack;
@@ -153,8 +145,8 @@ public class KitsMenu
 
             for (Pair<EquipmentSlot, ItemStack> pair : kit.items())
             {
-                String itemName = ReflectionUtils.getStackName(pair.getSecond());
-                contents = contents + TranslationUtils.getMessage("menu.kits.kit_lore.content", player, pair.getSecond().getAmount(), itemName, (!pair.getSecond().getEnchantments().isEmpty() ? TranslationUtils.getMessage("menu.kits.kit_lore.enchanted", player) : ""));
+                String itemName = ReflectionUtils.getStackName(pair.getRight());
+                contents = contents + TranslationUtils.getMessage("menu.kits.kit_lore.content", player, pair.getRight().getAmount(), itemName, (!pair.getRight().getEnchantments().isEmpty() ? TranslationUtils.getMessage("menu.kits.kit_lore.enchanted", player) : ""));
             }
 
             String selection = TranslationUtils.getMessage("menu.kits.kit_lore." + (ewplayer.getKit() == kit ? "selected" : ewplayer.hasKit(kit) ? "select" : KitManager.canBuy(ewplayer, kit) ? "buy" : "cant_afford"), player);

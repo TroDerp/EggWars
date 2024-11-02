@@ -9,6 +9,9 @@ import org.bukkit.SoundCategory;
 import org.bukkit.SoundGroup;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,7 +19,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
@@ -141,6 +143,7 @@ public class EggInteractListener implements Listener
         }
     }
 
+    /* There's an unfixable bug that causes main-hand to swing instead of off-hand when placing block from the other hand */
     private static boolean tryPlaceBlockItem(PlayerInteractEvent event, EquipmentSlot hand)
     {
         ItemStack copy = event.getPlayer().getInventory().getItem(hand).clone();
@@ -158,7 +161,14 @@ public class EggInteractListener implements Listener
         }
 
         BlockState replacedBS = placing.getState();
-        placing.setType(copy.getType());
+        BlockData data = copy.getType().createBlockData();
+
+        if (data instanceof Directional && ((Directional)data).getFaces().contains(event.getBlockFace()))
+        {
+            ((Directional)data).setFacing(event.getBlockFace());
+        }
+
+        placing.setBlockData(data);
         Collection<BoundingBox> boxes = Lists.newArrayList();
 
         if (EggWars.serverVersion.ordinal() >= Versions.V_1_17.ordinal())

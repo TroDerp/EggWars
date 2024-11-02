@@ -128,7 +128,6 @@ public class GeneratorManager
             for (Generator gen : arena.getGenerators().values())
             {
                 gen.reloadCache();
-                gen.updateSign();
             }
         }
     }

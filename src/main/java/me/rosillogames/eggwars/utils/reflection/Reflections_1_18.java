@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
 import javax.annotation.Nullable;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -19,13 +18,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.Decoder;
-import com.mojang.serialization.JsonOps;
-import me.rosillogames.eggwars.EggWars;
 
 public class Reflections_1_18 implements Reflections
 {
@@ -55,6 +50,21 @@ public class Reflections_1_18 implements Reflections
     @Override
     public void setItemAge(Item item, int age)
     {
+        if (this.fl_1.equals("ao"))
+        {
+            if (age == -32768)
+            {
+                item.setUnlimitedLifetime(true);
+            }
+            else
+            {
+                item.setUnlimitedLifetime(false);
+                item.setTicksLived(age);
+            }
+
+            return;
+        }
+
         try
         {
             Object obj = item.getClass().getMethod("getHandle").invoke(item);
@@ -75,23 +85,13 @@ public class Reflections_1_18 implements Reflections
     {
         try
         {
+            Class cMojangsonParser = this.getNMSClass("nbt.MojangsonParser");
+            Object itemNbt = cMojangsonParser.getMethod("a", String.class).invoke(null, json.toString());
             Class cItemStack = this.getNMSClass("world.item.ItemStack");
-            DataResult<Pair> result = ((Decoder)cItemStack.getField("a").get((Object)null)).decode(JsonOps.INSTANCE, json);
-            HelpObject<ItemStack> helpstack = new HelpObject<ItemStack>();
+            Class cNBTCompound = this.getNMSClass("nbt.NBTTagCompound");
+            Object itemStack = cItemStack.getMethod("a", cNBTCompound).invoke(null, itemNbt);
             Class cCraftItemStack = this.getOBCClass("inventory.CraftItemStack");
-            helpstack.object = new ItemStack(Material.AIR);
-            result.resultOrPartial(s -> EggWars.instance.getLogger().log(Level.WARNING, s)).ifPresent((legacystack) ->
-            {
-                try
-                {
-                    helpstack.object = (ItemStack)cCraftItemStack.getMethod("asBukkitCopy", cItemStack).invoke((Object)null, legacystack.getFirst());
-                }
-                catch (Exception var5)
-                {
-                }
-
-            });
-            return helpstack.object;
+            return (ItemStack)cCraftItemStack.getMethod("asBukkitCopy", cItemStack).invoke((Object)null, itemStack);
         }
         catch (Exception exception)
         {
@@ -176,6 +176,21 @@ public class Reflections_1_18 implements Reflections
         }
 
         return list;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public void setEnchantGlint(ItemStack stack, boolean glint, boolean force)
+    {
+        if (!glint)
+        {
+            return;
+        }
+
+        ItemMeta meta = stack.getItemMeta();
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        stack.setItemMeta(meta);
+        stack.addUnsafeEnchantment(Enchantment.getByName("WATER_WORKER"), 1);
     }
 
     @Override

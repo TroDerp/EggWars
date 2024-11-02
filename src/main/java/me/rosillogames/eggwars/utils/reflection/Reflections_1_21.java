@@ -4,45 +4,31 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.Decoder;
-import com.mojang.serialization.JsonOps;
-import me.rosillogames.eggwars.EggWars;
 
-public class Reflections_1_20 implements Reflections
+public class Reflections_1_21 implements Reflections
 {
-    private final String fl_1;
-    private final String fl_2;
-    private final String fl_3;
-    private final String fl_4;
-    private final String fl_5;
-    private final String fl_6;
+    private final boolean isNewVersion;
 
-    public Reflections_1_20(byte v)
+    public Reflections_1_21(boolean newV)
     {
-        this.fl_1 = v > 0 ? v > 1 ? "dN" : "dM" : "dJ";
-        this.fl_2 = v > 0 ? v > 1 ? "gf" : "ge" : "ga";
-        this.fl_3 = v > 0 ? "b" : "a";
-        this.fl_4 = v > 1 ? "e" : "f";
-        this.fl_5 = v > 1 ? "aB_" : "p";
-        this.fl_6 = v > 1 ? "bukkitToMinecraft" : "getRaw";
+        this.isNewVersion = newV;
     }
 
     @Override
@@ -60,18 +46,14 @@ public class Reflections_1_20 implements Reflections
     @Override
     public void setItemAge(Item item, int age)
     {
-        try
+        if (age == -32768)
         {
-            Object obj = item.getClass().getMethod("getHandle").invoke(item);
-            Field field = obj.getClass().getField("g");
-            boolean accessible = field.isAccessible();
-            field.setAccessible(true);
-            field.set(obj, age);
-            field.setAccessible(accessible);
+            item.setUnlimitedLifetime(true);
         }
-        catch (Exception exception)
+        else
         {
-            exception.printStackTrace();
+            item.setUnlimitedLifetime(false);
+            item.setTicksLived(age);
         }
     }
 
@@ -80,23 +62,18 @@ public class Reflections_1_20 implements Reflections
     {
         try
         {
+            Class cHoldLookA = this.getNMSClass("core.HolderLookup").getDeclaredClasses()[0];
+            Object holdLookA = this.getNMSClass("server.MinecraftServer").getMethod("getDefaultRegistryAccess").invoke(null);
             Class cItemStack = this.getNMSClass("world.item.ItemStack");
-            DataResult<Pair> result = ((Decoder)cItemStack.getField("a").get((Object)null)).decode(JsonOps.INSTANCE, json);
-            HelpObject<ItemStack> helpstack = new HelpObject<ItemStack>();
-            Class cCraftItemStack = this.getOBCClass("inventory.CraftItemStack");
-            helpstack.object = new ItemStack(Material.AIR);
-            result.resultOrPartial(s -> EggWars.instance.getLogger().log(Level.WARNING, s)).ifPresent((legacystack) ->
-            {
-                try
-                {
-                    helpstack.object = (ItemStack)cCraftItemStack.getMethod("asBukkitCopy", cItemStack).invoke((Object)null, legacystack.getFirst());
-                }
-                catch (Exception var5)
-                {
-                }
+            Object itemNbt = this.getNMSClass("nbt.MojangsonParser").getMethod("a", String.class).invoke(null, json.toString());
+            Class cNBTBase = this.getNMSClass("nbt.NBTBase");
+            Optional stack = (Optional)cItemStack.getMethod("a", cHoldLookA, cNBTBase).invoke(null, holdLookA, itemNbt);
 
-            });
-            return helpstack.object;
+            if (stack.isPresent())
+            {
+                Class cCraftItemStack = this.getOBCClass("inventory.CraftItemStack");
+                return (ItemStack)cCraftItemStack.getMethod("asBukkitCopy", cItemStack).invoke((Object)null, stack.get());
+            }
         }
         catch (Exception exception)
         {
@@ -118,9 +95,20 @@ public class Reflections_1_20 implements Reflections
             Class cGameProfileSerializer = this.getNMSClass("nbt.GameProfileSerializer");
             Class cHolderGetter = this.getNMSClass("core.HolderGetter");
             Class cBIR = this.getNMSClass("core.registries.BuiltInRegistries");
-            Object registry = cBIR.getField(this.fl_4).get((Object)null);
-            Object holdLook = registry.getClass().getMethod("p").invoke(registry);
-            Object blockData = cGameProfileSerializer.getMethod("a", cHolderGetter, cNBTCompound).invoke(null, holdLook, blockNbt);
+            Object registry = cBIR.getField("e").get((Object)null);
+            Object blockData;
+
+            if (this.isNewVersion)
+            {
+                Class cRegistryBlocks = this.getNMSClass("core.RegistryBlocks");
+                blockData = cGameProfileSerializer.getMethod("a", cHolderGetter, cNBTCompound).invoke(null, cRegistryBlocks.cast(registry), blockNbt);
+            }
+            else
+            {
+                Object holdLook = registry.getClass().getMethod("q").invoke(registry);
+                blockData = cGameProfileSerializer.getMethod("a", cHolderGetter, cNBTCompound).invoke(null, holdLook, blockNbt);
+            }
+
             Class cIBlockData = this.getNMSClass("world.level.block.state.IBlockData");
             Class cCraftBlockData = this.getOBCClass("block.data.CraftBlockData");
             return (BlockData)cCraftBlockData.getMethod("fromData", cIBlockData).invoke(null, blockData);
@@ -148,7 +136,7 @@ public class Reflections_1_20 implements Reflections
             Class cItemStack = this.getNMSClass("world.item.ItemStack");
             Class cCraftItemStack = this.getOBCClass("inventory.CraftItemStack");
             Object nmsStack = cCraftItemStack.getMethod("asNMSCopy", stack.getClass()).invoke((Object)null, stack);
-            Object nameComponent = cItemStack.getMethod("y").invoke(nmsStack);
+            Object nameComponent = cItemStack.getMethod(this.isNewVersion ? "y" : "w").invoke(nmsStack);
             Class cIChatBase = this.getNMSClass("network.chat.IChatBaseComponent");
             Object string = cIChatBase.getMethod("getString").invoke(nameComponent);
             return (String)string;
@@ -162,46 +150,31 @@ public class Reflections_1_20 implements Reflections
     }
 
     @Override
+    @Deprecated
     public List<String> getEnchantmentsLore(ItemStack stack)
+    {//no longer used
+        return new ArrayList<String>();
+    }
+
+    @Override
+    public void setEnchantGlint(ItemStack stack, boolean glint, boolean force)
     {
-        List<String> list = new ArrayList();
+        ItemMeta meta = stack.getItemMeta();
+        Material mat = stack.getType();
 
-        try
-        {
-            for (Map.Entry<Enchantment, Integer> entry : stack.getEnchantments().entrySet())
-            {
-                Class cCraftEnch = this.getOBCClass("enchantments.CraftEnchantment");
-                Object nmsEnch = cCraftEnch.getMethod(this.fl_6, Enchantment.class).invoke(null, entry.getKey());
-                Class cEnch = this.getNMSClass("world.item.enchantment.Enchantment");
-                Object nameComponent = cEnch.getMethod("d", int.class).invoke(nmsEnch, entry.getValue());
-                Class cIChatBase = this.getNMSClass("network.chat.IChatBaseComponent");
-                Object string = cIChatBase.getMethod("getString").invoke(nameComponent);
-                list.add("§7" + (String)string);
-            }
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
+        if (!force && (mat == Material.ENCHANTED_GOLDEN_APPLE || mat == Material.NETHER_STAR || mat == Material.END_CRYSTAL || mat == Material.EXPERIENCE_BOTTLE || mat == Material.ENCHANTED_BOOK || mat == Material.WRITTEN_BOOK || mat == Material.DEBUG_STICK))
+        {//don't apply to potions because they disabled it)
+            return;
         }
 
-        return list;
+        meta.setEnchantmentGlintOverride(glint);
+        stack.setItemMeta(meta);
     }
 
     @Override
     public void killOutOfWorld(Player p)
     {
-        try
-        {
-            Object nmsP = p.getClass().getMethod("getHandle").invoke(p);
-            Class cDmgSource = this.getNMSClass("world.damagesource.DamageSource");
-            Object dmgSources = nmsP.getClass().getMethod(this.fl_1).invoke(nmsP);
-            Object dmgSource = dmgSources.getClass().getMethod("m").invoke(dmgSources);
-            nmsP.getClass().getMethod("a", cDmgSource, float.class).invoke(nmsP, dmgSource, 10000F);
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
-        }
+        p.damage((double)Float.MAX_VALUE, DamageSource.builder(DamageType.OUT_OF_WORLD).build());
     }
 
     @Override
@@ -233,7 +206,7 @@ public class Reflections_1_20 implements Reflections
         try
         {
             Object nmsP = p.getClass().getMethod("getHandle").invoke(p);
-            Object nmsEC = nmsP.getClass().getMethod(this.fl_2).invoke(nmsP);
+            Object nmsEC = nmsP.getClass().getMethod(this.isNewVersion ? "gw" : "gl").invoke(nmsP);
             Field field = nmsEC.getClass().getDeclaredFields()[0];
             boolean accessible = field.isAccessible();
             field.setAccessible(true);
@@ -242,7 +215,7 @@ public class Reflections_1_20 implements Reflections
 
             if (ecTE != null)
             {
-                Object blockPos = ecTE.getClass().getMethod(this.fl_5).invoke(ecTE);
+                Object blockPos = ecTE.getClass().getMethod(this.isNewVersion ? "aB_" : "aD_").invoke(ecTE);
                 int x = (int)blockPos.getClass().getMethod("u").invoke(blockPos);
                 int y = (int)blockPos.getClass().getMethod("v").invoke(blockPos);
                 int z = (int)blockPos.getClass().getMethod("w").invoke(blockPos);
@@ -264,8 +237,8 @@ public class Reflections_1_20 implements Reflections
         try
         {
             Object nmsPlayer = player.getClass().getMethod("getHandle").invoke(player);
-            Object nmsConnection = nmsPlayer.getClass().getField("c").get(nmsPlayer);
-            nmsConnection.getClass().getMethod(this.fl_3, this.getNMSClass("network.protocol.Packet")).invoke(nmsConnection, packetObj);
+            Object nmsConnection = nmsPlayer.getClass().getField(this.isNewVersion ? "f" : "c").get(nmsPlayer);
+            nmsConnection.getClass().getMethod("b", this.getNMSClass("network.protocol.Packet")).invoke(nmsConnection, packetObj);
         }
         catch (Exception exception)
         {
@@ -276,36 +249,7 @@ public class Reflections_1_20 implements Reflections
     @Override
     public void sendTitle(Player player, Integer fadeInTime, Integer stayTime, Integer fadeOutTime, String title, String subtitle)
     {
-        try
-        {
-            Class cTitleAnimPacket = this.getNMSClass("network.protocol.game.ClientboundSetTitlesAnimationPacket");
-            Constructor constructor = cTitleAnimPacket.getConstructor(Integer.TYPE, Integer.TYPE, Integer.TYPE);
-            Object packet = constructor.newInstance(fadeInTime, stayTime, fadeOutTime);
-            this.sendPacket(player, packet);
-            Class cIChatBase = this.getNMSClass("network.chat.IChatBaseComponent");
-
-            if (title != null)
-            {
-                Class cTitleTextPacket = this.getNMSClass("network.protocol.game.ClientboundSetTitleTextPacket");
-                Constructor constructor1 = cTitleTextPacket.getConstructor(cIChatBase);
-                Object chatcomponent = cIChatBase.getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\":\"" + title + "\"}");
-                Object packet1 = constructor1.newInstance(chatcomponent);
-                this.sendPacket(player, packet1);
-            }
-
-            if (subtitle != null)
-            {
-                Class cSubtitleTextPacket = this.getNMSClass("network.protocol.game.ClientboundSetSubtitleTextPacket");
-                Constructor constructor2 = cSubtitleTextPacket.getConstructor(cIChatBase);
-                Object chatcomponent1 = cIChatBase.getDeclaredClasses()[0].getMethod("a", String.class).invoke(null, "{\"text\":\"" + subtitle + "\"}");
-                Object packet2 = constructor2.newInstance(chatcomponent1);
-                this.sendPacket(player, packet2);
-            }
-        }
-        catch (Exception exception)
-        {
-            exception.printStackTrace();
-        }
+        player.sendTitle(title, subtitle, fadeInTime, stayTime, fadeOutTime);
     }
 
     @Override
@@ -318,7 +262,7 @@ public class Reflections_1_20 implements Reflections
             Object packet = constructor.newInstance(integer, integer1, integer2);
             this.sendPacket(player, packet);
 
-            player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(s));
+            player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacy(s));
         }
         catch (Exception exception)
         {

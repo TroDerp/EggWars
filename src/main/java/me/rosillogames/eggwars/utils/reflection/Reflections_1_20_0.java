@@ -5,7 +5,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import javax.annotation.Nullable;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -22,8 +21,25 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import com.google.gson.JsonObject;
 
-public class Reflections_1_17 implements Reflections
+public class Reflections_1_20_0 implements Reflections
 {
+    private final String fl_1;
+    private final String fl_2;
+    private final String fl_3;
+    private final String fl_4;
+    private final String fl_5;
+    private final String fl_6;
+
+    public Reflections_1_20_0(byte v)
+    {
+        this.fl_1 = v > 0 ? v > 1 ? "dN" : "dM" : "dJ";
+        this.fl_2 = v > 0 ? v > 1 ? "gf" : "ge" : "ga";
+        this.fl_3 = v > 0 ? "b" : "a";
+        this.fl_4 = v > 1 ? "e" : "f";
+        this.fl_5 = v > 1 ? "aB_" : "p";
+        this.fl_6 = v > 1 ? "bukkitToMinecraft" : "getRaw";
+    }
+
     @Override
     public void setArmorStandInvisible(ArmorStand stand)
     {
@@ -39,18 +55,14 @@ public class Reflections_1_17 implements Reflections
     @Override
     public void setItemAge(Item item, int age)
     {
-        try
+        if (age == -32768)
         {
-            Object obj = item.getClass().getMethod("getHandle").invoke(item);
-            Field field = obj.getClass().getField("ao");
-            boolean accessible = field.isAccessible();
-            field.setAccessible(true);
-            field.set(obj, age);
-            field.setAccessible(accessible);
+            item.setUnlimitedLifetime(true);
         }
-        catch (Exception exception)
+        else
         {
-            exception.printStackTrace();
+            item.setUnlimitedLifetime(false);
+            item.setTicksLived(age);
         }
     }
 
@@ -60,7 +72,7 @@ public class Reflections_1_17 implements Reflections
         try
         {
             Class cMojangsonParser = this.getNMSClass("nbt.MojangsonParser");
-            Object itemNbt = cMojangsonParser.getMethod("parse", String.class).invoke(null, json.toString());
+            Object itemNbt = cMojangsonParser.getMethod("a", String.class).invoke(null, json.toString());
             Class cItemStack = this.getNMSClass("world.item.ItemStack");
             Class cNBTCompound = this.getNMSClass("nbt.NBTTagCompound");
             Object itemStack = cItemStack.getMethod("a", cNBTCompound).invoke(null, itemNbt);
@@ -82,10 +94,14 @@ public class Reflections_1_17 implements Reflections
         try
         {
             Class cMojangsonParser = this.getNMSClass("nbt.MojangsonParser");
-            Object blockNbt = cMojangsonParser.getMethod("parse", String.class).invoke(null, string);
+            Object blockNbt = cMojangsonParser.getMethod("a", String.class).invoke(null, string);
             Class cNBTCompound = this.getNMSClass("nbt.NBTTagCompound");
             Class cGameProfileSerializer = this.getNMSClass("nbt.GameProfileSerializer");
-            Object blockData = cGameProfileSerializer.getMethod("c", cNBTCompound).invoke(null, blockNbt);
+            Class cHolderGetter = this.getNMSClass("core.HolderGetter");
+            Class cBIR = this.getNMSClass("core.registries.BuiltInRegistries");
+            Object registry = cBIR.getField(this.fl_4).get((Object)null);
+            Object holdLook = registry.getClass().getMethod("p").invoke(registry);
+            Object blockData = cGameProfileSerializer.getMethod("a", cHolderGetter, cNBTCompound).invoke(null, holdLook, blockNbt);
             Class cIBlockData = this.getNMSClass("world.level.block.state.IBlockData");
             Class cCraftBlockData = this.getOBCClass("block.data.CraftBlockData");
             return (BlockData)cCraftBlockData.getMethod("fromData", cIBlockData).invoke(null, blockData);
@@ -113,7 +129,7 @@ public class Reflections_1_17 implements Reflections
             Class cItemStack = this.getNMSClass("world.item.ItemStack");
             Class cCraftItemStack = this.getOBCClass("inventory.CraftItemStack");
             Object nmsStack = cCraftItemStack.getMethod("asNMSCopy", stack.getClass()).invoke((Object)null, stack);
-            Object nameComponent = cItemStack.getMethod("getName").invoke(nmsStack);
+            Object nameComponent = cItemStack.getMethod("y").invoke(nmsStack);
             Class cIChatBase = this.getNMSClass("network.chat.IChatBaseComponent");
             Object string = cIChatBase.getMethod("getString").invoke(nameComponent);
             return (String)string;
@@ -136,7 +152,7 @@ public class Reflections_1_17 implements Reflections
             for (Map.Entry<Enchantment, Integer> entry : stack.getEnchantments().entrySet())
             {
                 Class cCraftEnch = this.getOBCClass("enchantments.CraftEnchantment");
-                Object nmsEnch = cCraftEnch.getMethod("getRaw", Enchantment.class).invoke(null, entry.getKey());
+                Object nmsEnch = cCraftEnch.getMethod(this.fl_6, Enchantment.class).invoke(null, entry.getKey());
                 Class cEnch = this.getNMSClass("world.item.enchantment.Enchantment");
                 Object nameComponent = cEnch.getMethod("d", int.class).invoke(nmsEnch, entry.getValue());
                 Class cIChatBase = this.getNMSClass("network.chat.IChatBaseComponent");
@@ -174,8 +190,9 @@ public class Reflections_1_17 implements Reflections
         {
             Object nmsP = p.getClass().getMethod("getHandle").invoke(p);
             Class cDmgSource = this.getNMSClass("world.damagesource.DamageSource");
-            Object dmgSource = cDmgSource.getField("m").get(null);
-            nmsP.getClass().getMethod("damageEntity", cDmgSource, float.class).invoke(nmsP, dmgSource, 10000F);
+            Object dmgSources = nmsP.getClass().getMethod(this.fl_1).invoke(nmsP);
+            Object dmgSource = dmgSources.getClass().getMethod("m").invoke(dmgSources);
+            nmsP.getClass().getMethod("a", cDmgSource, float.class).invoke(nmsP, dmgSource, 10000F);
         }
         catch (Exception exception)
         {
@@ -189,12 +206,12 @@ public class Reflections_1_17 implements Reflections
         try
         {
             Object obj = world.getClass().getMethod("getHandle").invoke(world);
-            Field field = obj.getClass().getField("b");
+            Field field = obj.getClass().getField("e");
             boolean accessible = field.isAccessible();
             field.setAccessible(true);
             boolean boolVal = field.getBoolean(obj);
             field.setAccessible(accessible);
-            obj.getClass().getMethod("save", this.getNMSClass("util.IProgressUpdate"), boolean.class, boolean.class).invoke(obj, null, true, false);
+            obj.getClass().getMethod("a", this.getNMSClass("util.IProgressUpdate"), boolean.class, boolean.class).invoke(obj, null, true, false);
             field.setAccessible(true);
             field.set(obj, boolVal);
             field.setAccessible(accessible);
@@ -212,7 +229,7 @@ public class Reflections_1_17 implements Reflections
         try
         {
             Object nmsP = p.getClass().getMethod("getHandle").invoke(p);
-            Object nmsEC = nmsP.getClass().getMethod("getEnderChest").invoke(nmsP);
+            Object nmsEC = nmsP.getClass().getMethod(this.fl_2).invoke(nmsP);
             Field field = nmsEC.getClass().getDeclaredFields()[0];
             boolean accessible = field.isAccessible();
             field.setAccessible(true);
@@ -221,11 +238,11 @@ public class Reflections_1_17 implements Reflections
 
             if (ecTE != null)
             {
-                Object blockPos = ecTE.getClass().getMethod("getPosition").invoke(ecTE);
-                int x = (int)blockPos.getClass().getMethod("getX").invoke(blockPos);
-                int y = (int)blockPos.getClass().getMethod("getY").invoke(blockPos);
-                int z = (int)blockPos.getClass().getMethod("getZ").invoke(blockPos);
-                nmsEC.getClass().getMethod("closeContainer", this.getNMSClass("world.entity.player.EntityHuman")).invoke(nmsEC, nmsP);
+                Object blockPos = ecTE.getClass().getMethod(this.fl_5).invoke(ecTE);
+                int x = (int)blockPos.getClass().getMethod("u").invoke(blockPos);
+                int y = (int)blockPos.getClass().getMethod("v").invoke(blockPos);
+                int z = (int)blockPos.getClass().getMethod("w").invoke(blockPos);
+                nmsEC.getClass().getMethod("c", this.getNMSClass("world.entity.player.EntityHuman")).invoke(nmsEC, nmsP);
                 return p.getWorld().getBlockAt(x, y, z);
             }
         }
@@ -239,12 +256,12 @@ public class Reflections_1_17 implements Reflections
 
     @Override
     public void sendPacket(Player player, Object packetObj)
-    {
+    {//as of 1.20.2 packet sender class is ServerCommonPacketListenerImpl
         try
         {
             Object nmsPlayer = player.getClass().getMethod("getHandle").invoke(player);
-            Object nmsConnection = nmsPlayer.getClass().getField("b").get(nmsPlayer);
-            nmsConnection.getClass().getMethod("sendPacket", this.getNMSClass("network.protocol.Packet")).invoke(nmsConnection, packetObj);
+            Object nmsConnection = nmsPlayer.getClass().getField("c").get(nmsPlayer);
+            nmsConnection.getClass().getMethod(this.fl_3, this.getNMSClass("network.protocol.Packet")).invoke(nmsConnection, packetObj);
         }
         catch (Exception exception)
         {
@@ -297,12 +314,7 @@ public class Reflections_1_17 implements Reflections
             Object packet = constructor.newInstance(integer, integer1, integer2);
             this.sendPacket(player, packet);
 
-            Class cPacketPlayOutChat = this.getNMSClass("network.protocol.game.PacketPlayOutChat");
-            Class cIChatBase = this.getNMSClass("network.chat.IChatBaseComponent");
-            Class cChatSerializer = cIChatBase.getDeclaredClasses()[0];
-            Object chatBaseComp = cChatSerializer.getDeclaredMethod("a", String.class).invoke(null, "{\"text\": \"" + s + "\"}");
-            Object packet1 = cPacketPlayOutChat.getConstructor(cIChatBase, this.getNMSClass("network.chat.ChatMessageType"), UUID.class).newInstance(chatBaseComp, this.getNMSClass("network.chat.ChatMessageType").getField("c").get(null), this.getNMSClass("SystemUtils").getField("b").get(null));
-            this.sendPacket(player, packet1);
+            player.spigot().sendMessage(net.md_5.bungee.api.ChatMessageType.ACTION_BAR, net.md_5.bungee.api.chat.TextComponent.fromLegacyText(s));
         }
         catch (Exception exception)
         {

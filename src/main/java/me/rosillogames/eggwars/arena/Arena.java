@@ -25,12 +25,9 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.block.BlockState;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import com.google.common.collect.Maps;
@@ -65,6 +62,7 @@ import me.rosillogames.eggwars.utils.PlayerUtils;
 import me.rosillogames.eggwars.utils.TeamUtils;
 import me.rosillogames.eggwars.utils.VoteUtils;
 import me.rosillogames.eggwars.utils.WorldController;
+import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class Arena
 {
@@ -1129,10 +1127,7 @@ public class Arena
 
                 if (team.equals(ewplayer.getTeam()))
                 {
-                    ItemMeta meta = stack.getItemMeta();
-                    meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-                    stack.setItemMeta(meta);
-                    stack.addUnsafeEnchantment(Enchantment.WATER_WORKER, 1);
+                    ReflectionUtils.setEnchantGlint(stack, true, true);
                 }
 
                 return stack;
@@ -1147,7 +1142,7 @@ public class Arena
             this.teamInv.setItem(i, transitem);
             i++;
         }
-
+//TODO add possibility to remove enchant glint from nether star when player has team selected
         this.teamInv.setItem(this.teamInv.getSize() - 1, TranslatableItem.translatableNameLore(new ItemStack(Material.NETHER_STAR), "teams.random.item_lore", "teams.random.item_name"));
         InventoryController.updateInventories((predicateplayer) -> predicateplayer.getArena() == this, this.teamInv, MenuType.TEAM_SELECTION);
 

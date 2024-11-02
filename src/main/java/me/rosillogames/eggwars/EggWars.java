@@ -76,6 +76,7 @@ import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 public class EggWars extends JavaPlugin
 {
     public static String EGGWARS_VERSION;
+    public static boolean fixPaperOBC = false;
     public static EggWars instance;
     public static BungeeCord bungee = new BungeeCord();
     public static File arenasFolder;
@@ -123,7 +124,7 @@ public class EggWars extends JavaPlugin
         instance = this;
         EGGWARS_VERSION = this.getDescription().getVersion();
         String s = this.getServer().getClass().getPackage().getName();
-        serverVersion = Versions.get(s.substring(s.lastIndexOf('.') + 1));
+        serverVersion = Versions.get(s.substring(s.lastIndexOf('.') + 1), this.getServer().getBukkitVersion());
 
         if (!serverVersion.isAllowedVersion())
         {
@@ -247,13 +248,8 @@ public class EggWars extends JavaPlugin
     {
         if (!bungee.isEnabled())
         {
-            File afile[] = arenasFolder.listFiles();
-            int i = afile.length;
-
-            for (int k = 0; k < i; k++)
-            {
-                File file = afile[k];
-
+            for (File file : arenasFolder.listFiles())
+            {//TODO properly detect folders with no arena.yml files and skip them
                 if (!file.exists() || !file.isDirectory())
                 {
                     continue;

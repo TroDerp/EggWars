@@ -6,8 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import com.mojang.datafixers.util.Pair;
-
+import me.rosillogames.eggwars.utils.Pair;
 import me.rosillogames.eggwars.managers.KitManager;
 
 public class Kit
@@ -71,8 +70,8 @@ public class Kit
     {
         for (Pair<EquipmentSlot, ItemStack> pair : this.items)
         {
-            EquipmentSlot slot = pair.getFirst();
-            ItemStack stack = pair.getSecond();
+            EquipmentSlot slot = pair.getLeft();
+            ItemStack stack = pair.getRight();
 
             if (slot != null && slot != EquipmentSlot.HAND && player.getInventory().getItem(slot) == null)
             {

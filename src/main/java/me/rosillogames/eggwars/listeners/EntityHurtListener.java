@@ -55,7 +55,7 @@ public class EntityHurtListener implements Listener
 
         if (ewplayer.isInArena())
         {
-            if (!ewplayer.getArena().getStatus().equals(ArenaStatus.IN_GAME))
+            if (!ewplayer.getArena().getStatus().equals(ArenaStatus.IN_GAME) || ewplayer.isEliminated())
             {
                 dmgEvent.setCancelled(true);
                 return;
@@ -182,9 +182,10 @@ public class EntityHurtListener implements Listener
     }
 
     @EventHandler
+    @SuppressWarnings("deprecation")
     public void cancelFriendlyDamage(EntityDamageByEntityEvent event)
     {
-        if (event.getEntity().getType() == EntityType.PLAYER && event.getDamager().getType() == EntityType.FIREWORK)
+        if (event.getEntity().getType() == EntityType.PLAYER && "firework_rocket".equals(event.getDamager().getType().getName()))
         {
             EwPlayer pl = PlayerUtils.getEwPlayer((Player)event.getEntity());
 

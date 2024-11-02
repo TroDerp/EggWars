@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.shop.Category;
 import me.rosillogames.eggwars.arena.shop.Merchant;
@@ -23,6 +22,7 @@ import me.rosillogames.eggwars.objects.Price;
 import me.rosillogames.eggwars.player.EwPlayerMenu;
 import me.rosillogames.eggwars.utils.GsonHelper;
 import me.rosillogames.eggwars.utils.ItemUtils;
+import me.rosillogames.eggwars.utils.Pair;
 
 public class TradingManager
 {
@@ -164,7 +164,7 @@ public class TradingManager
                             continue;
                         }
 
-                        multiResults.add(Pair.of(GsonHelper.getAsBoolean(result1, "use_team_color", false), resultItem1));
+                        multiResults.add(new Pair(GsonHelper.getAsBoolean(result1, "use_team_color", false), resultItem1));
                     }
                 }
 
