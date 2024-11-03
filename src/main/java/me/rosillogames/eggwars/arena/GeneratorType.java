@@ -90,6 +90,14 @@ public class GeneratorType
     }
 
     @Override
+    public int hashCode()
+    {
+        int i = 1;
+        i = 31 * i + ((this.name == null) ? 0 : this.name.hashCode());
+        return i;
+    }
+
+    @Override
     public boolean equals(Object othr)
     {
         if (othr == null || this.getClass() != othr.getClass())

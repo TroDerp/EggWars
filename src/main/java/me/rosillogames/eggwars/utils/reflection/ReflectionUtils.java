@@ -43,7 +43,6 @@ public class ReflectionUtils
         return fallback;
     }
 
-    @SuppressWarnings("deprecation")
     public static Attribute getMaxHealthAttribute()
     {
         if (EggWars.serverVersion.ordinal() >= Versions.V_1_21_R2.ordinal())
@@ -51,7 +50,15 @@ public class ReflectionUtils
             return Attribute.MAX_HEALTH;
         }
 
-        return Attribute.valueOf("GENERIC_MAX_HEALTH");
+        try
+        {//For some reason Attribute.valueOf is not working in 1.17
+            return (Attribute)Attribute.class.getField("GENERIC_MAX_HEALTH").get(null);
+        }
+        catch (Exception exception)
+        {
+            exception.printStackTrace();
+            return null;
+        }
     }
 
     public static void setArmorStandInvisible(ArmorStand stand)

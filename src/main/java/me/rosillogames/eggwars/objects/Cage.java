@@ -10,7 +10,7 @@ import me.rosillogames.eggwars.utils.Colorizer;
 import me.rosillogames.eggwars.utils.Locations;
 
 public class Cage
-{//TODO next update
+{//TODO for big update
     private final Team team;
     private Location location;
     private boolean rotate = true;//whether if cage structure must follow rotation from location

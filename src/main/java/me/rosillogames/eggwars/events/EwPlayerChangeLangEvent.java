@@ -19,6 +19,7 @@ public class EwPlayerChangeLangEvent extends Event
         return this.player;
     }
 
+    @Override
     public HandlerList getHandlers()
     {
         return HANDLERS;

@@ -249,21 +249,10 @@ public class EggWars extends JavaPlugin
         if (!bungee.isEnabled())
         {
             for (File file : arenasFolder.listFiles())
-            {//TODO properly detect folders with no arena.yml files and skip them
-                if (!file.exists() || !file.isDirectory())
+            {
+                if (!ArenaManager.isValidArenaFolder(file))
                 {
                     continue;
-                }
-
-                if (!file.exists())
-                {
-                    file.mkdirs();
-                }
-
-                if (!file.isDirectory())
-                {
-                    file.delete();
-                    file.mkdirs();
                 }
 
                 try
@@ -299,7 +288,7 @@ public class EggWars extends JavaPlugin
 
                 File file1 = afile1[l];
 
-                if (!file1.exists() || !file1.isDirectory())
+                if (!ArenaManager.isValidArenaFolder(file1))
                 {
                     continue;
                 }
@@ -334,7 +323,7 @@ public class EggWars extends JavaPlugin
 
         for (File file : list)
         {
-            if (file.exists() && file.isDirectory())
+            if (ArenaManager.isValidArenaFolder(file))
             {
                 list1.add(file);
             }

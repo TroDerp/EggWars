@@ -20,6 +20,7 @@ public class EwPlayerJoinArenaEvent extends Event implements Cancellable
         this.cancelled = false;
     }
 
+    @Override
     public HandlerList getHandlers()
     {
         return HANDLERS;
@@ -50,11 +51,13 @@ public class EwPlayerJoinArenaEvent extends Event implements Cancellable
         this.arena = arena1;
     }
 
+    @Override
     public boolean isCancelled()
     {
         return this.cancelled;
     }
 
+    @Override
     public void setCancelled(boolean flag)
     {
         this.cancelled = flag;

@@ -20,6 +20,7 @@ public class EwPlayerRemoveEggEvent extends Event implements Cancellable
         this.eggTeam = team;
     }
 
+    @Override
     public HandlerList getHandlers()
     {
         return HANDLERS;
@@ -30,11 +31,13 @@ public class EwPlayerRemoveEggEvent extends Event implements Cancellable
         return HANDLERS;
     }
 
+    @Override
     public boolean isCancelled()
     {
         return this.cancelled;
     }
 
+    @Override
     public void setCancelled(boolean flag)
     {
         this.cancelled = flag;

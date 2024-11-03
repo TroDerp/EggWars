@@ -362,12 +362,12 @@ public class Generator
         meta.addEffect(fwbuilder.build());
         firework.setFireworkMeta(meta);
         (new BukkitRunnable()
-        {//Don't detonate immediately so the "launch" sound can play. Can't use "firework.setMaxLife(1)" because it was added in bukkit 1.19.
+        {//Don't detonate immediately (+2 ticks) so the "launch" sound can play. Can't use "firework.setMaxLife(1)" because it was added in bukkit 1.19.
             public void run()
             {
                 firework.detonate();
             }
-        }).runTaskLater(EggWars.instance, 1L);
+        }).runTaskLater(EggWars.instance, 2L);
         this.updateSign();
         return true;
     }
@@ -417,6 +417,7 @@ public class Generator
         return TranslationUtils.getMessage("generator." + (title ? "title" : "name"), player, TranslationUtils.getMessage(type.droppedToken().getTypeName(), player), lvl, type.droppedToken().getColor());
     }
 
+    @Override
     public int hashCode()
     {
         int i = 1;

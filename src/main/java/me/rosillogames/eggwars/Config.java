@@ -10,7 +10,6 @@ import javax.annotation.Nullable;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import me.rosillogames.eggwars.dependencies.DependencyUtils;
 import me.rosillogames.eggwars.enums.ModeOption;
@@ -219,21 +218,8 @@ public class Config
 
         if (!s1.equals(EggWars.EGGWARS_VERSION))
         {
-            //EggWars.instance.getLogger().log(Level.WARNING, "Opening config from EggWars version " + s1 + "! (this version: " + EggWars.EGGWARS_VERSION + ") This may cause some problems on your configuration. I recommend to remove /langs/ and /custom/ folders to update them.");
+            //EggWars.instance.getLogger().log(Level.WARNING, "Opening config from EggWars version " + s1 + "! (this version is " + EggWars.EGGWARS_VERSION + ") This may cause some problems due to config incompatibilities. Checking or updating /langs/ and /custom/ folders is recommended, or remove them to download defaults.");
             fileConf.set("plugin.version", EggWars.EGGWARS_VERSION);
-
-            if (fileConf.contains("database.useSSL") && !fileConf.getString("database.url").contains("useSSL="))
-            {
-                fileConf.set("database.url", fileConf.getString("database.url") + "?useSSL=" + fileConf.getBoolean("database.useSSL"));
-                fileConf.set("database.useSSL", null);
-            }
-        }
-
-        if (fileConf.isConfigurationSection("gameplay"))
-        {
-            ConfigurationSection cs = fileConf.getConfigurationSection("gameplay");
-            fileConf.set("game", cs);
-            fileConf.set("gameplay", null);
         }
 
         EggWars.instance.saveConfig();

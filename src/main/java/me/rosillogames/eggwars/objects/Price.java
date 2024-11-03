@@ -45,6 +45,7 @@ public class Price
         return "Price[Token=" + this.token.toString() + ",Amount=" + this.amount + "]";
     }
 
+    @Override
     public boolean equals(Object othr)
     {
         if (this == othr)

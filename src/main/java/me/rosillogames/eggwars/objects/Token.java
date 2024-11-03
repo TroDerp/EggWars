@@ -50,6 +50,7 @@ public class Token
         return "Token[Material=" + this.material.toString() + ",Color=" + this.color.asBungee().getName() + "]";
     }
 
+    @Override
     public boolean equals(Object othr)
     {
         if (this == othr)
@@ -63,7 +64,7 @@ public class Token
         }
 
         Token other = (Token)othr;
-        //these values *should* never be null so there is no check
+        //these values *must* never be null so there is no check
         return this.color.equals(other.color) && this.material == other.material && this.name.equalsIgnoreCase(other.name);
     }
 }

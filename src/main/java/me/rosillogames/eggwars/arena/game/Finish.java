@@ -131,7 +131,7 @@ public class Finish
             addFinishStat(builder, ply, TranslationUtils.getMessage("stats.deaths", ply), deaths);
         }
 
-        addFinishStat(builder, ply, TranslationUtils.getMessage("stats.endOfGame.kill_death", ply), String.format("%.2f", (double)kills / (double)(deaths <= 0 ? 1 : deaths)));
+        addFinishStat(builder, ply, TranslationUtils.getMessage("stats.endOfGame.kill_death", ply), String.format("%.2f", (double)kills / (double)(deaths <= 0 ? 1 : deaths)).replace(',', '.'));
         int eggsBroken = pl.getIngameStats().getStat(StatType.EGGS_BROKEN);
 
         if (eggsBroken > 0)

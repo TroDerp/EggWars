@@ -386,6 +386,7 @@ public class Team
         }
     }
 
+    @Override
     public int hashCode()
     {
         int i = 1;
@@ -394,6 +395,7 @@ public class Team
         return i;
     }
 
+    @Override
     public boolean equals(Object obj)
     {
         if (this == obj)

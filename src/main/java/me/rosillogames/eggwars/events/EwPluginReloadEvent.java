@@ -14,6 +14,7 @@ public class EwPluginReloadEvent extends Event
         this.reloadType = enumreloadtype;
     }
 
+    @Override
     public HandlerList getHandlers()
     {
         return HANDLERS;

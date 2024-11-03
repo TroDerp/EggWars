@@ -44,6 +44,23 @@ public class ArenaManager
         return new Arena(arenaFolderIn, null);
     }
 
+    public static boolean isValidArenaFolder(File folderIn)
+    {
+        if (!folderIn.exists() || !folderIn.isDirectory())
+        {
+            return false;
+        }
+
+        File file = new File(folderIn, "arena.yml");
+
+        if (!file.exists() || !file.isFile())
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public static String getValidArenaID(String name)
     {
         for (char c0 : REPLACE_FILE_CHARS)

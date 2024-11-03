@@ -170,7 +170,7 @@ public class SetupGUI
         tInv.setItem(15, getLocationSetting("setup.gui.basic.bounds_end", bounds.getEnd(), bounds.getEnd() != null ? Material.STRUCTURE_VOID : Material.BARRIER));
         tInv.setItem(16, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.TARGET, 1), (player) -> TranslationUtils.getMessage("setup.gui.basic.bounds_info.item_lore", player, (bounds.getStart() == null && bounds.getEnd() == null ? "" : TranslationUtils.getMessage("setup.gui.basic.bounds_info.remove", player))), (player) -> TranslationUtils.getMessage("setup.gui.basic.bounds_info.item_name", player)));
         tInv.setItem(22, EwPlayerMenu.getCloseItem());
-        InventoryController.updateInventories((p) -> this.arena.equals(((Arena)p.getInv().getExtraData()[0])), tInv, MenuType.SETUP_SINGLE_TEAM);
+        InventoryController.updateInventories((p) -> this.arena.equals(((Arena)p.getInv().getExtraData()[0])), tInv, MenuType.BASIC_SETTINGS);
     }
 
     protected void updateTeamInv(TeamType type, boolean sendUpdate)

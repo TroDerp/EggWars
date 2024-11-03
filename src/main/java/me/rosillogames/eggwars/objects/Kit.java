@@ -89,11 +89,13 @@ public class Kit
         }
     }
 
+    @Override
     public String toString()
     {
         return "EwKit[Name=" + this.name + ",DisplayItem=" + this.display.toString() + ",Items=" + this.items.toString() + ",Id=" + this.id + ",CooldownTime=" + this.cooldown + ",Price=" + this.price + ",Description=" + this.desc + "]";
     }
 
+    @Override
     public int hashCode()
     {
         int i = 1;
@@ -101,6 +103,7 @@ public class Kit
         return i;
     }
 
+    @Override
     public boolean equals(Object obj)
     {
         if (this == obj)
