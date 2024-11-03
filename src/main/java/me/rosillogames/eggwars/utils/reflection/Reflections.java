@@ -13,7 +13,6 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import com.google.gson.JsonObject;
-
 import me.rosillogames.eggwars.EggWars;
 
 public interface Reflections

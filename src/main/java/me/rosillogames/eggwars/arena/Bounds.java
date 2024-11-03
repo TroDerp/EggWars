@@ -2,7 +2,6 @@ package me.rosillogames.eggwars.arena;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import me.rosillogames.eggwars.utils.GsonHelper;

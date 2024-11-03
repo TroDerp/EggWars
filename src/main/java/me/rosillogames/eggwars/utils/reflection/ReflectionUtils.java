@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.ArmorStand;
@@ -14,6 +15,7 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import com.google.gson.JsonObject;
+import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.Versions;
 
 public class ReflectionUtils
@@ -39,6 +41,17 @@ public class ReflectionUtils
         }
 
         return fallback;
+    }
+
+    @SuppressWarnings("deprecation")
+    public static Attribute getMaxHealthAttribute()
+    {
+        if (EggWars.serverVersion.ordinal() >= Versions.V_1_21_R2.ordinal())
+        {
+            return Attribute.MAX_HEALTH;
+        }
+
+        return Attribute.valueOf("GENERIC_MAX_HEALTH");
     }
 
     public static void setArmorStandInvisible(ArmorStand stand)

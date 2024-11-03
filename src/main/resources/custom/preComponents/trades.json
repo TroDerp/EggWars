@@ -4,7 +4,7 @@
       "translation_key": "shop.building_blocks",
       "display_item": {
         "id": "minecraft:white_terracotta",
-        "count": 1
+        "Count": 1
       },
       "types": {
         "default": {
@@ -22,7 +22,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:terracotta",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -37,7 +37,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:terracotta",
-                  "count": 32
+                  "Count": 32
                 }
               }
             },
@@ -52,7 +52,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:terracotta",
-                  "count": 64
+                  "Count": 64
                 }
               }
             },
@@ -66,7 +66,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:glass",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -81,7 +81,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:glass",
-                  "count": 8
+                  "Count": 8
                 }
               }
             },
@@ -96,7 +96,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:glass",
-                  "count": 32
+                  "Count": 32
                 }
               }
             },
@@ -109,7 +109,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:hay_block",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -123,7 +123,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:hay_block",
-                  "count": 4
+                  "Count": 4
                 }
               }
             },
@@ -137,7 +137,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:hay_block",
-                  "count": 8
+                  "Count": 8
                 }
               }
             },
@@ -150,7 +150,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:obsidian",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -164,7 +164,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:obsidian",
-                  "count": 3
+                  "Count": 3
                 }
               }
             },
@@ -178,7 +178,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:obsidian",
-                  "count": 5
+                  "Count": 5
                 }
               }
             }
@@ -196,7 +196,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:terracotta",
-                  "count": 2
+                  "Count": 2
                 }
               }
             },
@@ -211,7 +211,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:terracotta",
-                  "count": 32
+                  "Count": 32
                 }
               }
             },
@@ -226,7 +226,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:terracotta",
-                  "count": 64
+                  "Count": 64
                 }
               }
             },
@@ -240,7 +240,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:glass",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -255,7 +255,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:glass",
-                  "count": 8
+                  "Count": 8
                 }
               }
             },
@@ -270,7 +270,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:glass",
-                  "count": 32
+                  "Count": 32
                 }
               }
             },
@@ -283,7 +283,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:hay_block",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -297,7 +297,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:hay_block",
-                  "count": 4
+                  "Count": 4
                 }
               }
             },
@@ -311,7 +311,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:hay_block",
-                  "count": 8
+                  "Count": 8
                 }
               }
             },
@@ -324,7 +324,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:obsidian",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -338,7 +338,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:obsidian",
-                  "count": 3
+                  "Count": 3
                 }
               }
             },
@@ -352,7 +352,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:obsidian",
-                  "count": 5
+                  "Count": 5
                 }
               }
             }
@@ -370,7 +370,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:terracotta",
-                  "count": 3
+                  "Count": 3
                 }
               }
             },
@@ -385,7 +385,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:terracotta",
-                  "count": 33
+                  "Count": 33
                 }
               }
             },
@@ -400,7 +400,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:terracotta",
-                  "count": 63
+                  "Count": 63
                 }
               }
             },
@@ -414,7 +414,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:glass",
-                  "count": 2
+                  "Count": 2
                 }
               }
             },
@@ -429,7 +429,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:glass",
-                  "count": 32
+                  "Count": 32
                 }
               }
             },
@@ -444,7 +444,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:glass",
-                  "count": 64
+                  "Count": 64
                 }
               }
             },
@@ -457,7 +457,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:hay_block",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -471,7 +471,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:hay_block",
-                  "count": 4
+                  "Count": 4
                 }
               }
             },
@@ -485,7 +485,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:hay_block",
-                  "count": 8
+                  "Count": 8
                 }
               }
             },
@@ -498,7 +498,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:obsidian",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -512,7 +512,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:obsidian",
-                  "count": 3
+                  "Count": 3
                 }
               }
             },
@@ -526,7 +526,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:obsidian",
-                  "count": 5
+                  "Count": 5
                 }
               }
             }
@@ -538,7 +538,7 @@
       "translation_key": "shop.weapons",
       "display_item": {
         "id": "minecraft:golden_sword",
-        "count": 1
+        "Count": 1
       },
       "types": {
         "default": {
@@ -555,7 +555,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:wooden_sword",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -568,7 +568,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:wooden_axe",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -581,7 +581,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:stone_sword",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -594,7 +594,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:stone_axe",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -607,7 +607,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_sword",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -620,7 +620,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_axe",
-                  "count": 1
+                  "Count": 1
                 }
               }
             }
@@ -637,7 +637,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:wooden_sword",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -650,7 +650,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:wooden_axe",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -663,7 +663,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:stone_sword",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -676,7 +676,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:stone_axe",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -689,7 +689,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_sword",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -702,7 +702,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_axe",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -715,7 +715,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_sword",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -728,7 +728,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_axe",
-                  "count": 1
+                  "Count": 1
                 }
               }
             }
@@ -745,11 +745,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:wooden_sword",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:sharpness": 2
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 2
+                      }
+                    ]
                   }
                 }
               }
@@ -763,11 +766,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:wooden_axe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:sharpness": 2
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 2
+                      }
+                    ]
                   }
                 }
               }
@@ -781,11 +787,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:stone_sword",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:sharpness": 2
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 2
+                      }
+                    ]
                   }
                 }
               }
@@ -799,11 +808,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:stone_axe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:sharpness": 2
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 2
+                      }
+                    ]
                   }
                 }
               }
@@ -817,11 +829,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_sword",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:sharpness": 2
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 2
+                      }
+                    ]
                   }
                 }
               }
@@ -835,11 +850,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_sword",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:sharpness": 2
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 2
+                      }
+                    ]
                   }
                 }
               }
@@ -853,11 +871,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_axe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:sharpness": 2
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 2
+                      }
+                    ]
                   }
                 }
               }
@@ -871,11 +892,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_sword",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:sharpness": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -889,11 +913,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_axe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:sharpness": 2
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:sharpness",
+                        "lvl": 2
+                      }
+                    ]
                   }
                 }
               }
@@ -906,7 +933,7 @@
       "translation_key": "shop.armor",
       "display_item": {
         "id": "minecraft:iron_chestplate",
-        "count": 1
+        "Count": 1
       },
       "types": {
         "default": {
@@ -925,7 +952,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:leather_helmet",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -939,7 +966,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:leather_chestplate",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -953,7 +980,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:leather_leggings",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -967,7 +994,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:leather_boots",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -981,7 +1008,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:leather",
-                  "count": 1
+                  "Count": 1
                 }
               },
               "multi_results": [
@@ -989,28 +1016,28 @@
                   "use_team_color": true,
                   "item": {
                     "id": "minecraft:leather_helmet",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "use_team_color": true,
                   "item": {
                     "id": "minecraft:leather_chestplate",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "use_team_color": true,
                   "item": {
                     "id": "minecraft:leather_leggings",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "use_team_color": true,
                   "item": {
                     "id": "minecraft:leather_boots",
-                    "count": 1
+                    "Count": 1
                   }
                 }
               ]
@@ -1024,7 +1051,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:chainmail_helmet",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1037,7 +1064,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:chainmail_chestplate",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1050,7 +1077,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:chainmail_leggings",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1063,7 +1090,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:chainmail_boots",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1077,32 +1104,32 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_bars",
-                  "count": 1
+                  "Count": 1
                 }
               },
               "multi_results": [
                 {
                   "item": {
                     "id": "minecraft:chainmail_helmet",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:chainmail_chestplate",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:chainmail_leggings",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:chainmail_boots",
-                    "count": 1
+                    "Count": 1
                   }
                 }
               ]
@@ -1116,7 +1143,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_helmet",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1129,7 +1156,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_chestplate",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1142,7 +1169,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_leggings",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1155,7 +1182,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_boots",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1169,32 +1196,32 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_ingot",
-                  "count": 1
+                  "Count": 1
                 }
               },
               "multi_results": [
                 {
                   "item": {
                     "id": "minecraft:iron_helmet",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:iron_chestplate",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:iron_leggings",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:iron_boots",
-                    "count": 1
+                    "Count": 1
                   }
                 }
               ]
@@ -1213,7 +1240,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:leather_helmet",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1227,7 +1254,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:leather_chestplate",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1241,7 +1268,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:leather_leggings",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1255,7 +1282,7 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:leather_boots",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1269,7 +1296,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:leather",
-                  "count": 1
+                  "Count": 1
                 }
               },
               "multi_results": [
@@ -1277,28 +1304,28 @@
                   "use_team_color": true,
                   "item": {
                     "id": "minecraft:leather_helmet",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "use_team_color": true,
                   "item": {
                     "id": "minecraft:leather_chestplate",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "use_team_color": true,
                   "item": {
                     "id": "minecraft:leather_leggings",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "use_team_color": true,
                   "item": {
                     "id": "minecraft:leather_boots",
-                    "count": 1
+                    "Count": 1
                   }
                 }
               ]
@@ -1312,7 +1339,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:chainmail_helmet",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1325,7 +1352,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:chainmail_chestplate",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1338,7 +1365,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:chainmail_leggings",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1351,7 +1378,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:chainmail_boots",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1365,32 +1392,32 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_bars",
-                  "count": 1
+                  "Count": 1
                 }
               },
               "multi_results": [
                 {
                   "item": {
                     "id": "minecraft:chainmail_helmet",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:chainmail_chestplate",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:chainmail_leggings",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:chainmail_boots",
-                    "count": 1
+                    "Count": 1
                   }
                 }
               ]
@@ -1404,7 +1431,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_helmet",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1417,7 +1444,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_chestplate",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1430,7 +1457,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_leggings",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1443,7 +1470,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_boots",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -1457,32 +1484,32 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_ingot",
-                  "count": 1
+                  "Count": 1
                 }
               },
               "multi_results": [
                 {
                   "item": {
                     "id": "minecraft:iron_helmet",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:iron_chestplate",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:iron_leggings",
-                    "count": 1
+                    "Count": 1
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:iron_boots",
-                    "count": 1
+                    "Count": 1
                   }
                 }
               ]
@@ -1496,7 +1523,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:shield",
-                  "count": 1
+                  "Count": 1
                 }
               }
             }
@@ -1514,11 +1541,14 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:leather_helmet",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -1533,11 +1563,14 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:leather_chestplate",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -1552,11 +1585,14 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:leather_leggings",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -1571,11 +1607,14 @@
                 "use_team_color": true,
                 "item": {
                   "id": "minecraft:leather_boots",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -1590,11 +1629,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:leather",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               },
@@ -1603,11 +1645,14 @@
                   "use_team_color": true,
                   "item": {
                     "id": "minecraft:leather_helmet",
-                    "count": 1,
-                    "components": {
-                      "minecraft:enchantments": {
-                        "minecraft:protection": 5
-                      }
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
                     }
                   }
                 },
@@ -1615,11 +1660,14 @@
                   "use_team_color": true,
                   "item": {
                     "id": "minecraft:leather_chestplate",
-                    "count": 1,
-                    "components": {
-                      "minecraft:enchantments": {
-                        "minecraft:protection": 5
-                      }
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
                     }
                   }
                 },
@@ -1627,11 +1675,14 @@
                   "use_team_color": true,
                   "item": {
                     "id": "minecraft:leather_leggings",
-                    "count": 1,
-                    "components": {
-                      "minecraft:enchantments": {
-                        "minecraft:protection": 5
-                      }
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
                     }
                   }
                 },
@@ -1639,11 +1690,14 @@
                   "use_team_color": true,
                   "item": {
                     "id": "minecraft:leather_boots",
-                    "count": 1,
-                    "components": {
-                      "minecraft:enchantments": {
-                        "minecraft:protection": 5
-                      }
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
                     }
                   }
                 }
@@ -1658,11 +1712,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:chainmail_helmet",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -1676,11 +1733,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:chainmail_chestplate",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -1694,11 +1754,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:chainmail_leggings",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -1712,11 +1775,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:chainmail_boots",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -1731,11 +1797,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_bars",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               },
@@ -1743,44 +1812,56 @@
                 {
                   "item": {
                     "id": "minecraft:chainmail_helmet",
-                    "count": 1,
-                    "components": {
-                      "minecraft:enchantments": {
-                        "minecraft:protection": 5
-                      }
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
                     }
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:chainmail_chestplate",
-                    "count": 1,
-                    "components": {
-                      "minecraft:enchantments": {
-                        "minecraft:protection": 5
-                      }
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
                     }
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:chainmail_leggings",
-                    "count": 1,
-                    "components": {
-                      "minecraft:enchantments": {
-                        "minecraft:protection": 5
-                      }
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
                     }
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:chainmail_boots",
-                    "count": 1,
-                    "components": {
-                      "minecraft:enchantments": {
-                        "minecraft:protection": 5
-                      }
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
                     }
                   }
                 }
@@ -1795,11 +1876,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_helmet",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -1813,11 +1897,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_chestplate",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -1831,11 +1918,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_leggings",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -1849,11 +1939,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_boots",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -1868,11 +1961,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_ingot",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               },
@@ -1880,44 +1976,56 @@
                 {
                   "item": {
                     "id": "minecraft:iron_helmet",
-                    "count": 1,
-                    "components": {
-                      "minecraft:enchantments": {
-                        "minecraft:protection": 5
-                      }
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
                     }
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:iron_chestplate",
-                    "count": 1,
-                    "components": {
-                      "minecraft:enchantments": {
-                        "minecraft:protection": 5
-                      }
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
                     }
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:iron_leggings",
-                    "count": 1,
-                    "components": {
-                      "minecraft:enchantments": {
-                        "minecraft:protection": 5
-                      }
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
                     }
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:iron_boots",
-                    "count": 1,
-                    "components": {
-                      "minecraft:enchantments": {
-                        "minecraft:protection": 5
-                      }
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
                     }
                   }
                 }
@@ -1932,11 +2040,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_helmet",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -1950,11 +2061,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_chestplate",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -1968,11 +2082,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_leggings",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -1986,11 +2103,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_boots",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               }
@@ -2005,11 +2125,14 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:protection": 5
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:protection",
+                        "lvl": 5
+                      }
+                    ]
                   }
                 }
               },
@@ -2017,44 +2140,56 @@
                 {
                   "item": {
                     "id": "minecraft:diamond_helmet",
-                    "count": 1,
-                    "components": {
-                      "minecraft:enchantments": {
-                        "minecraft:protection": 5
-                      }
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
                     }
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:diamond_chestplate",
-                    "count": 1,
-                    "components": {
-                      "minecraft:enchantments": {
-                        "minecraft:protection": 5
-                      }
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
                     }
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:diamond_leggings",
-                    "count": 1,
-                    "components": {
-                      "minecraft:enchantments": {
-                        "minecraft:protection": 5
-                      }
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
                     }
                   }
                 },
                 {
                   "item": {
                     "id": "minecraft:diamond_boots",
-                    "count": 1,
-                    "components": {
-                      "minecraft:enchantments": {
-                        "minecraft:protection": 5
-                      }
+                    "Count": 1,
+                    "tag": {
+                      "Enchantments": [
+                        {
+                          "id": "minecraft:protection",
+                          "lvl": 5
+                        }
+                      ]
                     }
                   }
                 }
@@ -2069,7 +2204,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:shield",
-                  "count": 1
+                  "Count": 1
                 }
               }
             }
@@ -2081,7 +2216,7 @@
       "translation_key": "shop.food",
       "display_item": {
         "id": "minecraft:cake",
-        "count": 1
+        "Count": 1
       },
       "types": {
         "default": {
@@ -2098,7 +2233,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:carrot",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2112,7 +2247,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:carrot",
-                  "count": 16
+                  "Count": 16
                 }
               }
             },
@@ -2125,7 +2260,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:cooked_beef",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2139,7 +2274,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:cooked_beef",
-                  "count": 6
+                  "Count": 6
                 }
               }
             },
@@ -2152,7 +2287,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:golden_carrot",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2166,7 +2301,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:golden_carrot",
-                  "count": 3
+                  "Count": 3
                 }
               }
             },
@@ -2179,7 +2314,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:golden_apple",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2192,7 +2327,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:cake",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2205,7 +2340,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:milk_bucket",
-                  "count": 1
+                  "Count": 1
                 }
               }
             }
@@ -2222,7 +2357,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:carrot",
-                  "count": 5
+                  "Count": 5
                 }
               }
             },
@@ -2236,7 +2371,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:carrot",
-                  "count": 60
+                  "Count": 60
                 }
               }
             },
@@ -2249,7 +2384,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:cooked_beef",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2263,7 +2398,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:cooked_beef",
-                  "count": 12
+                  "Count": 12
                 }
               }
             },
@@ -2276,7 +2411,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:golden_carrot",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2290,7 +2425,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:golden_carrot",
-                  "count": 5
+                  "Count": 5
                 }
               }
             },
@@ -2303,7 +2438,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:golden_apple",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2316,7 +2451,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:enchanted_golden_apple",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2329,7 +2464,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:cake",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2342,7 +2477,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:milk_bucket",
-                  "count": 1
+                  "Count": 1
                 }
               }
             }
@@ -2359,7 +2494,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:carrot",
-                  "count": 5
+                  "Count": 5
                 }
               }
             },
@@ -2373,7 +2508,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:carrot",
-                  "count": 25
+                  "Count": 25
                 }
               }
             },
@@ -2386,7 +2521,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:cooked_beef",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2400,7 +2535,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:cooked_beef",
-                  "count": 12
+                  "Count": 12
                 }
               }
             },
@@ -2413,7 +2548,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:golden_carrot",
-                  "count": 3
+                  "Count": 3
                 }
               }
             },
@@ -2427,7 +2562,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:golden_carrot",
-                  "count": 9
+                  "Count": 9
                 }
               }
             },
@@ -2440,7 +2575,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:golden_apple",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2453,7 +2588,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:enchanted_golden_apple",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2466,7 +2601,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:cake",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2479,7 +2614,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:milk_bucket",
-                  "count": 1
+                  "Count": 1
                 }
               }
             }
@@ -2491,7 +2626,7 @@
       "translation_key": "shop.tools",
       "display_item": {
         "id": "minecraft:diamond_pickaxe",
-        "count": 1
+        "Count": 1
       },
       "types": {
         "default": {
@@ -2508,11 +2643,9 @@
               "result": {
                 "item": {
                   "id": "minecraft:stone_pickaxe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Unbreakable": true
                   }
                 }
               }
@@ -2526,11 +2659,9 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_pickaxe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Unbreakable": true
                   }
                 }
               }
@@ -2544,11 +2675,9 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_pickaxe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Unbreakable": true
                   }
                 }
               }
@@ -2562,14 +2691,15 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_pickaxe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:efficiency": 2
-                    },
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 2
+                      }
+                    ],
+                    "Unbreakable": true
                   }
                 }
               }
@@ -2587,14 +2717,15 @@
               "result": {
                 "item": {
                   "id": "minecraft:stone_pickaxe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:efficiency": 1
-                    },
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 1
+                      }
+                    ],
+                    "Unbreakable": true
                   }
                 }
               }
@@ -2608,14 +2739,15 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_pickaxe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:efficiency": 1
-                    },
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 1
+                      }
+                    ],
+                    "Unbreakable": true
                   }
                 }
               }
@@ -2629,14 +2761,15 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_pickaxe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:efficiency": 1
-                    },
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 1
+                      }
+                    ],
+                    "Unbreakable": true
                   }
                 }
               }
@@ -2650,14 +2783,15 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_pickaxe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:efficiency": 3
-                    },
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 3
+                      }
+                    ],
+                    "Unbreakable": true
                   }
                 }
               }
@@ -2675,14 +2809,15 @@
               "result": {
                 "item": {
                   "id": "minecraft:stone_pickaxe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:efficiency": 2
-                    },
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 2
+                      }
+                    ],
+                    "Unbreakable": true
                   }
                 }
               }
@@ -2696,14 +2831,15 @@
               "result": {
                 "item": {
                   "id": "minecraft:iron_pickaxe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:efficiency": 3
-                    },
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 3
+                      }
+                    ],
+                    "Unbreakable": true
                   }
                 }
               }
@@ -2717,14 +2853,15 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_pickaxe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:efficiency": 2
-                    },
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 2
+                      }
+                    ],
+                    "Unbreakable": true
                   }
                 }
               }
@@ -2738,14 +2875,15 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_pickaxe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:efficiency": 4
-                    },
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 4
+                      }
+                    ],
+                    "Unbreakable": true
                   }
                 }
               }
@@ -2759,14 +2897,15 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_pickaxe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:efficiency": 6
-                    },
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 6
+                      }
+                    ],
+                    "Unbreakable": true
                   }
                 }
               }
@@ -2780,14 +2919,15 @@
               "result": {
                 "item": {
                   "id": "minecraft:diamond_pickaxe",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:efficiency": 8
-                    },
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:efficiency",
+                        "lvl": 8
+                      }
+                    ],
+                    "Unbreakable": true
                   }
                 }
               }
@@ -2800,7 +2940,7 @@
       "translation_key": "shop.archery",
       "display_item": {
         "id": "minecraft:bow",
-        "count": 1
+        "Count": 1
       },
       "types": {
         "default": {
@@ -2818,7 +2958,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:bow",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2831,7 +2971,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:arrow",
-                  "count": 5
+                  "Count": 5
                 }
               }
             }
@@ -2848,7 +2988,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:bow",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2861,14 +3001,15 @@
               "result": {
                 "item": {
                   "id": "minecraft:bow",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:power": 1
-                    },
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:power",
+                        "lvl": 1
+                      }
+                    ],
+                    "Unbreakable": true
                   }
                 }
               }
@@ -2882,14 +3023,15 @@
               "result": {
                 "item": {
                   "id": "minecraft:bow",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:punch": 1
-                    },
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:punch",
+                        "lvl": 1
+                      }
+                    ],
+                    "Unbreakable": true
                   }
                 }
               }
@@ -2903,7 +3045,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:arrow",
-                  "count": 5
+                  "Count": 5
                 }
               }
             },
@@ -2916,11 +3058,9 @@
               "result": {
                 "item": {
                   "id": "minecraft:tipped_arrow",
-                  "count": 1,
-                  "components": {
-                    "minecraft:potion_contents": {
-                      "potion": "minecraft:slowness"
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Potion": "minecraft:slowness"
                   }
                 }
               }
@@ -2934,11 +3074,9 @@
               "result": {
                 "item": {
                   "id": "minecraft:tipped_arrow",
-                  "count": 1,
-                  "components": {
-                    "minecraft:potion_contents": {
-                      "potion": "minecraft:weakness"
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Potion": "minecraft:weakness"
                   }
                 }
               }
@@ -2952,7 +3090,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:spectral_arrow",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -2965,11 +3103,9 @@
               "result": {
                 "item": {
                   "id": "minecraft:tipped_arrow",
-                  "count": 16,
-                  "components": {
-                    "minecraft:potion_contents": {
-                      "potion": "minecraft:slowness"
-                    }
+                  "Count": 16,
+                  "tag": {
+                    "Potion": "minecraft:slowness"
                   }
                 }
               }
@@ -2983,11 +3119,9 @@
               "result": {
                 "item": {
                   "id": "minecraft:tipped_arrow",
-                  "count": 16,
-                  "components": {
-                    "minecraft:potion_contents": {
-                      "potion": "minecraft:weakness"
-                    }
+                  "Count": 16,
+                  "tag": {
+                    "Potion": "minecraft:weakness"
                   }
                 }
               }
@@ -3005,14 +3139,15 @@
               "result": {
                 "item": {
                   "id": "minecraft:bow",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:power": 3
-                    },
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:power",
+                        "lvl": 3
+                      }
+                    ],
+                    "Unbreakable": true
                   }
                 }
               }
@@ -3026,14 +3161,15 @@
               "result": {
                 "item": {
                   "id": "minecraft:bow",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:power": 5
-                    },
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:power",
+                        "lvl": 5
+                      }
+                    ],
+                    "Unbreakable": true
                   }
                 }
               }
@@ -3047,14 +3183,15 @@
               "result": {
                 "item": {
                   "id": "minecraft:bow",
-                  "count": 1,
-                  "components": {
-                    "minecraft:enchantments": {
-                      "minecraft:punch": 1
-                    },
-                    "minecraft:unbreakable": {
-                      "show_in_tooltip": false
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Enchantments": [
+                      {
+                        "id": "minecraft:punch",
+                        "lvl": 1
+                      }
+                    ],
+                    "Unbreakable": true
                   }
                 }
               }
@@ -3068,7 +3205,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:arrow",
-                  "count": 5
+                  "Count": 5
                 }
               }
             },
@@ -3081,11 +3218,9 @@
               "result": {
                 "item": {
                   "id": "minecraft:tipped_arrow",
-                  "count": 1,
-                  "components": {
-                    "minecraft:potion_contents": {
-                      "potion": "minecraft:slowness"
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Potion": "minecraft:slowness"
                   }
                 }
               }
@@ -3099,11 +3234,9 @@
               "result": {
                 "item": {
                   "id": "minecraft:tipped_arrow",
-                  "count": 1,
-                  "components": {
-                    "minecraft:potion_contents": {
-                      "potion": "minecraft:weakness"
-                    }
+                  "Count": 1,
+                  "tag": {
+                    "Potion": "minecraft:weakness"
                   }
                 }
               }
@@ -3117,7 +3250,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:spectral_arrow",
-                  "count": 2
+                  "Count": 2
                 }
               }
             },
@@ -3130,11 +3263,9 @@
               "result": {
                 "item": {
                   "id": "minecraft:tipped_arrow",
-                  "count": 16,
-                  "components": {
-                    "minecraft:potion_contents": {
-                      "potion": "minecraft:slowness"
-                    }
+                  "Count": 16,
+                  "tag": {
+                    "Potion": "minecraft:slowness"
                   }
                 }
               }
@@ -3148,11 +3279,9 @@
               "result": {
                 "item": {
                   "id": "minecraft:tipped_arrow",
-                  "count": 16,
-                  "components": {
-                    "minecraft:potion_contents": {
-                      "potion": "minecraft:weakness"
-                    }
+                  "Count": 16,
+                  "tag": {
+                    "Potion": "minecraft:weakness"
                   }
                 }
               }
@@ -3165,7 +3294,7 @@
       "translation_key": "shop.miscellaneous",
       "display_item": {
         "id": "minecraft:chest",
-        "count": 1
+        "Count": 1
       },
       "types": {
         "default": {
@@ -3182,7 +3311,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:ender_pearl",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -3195,7 +3324,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:chest",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -3208,7 +3337,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:ladder",
-                  "count": 2
+                  "Count": 2
                 }
               }
             },
@@ -3221,7 +3350,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:tnt",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -3234,7 +3363,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:compass",
-                  "count": 1
+                  "Count": 1
                 }
               }
             }
@@ -3251,7 +3380,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:ender_pearl",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -3264,7 +3393,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:chest",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -3277,7 +3406,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:ladder",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -3290,7 +3419,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:tnt",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -3303,7 +3432,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:compass",
-                  "count": 1
+                  "Count": 1
                 }
               }
             }
@@ -3320,7 +3449,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:ender_pearl",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -3333,7 +3462,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:chest",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -3346,7 +3475,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:ladder",
-                  "count": 16
+                  "Count": 16
                 }
               }
             },
@@ -3359,7 +3488,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:tnt",
-                  "count": 1
+                  "Count": 1
                 }
               }
             },
@@ -3372,7 +3501,7 @@
               "result": {
                 "item": {
                   "id": "minecraft:compass",
-                  "count": 1
+                  "Count": 1
                 }
               }
             }

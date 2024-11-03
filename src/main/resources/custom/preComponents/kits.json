@@ -4,13 +4,13 @@
       "price": 200,
       "display_item": {
         "id": "minecraft:end_stone",
-        "count": 1
+        "Count": 1
       },
       "items": [
         {
           "item": {
             "id": "minecraft:end_stone",
-            "count": 8
+            "Count": 8
           }
         }
       ]
@@ -19,24 +19,21 @@
       "price": 250,
       "display_item": {
         "id": "minecraft:golden_carrot",
-        "count": 1
+        "Count": 1
       },
       "items": [
         {
           "item": {
             "id": "minecraft:golden_carrot",
-            "count": 3
+            "Count": 3
           }
         },
         {
           "item": {
-            "id": "minecraft:potion",
-            "count": 1,
-            "components": {
-              "minecraft:potion_contents": {
-                "potion": "minecraft:strong_leaping"
-              }
-            }
+            "tag": {
+              "Potion": "minecraft:strong_leaping"
+            },
+            "id": "minecraft:potion"
           }
         }
       ]
@@ -45,13 +42,13 @@
       "price": 300,
       "display_item": {
         "id": "minecraft:iron_ingot",
-        "count": 1
+        "Count": 1
       },
       "items": [
         {
           "item": {
             "id": "minecraft:iron_ingot",
-            "count": 15
+            "Count": 15
           }
         }
       ]
@@ -60,22 +57,18 @@
       "price": 450,
       "display_item": {
         "id": "minecraft:splash_potion",
-        "count": 1,
-        "components": {
-          "minecraft:potion_contents": {
-            "potion": "minecraft:healing"
-          }
+        "Count": 1,
+        "tag": {
+          "Potion": "minecraft:healing"
         }
       },
       "items": [
         {
           "item": {
             "id": "minecraft:splash_potion",
-            "count": 1,
-            "components": {
-              "minecraft:potion_contents": {
-                "potion": "minecraft:healing"
-              }
+            "Count": 1,
+            "tag": {
+              "Potion": "minecraft:healing"
             }
           }
         }
@@ -85,33 +78,27 @@
       "price": 450,
       "display_item": {
         "id": "minecraft:splash_potion",
-        "count": 1,
-        "components": {
-          "minecraft:potion_contents": {
-            "potion": "minecraft:weakness"
-          }
+        "Count": 1,
+        "tag": {
+          "Potion": "minecraft:weakness"
         }
       },
       "items": [
         {
           "item": {
             "id": "minecraft:splash_potion",
-            "count": 1,
-            "components": {
-              "minecraft:potion_contents": {
-                "potion": "minecraft:weakness"
-              }
+            "Count": 1,
+            "tag": {
+              "Potion": "minecraft:weakness"
             }
           }
         },
         {
           "item": {
             "id": "minecraft:splash_potion",
-            "count": 1,
-            "components": {
-              "minecraft:potion_contents": {
-                "potion": "minecraft:slowness"
-              }
+            "Count": 1,
+            "tag": {
+              "Potion": "minecraft:slowness"
             }
           }
         }
@@ -121,13 +108,13 @@
       "price": 450,
       "display_item": {
         "id": "minecraft:golden_apple",
-        "count": 1
+        "Count": 1
       },
       "items": [
         {
           "item": {
             "id": "minecraft:golden_apple",
-            "count": 2
+            "Count": 2
           }
         }
       ]
@@ -136,24 +123,27 @@
       "price": 350,
       "display_item": {
         "id": "minecraft:golden_pickaxe",
-        "count": 1
+        "Count": 1
       },
       "items": [
         {
           "item": {
+            "tag": {
+              "Enchantments": [
+                {
+                  "lvl": 2,
+                  "id": "minecraft:efficiency"
+                }
+              ]
+            },
             "id": "minecraft:golden_pickaxe",
-            "count": 1,
-            "components": {
-              "minecraft:enchantments": {
-                "minecraft:efficiency": 2
-              }
-            }
+            "Count": 1
           }
         },
         {
           "item": {
             "id": "minecraft:tnt",
-            "count": 1
+            "Count": 1
           }
         }
       ]
@@ -162,17 +152,17 @@
       "price": 350,
       "display_item": {
         "id": "minecraft:egg",
-        "count": 1
+        "Count": 1
       },
       "items": [
         {
           "custom_slot": "head",
           "item": {
             "id": "minecraft:leather_helmet",
-            "count": 1,
-            "components": {
-              "minecraft:dyed_color": {
-                "rgb": 16383998
+            "Count": 1,
+            "tag": {
+              "display": {
+                "color": 16383998
               }
             }
           }
@@ -181,10 +171,10 @@
           "custom_slot": "chest",
           "item": {
             "id": "minecraft:leather_chestplate",
-            "count": 1,
-            "components": {
-              "minecraft:dyed_color": {
-                "rgb": 16701501
+            "Count": 1,
+            "tag": {
+              "display": {
+                "color": 16701501
               }
             }
           }
@@ -193,10 +183,10 @@
           "custom_slot": "legs",
           "item": {
             "id": "minecraft:leather_leggings",
-            "count": 1,
-            "components": {
-              "minecraft:dyed_color": {
-                "rgb": 16383998
+            "Count": 1,
+            "tag": {
+              "display": {
+                "color": 16383998
               }
             }
           }
@@ -205,10 +195,10 @@
           "custom_slot": "feet",
           "item": {
             "id": "minecraft:leather_boots",
-            "count": 1,
-            "components": {
-              "minecraft:dyed_color": {
-                "rgb": 16383998
+            "Count": 1,
+            "tag": {
+              "display": {
+                "color": 16383998
               }
             }
           }
@@ -219,19 +209,20 @@
       "price": 400,
       "display_item": {
         "id": "minecraft:feather",
-        "count": 1
+        "Count": 1
       },
       "items": [
         {
           "item": {
             "id": "minecraft:chainmail_boots",
-            "count": 1,
-            "components": {
-              "minecraft:enchantments": {
-                "levels": {
-                  "minecraft:feather_falling": 4
+            "Count": 1,
+            "tag": {
+              "Enchantments": [
+                {
+                  "lvl": 4,
+                  "id": "minecraft:feather_falling"
                 }
-              }
+              ]
             }
           }
         }

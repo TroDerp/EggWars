@@ -3,10 +3,10 @@ package me.rosillogames.eggwars.player;
 import java.util.Collection;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.Scoreboard;
+import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class TempGameData
 {
@@ -36,7 +36,7 @@ public class TempGameData
         this.items = playerIn.getInventory().getContents().clone();
         this.extra = playerIn.getInventory().getExtraContents().clone();
         this.enderChest = playerIn.getEnderChest().getContents().clone();
-        this.maxHealth = playerIn.getAttribute(Attribute.GENERIC_MAX_HEALTH).getBaseValue();
+        this.maxHealth = playerIn.getAttribute(ReflectionUtils.getMaxHealthAttribute()).getBaseValue();
         this.health = playerIn.getHealth();
         this.foodLevel = playerIn.getFoodLevel();
         this.gamemode = playerIn.getGameMode();
@@ -53,7 +53,7 @@ public class TempGameData
 
     public void sendToPlayer()
     {
-        this.player.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(this.maxHealth);
+        this.player.getAttribute(ReflectionUtils.getMaxHealthAttribute()).setBaseValue(this.maxHealth);
         this.player.setHealth(this.health);
         this.player.setFoodLevel(this.foodLevel);
         this.player.getInventory().setContents(this.items);

@@ -21,7 +21,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.block.BlockState;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -1388,7 +1387,7 @@ public class Arena
             d0 = 60.0;
         }
 
-        player.getPlayer().getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(d0);
+        player.getPlayer().getAttribute(ReflectionUtils.getMaxHealthAttribute()).setBaseValue(d0);
         player.getPlayer().setHealth(d0);
     }
 
