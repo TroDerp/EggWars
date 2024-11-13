@@ -117,7 +117,7 @@ public class EggInteractListener implements Listener
         event.setCancelled(true);
         ewplayer.getIngameStats().addStat(StatType.EGGS_BROKEN, 1);
 
-        for (EwPlayer player : team.getArena().getPlayers())
+        for (EwPlayer player : arena.getPlayers())
         {
             TranslationUtils.sendMessage("gameplay.ingame.team_egg_destroyed", player.getPlayer(), TeamUtils.translateTeamType(team.getType(), player.getPlayer(), false), TeamUtils.colorizePlayerName(ewplayer));
             player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 100F, 1.0F);

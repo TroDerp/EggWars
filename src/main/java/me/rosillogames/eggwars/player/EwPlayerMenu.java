@@ -7,6 +7,9 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
+
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.enums.StatType;
@@ -201,7 +204,10 @@ public class EwPlayerMenu
 
     public TranslatableItem getProfileItem()
     {
-        ItemStack itemstack = ItemUtils.getItemOrDefault("{id:\"minecraft:player_head\",Count:1,tag:{SkullOwner:\"" + this.player.getPlayer().getName() + "\"}}", Material.SKELETON_SKULL);
+        ItemStack itemstack = new ItemStack(Material.PLAYER_HEAD, 1);
+        ItemMeta meta = itemstack.getItemMeta();
+        ((SkullMeta)meta).setOwningPlayer(this.player.getPlayer());
+        itemstack.setItemMeta(meta);
         return TranslatableItem.translatableNameLore(itemstack, "menu.profile.item_lore", "menu.profile.item_name");
     }
 

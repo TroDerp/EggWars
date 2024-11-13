@@ -144,29 +144,26 @@ public class SignListener implements Listener
                 return;
             }
 
-            for (Map.Entry<Vector, Generator> entry : arena.getGenerators().entrySet())
+            Vector vector = clickLoc.toVector();
+
+            if (arena.getGenerators().containsKey(vector) || (EggWars.config.useBelowBlock && arena.getGenerators().containsKey(vector = vector.setY(vector.getBlockY() + 1))))
             {
-                Vector locVec = entry.getKey();
+                Generator gen = arena.getGenerators().get(vector);
 
-                if (locVec.equals(clickLoc.toVector()) || (EggWars.config.useBelowBlock && locVec.equals(clickLoc.clone().add(0.0D, 1.0D, 0.0D).toVector())))
+                if (gen.hasCachedType())
                 {
-                    Generator gen = entry.getValue();
-
-                    if (gen.hasCachedType())
+                    if (event.getPlayer().isSneaking())
                     {
-                        if (event.getPlayer().isSneaking())
-                        {
-                            gen.tryUpgrade(event.getPlayer());
-                        }
-                        else
-                        {
-                            gen.openInventory(event.getPlayer());
-                        }
+                        gen.tryUpgrade(event.getPlayer());
                     }
-
-                    event.setCancelled(true);
-                    return;
+                    else
+                    {
+                        gen.openInventory(event.getPlayer());
+                    }
                 }
+
+                event.setCancelled(true);
+                return;
             }
 
             if (isSign && !arena.getReplacedBlocks().containsKey(clickLoc))

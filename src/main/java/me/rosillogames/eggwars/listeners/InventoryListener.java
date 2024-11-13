@@ -285,7 +285,7 @@ public class InventoryListener implements Listener
             return;
         }
 
-        if (!ewplayer.getArena().getStatus().equals(ArenaStatus.STARTING_GAME) && !ewplayer.getArena().getStatus().equals(ArenaStatus.STARTING) && !ewplayer.getArena().getStatus().equals(ArenaStatus.WAITING))
+        if (!ewplayer.getArena().getStatus().equals(ArenaStatus.STARTING_GAME) && !ewplayer.getArena().getStatus().isLobby())
         {
             return;
         }
@@ -481,12 +481,7 @@ public class InventoryListener implements Listener
 
         clickEvent.setCancelled(true);
 
-        if (clickEvent.getCurrentItem() == null)
-        {
-            return;
-        }
-
-        if (!ewplayer.getArena().getStatus().equals(ArenaStatus.STARTING) && !ewplayer.getArena().getStatus().equals(ArenaStatus.WAITING))
+        if (clickEvent.getCurrentItem() == null || !ewplayer.getArena().getStatus().isLobby())
         {
             return;
         }

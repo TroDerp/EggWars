@@ -109,6 +109,7 @@ public class Config
         List<String> list = new ArrayList();
         list.add("minecraft:fern");
         list.add("minecraft:grass");
+        list.add("minecraft:short_grass");
         list.add("minecraft:large_fern");
         list.add("minecraft:tall_grass");
         list.add("minecraft:dead_bush");
@@ -128,10 +129,15 @@ public class Config
         list.add("minecraft:cornflower");
         list.add("minecraft:lily_of_the_valley");
         list.add("minecraft:wither_rose");
+        list.add("minecraft:torchflower");
+        list.add("minecraft:pink_petals");
+        list.add("minecraft:closed_eyeblossom");
+        list.add("minecraft:open_eyeblossom");
         list.add("minecraft:sunflower");
         list.add("minecraft:lilac");
         list.add("minecraft:rose_bush");
         list.add("minecraft:peony");
+        list.add("minecraft:pitcher_plant");
         list.add("minecraft:snow");
         fileConf.addDefault("game.breakable_blocks", list);
 

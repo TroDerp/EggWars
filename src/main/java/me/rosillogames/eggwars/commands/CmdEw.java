@@ -245,7 +245,7 @@ public class CmdEw implements TabExecutor
                 return false;
             }
 
-            if (arena.getStatus().equals(ArenaStatus.WAITING) || arena.getStatus().equals(ArenaStatus.STARTING))
+            if (arena.getStatus().isLobby())
             {
                 if (arena.isFull())
                 {
@@ -474,7 +474,7 @@ public class CmdEw implements TabExecutor
 
             for (Arena randomarena : list)
             {
-                if (!randomarena.isFull() && (randomarena.getStatus().equals(ArenaStatus.WAITING) || randomarena.getStatus().equals(ArenaStatus.STARTING)))
+                if (!randomarena.isFull() && randomarena.getStatus().isLobby())
                 {
                     randomarena.joinArena(PlayerUtils.getEwPlayer((Player)sender), false, false);
                     return true;

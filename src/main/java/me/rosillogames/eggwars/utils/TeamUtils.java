@@ -1,6 +1,5 @@
 package me.rosillogames.eggwars.utils;
 
-import java.util.Iterator;
 import javax.annotation.Nullable;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -82,10 +81,8 @@ public class TeamUtils implements Listener
 
     public static Team getTeamByEggLocation(Arena arena, Location location)
     {
-        for (Iterator iterator = arena.getTeams().values().iterator(); iterator.hasNext();)
+        for (Team team : arena.getTeams().values())
         {
-            Team team = (Team)iterator.next();
-
             if (team.getEgg().getBlock().getLocation().equals(location.getBlock().getLocation()))
             {
                 return team;

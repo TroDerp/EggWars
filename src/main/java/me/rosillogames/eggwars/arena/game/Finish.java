@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
+import me.rosillogames.eggwars.arena.Generator;
 import me.rosillogames.eggwars.arena.Team;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.StatType;
@@ -27,7 +28,7 @@ public class Finish
         }
 
         arena.setStatus(ArenaStatus.FINISHING);
-        arena.getGenerators().values().forEach(generator -> generator.stop());
+        arena.getGenerators().values().forEach(Generator::stop);
 
         if (winner != null)
         {

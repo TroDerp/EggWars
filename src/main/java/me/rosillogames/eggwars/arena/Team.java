@@ -266,25 +266,10 @@ public class Team
         vill.setProfession(Villager.Profession.NONE);
         vill.addPotionEffect(new PotionEffect(PotionEffectType.getById(2 /* SLOW or SLOWNESS */), Integer.MAX_VALUE, 255, false, false));
         vill.setGravity(false);
+        vill.setCollidable(false);
         vill.setCustomName(TranslationUtils.getMessage("gameplay.villager.name"));
-        vill.setCustomNameVisible(true);
+        vill.setCustomNameVisible(true);//If something is riding this villager, name tag won't display for some reason
         this.villager.add(vill);
-
-        ArmorStand sup = middleLoc.getWorld().spawn(middleLoc, ArmorStand.class);
-        ReflectionUtils.setArmorStandInvisible(sup);
-        sup.setSmall(true);
-        sup.setAI(false);
-        sup.setMarker(true);
-        vill.addPassenger(sup);
-        this.villager.add(sup);
-
-        ArmorStand up = middleLoc.getWorld().spawn(middleLoc.clone().add(0.0, 1.975, 0.0), ArmorStand.class);
-        ReflectionUtils.setArmorStandInvisible(up);
-        up.setAI(false);
-        up.setMarker(true);
-        up.setCustomName(TranslationUtils.getMessage("gameplay.villager.name"));
-        up.setCustomNameVisible(true);
-        this.villager.add(up);
 
         ArmorStand blw = middleLoc.getWorld().spawn(middleLoc.clone().add(0.0, 1.715, 0.0), ArmorStand.class);
         ReflectionUtils.setArmorStandInvisible(blw);

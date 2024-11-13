@@ -187,7 +187,7 @@ public class ItemUtils
     {
         BlockData data = ReflectionUtils.parseBlockData(s);
 
-        if (data == null)
+        if (data == null || data.getMaterial() == Material.AIR)
         {
             return def;
         }

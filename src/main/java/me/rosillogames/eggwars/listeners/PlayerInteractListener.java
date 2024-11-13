@@ -34,12 +34,7 @@ public class PlayerInteractListener implements Listener
 
         Villager villager = (Villager)event.getRightClicked();
 
-        if (villager.getCustomName() == null)
-        {
-            return;
-        }
-
-        if (!villager.getCustomName().equals(TranslationUtils.getMessage("gameplay.villager.name")))
+        if (!TranslationUtils.getMessage("gameplay.villager.name").equals(villager.getCustomName()))
         {
             return;
         }

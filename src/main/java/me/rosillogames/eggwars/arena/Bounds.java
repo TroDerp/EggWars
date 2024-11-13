@@ -94,8 +94,8 @@ public class Bounds
         int eX = this.end.getBlockX();
         int eY = this.end.getBlockY();
         int eZ = this.end.getBlockZ();
-        this.start = new Location(null, sX > eX ? eX : sX, sY > eY ? eY : sY, sZ > eZ ? eZ : sZ);
-        this.end = new Location(null, sX > eX ? sX : eX, sY > eY ? sY : eY, sZ > eZ ? sZ : eZ);
+        this.start = new Location(this.start.getWorld(), sX > eX ? eX : sX, sY > eY ? eY : sY, sZ > eZ ? eZ : sZ);
+        this.end = new Location(this.end.getWorld(), sX > eX ? sX : eX, sY > eY ? sY : eY, sZ > eZ ? sZ : eZ);
     }
 
     public static Bounds deserialize(String json)

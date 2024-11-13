@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import javax.annotation.Nullable;
@@ -164,9 +163,9 @@ public class Arena
         this.boundaries = Bounds.deserialize(fileconf.getString("Bounds"));
         this.maxTeamPlayers = fileconf.getInt("MaxPlayersPerTeam");
         this.minPlayers = fileconf.getInt("MinPlayers");
-        boolean isUpToDate = loadOldNew(fileconf, (conf, key) -> fileconf.getInt(key), "Countdown", "StartCountdown", this::setStartCountdown);
+        this.startCountdown = fileconf.getInt("StartCountdown", -1);
         this.fullCountdown = fileconf.getInt("FullCountdown", -1);
-        isUpToDate = loadOldNew(fileconf, (conf, key) -> fileconf.getInt(key), "GameCountdown", "ReleaseCountdown", this::setReleaseCountdown) && isUpToDate;
+        this.releaseCountdown = fileconf.getInt("ReleaseCountdown", -1);
         this.customTrades = fileconf.getBoolean("ArenaSpecificTrades", false);
 
         if (this.customTrades)
@@ -184,38 +183,22 @@ public class Arena
             }
 
             Team team = new Team(this, teamtype);
-            isUpToDate = loadOldNew(fileconf, (conf, key) -> fileconf.getConfigurationSection(key), teamtypeid + ".Glasses", teamtypeid + ".Cages", (confsec) ->
+            loadSection(fileconf, teamtypeid + ".Cages", (key) ->
             {
-                for (String key : confsec.getKeys(false))
-                {
-                    team.addCage(Locations.fromString(fileconf.getString(confsec.getParent().getCurrentPath() + "." + confsec.getName() + "." + key)));
-                }
-            }) && isUpToDate;
+                team.addCage(Locations.fromString(fileconf.getString(key)));
+            });
             loadIfPresent(fileconf, teamtypeid + ".Respawn", team::setRespawn);
             loadIfPresent(fileconf, teamtypeid + ".Villager", team::setVillager);
             loadIfPresent(fileconf, teamtypeid + ".Egg", team::setEgg);
             this.teams.put(teamtype, team);
         }
 
-        ConfigurationSection gens;
-
-        if ((gens = fileconf.getConfigurationSection("Generator")) != null)
+        loadSection(fileconf, "Generator", (key) ->
         {
-            for (String gen : gens.getKeys(false))
-            {
-                Generator generator = new Generator(Locations.fromString(fileconf.getString("Generator." + gen + ".Loc")), fileconf.getInt("Generator." + gen + ".DefLevel"), fileconf.getString("Generator." + gen + ".Type"), this);
-                this.generators.put(generator.getBlock().toVector(), generator);
-            }
-        }
-
+            Generator generator = new Generator(Locations.fromString(fileconf.getString(key + ".Loc")), fileconf.getInt(key + ".DefLevel"), fileconf.getString(key + ".Type"), this);
+            this.generators.put(generator.getBlock().toVector(), generator);
+        });
         this.setWorld(world);
-
-        if (!isUpToDate)
-        {
-            this.saving = true;//set to already true to turn on convert mode
-            this.saveArena();
-        }
-
         this.setupGUI = new SetupGUI(this);
         this.reset(!this.isSetup());
     }
@@ -228,17 +211,16 @@ public class Arena
         }
     }
 
-    private static <T> boolean loadOldNew(FileConfiguration config, BiFunction<FileConfiguration, String, T> func, String oldKey, String newKey, Consumer<T> cons)
+    private static void loadSection(FileConfiguration config, String key, Consumer<String> cons)
     {
-        if (config.contains(newKey) || config.isConfigurationSection(newKey))
+        ConfigurationSection section;
+
+        if ((section = config.getConfigurationSection(key)) != null)
         {
-            cons.accept(func.apply(config, newKey));
-            return true;
-        }
-        else
-        {
-            cons.accept(func.apply(config, oldKey));
-            return false;
+            for (String subKey : section.getKeys(false))
+            {
+                cons.accept(section.getParent().getCurrentPath() + "." + section.getName() + "." + subKey);
+            }
         }
     }
 
@@ -429,8 +411,8 @@ public class Arena
         }
 
         this.boundaries.setWorld(worldIn);
-        this.getTeams().values().forEach(team -> team.setArenaWorld());
-        this.getGenerators().values().forEach(gen -> gen.setArenaWorld());
+        this.getTeams().values().forEach(Team::setArenaWorld);
+        this.getGenerators().values().forEach(Generator::setArenaWorld);
     }
 
     public int getMaxTeamPlayers()
@@ -790,8 +772,8 @@ public class Arena
         this.healthVotes.clear();
         this.healthType = HealthType.NORMAL;
         this.players.clear();
-        this.getTeams().values().forEach(team -> team.reset());
-        this.getGenerators().values().forEach(generator -> generator.reset());
+        this.getTeams().values().forEach(Team::reset);
+        this.getGenerators().values().forEach(Generator::reset);
         this.getWorld().setGameRule(GameRule.NATURAL_REGENERATION, Boolean.valueOf(true));
 
         //If it is entering setup it will regen the world, and if it is exiting it will not.
@@ -1026,7 +1008,6 @@ public class Arena
 
     public boolean saveArena()
     {
-        boolean converting = this.saving;//TODO: remove this after ensuring everyone converted
         this.saving = true;
         ConfigAccessor accessor = new ConfigAccessor(EggWars.instance, new File(this.arenaFolder, "arena.yml"));
         accessor.createNewConfig();
@@ -1071,12 +1052,7 @@ public class Arena
         }
 
         accessor.saveConfig();
-
-        if (!converting)
-        {
-            WorldController.saveArenaWorld(this);
-        }
-
+        WorldController.saveArenaWorld(this);
         this.saving = false;
         return true;
     }
@@ -1312,7 +1288,7 @@ public class Arena
         {
             return false;
         }
-        else if (this.status == ArenaStatus.WAITING || this.status == ArenaStatus.STARTING || this.status == ArenaStatus.STARTING_GAME)
+        else if (this.status.isLobby() || this.status == ArenaStatus.STARTING_GAME)
         {
             this.itemsVotes.put(ewplayer, itemtype);
             return true;
@@ -1344,7 +1320,7 @@ public class Arena
         {
             return false;
         }
-        else if (this.status == ArenaStatus.WAITING || this.status == ArenaStatus.STARTING || this.status == ArenaStatus.STARTING_GAME)
+        else if (this.status.isLobby() || this.status == ArenaStatus.STARTING_GAME)
         {
             this.healthVotes.put(ewplayer, healthtype);
             return true;

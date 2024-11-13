@@ -107,10 +107,10 @@ public class Starting
 
         if (arena.getReleaseCountdown() != 0 || arena.skipsLobby())//When skipping lobby we don't use releaseCountdown
         {
-            arena.getTeams().values().forEach(team -> team.removeCages());
+            arena.getTeams().values().forEach(Team::removeCages);
         }
 
-        arena.getGenerators().values().forEach(gen -> gen.start());
+        arena.getGenerators().values().forEach(Generator::start);
 
         for (EwPlayer ewplayer : arena.getAlivePlayers())
         {

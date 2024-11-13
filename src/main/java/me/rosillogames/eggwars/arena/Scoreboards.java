@@ -1,6 +1,5 @@
 package me.rosillogames.eggwars.arena;
 
-import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -8,7 +7,6 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.StatType;
-import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.TeamUtils;
@@ -117,10 +115,9 @@ public class Scoreboards
     {
         Scoreboard scoreboard = ewplayer.getPlayer().getScoreboard();
 
-        for (Map.Entry<TeamType, Team> entry : this.arena.getTeams().entrySet())
+        for (Team team : this.arena.getTeams().values())
         {
-            TeamType type = entry.getKey();
-            org.bukkit.scoreboard.Team mcTeam = scoreboard.getTeam(type.id());
+            org.bukkit.scoreboard.Team mcTeam = scoreboard.getTeam(team.getType().id());
 
             if (mcTeam != null)
             {
@@ -129,13 +126,13 @@ public class Scoreboards
 
             if (!this.arena.getStatus().isLobby())
             {
-                mcTeam = scoreboard.registerNewTeam(type.id());
-                mcTeam.setDisplayName(TeamUtils.translateTeamType(type, ewplayer.getPlayer(), true));
-                mcTeam.setColor(type.color());
+                mcTeam = scoreboard.registerNewTeam(team.getType().id());
+                mcTeam.setDisplayName(TeamUtils.translateTeamType(team.getType(), ewplayer.getPlayer(), true));
+                mcTeam.setColor(team.getType().color());
                 mcTeam.setCanSeeFriendlyInvisibles(true);
-                mcTeam.setPrefix(TeamUtils.teamPrefix(type, ewplayer.getPlayer()) + " ");
+                mcTeam.setPrefix(TeamUtils.teamPrefix(team.getType(), ewplayer.getPlayer()) + " ");
 
-                for (EwPlayer teamplayer : entry.getValue().getPlayers())
+                for (EwPlayer teamplayer : team.getPlayers())
                 {
                     mcTeam.addEntry(teamplayer.getPlayer().getName());
                 }

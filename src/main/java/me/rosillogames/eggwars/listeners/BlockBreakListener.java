@@ -1,6 +1,5 @@
 package me.rosillogames.eggwars.listeners;
 
-import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -12,10 +11,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.util.Vector;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
-import me.rosillogames.eggwars.arena.Generator;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.language.TranslationUtils;
@@ -65,28 +62,24 @@ public class BlockBreakListener implements Listener
             return;
         }
 
-        //remember that 'return' doesn't work outside forEach
-        for (Map.Entry<Vector, Generator> entry : arena.getGenerators().entrySet())
+        if (arena.getGenerators().containsKey(location.toVector()))
         {
-            if (entry.getKey().equals(location.toVector()))
+            //Block break has to be cancelled to skip further issues
+            if (arena.getStatus() != ArenaStatus.SETTING)
             {
-                //Block break has to be cancelled to skip further issues
-                if (arena.getStatus() != ArenaStatus.SETTING)
-                {
-                    eventIn.setCancelled(true);
-                    TranslationUtils.sendMessage("commands.error.arena_needs_edit_mode", eventIn.getPlayer());
-                    return;
-                }
-                else if (!eventIn.getPlayer().hasPermission("eggwars.genSign.break"))
-                {
-                    eventIn.setCancelled(true);
-                    return;
-                }
-
-                arena.removeGenerator(entry.getKey());
-                TranslationUtils.sendMessage("setup.generator.removed", eventIn.getPlayer());
+                eventIn.setCancelled(true);
+                TranslationUtils.sendMessage("commands.error.arena_needs_edit_mode", eventIn.getPlayer());
                 return;
             }
+            else if (!eventIn.getPlayer().hasPermission("eggwars.genSign.break"))
+            {
+                eventIn.setCancelled(true);
+                return;
+            }
+
+            arena.removeGenerator(location.toVector());
+            TranslationUtils.sendMessage("setup.generator.removed", eventIn.getPlayer());
+            return;
         }
 
         return;
