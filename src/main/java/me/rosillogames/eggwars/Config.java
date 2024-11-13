@@ -107,6 +107,9 @@ public class Config
         fileConf.addDefault("game.tnt.strenght", 3.0D);
         fileConf.addDefault("game.tnt.fuse_ticks", 80);
         List<String> list = new ArrayList();
+        list.add("minecraft:water");
+        list.add("minecraft:lava");
+        list.add("minecraft:fire");
         list.add("minecraft:fern");
         list.add("minecraft:grass");
         list.add("minecraft:short_grass");

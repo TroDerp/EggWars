@@ -186,7 +186,7 @@
   "setup.todo.set_min_players": "&3Set min players number. (&2/ews setMinPlayers <number>&3)",
   "setup.todo.set_max_team_players": "&3Set max players per team number. (&2/ews setMaxPlayersPerTeam <number>&3)",
   "setup.todo.set_start_countdown": "&3Set start countdown. (&2/ews setStartCountdown <seconds>&3)",
-  "setup.todo.set_full_countdown": "&3Set new value for start countdown when the arena becomess full &7(optional)&3. Set it to -1 to disable. (&2/ews setFullCountdown <seconds>&3)",
+  "setup.todo.set_full_countdown": "&3Set new value for start countdown when the arena becomes full &7(optional)&3. Set it to -1 to disable. (&2/ews setFullCountdown <seconds>&3)",
   "setup.todo.set_release_countdown": "&3Set release count down. (&2/ews setReleaseCountdown <seconds>&3)",
   "setup.todo.save": "&dSave the arena with &e/ews toggleEditMode {0}&d!",
   "setup.todo.team.set_egg": "&3Set team {0} egg. (&2/ews setTeamEgg {0}&3)",

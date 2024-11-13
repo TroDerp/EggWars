@@ -8,6 +8,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -106,7 +107,7 @@ public class BlockBreakListener implements Listener
             }
 
             if (!arena.getReplacedBlocks().containsKey(eventIn.getBlock().getLocation()) && !EggWars.config.breakableBlocks.contains(eventIn.getBlock().getType()))
-            {
+            {//TODO bug: can't place blocks on water or lava or fire
                 eventIn.setCancelled(true);
                 TranslationUtils.sendMessage("gameplay.ingame.cant_break_not_placed", player.getPlayer());
             }
@@ -141,6 +142,24 @@ public class BlockBreakListener implements Listener
             {
                 eventIn.setCancelled(true);
                 return;
+            }
+        }
+    }
+
+    @EventHandler
+    public void flowOrTeleport(BlockFromToEvent event)
+    {
+        Arena arena = EggWars.getArenaManager().getArenaByWorld(event.getBlock().getWorld());
+
+        if (arena != null)
+        {
+            if (event.getBlock().getType() == Material.DRAGON_EGG)
+            {
+                event.setCancelled(true);
+            }
+            else if (!event.isCancelled() && (event.getBlock().getType() == Material.WATER || event.getBlock().getType() == Material.LAVA))
+            {
+                arena.addReplacedBlock(event.getToBlock().getState());
             }
         }
     }

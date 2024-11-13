@@ -16,7 +16,6 @@ import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -132,15 +131,6 @@ public class EggInteractListener implements Listener
         event.getClickedBlock().setType(Material.AIR);
         PlayerUtils.addPoints(ewplayer, EggWars.instance.getConfig().getInt("game.points.on_egg"));
         arena.getScores().updateScores(false);
-    }
-
-    @EventHandler
-    public void disableTeleport(BlockFromToEvent event)
-    {
-        if (event.getBlock().getType().equals(Material.DRAGON_EGG) && EggWars.getArenaManager().getArenaByWorld(event.getBlock().getWorld()) != null)
-        {
-            event.setCancelled(true);
-        }
     }
 
     /* There's an unfixable bug that causes main-hand to swing instead of off-hand when placing block from the other hand */

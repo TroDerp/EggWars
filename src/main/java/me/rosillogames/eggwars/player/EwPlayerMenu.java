@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.enums.StatType;
