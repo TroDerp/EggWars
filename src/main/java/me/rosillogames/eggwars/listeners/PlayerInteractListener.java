@@ -273,7 +273,7 @@ public class PlayerInteractListener implements Listener
             }
             else
             {
-                if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && worldArena == null && LobbySigns.isValidWallSign(event.getClickedBlock()))
+                if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && worldArena == null && LobbySigns.isValidBlockSign(event.getClickedBlock()))
                 {//return if so, to prevent conflict with SetupGUI.Listener.signClick()
                     return;
                 }

@@ -8,7 +8,7 @@ public enum TeamType
     DARK_BLUE("dark_blue", 11, ChatColor.DARK_BLUE),
     GREEN("green", 5, ChatColor.GREEN),
     YELLOW("yellow", 4, ChatColor.YELLOW),
-    PURPLE("purple", 2, ChatColor.DARK_PURPLE),
+    PURPLE("purple", 10, ChatColor.DARK_PURPLE),
     ORANGE("orange", 1, ChatColor.GOLD),
     DARK_GREEN("dark_green", 13, ChatColor.DARK_GREEN),
     LIGHT_BLUE("light_blue", 3, ChatColor.AQUA),

@@ -749,7 +749,7 @@ public class SetupGUI
 
                 event.setCancelled(true);
 
-                if (LobbySigns.isValidWallSign(event.getClickedBlock()))
+                if (LobbySigns.isValidBlockSign(event.getClickedBlock()))
                 {
                     EggWars.signs.add(new ArenaSign(arena, event.getClickedBlock().getLocation()));
                     TranslationUtils.sendMessage("setup.sign.arena.added", event.getPlayer());

@@ -1,6 +1,7 @@
 package me.rosillogames.eggwars.objects;
 
 import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.WallSign;
 import me.rosillogames.eggwars.arena.Arena;
@@ -19,7 +20,15 @@ public class ArenaSign
         this.arena = arena1;
         this.location = location1;
         Sign sign = (Sign)location1.getBlock().getState();
-        this.support = sign.getBlock().getRelative(((WallSign)sign.getBlockData()).getFacing().getOppositeFace()).getLocation();
+
+        if (sign.getBlockData() instanceof WallSign)
+        {
+            this.support = sign.getBlock().getRelative(((WallSign)sign.getBlockData()).getFacing().getOppositeFace()).getLocation();
+        }
+        else
+        {
+            this.support = sign.getBlock().getRelative(BlockFace.DOWN).getLocation();
+        }
     }
 
     @SuppressWarnings("deprecation")

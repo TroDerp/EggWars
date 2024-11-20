@@ -107,7 +107,7 @@ public class BlockBreakListener implements Listener
             }
 
             if (!arena.getReplacedBlocks().containsKey(eventIn.getBlock().getLocation()) && !EggWars.config.breakableBlocks.contains(eventIn.getBlock().getType()))
-            {//TODO bug: can't place blocks on water or lava or fire
+            {
                 eventIn.setCancelled(true);
                 TranslationUtils.sendMessage("gameplay.ingame.cant_break_not_placed", player.getPlayer());
             }

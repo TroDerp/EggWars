@@ -56,7 +56,7 @@ public class SignListener implements Listener
                 return;
             }
 
-            if (LobbySigns.isValidWallSign(eventIn.getBlock()))
+            if (LobbySigns.isValidBlockSign(eventIn.getBlock()))
             {
                 EggWars.signs.add(new ArenaSign(arena, eventIn.getBlock().getLocation()));
                 TranslationUtils.sendMessage("setup.sign.arena.added", eventIn.getPlayer());

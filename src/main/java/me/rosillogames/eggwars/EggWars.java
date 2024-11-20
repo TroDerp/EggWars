@@ -345,6 +345,7 @@ public class EggWars extends JavaPlugin
         signsConfig = new ConfigAccessor(this, new File(this.getDataFolder(), "signs.yml"));
         FileConfiguration fileconfiguration = signsConfig.getConfig();
         fileconfiguration.addDefault("Signs", new ArrayList());
+        fileconfiguration.addDefault("format_version", 3);//TODO keep track of it?
         fileconfiguration.options().copyDefaults(true);
         signsConfig.saveConfig();
 
@@ -369,7 +370,7 @@ public class EggWars extends JavaPlugin
                 continue;
             }
 
-            if (location.getWorld() != null && LobbySigns.isValidWallSign(location.getBlock()))
+            if (location.getWorld() != null && LobbySigns.isValidBlockSign(location.getBlock()))
             {
                 signs.add(new ArenaSign(arena, location));
             }
