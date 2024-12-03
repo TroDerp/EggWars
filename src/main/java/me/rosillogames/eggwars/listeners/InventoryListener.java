@@ -192,6 +192,11 @@ public class InventoryListener implements Listener
             return;
         }
 
+        if (clickEvent.getAction() == InventoryAction.DROP_ONE_CURSOR || clickEvent.getAction() == InventoryAction.DROP_ALL_CURSOR)
+        {
+            return;
+        }
+
         if (clickEvent.getRawSlot() > (clickEvent.getInventory().getSize() - 1))
         {//this controls whether if shift click is invalid in the current slot (inside villager container)
             if (clickEvent.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY)

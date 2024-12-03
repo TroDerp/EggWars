@@ -313,6 +313,11 @@ public class Arena
         }
     }
 
+    public boolean canBreakOrReplace(BlockState block)
+    {
+        return this.replacedBlocks.containsKey(block.getLocation()) || EggWars.config.breakableBlocks.contains(block.getType()) || block.getType().isAir();
+    }
+
     public Map<TeamType, Team> getTeams()
     {
         return new HashMap(this.teams);
@@ -450,6 +455,11 @@ public class Arena
         return this.boundaries;
     }
 
+    /**
+     * @deprecated Should be called only from Arena.leaveArena()
+     * @param ewplayer - The eggwars player to remove
+     */
+    @Deprecated
     public void removePlayer(EwPlayer ewplayer)
     {
         this.players.remove(ewplayer);

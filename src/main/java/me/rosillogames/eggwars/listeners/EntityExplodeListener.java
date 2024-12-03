@@ -29,7 +29,7 @@ public class EntityExplodeListener implements Listener
 
         for (Block block : event.blockList())
         {
-            if (arena.getReplacedBlocks().containsKey(block.getLocation()) || EggWars.config.breakableBlocks.contains(block.getType()))
+            if (arena.canBreakOrReplace(block.getState()))
             {
                 arena.addReplacedBlock(block.getState());
                 block.setType(Material.AIR);

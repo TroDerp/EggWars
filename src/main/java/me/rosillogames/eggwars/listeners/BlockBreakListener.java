@@ -1,7 +1,9 @@
 package me.rosillogames.eggwars.listeners;
 
+import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -9,8 +11,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockPistonEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
@@ -106,7 +110,7 @@ public class BlockBreakListener implements Listener
                 return;
             }
 
-            if (!arena.getReplacedBlocks().containsKey(eventIn.getBlock().getLocation()) && !EggWars.config.breakableBlocks.contains(eventIn.getBlock().getType()))
+            if (!arena.canBreakOrReplace(eventIn.getBlock().getState()))
             {
                 eventIn.setCancelled(true);
                 TranslationUtils.sendMessage("gameplay.ingame.cant_break_not_placed", player.getPlayer());
@@ -147,6 +151,48 @@ public class BlockBreakListener implements Listener
     }
 
     @EventHandler
+    public void fillBucket(PlayerBucketFillEvent eventIn)
+    {//merge with ingame method like in place listener?
+        if (eventIn.isCancelled())
+        {
+            return;
+        }
+
+        EwPlayer player = PlayerUtils.getEwPlayer(eventIn.getPlayer());
+
+        if (player.isInArena())
+        {
+            Arena arena = player.getArena();
+
+            if (!arena.getStatus().equals(ArenaStatus.IN_GAME))
+            {
+                eventIn.setCancelled(true);
+                return;
+            }
+
+            if (!arena.canBreakOrReplace(eventIn.getBlock().getState()))
+            {
+                eventIn.setCancelled(true);
+                TranslationUtils.sendMessage("gameplay.ingame.cant_break_not_placed", player.getPlayer());
+            }
+            else
+            {
+                arena.addReplacedBlock(eventIn.getBlock().getState());
+            }
+        }
+        else
+        {
+            Arena arena = EggWars.getArenaManager().getArenaByWorld(eventIn.getBlock().getWorld());
+
+            if (arena != null && arena.getStatus() != ArenaStatus.SETTING)
+            {
+                eventIn.setCancelled(true);
+                return;
+            }
+        }
+    }
+
+    @EventHandler
     public void flowOrTeleport(BlockFromToEvent event)
     {
         Arena arena = EggWars.getArenaManager().getArenaByWorld(event.getBlock().getWorld());
@@ -157,8 +203,14 @@ public class BlockBreakListener implements Listener
             {
                 event.setCancelled(true);
             }
-            else if (!event.isCancelled() && (event.getBlock().getType() == Material.WATER || event.getBlock().getType() == Material.LAVA))
+            else if (!event.isCancelled() && arena.getStatus().isGame() && (event.getBlock().getType() == Material.WATER || event.getBlock().getType() == Material.LAVA))
             {
+                if (!arena.canBreakOrReplace(event.getToBlock().getState()))
+                {
+                    event.setCancelled(true);
+                    return;
+                }
+
                 arena.addReplacedBlock(event.getToBlock().getState());
             }
         }
@@ -191,30 +243,59 @@ public class BlockBreakListener implements Listener
             return;
         }
     }
-
+    
     @EventHandler
     public void extend(BlockPistonExtendEvent event)
-    {
-        Arena arena = EggWars.getArenaManager().getArenaByWorld(event.getBlock().getWorld());
-
-        if (arena == null || arena.getStatus() == ArenaStatus.SETTING)
-        {
-            return;
-        }
-
-        event.setCancelled(true);
+    {//TODO test all
+        handlePistonBlocks(event, event.getBlocks(), false);
     }
 
     @EventHandler
     public void retract(BlockPistonRetractEvent event)
     {
+        handlePistonBlocks(event, event.getBlocks(), true);
+    }
+
+    private static void handlePistonBlocks(BlockPistonEvent event, List<Block> blocks, boolean retract)
+    {//Bugs: there are a lot of spigot bugs with pistons, see SPIGOT-822, SPIGOT-2677 or SPIGOT-2672
         Arena arena = EggWars.getArenaManager().getArenaByWorld(event.getBlock().getWorld());
 
-        if (arena == null || arena.getStatus() == ArenaStatus.SETTING)
+        if (arena == null)
         {
             return;
         }
 
-        event.setCancelled(true);
+        if (!arena.canBreakOrReplace(event.getBlock().getState()))
+        {
+            event.setCancelled(true);
+        }
+
+        for (Block block : blocks)
+        {
+            if (!arena.canBreakOrReplace(block.getState()))
+            {
+                event.setCancelled(true);
+            }
+        }
+
+        if (event.isCancelled())
+        {
+            return;
+        }
+
+        if (!retract)
+        {//head is in list when retracting, this is the piston block in that even, otherwise is the head
+            arena.addReplacedBlock(event.getBlock().getRelative(event.getDirection()).getState());
+        }
+
+        for (Block block : blocks)
+        {
+            arena.addReplacedBlock(block.getState());//where the block was at
+
+            if (retract || arena.canBreakOrReplace(block.getRelative(event.getDirection()).getState()))
+            {
+                arena.addReplacedBlock(block.getRelative(event.getDirection()).getState());//where it will be at
+            }
+        }
     }
 }

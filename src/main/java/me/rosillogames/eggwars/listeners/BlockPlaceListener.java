@@ -1,13 +1,20 @@
 package me.rosillogames.eggwars.listeners;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockMultiPlaceEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Generator;
@@ -24,93 +31,145 @@ import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 public class BlockPlaceListener implements Listener
 {
     @EventHandler
+    public void emptyBucket(PlayerBucketEmptyEvent eventIn)
+    {
+        handlePlace(eventIn);
+    }
+
+    @EventHandler
     public void placeBlock(BlockPlaceEvent eventIn)
+    {
+        handlePlace(eventIn);
+    }
+
+    private static void handlePlace(Cancellable eventIn)
     {
         if (eventIn.isCancelled())
         {
             return;
         }
 
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer(eventIn.getPlayer());
+        Player player;
+        List<BlockState> allReplaced = new ArrayList();
+        Block placing = null;
+
+        if (eventIn instanceof PlayerBucketEmptyEvent)
+        {
+            PlayerBucketEmptyEvent bucketEvent = (PlayerBucketEmptyEvent)eventIn;
+            player = bucketEvent.getPlayer();
+            allReplaced.add(bucketEvent.getBlock().getState());
+        }
+        else if (eventIn instanceof BlockPlaceEvent)
+        {
+            BlockPlaceEvent placeEvent = (BlockPlaceEvent)eventIn;
+            player = placeEvent.getPlayer();
+
+            if (eventIn instanceof BlockMultiPlaceEvent)
+            {
+                allReplaced.addAll(((BlockMultiPlaceEvent)eventIn).getReplacedBlockStates());
+            }
+            else
+            {
+                allReplaced.add(placeEvent.getBlockReplacedState());
+            }
+
+            placing = placeEvent.getBlock();
+        }
+        else
+        {
+            throw new IllegalStateException("This method should only be called from PlayerBucketEmptyEvent or BlockPlaceEvent listeners.");
+        }
+
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer(player);
 
         if (ewplayer.isInArena())
         {
             Arena arena = ewplayer.getArena();
 
-            if (!arena.getStatus().equals(ArenaStatus.IN_GAME) || !arena.getWorld().equals(eventIn.getBlock().getWorld()))
+            if (!arena.getStatus().equals(ArenaStatus.IN_GAME) || !arena.getWorld().equals(allReplaced.get(0).getLocation().getWorld()))
             {
                 eventIn.setCancelled(true);
                 return;
             }
 
-            if (!arena.getBounds().canPlaceAt(eventIn.getBlock().getLocation()))
+            for (int i = 0; i < allReplaced.size() && !eventIn.isCancelled(); ++i)
             {
-                eventIn.setCancelled(true);
-                TranslationUtils.sendMessage("gameplay.ingame.cant_place_outside", ewplayer.getPlayer());
-                return;
-            }
+                BlockState replaced = allReplaced.get(i);
 
-            BlockState replaced = eventIn.getBlockReplacedState();
-
-            if (!EggWars.config.breakableBlocks.contains(replaced.getType()) && !replaced.getType().isAir() && !replaced.getBlock().isLiquid())
-            {
-                eventIn.setCancelled(true);
-                TranslationUtils.sendMessage("gameplay.ingame.cant_break_not_placed", ewplayer.getPlayer());
-                return;
-            }
-
-            if (eventIn.getBlock().getType().equals(Material.DRAGON_EGG))
-            {
-                Team team = TeamUtils.getTeamByEggLocation(arena, eventIn.getBlock().getLocation());
-
-                if (team != null && !team.isEliminated())
-                {
-                    arena.getScores().updateScores(false);
-                    return;
-                }
-                else
+                if (!arena.getBounds().canPlaceAt(replaced.getLocation()))
                 {
                     eventIn.setCancelled(true);
+                    TranslationUtils.sendMessage("gameplay.ingame.cant_place_outside", player);
                     return;
                 }
-            }
 
-            /* for invalidating places, use block location, and not middle location */
-            for (Team team1 : arena.getTeams().values())
-            {
-                if (invalidPlace(team1.getVillager(), eventIn, false))
+                if (!arena.canBreakOrReplace(replaced))
                 {
+                    eventIn.setCancelled(true);
+                    TranslationUtils.sendMessage("gameplay.ingame.cant_break_not_placed", player);
                     return;
                 }
 
-                if (invalidPlace(team1.getRespawn(), eventIn, false))
+                if (placing != null && placing.getType().equals(Material.DRAGON_EGG))
                 {
-                    return;
-                }
-            }
+                    Team team = TeamUtils.getTeamByEggLocation(arena, replaced.getLocation());
 
-            for (Generator gen : arena.getGenerators().values())
-            {
-                if (invalidPlace(gen.getBlock(), eventIn, true))
+                    if (team == null || team.isEliminated())
+                    {
+                        eventIn.setCancelled(true);
+                        return;
+                    }
+                }
+
+                /* for invalidating places, use block location, and not middle location */
+                for (Team team1 : arena.getTeams().values())
                 {
-                    return;
+                    if (invalidPlace(team1.getVillager(), replaced.getLocation(), player, false))
+                    {
+                        eventIn.setCancelled(true);
+                        return;
+                    }
+
+                    if (invalidPlace(team1.getRespawn(), replaced.getLocation(), player, false))
+                    {
+                        eventIn.setCancelled(true);
+                        return;
+                    }
                 }
-            }
 
-            if (eventIn.getBlock().getType() == Material.TNT && EggWars.instance.getConfig().getBoolean("game.tnt.auto_ignite"))
+                for (Generator gen : arena.getGenerators().values())
+                {
+                    if (invalidPlace(gen.getBlock(), replaced.getLocation(), player, true))
+                    {
+                        eventIn.setCancelled(true);
+                        return;
+                    }
+                }
+            }//separate loops, one checks, other applies changes
+
+            for (BlockState state : allReplaced)
             {
-                eventIn.getBlock().setType(Material.AIR);
-                TNTPrimed tnt = eventIn.getBlock().getWorld().spawn(Locations.toMiddle(eventIn.getBlock().getLocation()), TNTPrimed.class);
-                ReflectionUtils.setTNTSource(tnt, eventIn.getPlayer());
+                if (placing != null && placing.getType().equals(Material.DRAGON_EGG))
+                {
+                    arena.getScores().updateScores(false);
+                }
+
+                if (placing != null && placing.getType() == Material.TNT && EggWars.instance.getConfig().getBoolean("game.tnt.auto_ignite"))
+                {
+                    state.getBlock().setType(Material.AIR);
+                    TNTPrimed tnt = state.getWorld().spawn(Locations.toMiddle(state.getLocation()), TNTPrimed.class);
+                    ReflectionUtils.setTNTSource(tnt, player);
+                }
+
+                arena.addReplacedBlock(state);
             }
 
-            arena.addReplacedBlock(replaced);
             ewplayer.getIngameStats().addStat(StatType.BLOCKS_PLACED, 1);
             return;
         }
         else
         {
-            Arena arena = EggWars.getArenaManager().getArenaByWorld(eventIn.getBlock().getWorld());
+            Arena arena = EggWars.getArenaManager().getArenaByWorld(allReplaced.get(0).getLocation().getWorld());
 
             if (arena != null && !arena.getStatus().equals(ArenaStatus.SETTING))
             {
@@ -120,16 +179,15 @@ public class BlockPlaceListener implements Listener
         }
     }
 
-    private static boolean invalidPlace(Location blocker, BlockPlaceEvent place, boolean offset)
+    private static boolean invalidPlace(Location blocker, Location placing, Player player, boolean offset)
     {
         for (BlockFace face : (new BlockFace[] {BlockFace.SELF, BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.NORTH_WEST, BlockFace.SOUTH, BlockFace.SOUTH_EAST, BlockFace.SOUTH_WEST, BlockFace.EAST, BlockFace.WEST}))
         {
             for (int i = (offset ? -1 : 0); i < (offset ? 1 : 2); i++)
             {
-                if ((int)place.getBlock().getLocation().getX() == ((int)blocker.getX() + face.getModX()) && (int)place.getBlock().getLocation().getY() == ((int)blocker.getY() + i) && (int)place.getBlock().getLocation().getZ() == ((int)blocker.getZ() + face.getModZ()))
+                if ((int)placing.getX() == ((int)blocker.getX() + face.getModX()) && (int)placing.getY() == ((int)blocker.getY() + i) && (int)placing.getZ() == ((int)blocker.getZ() + face.getModZ()))
                 {
-                    place.setCancelled(true);
-                    TranslationUtils.sendMessage("gameplay.ingame.cant_place_objects_here", place.getPlayer());
+                    TranslationUtils.sendMessage("gameplay.ingame.cant_place_objects_here", player);
                     return true;
                 }
             }
