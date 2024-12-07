@@ -96,7 +96,6 @@ public class RemoveArena extends CommandArg
             {
                 if (arena.getId().toLowerCase().startsWith(args[1].toLowerCase()))
                 {
-                    list.add(arena.getName());
                     list.add(arena.getId());
                 }
             }

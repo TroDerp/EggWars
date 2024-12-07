@@ -77,7 +77,7 @@ public class BlockPlaceListener implements Listener
         }
         else
         {
-            throw new IllegalStateException("This method should only be called from PlayerBucketEmptyEvent or BlockPlaceEvent listeners.");
+            throw new IllegalStateException("This method should only be called from PlayerBucketEmptyEvent or BlockPlaceEvent!");
         }
 
         EwPlayer ewplayer = PlayerUtils.getEwPlayer(player);

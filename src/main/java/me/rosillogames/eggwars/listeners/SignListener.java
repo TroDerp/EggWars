@@ -127,7 +127,7 @@ public class SignListener implements Listener
             if (arena.getStatus().equals(ArenaStatus.SETTING))
             {
                 if (isSign && arena.getGenerators().containsKey(clickLoc.toVector()))
-                {
+                {//cancel sign edit for generator signs during setting
                     event.setCancelled(true);
                 }
 
@@ -137,7 +137,7 @@ public class SignListener implements Listener
             if (!arena.getStatus().equals(ArenaStatus.IN_GAME) || ewplayer.isEliminated())
             {
                 if (isSign)
-                {
+                {//cancel sign edit for eliminated players and non-in-game interactions
                     event.setCancelled(true);
                 }
 
@@ -160,14 +160,14 @@ public class SignListener implements Listener
                     {
                         gen.openInventory(event.getPlayer());
                     }
-                }
+                }//cancel ANY interaction when performing gen action
 
                 event.setCancelled(true);
                 return;
             }
 
             if (isSign && !arena.getReplacedBlocks().containsKey(clickLoc))
-            {
+            {//cancel sign edit for signs not placed during the game
                 event.setCancelled(true);
             }
 
@@ -175,14 +175,14 @@ public class SignListener implements Listener
         }
         else
         {
-            if (ewplayer.isInArena() || !isSign)
+            if (!isSign)
             {
                 return;
-            }
+            }//cancel sign edit for arena-joining signs
 
             event.setCancelled(true);
 
-            if (event.getPlayer().isSneaking())
+            if (ewplayer.isInArena() || event.getPlayer().isSneaking())
             {
                 return;
             }

@@ -87,7 +87,7 @@ public class CloneArena extends CommandArg
             for (Arena arena : EggWars.getArenaManager().getArenas())
             {
                 if (arena.getName().toLowerCase().startsWith(args[args.length - 1].toLowerCase()))
-                {
+                {//list names because the input will become the new arena's name
                     list.add(arena.getName());
                 }
             }

@@ -815,7 +815,7 @@ public class Arena
 
         this.itemType = ItemType.NORMAL;
         this.healthType = HealthType.NORMAL;
-        this.status = enterSetup ? ArenaStatus.SETTING : ArenaStatus.WAITING;
+        this.setStatus(enterSetup ? ArenaStatus.SETTING : ArenaStatus.WAITING);
         this.updateInvs();
 
         for (EwPlayer ewplayer : EggWars.players)
@@ -1285,10 +1285,8 @@ public class Arena
         for (EwPlayer ewplayer : this.getPlayers())
         {
             Player player = ewplayer.getPlayer();
-            player.sendMessage("");
             TranslationUtils.sendMessage("gameplay.voting.items.result", player, TranslationUtils.getMessage(this.itemType.getNameKey(), player));
             TranslationUtils.sendMessage("gameplay.voting.health.result", player, TranslationUtils.getMessage(this.healthType.getNameKey(), player));
-            player.sendMessage("");
         }
     }
 

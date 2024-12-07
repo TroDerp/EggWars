@@ -246,7 +246,7 @@ public class BlockBreakListener implements Listener
     
     @EventHandler
     public void extend(BlockPistonExtendEvent event)
-    {//TODO test all
+    {
         handlePistonBlocks(event, event.getBlocks(), false);
     }
 
@@ -260,7 +260,7 @@ public class BlockBreakListener implements Listener
     {//Bugs: there are a lot of spigot bugs with pistons, see SPIGOT-822, SPIGOT-2677 or SPIGOT-2672
         Arena arena = EggWars.getArenaManager().getArenaByWorld(event.getBlock().getWorld());
 
-        if (arena == null)
+        if (arena == null || arena.getStatus().equals(ArenaStatus.SETTING))
         {
             return;
         }
@@ -284,7 +284,7 @@ public class BlockBreakListener implements Listener
         }
 
         if (!retract)
-        {//head is in list when retracting, this is the piston block in that even, otherwise is the head
+        {//head is in list when retracting, this is the piston block from that event, otherwise is the head
             arena.addReplacedBlock(event.getBlock().getRelative(event.getDirection()).getState());
         }
 

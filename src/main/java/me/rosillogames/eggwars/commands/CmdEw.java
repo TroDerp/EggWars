@@ -165,7 +165,6 @@ public class CmdEw implements TabExecutor
                 {
                     if (arena.getId().toLowerCase().startsWith(args[1].toLowerCase()))
                     {
-                        list.add(arena.getName());
                         list.add(arena.getId());
                     }
                 }
@@ -279,7 +278,6 @@ public class CmdEw implements TabExecutor
                 {
                     if (arena.getId().toLowerCase().startsWith(args[1].toLowerCase()))
                     {
-                        list.add(arena.getName());
                         list.add(arena.getId());
                     }
                 }
