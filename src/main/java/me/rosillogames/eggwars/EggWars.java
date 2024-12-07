@@ -345,7 +345,7 @@ public class EggWars extends JavaPlugin
         signsConfig = new ConfigAccessor(this, new File(this.getDataFolder(), "signs.yml"));
         FileConfiguration fileconfiguration = signsConfig.getConfig();
         fileconfiguration.addDefault("Signs", new ArrayList());
-        fileconfiguration.addDefault("format_version", 3);//TODO keep track of it?
+        fileconfiguration.addDefault("format_version", 3);//Keep track of it.
         fileconfiguration.options().copyDefaults(true);
         signsConfig.saveConfig();
 

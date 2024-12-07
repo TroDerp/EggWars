@@ -25,7 +25,7 @@ public class LobbySigns
         waiting = ItemUtils.getBlockData(fileconf.getString("lobby.sign_status.waiting"), Material.LIME_STAINED_GLASS.createBlockData());
         starting = ItemUtils.getBlockData(fileconf.getString("lobby.sign_status.starting"), Material.YELLOW_STAINED_GLASS.createBlockData());
         in_game = ItemUtils.getBlockData(fileconf.getString("lobby.sign_status.in_game"), Material.RED_STAINED_GLASS.createBlockData());
-        finished = ItemUtils.getBlockData(fileconf.getString("lobby.sign_status.finishing"), Material.MAGENTA_STAINED_GLASS.createBlockData());
+        finished = ItemUtils.getBlockData(fileconf.getString("lobby.sign_status.finishing"), Material.ORANGE_STAINED_GLASS.createBlockData());
         setting = ItemUtils.getBlockData(fileconf.getString("lobby.sign_status.setting"), Material.CYAN_STAINED_GLASS.createBlockData());
     }
 

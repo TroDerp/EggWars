@@ -25,10 +25,12 @@ import com.google.gson.JsonObject;
 public class Reflections_1_21 implements Reflections
 {
     private final boolean isNewVersion;
+    private final boolean isEvenNewer;
 
-    public Reflections_1_21(boolean newV)
+    public Reflections_1_21(byte v)
     {
-        this.isNewVersion = newV;
+        this.isNewVersion = v > 0;
+        this.isEvenNewer = v > 1;
     }
 
     @Override
@@ -215,7 +217,7 @@ public class Reflections_1_21 implements Reflections
 
             if (ecTE != null)
             {
-                Object blockPos = ecTE.getClass().getMethod(this.isNewVersion ? "aB_" : "aD_").invoke(ecTE);
+                Object blockPos = ecTE.getClass().getMethod(this.isNewVersion ? (this.isEvenNewer ? "aA_" : "aB_") : "aD_").invoke(ecTE);
                 int x = (int)blockPos.getClass().getMethod("u").invoke(blockPos);
                 int y = (int)blockPos.getClass().getMethod("v").invoke(blockPos);
                 int z = (int)blockPos.getClass().getMethod("w").invoke(blockPos);

@@ -579,7 +579,7 @@ public class Arena
                     team.getEgg().getBlock().setType(Material.AIR);
                 }
 
-                if (!silent)
+                if (!silent && this.getMode().isTeam())
                 {
                     team.broadcastEliminated();
                 }

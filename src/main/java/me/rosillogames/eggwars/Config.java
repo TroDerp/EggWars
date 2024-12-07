@@ -167,7 +167,7 @@ public class Config
         fileConf.addDefault("lobby.sign_status.starting", "{\"Name\":\"minecraft:yellow_stained_glass\"}");
         fileConf.addDefault("lobby.sign_status.in_game", "{\"Name\":\"minecraft:red_stained_glass\"}");
         fileConf.addDefault("lobby.sign_status.setting", "{\"Name\":\"minecraft:cyan_stained_glass\"}");
-        fileConf.addDefault("lobby.sign_status.finishing", "{\"Name\":\"minecraft:magenta_stained_glass\"}");
+        fileConf.addDefault("lobby.sign_status.finishing", "{\"Name\":\"minecraft:orange_stained_glass\"}");
 
         fileConf.addDefault("inventory.generator_upgrading", "{\"id\":\"minecraft:experience_bottle\"}");
         fileConf.addDefault("inventory.kit_selection.item", "{\"id\":\"minecraft:paper\"}");

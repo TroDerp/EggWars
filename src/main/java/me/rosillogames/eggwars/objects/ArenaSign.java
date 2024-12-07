@@ -38,11 +38,14 @@ public class ArenaSign
         {
             Sign sign = (Sign)this.location.getBlock().getState();
             ArenaStatus status = this.arena.getStatus();//TODO: why is "setup" in this translation!?
-            Object[] args = new Object[] {this.arena.getName(), TranslationUtils.getMessage("status." + status.toString()), Integer.toString(status.isGame() || status == ArenaStatus.FINISHING ? this.arena.getAlivePlayers().size() : this.arena.getPlayers().size()), Integer.toString(this.arena.getMaxPlayers())};
-            sign.setLine(0, TranslationUtils.getMessage("setup.sign.arena.line_1", args));
-            sign.setLine(1, TranslationUtils.getMessage("setup.sign.arena.line_2", args));
-            sign.setLine(2, TranslationUtils.getMessage("setup.sign.arena.line_3", args));
-            sign.setLine(3, TranslationUtils.getMessage("setup.sign.arena.line_4", args));
+            Object[] args = new Object[] {this.arena.getName(), TranslationUtils.getMessage("status." + status.toString()), Integer.toString(status.isGame() || status == ArenaStatus.FINISHING ? this.arena.getAlivePlayers().size() : this.arena.getPlayers().size()), Integer.toString(this.arena.getMaxPlayers()), Integer.toString(this.arena.getMaxTeamPlayers())};
+
+            for (int i = 0; i < 4; i++)
+            {
+                //TODO /* next version */ sign.setLine(i, TranslationUtils.getMessage("lobby.arena_sign." + this.arena.getMode().name().toLowerCase() + ".line_" + (i + 1), args));
+                sign.setLine(i, TranslationUtils.getMessage("setup.sign.arena.line_" + (i + 1), args));
+            }
+
             sign.update();
             LobbySigns.setBlock(this);
         }

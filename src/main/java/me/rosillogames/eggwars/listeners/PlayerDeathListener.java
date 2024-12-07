@@ -130,6 +130,7 @@ public class PlayerDeathListener implements Listener
         if (!EggWars.config.dropInv || cause == DamageCause.VOID)
         {
             deathevent.getDrops().clear();
+            deathevent.setDroppedExp(0);//You can't normally pick up experience in the game, but still
         }
 
         deathevent.setKeepInventory(true);
