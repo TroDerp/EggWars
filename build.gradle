@@ -18,7 +18,7 @@ compileJava.options.encoding = "UTF-8"
 compileTestJava.options.encoding = "UTF-8"
 
 group = "me.rosillogames"
-version = "6.2.1"
+version = "6.2.2"
 description = "EggWars Remastered"
 
 repositories {
