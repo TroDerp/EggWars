@@ -18,6 +18,7 @@ public class Colorizer
     public static final Map<Integer, Integer> COLORED_COLORS = new HashMap();
     public static final Map<Integer, Material> COLORED_BANNERS = new HashMap();
     public static final Map<Integer, Material> COLORED_BEDS = new HashMap();
+    public static final Map<Integer, Material> COLORED_BUNDLES = new HashMap();
     public static final Map<Integer, Material> COLORED_CANDLES = new HashMap();
     public static final Map<Integer, Material> COLORED_CARPETS = new HashMap();
     public static final Map<Integer, Material> COLORED_CONCRETE = new HashMap();
@@ -129,8 +130,30 @@ public class Colorizer
         COLORED_BEDS.put(14, Material.RED_BED);
         COLORED_BEDS.put(15, Material.BLACK_BED);
 
+        if (EggWars.serverVersion.ordinal() >= Versions.V_1_21_R2.ordinal())
+        {
+            COLORED_BUNDLES.put(-1, Material.BUNDLE);
+            COLORED_BUNDLES.put(0, Material.WHITE_BUNDLE);
+            COLORED_BUNDLES.put(1, Material.ORANGE_BUNDLE);
+            COLORED_BUNDLES.put(2, Material.MAGENTA_BUNDLE);
+            COLORED_BUNDLES.put(3, Material.LIGHT_BLUE_BUNDLE);
+            COLORED_BUNDLES.put(4, Material.YELLOW_BUNDLE);
+            COLORED_BUNDLES.put(5, Material.LIME_BUNDLE);
+            COLORED_BUNDLES.put(6, Material.PINK_BUNDLE);
+            COLORED_BUNDLES.put(7, Material.GRAY_BUNDLE);
+            COLORED_BUNDLES.put(8, Material.LIGHT_GRAY_BUNDLE);
+            COLORED_BUNDLES.put(9, Material.CYAN_BUNDLE);
+            COLORED_BUNDLES.put(10, Material.PURPLE_BUNDLE);
+            COLORED_BUNDLES.put(11, Material.BLUE_BUNDLE);
+            COLORED_BUNDLES.put(12, Material.BROWN_BUNDLE);
+            COLORED_BUNDLES.put(13, Material.GREEN_BUNDLE);
+            COLORED_BUNDLES.put(14, Material.RED_BUNDLE);
+            COLORED_BUNDLES.put(15, Material.BLACK_BUNDLE);
+        }
+
         if (EggWars.serverVersion.ordinal() >= Versions.V_1_17.ordinal())
         {
+            COLORED_CANDLES.put(-1, Material.CANDLE);
             COLORED_CANDLES.put(0, Material.WHITE_CANDLE);
             COLORED_CANDLES.put(1, Material.ORANGE_CANDLE);
             COLORED_CANDLES.put(2, Material.MAGENTA_CANDLE);
@@ -213,6 +236,7 @@ public class Colorizer
         COLORED_DYES.put(13, Material.GREEN_DYE);
         COLORED_DYES.put(14, Material.RED_DYE);
         COLORED_DYES.put(15, Material.BLACK_DYE);/* @formatter:off
+        COLORED_.put(-1, Material.
         COLORED_.put(0, Material.WHITE_
         COLORED_.put(1, Material.ORANGE_
         COLORED_.put(2, Material.MAGENTA_
@@ -337,6 +361,7 @@ public class Colorizer
         LEATHER_ARMOR.add(Material.LEATHER_HORSE_ARMOR);
         COLORABLES.add(COLORED_BANNERS);
         COLORABLES.add(COLORED_BEDS);
+        COLORABLES.add(COLORED_BUNDLES);
         COLORABLES.add(COLORED_CANDLES);
         COLORABLES.add(COLORED_CARPETS);
         COLORABLES.add(COLORED_CONCRETE);
