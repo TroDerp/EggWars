@@ -45,6 +45,9 @@ public class Config
     public int respawnDelay = 4;
     public int finishingTime = 10;
     public int invincibleTime = 10;
+    /** 0 is never (default), 1 is when team leaves (old cube),
+     ** 2 is always (even if the game starts with empty team) **/
+    public byte keepTeamEgg = 2;
     @Nullable
     public Location lobby = null;
     public Set<Material> breakableBlocks = new HashSet();
@@ -93,6 +96,7 @@ public class Config
         fileConf.addDefault("game.show_kills", true);
         fileConf.addDefault("game.drop_blocks", false);
         fileConf.addDefault("game.share_team_ender_chest", false);
+        fileConf.addDefault("game.keep_unused_eggs", "never");
         fileConf.addDefault("game.finishing_time", 10);
         fileConf.addDefault("game.player.drop_inventory", false);
         fileConf.addDefault("game.player.keep_inventory", false);
@@ -256,6 +260,8 @@ public class Config
         this.keepInv = fileConf.getBoolean("game.player.keep_inventory");
         this.finishingTime = fileConf.getInt("game.finishing_time");
         this.invincibleTime = fileConf.getInt("game.player.invincible_time");
+        String keepEgg = fileConf.getString("game.keep_unused_eggs");
+        this.keepTeamEgg = (byte)("never".equals(keepEgg) ? 0 : "when_team_leaves".equals(keepEgg) ? 1 : 2);
         EggWars.languageManager().loadConfig();
         LobbySigns.loadConfig();
         TeamUtils.loadConfig();

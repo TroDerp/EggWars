@@ -574,7 +574,7 @@ public class Arena
 
             if (team.isEliminated())//player is already removed from team, due to arena.removePlayer, and player may not be eliminated yet
             {
-                if (team.canRespawn())
+                if (team.canRespawn() && EggWars.config.keepTeamEgg <= 0)
                 {
                     team.getEgg().getBlock().setType(Material.AIR);
                 }

@@ -34,7 +34,7 @@ public class PlayerCraftListener implements Listener
     {
         Arena arena = EggWars.getArenaManager().getArenaByWorld(event.getBlock().getWorld());
 
-        if (arena != null && arena.getStatus() == ArenaStatus.SETTING)
+        if (arena == null || arena.getStatus() == ArenaStatus.SETTING)
         {
             return;
         }

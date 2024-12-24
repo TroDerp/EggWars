@@ -68,7 +68,7 @@ public class EggInteractListener implements Listener
         Arena arena = ewplayer.getArena();
         Team team = TeamUtils.getTeamByEggLocation(arena, event.getClickedBlock().getLocation());
 
-        if (team == null || team.isEliminated())
+        if (team == null || (team.isEliminated() && EggWars.config.keepTeamEgg <= 0))
         {
             return;
         }

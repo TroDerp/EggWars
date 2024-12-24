@@ -250,7 +250,7 @@ public class Team
 
         //Egg
 
-        if (!this.players.isEmpty())
+        if (!this.players.isEmpty() || EggWars.config.keepTeamEgg == 2)
         {
             this.egg.getBlock().setType(Material.DRAGON_EGG);
         }
