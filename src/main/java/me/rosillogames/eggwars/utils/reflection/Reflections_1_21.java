@@ -162,7 +162,8 @@ public class Reflections_1_21 implements Reflections
             exception.printStackTrace();
         }
 
-        return null;}
+        return null;
+    }
 
     @Override
     @Deprecated
