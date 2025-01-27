@@ -137,7 +137,21 @@ public class Reflections_1_21 implements Reflections
         {
             Class cItemStack = this.getNMSClass("world.item.ItemStack");
             Class cCraftItemStack = this.getOBCClass("inventory.CraftItemStack");
-            Object nmsStack = cCraftItemStack.getMethod("asNMSCopy", stack.getClass()).invoke((Object)null, stack);
+            Object nmsStack = null;
+
+            try
+            {
+                nmsStack = cCraftItemStack.getMethod("asNMSCopy", stack.getClass()).invoke((Object)null, stack);
+            }
+            catch (NoSuchMethodException ex)
+            {//FIX #20
+                Field field = stack.getClass().getField("handle");
+                boolean accessible = field.isAccessible();
+                field.setAccessible(true);
+                nmsStack = field.get(stack);
+                field.setAccessible(accessible);
+            }
+
             Object nameComponent = cItemStack.getMethod(this.isNewVersion ? "y" : "w").invoke(nmsStack);
             Class cIChatBase = this.getNMSClass("network.chat.IChatBaseComponent");
             Object string = cIChatBase.getMethod("getString").invoke(nameComponent);
@@ -148,8 +162,7 @@ public class Reflections_1_21 implements Reflections
             exception.printStackTrace();
         }
 
-        return null;
-    }
+        return null;}
 
     @Override
     @Deprecated

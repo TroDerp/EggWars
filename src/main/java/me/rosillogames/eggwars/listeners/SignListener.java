@@ -18,6 +18,7 @@ import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Generator;
 import me.rosillogames.eggwars.arena.GeneratorType;
 import me.rosillogames.eggwars.enums.ArenaStatus;
+import me.rosillogames.eggwars.enums.Versions;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.objects.ArenaSign;
 import me.rosillogames.eggwars.player.EwPlayer;
@@ -34,6 +35,7 @@ public class SignListener implements Listener
     }
 
     @EventHandler
+    @SuppressWarnings("deprecation")
     public void write(SignChangeEvent eventIn)
     {
         if (eventIn.getLine(0).equalsIgnoreCase("[EggWars]"))
@@ -57,7 +59,7 @@ public class SignListener implements Listener
             }
 
             if (LobbySigns.isValidBlockSign(eventIn.getBlock()))
-            {
+            {//WARNING! updating lines during event doesn't work on 1.20 and after / arena sign uses auto update
                 EggWars.signs.add(new ArenaSign(arena, eventIn.getBlock().getLocation()));
                 TranslationUtils.sendMessage("setup.sign.arena.added", eventIn.getPlayer());
                 EggWars.saveSigns();
@@ -98,6 +100,23 @@ public class SignListener implements Listener
             arena1.putGenerator(generator);
             TranslationUtils.sendMessage("setup.generator.added", eventIn.getPlayer());
             generator.reloadCache();
+
+            if (EggWars.serverVersion.ordinal() >= Versions.V_1_20_R1.ordinal())
+            {//Updating lines during event doesn't work on 1.20 and after, except if it's the other face
+                if (eventIn.getSide() == org.bukkit.block.sign.Side.FRONT)
+                {//Get updated block
+                    Sign sign = (Sign)eventIn.getBlock().getLocation().getBlock().getState();
+                    eventIn.setLine(0, sign.getLine(0));
+                    eventIn.setLine(1, sign.getLine(1));
+                    eventIn.setLine(2, sign.getLine(2));
+                    eventIn.setLine(3, sign.getLine(3));
+                }
+                else
+                {
+                    eventIn.setCancelled(true);
+                }
+            }
+
             return;
         }
     }

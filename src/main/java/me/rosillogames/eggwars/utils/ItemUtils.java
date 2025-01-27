@@ -8,6 +8,8 @@ import javax.annotation.Nullable;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -234,13 +236,27 @@ public class ItemUtils
         return colored;
     }
 
+    @SuppressWarnings({"deprecation", "removal"})
     public static ItemStack hideStackAttributes(ItemStack itemstack)
     {
-        ItemMeta itemmeta = itemstack.getItemMeta();
-        itemmeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-        itemmeta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);;
-        itemmeta.addItemFlags(EggWars.serverVersion.ordinal() >= Versions.V_1_20_R4.ordinal() ? ItemFlag.HIDE_ADDITIONAL_TOOLTIP : ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
-        itemstack.setItemMeta(itemmeta);
+        ItemMeta meta = itemstack.getItemMeta();
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+        meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
+
+        if (EggWars.serverVersion.ordinal() >= Versions.V_1_20_R4.ordinal())
+        {
+            meta.addAttributeModifier(Attribute.values()[0], new AttributeModifier("dummy", 0, AttributeModifier.Operation.ADD_NUMBER));
+            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            //the things above only affects paper because HIDE_ATTRIBUTES is not working there (paper's #10655)
+            meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
+            meta.setMaxStackSize(99);
+        }
+        else
+        {
+            meta.addItemFlags(ItemFlag.valueOf("HIDE_POTION_EFFECTS"));
+        }
+
+        itemstack.setItemMeta(meta);
         return itemstack;
     }
 
