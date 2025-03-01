@@ -6,25 +6,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.objects.AutoEquipEntry;
 import me.rosillogames.eggwars.objects.Price;
 import me.rosillogames.eggwars.utils.ItemUtils;
-import me.rosillogames.eggwars.utils.Pair;
 
 public class MultiOffer extends Offer
 {
-    private final String name;
-    protected final List<Pair<Boolean, ItemStack>> results;
+    protected final List<TradeResult> results;
 
-    public MultiOffer(int slot, String name, List<Pair<Boolean, ItemStack>> results, ItemStack itemResult, Price price)
+    public MultiOffer(int slot, TradeResult displayItem, List<TradeResult> results, Price price)
     {
-        super(slot, itemResult, price, true);
-        this.name = name;
+        super(slot, displayItem, price, true);
         this.results = results;
-    }
-
-    public String getName()
-    {
-        return this.name;
     }
 
     @Override
@@ -38,16 +31,17 @@ public class MultiOffer extends Offer
 
         ItemStack[] prev = ItemUtils.copyContents(player.getInventory().getContents());
 
-        for (Pair<Boolean, ItemStack> result : this.results)
+        for (TradeResult result : this.results)
         {
-            ItemStack stack = Offer.adjustForRecipe(player, result.getRight(), result.getLeft());
-            EquipmentSlot slot = ItemUtils.getTradeSlot(player, stack);
+            ItemStack stack = this.getResultItem(player, result, false);
+            AutoEquipEntry autoEquip = result.getAutoEquip();
+            EquipmentSlot slot;
 
-            if (slot != EquipmentSlot.HAND)
+            if (autoEquip != null && (slot = autoEquip.getTradeSlot(player)) != EquipmentSlot.HAND)
             {
-                ItemStack slotItem;
+                ItemStack slotItem = ItemUtils.getSlot(player, slot);
 
-                if ((slotItem = ItemUtils.getSlot(player, slot)) != null)
+                if (slotItem != null)
                 {
                     //slotItem is the item that already was on slot
                     Map<Integer, ItemStack> map = player.getInventory().addItem(slotItem);

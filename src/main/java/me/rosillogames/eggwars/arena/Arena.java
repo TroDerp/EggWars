@@ -1,8 +1,6 @@
 package me.rosillogames.eggwars.arena;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,7 +23,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 import com.google.common.collect.Maps;
@@ -37,28 +34,20 @@ import me.rosillogames.eggwars.arena.shop.Category;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.HealthType;
 import me.rosillogames.eggwars.enums.ItemType;
-import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.enums.Mode;
 import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.events.EwPlayerJoinArenaEvent;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.managers.ArenaManager;
 import me.rosillogames.eggwars.managers.TradingManager;
+import me.rosillogames.eggwars.menu.TeamsMenu;
+import me.rosillogames.eggwars.menu.VotingMenus;
 import me.rosillogames.eggwars.objects.ArenaSign;
 import me.rosillogames.eggwars.objects.Cage;
 import me.rosillogames.eggwars.player.EwPlayer;
-import me.rosillogames.eggwars.player.EwPlayerMenu;
-import me.rosillogames.eggwars.player.EwPlayerMenu.MenuSize;
-import me.rosillogames.eggwars.player.inventory.InventoryController;
-import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
-import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.ConfigAccessor;
-import me.rosillogames.eggwars.utils.GsonHelper;
-import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.Locations;
 import me.rosillogames.eggwars.utils.PlayerUtils;
-import me.rosillogames.eggwars.utils.TeamUtils;
-import me.rosillogames.eggwars.utils.VoteUtils;
 import me.rosillogames.eggwars.utils.WorldController;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
@@ -82,18 +71,17 @@ public class Arena
     private HealthType healthType = HealthType.NORMAL;
     private final Map<EwPlayer, ItemType> itemsVotes = new HashMap();
     private final Map<EwPlayer, HealthType> healthVotes = new HashMap();
-    private TranslatableInventory teamInv;
-    private TranslatableInventory voteInv;
-    private TranslatableInventory itemVoteInv;
-    private TranslatableInventory healthVoteInv;
-    private final List<TranslatableInventory> shopInvs = new ArrayList();
-    private final List<Map<Integer, Category>> shopCategsSlots = new ArrayList();
+    //TODO: setup new menus when arena does init, depending if it's setup it will load SetupGUI or this one with voting, etc...
+    private TeamsMenu teamSelectMenu;
+    private VotingMenus votingMenus;
+    @Nullable
+    public Category specialTrades;//TODO
     private boolean forced = false;
     private boolean saving = false;
     private int currCountdown;
 
     //Constant stored settings
-    private boolean customTrades = false;
+    public /*TODO: was private */ boolean customTrades = false;
     private Location lobby;
     private Location center;
     private Bounds boundaries;
@@ -231,73 +219,22 @@ public class Arena
 
     public void loadShop()
     {
-        this.shopCategsSlots.clear();
-        this.shopInvs.clear();
-        List<Category> trades = EggWars.getTradingManager().getMerchants();
-        Category specific = null;
+        this.specialTrades = null;
 
         if (this.customTrades)
         {
+            EggWars.instance.getLogger().log(Level.INFO, "Loading data for arena \"" + this.getName() + "\" specific trades...");
+
             try
             {
-                EggWars.instance.getLogger().log(Level.INFO, "Loading data for arena \"" + this.getName() + "\" specific trades...");
-                BufferedReader buffer = Files.newBufferedReader((new File(this.arenaFolder, TradingManager.SPEC_TRADES_FILE)).toPath());
-                specific = TradingManager.loadCategory(GsonHelper.convertToJsonObject(GsonHelper.parse(buffer), "trades"));
-                buffer.close();
+                this.specialTrades = EggWars.getTradingManager().loadSpecialCategory(this.arenaFolder, this.itemType);
+                this.specialTrades.buildMenu();
             }
             catch (Exception ex)
             {
-                EggWars.instance.getLogger().log(Level.WARNING, "Error loading specific trades for arena \"" + this.getName() + "\" from type \": ", ex);
+                EggWars.instance.getLogger().log(Level.WARNING, "Error loading special shop category for arena \"" + this.getName() + "\": ", ex);
             }
         }
-
-        List<MenuSize> sizes = MenuSize.fromChestSize(trades.size());
-        int counter = 0;
-        int expected = 0;
-
-        for (int i = 0; i < sizes.size(); ++i)
-        {
-            MenuSize size = (MenuSize)sizes.get(i);
-            TranslatableInventory translatableinv = new TranslatableInventory(size.getSlots(), "shop.title");
-            Map<Integer, Category> pageTrades = new HashMap();
-            expected += size.getFilledSlots();
-
-            for (int j = 0; j < size.getFilledSlots() && counter < trades.size() && counter <= expected; ++counter)
-            {
-                int slot = 9 * (j / 7 + 1) + j % 7 + 1;
-                Category category = trades.get(counter);
-                translatableinv.setItem(slot, createCategoryItem(category));
-                pageTrades.put(slot, category);
-                ++j;
-            }
-
-            if (i < sizes.size() - 1)
-            {
-                translatableinv.setItem(8, EwPlayerMenu.getNextItem());
-            }
-
-            if (i > 0)
-            {
-                translatableinv.setItem(0, EwPlayerMenu.getPreviousItem());
-            }
-
-            if (specific != null && !specific.isEmpty())
-            {
-                int slot = 4;
-                translatableinv.setItem(slot, createCategoryItem(specific));
-                pageTrades.put(slot, specific);
-            }
-
-            translatableinv.setItem(size.getSlots() - 5, EwPlayerMenu.getCloseItem());
-            translatableinv.setItem(size.getSlots() - 1, EwPlayerMenu.getClassicShopItem());
-            this.shopInvs.add(i, translatableinv);
-            this.shopCategsSlots.add(i, pageTrades);
-        }
-    }
-
-    private static TranslatableItem createCategoryItem(Category category)
-    {
-        return TranslatableItem.translatableNameLore(ItemUtils.hideStackAttributes(category.getDisplayItem().clone()), category.getTranslation() + ".desc", category.getTranslation() + ".name");
     }
 
     public Map<Location, BlockState> getReplacedBlocks()
@@ -486,7 +423,13 @@ public class Arena
         return true;
     }
 
-    public void joinArena(EwPlayer player, boolean silently, boolean toSpectate)
+    /**
+     * Logs the player into the arena.
+     * @param player The player that will be teleported
+     * @param fromBungee WIP - upcoming improvements
+     * @param toSpectate Wheter the player comes to spectate. If true, no "joined" message will be sent.
+     */
+    public void joinArena(EwPlayer player, boolean fromBungee, boolean toSpectate)
     {
         if (!this.addPlayer(player))
         {
@@ -507,7 +450,7 @@ public class Arena
         player.getPlayer().setScoreboard(Bukkit.getScoreboardManager().getNewScoreboard());
         PlayerUtils.removePotionEffects(player.getPlayer());
 
-        if (!silently && this.status.isLobby())
+        if (!toSpectate && this.status.isLobby())
         {
             this.sendBroadcast("gameplay.lobby.player_joined", player.getPlayer().getDisplayName(), Integer.valueOf(this.players.size()), Integer.valueOf(this.getTeams().size() * this.maxTeamPlayers));
         }
@@ -543,6 +486,12 @@ public class Arena
         if (team != null)
         {
             team.removePlayer(player);
+
+            if (this.status.isLobby() && !this.skipsLobby())
+            {
+                this.teamSelectMenu.updateTeamItem(team);
+                this.teamSelectMenu.sendMenuUpdate(false);
+            }
         }
 
         this.removePlayer(player);
@@ -592,7 +541,7 @@ public class Arena
         {
             this.itemsVotes.remove(player);
             this.healthVotes.remove(player);
-            this.updateInvs();
+            this.votingMenus.updateMenus();
         }
 
         player.setArena(null);
@@ -608,6 +557,8 @@ public class Arena
                 Finish.finish(this, winner);
             }
         }
+
+        player.setJoining(false);
     }
 
     private void hidePlayers(EwPlayer pl1, boolean leave)
@@ -738,7 +689,6 @@ public class Arena
     public void updateSetupTeam(TeamType team)
     { 
         this.setupGUI.updateTeamInv(team, true);
-        InventoryController.updateInventories((p) -> this.equals(((Arena)p.getInv().getExtraData()[0])), null, MenuType.SETUP_TEAMS);
     }
 
     /** Calculates the winner team of the game from the last remaining alive team **/
@@ -816,15 +766,20 @@ public class Arena
         this.itemType = ItemType.NORMAL;
         this.healthType = HealthType.NORMAL;
         this.setStatus(enterSetup ? ArenaStatus.SETTING : ArenaStatus.WAITING);
-        this.updateInvs();
 
-        for (EwPlayer ewplayer : EggWars.players)
+        if (this.teamSelectMenu == null)
         {
-            if (ewplayer.getInv() != null && MenuType.isSetupMenu(ewplayer.getInv().getInventoryType()) && this.equals((Arena)ewplayer.getInv().getExtraData()[0]))
-            {
-                this.setupGUI.openArenaGUI(ewplayer.getPlayer());
-            }
+            this.teamSelectMenu = new TeamsMenu();
         }
+
+        this.teamSelectMenu.reset(this);
+
+        if (this.votingMenus == null)
+        {
+            this.votingMenus = new VotingMenus(this);
+        }
+
+        this.votingMenus.buildInventories();
 
         for (ArenaSign ewsign : EggWars.signs)
         {
@@ -1083,115 +1038,14 @@ public class Arena
         }
     }
 
-    public void updateInvs()
+    public void openTeamInv(EwPlayer player)
     {
-        int teamInvSize = (int)Math.ceil((double)(this.teams.size() + 1) / 9D) * 9;
-
-        if (this.teamInv == null || this.teamInv.getSize() != teamInvSize)//it may get changed during edit
-        {
-            this.teamInv = new TranslatableInventory(teamInvSize, "teams.menu_title");
-        }
-
-        this.teamInv.clear();
-        int i = 0;
-
-        for (TeamType teamtypes : TeamType.values())
-        {
-            Team team = (Team)this.teams.get(teamtypes);
-
-            if (team == null)
-            {
-                continue;
-            }
-
-            int j = team.getPlayers().size();
-            TranslatableItem transitem = new TranslatableItem((player) ->
-            {
-                EwPlayer ewplayer = PlayerUtils.getEwPlayer(player);
-                ItemStack stack = ItemUtils.tryColorizeByTeam(team.getType(), new ItemStack(Material.WHITE_WOOL, (j <= 0 ? 1 : j)));
-
-                if (team.equals(ewplayer.getTeam()))
-                {
-                    ReflectionUtils.setEnchantGlint(stack, true, true);
-                }
-
-                return stack;
-            });
-            transitem.setName((player) -> TranslationUtils.getMessage("teams.team.item_name", player, TeamUtils.translateTeamType(team.getType(), player, false), j, this.maxTeamPlayers));
-
-            for (EwPlayer ewplayer : team.getPlayers())
-            {
-                transitem.addLoreTranslatable((player) -> TranslationUtils.getMessage("teams.team.item_lore_entry", player, ewplayer.getPlayer().getDisplayName()));
-            }
-
-            this.teamInv.setItem(i, transitem);
-            i++;
-        }
-//TODO add possibility to remove enchant glint from nether star when player has team selected
-        this.teamInv.setItem(this.teamInv.getSize() - 1, TranslatableItem.translatableNameLore(new ItemStack(Material.NETHER_STAR), "teams.random.item_lore", "teams.random.item_name"));
-        InventoryController.updateInventories((predicateplayer) -> predicateplayer.getArena() == this, this.teamInv, MenuType.TEAM_SELECTION);
-
-        if (this.voteInv == null)
-        {
-            this.voteInv = new TranslatableInventory(27, "voting.menu_title");
-            this.voteInv.setItem(22, EwPlayerMenu.getCloseItem());
-            this.voteInv.setItem(11, VoteUtils.itemVoteItem);
-            this.voteInv.setItem(15, VoteUtils.healthVoteItem);
-        }
-
-        if (this.itemVoteInv == null)
-        {
-            this.itemVoteInv = new TranslatableInventory(27, "voting.items.menu_title");
-            this.itemVoteInv.setItem(22, EwPlayerMenu.getCloseItem());
-        }
-
-        this.itemVoteInv.setItem(10, VoteUtils.getTradesVoteItem(ItemType.HARDCORE, this));
-        this.itemVoteInv.setItem(13, VoteUtils.getTradesVoteItem(ItemType.NORMAL, this));
-        this.itemVoteInv.setItem(16, VoteUtils.getTradesVoteItem(ItemType.OVERPOWERED, this));
-        InventoryController.updateInventories((predicateplayer) -> predicateplayer.getArena() == this, this.itemVoteInv, MenuType.ITEM_VOTING);
-
-        if (this.healthVoteInv == null)
-        {
-            this.healthVoteInv = new TranslatableInventory(27, "voting.health.menu_title");
-            this.healthVoteInv.setItem(22, EwPlayerMenu.getCloseItem());
-        }
-
-        this.healthVoteInv.setItem(10, VoteUtils.getHealthVoteItem(HealthType.HALF, this));
-        this.healthVoteInv.setItem(12, VoteUtils.getHealthVoteItem(HealthType.NORMAL, this));
-        this.healthVoteInv.setItem(14, VoteUtils.getHealthVoteItem(HealthType.DOUBLE, this));
-        this.healthVoteInv.setItem(16, VoteUtils.getHealthVoteItem(HealthType.TRIPLE, this));
-        InventoryController.updateInventories((predicateplayer) -> predicateplayer.getArena() == this, this.healthVoteInv, MenuType.HEALTH_VOTING);
+        this.teamSelectMenu.addOpener(player);
     }
 
-    public void openTeamInv(Player player)
+    public VotingMenus getVotingMenus()
     {
-        InventoryController.openInventory(player, this.teamInv, MenuType.TEAM_SELECTION);
-    }
-
-    public void openVoteInv(Player player)
-    {
-        InventoryController.openInventory(player, this.voteInv, MenuType.VOTING);
-    }
-
-    public void openItemVoteInv(Player player)
-    {
-        InventoryController.openInventory(player, this.itemVoteInv, MenuType.ITEM_VOTING);
-    }
-
-    public void openHealthVoteInv(Player player)
-    {
-        InventoryController.openInventory(player, this.healthVoteInv, MenuType.HEALTH_VOTING);
-    }
-
-    public void openVillagerInv(Player player, int page)
-    {
-        InventoryController.openInventory(player, this.shopInvs.get(page), MenuType.VILLAGER_MENU).setExtraData(page);
-    }
-
-    @Nullable
-    public Category getShopSlots(int page, int slot)
-    {
-        return this.shopCategsSlots.get(page).get(slot);
+        return this.votingMenus;
     }
 
     public ItemType getItemType()

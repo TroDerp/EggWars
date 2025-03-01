@@ -34,7 +34,7 @@ public class GeneratorManager
     public static void loadConfig()
     {
         upgradeItem = ItemUtils.getItemOrDefault(EggWars.instance.getConfig().getString("inventory.generator_upgrading"), Material.EXPERIENCE_BOTTLE);
-        ItemUtils.hideStackAttributes(upgradeItem);
+        ItemUtils.makeMenuItem(upgradeItem);
     }
 
     public ItemStack getUpgradeItem()

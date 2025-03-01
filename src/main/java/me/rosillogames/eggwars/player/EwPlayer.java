@@ -15,10 +15,11 @@ import me.rosillogames.eggwars.enums.Mode;
 import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.events.EwPlayerChangeLangEvent;
+import me.rosillogames.eggwars.menu.EwMenu;
+import me.rosillogames.eggwars.menu.ProfileMenus;
 import me.rosillogames.eggwars.objects.AttackInstance;
 import me.rosillogames.eggwars.objects.Cooldown;
 import me.rosillogames.eggwars.objects.Kit;
-import me.rosillogames.eggwars.player.inventory.EwInventory;
 
 public class EwPlayer
 {
@@ -33,8 +34,9 @@ public class EwPlayer
     @Nullable
     private TempGameData outsideDat;
     @Nullable
-    private EwInventory inv;
-    private final EwPlayerMenu menu;
+    private EwMenu menu;
+    private int menuPage;
+    private final ProfileMenus profile;
     private final Cooldown invincibleRemain = new Cooldown();
     private final Cooldown lastDamagerRemain = new Cooldown();
     private final Cooldown kitCooldown = new Cooldown();
@@ -55,14 +57,14 @@ public class EwPlayer
         this.eliminated = false;
         this.joining = false;
         this.outsideDat = null;
-        this.inv = null;
+        this.menu = null;
         this.lastDamager = null;
         this.lastDamagerTeam = null;
-        this.menu = new EwPlayerMenu(this);
+        this.profile = new ProfileMenus(this);
 
         try
         {
-            this.menu.loadGuis();
+            this.profile.loadGuis();
         }
         catch (Exception ex)
         {
@@ -144,19 +146,29 @@ public class EwPlayer
     }
 
     @Nullable
-    public EwInventory getInv()
-    {
-        return this.inv;
-    }
-
-    public void setInv(EwInventory invplayer)
-    {
-        this.inv = invplayer;
-    }
-
-    public EwPlayerMenu getMenu()
+    public EwMenu getMenu()
     {
         return this.menu;
+    }
+
+    public void setMenu(EwMenu menu)
+    {
+        this.menu = menu;
+    }
+
+    public int getMenuPage()
+    {
+        return this.menuPage;
+    }
+
+    public void setMenuPage(int page)
+    {
+        this.menuPage = page;
+    }
+
+    public ProfileMenus getProfile()
+    {
+        return this.profile;
     }
 
     @Nullable

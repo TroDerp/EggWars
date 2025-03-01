@@ -12,9 +12,10 @@ import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.managers.ArenaManager;
 import me.rosillogames.eggwars.managers.KitManager;
+import me.rosillogames.eggwars.menu.VotingMenus;
 import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.TeamUtils;
-import me.rosillogames.eggwars.utils.VoteUtils;
 
 public class Lobby
 {
@@ -144,14 +145,14 @@ public class Lobby
                 }
             }
 
-            ewpl.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.kit_selection.slot_in_cage"), KitManager.getInvItem(ewpl.getPlayer()));
-            ewpl.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.voting.slot_in_cage"), VoteUtils.getInvItem(ewpl.getPlayer()));
+            ItemUtils.setOptionalHUDItem(ewpl, EggWars.instance.getConfig().getInt("inventory.kit_selection.slot_in_cage"), KitManager.getInvItem(ewpl.getPlayer()));
+            ItemUtils.setOptionalHUDItem(ewpl, EggWars.instance.getConfig().getInt("inventory.voting.slot_in_cage"), VotingMenus.getInvItem(ewpl.getPlayer()));
         }
         else
         {
-            ewpl.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.kit_selection.slot"), KitManager.getInvItem(ewpl.getPlayer()));
-            ewpl.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.voting.slot"), VoteUtils.getInvItem(ewpl.getPlayer()));
-            ewpl.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.team_selection.slot"), TeamUtils.getInvItem(ewpl.getPlayer()));
+            ItemUtils.setOptionalHUDItem(ewpl, EggWars.instance.getConfig().getInt("inventory.kit_selection.slot"), KitManager.getInvItem(ewpl.getPlayer()));
+            ItemUtils.setOptionalHUDItem(ewpl, EggWars.instance.getConfig().getInt("inventory.voting.slot"), VotingMenus.getInvItem(ewpl.getPlayer()));
+            ItemUtils.setOptionalHUDItem(ewpl, EggWars.instance.getConfig().getInt("inventory.team_selection.slot"), TeamUtils.getInvItem(ewpl.getPlayer()));
         }
 
         (new BukkitRunnable()
@@ -160,7 +161,7 @@ public class Lobby
             {
                 if (ewpl.isInArena() && !arenaIn.getStatus().isGame())
                 {
-                    ewpl.getPlayer().getInventory().setItem(EggWars.instance.getConfig().getInt("inventory.leave.slot"), ArenaManager.getLeaveItem(ewpl.getPlayer()));
+                    ItemUtils.setOptionalHUDItem(ewpl, EggWars.instance.getConfig().getInt("inventory.leave.slot"), ArenaManager.getLeaveItem(ewpl.getPlayer()));
                 }
             }
         }).runTaskLater(EggWars.instance, 30L);

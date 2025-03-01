@@ -1,10 +1,9 @@
 package me.rosillogames.eggwars.arena.shop;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
@@ -15,10 +14,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.Versions;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.objects.AutoEquipEntry;
 import me.rosillogames.eggwars.objects.Price;
 import me.rosillogames.eggwars.objects.Token;
 import me.rosillogames.eggwars.player.EwPlayer;
-import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.Colorizer;
 import me.rosillogames.eggwars.utils.ItemUtils;
@@ -29,8 +28,7 @@ public class Offer
 {
     protected static final String INVENTORY_FULL_KEY = "shop.inventory_full";
     private final int slot;
-    private final ItemStack result;
-    public boolean colorize;
+    private final TradeResult result;
     protected final Price price;
     /**
      * This is used for classic shop, this can be set to true and it will not be displayed,
@@ -38,8 +36,10 @@ public class Offer
      * for different amounts.
      **/
     private final boolean noClassic;
+    private String nameTranslation = "";
+    private String descTranslation = "";
 
-    public Offer(int slotIn, ItemStack resultIn, Price priceIn, boolean noClassic)
+    public Offer(int slotIn, TradeResult resultIn, Price priceIn, boolean noClassic)
     {
         this.slot = slotIn;
         this.result = resultIn;
@@ -47,9 +47,19 @@ public class Offer
         this.noClassic = noClassic;
     }
 
+    public void setNameTranlation(String tKey)
+    {
+        this.nameTranslation = tKey;
+    }
+
+    public void setDescTranlation(String tKey)
+    {
+        this.descTranslation = tKey;
+    }
+
     public ItemStack getDisplayItem(Player player)
     {
-        return ItemUtils.hideStackAttributes(adjustForRecipe(player, this.result, this.colorize));
+        return ItemUtils.makeMenuItem(this.getResultItem(player, this.result, true));
     }
 
     public boolean trade(Player player, boolean shift)
@@ -59,10 +69,11 @@ public class Offer
         while (this.canAfford(player))
         {//stacks must be cloned one by one as well because they are "live" items from inventory
             ItemStack[] prev = ItemUtils.copyContents(player.getInventory().getContents());
-            ItemStack stack = adjustForRecipe(player, this.result, this.colorize);
-            EquipmentSlot slot = ItemUtils.getTradeSlot(player, stack);
+            ItemStack stack = this.getResultItem(player, this.result, false);
+            AutoEquipEntry autoEquip = this.result.getAutoEquip();
+            EquipmentSlot slot;
 
-            if (slot != EquipmentSlot.HAND)
+            if (autoEquip != null && (slot = autoEquip.getTradeSlot(player)) != EquipmentSlot.HAND)
             {
                 ItemStack slotItem;
 
@@ -120,7 +131,7 @@ public class Offer
 
     public boolean stackable()
     {
-        return this.result.getMaxStackSize() > 1;
+        return this.result.getResult().getMaxStackSize() > 1;
     }
 
     public boolean canAfford(Player player)
@@ -130,7 +141,7 @@ public class Offer
 
     public int boughtAmount()
     {
-        return this.result.getAmount();
+        return this.result.getResult().getAmount();
     }
 
     public int affordingAmount(Player player)
@@ -143,120 +154,132 @@ public class Offer
         return affording * this.price.getAmount();
     }
 
-    public int amountOfPrice(Player player)
+    public Price getPrice()
     {
-        return Price.amountOf(this.price, player);
+        return this.price;
+    }
+
+    public int getSlot()
+    {
+        return this.slot;
+    }
+
+    @Nullable
+    public MerchantRecipe getAsRecipe(Player player)
+    {
+        MerchantRecipe recipe = null;
+
+        if (!this.noClassic)
+        {
+            recipe = new MerchantRecipe(this.getResultItem(player, this.result, false), 0x7fffffff);
+            recipe.setIngredients(Arrays.asList(new ItemStack(this.price.getMaterial(), this.price.getAmount())));
+        }
+
+        return recipe;
     }
 
     @SuppressWarnings("deprecation")
-    public static Map<Integer, Offer> fillInventory(TranslatableInventory translatableInv, List<Offer> merchantOffers)
+    protected ItemStack getResultItem(Player player, TradeResult result, boolean isDisplay)
     {
-        Map<Integer, Offer> map = new HashMap();
+        ItemStack adjusted = result.getResult().clone();
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer(player);
 
-        for (Offer offer : merchantOffers)
+        if (ewplayer != null && result.isUsingTeamColor())
         {
-            TranslatableItem tItem = TranslatableItem.fullTranslatable((player1) ->
-            {
-                ItemStack stack = offer.getDisplayItem(player1).clone();
-
-                if (EggWars.serverVersion.ordinal() >= Versions.V_1_20_R4.ordinal())
-                {
-                    ReflectionUtils.setEnchantGlint(stack, offer.canAfford(player1), false);
-                }
-                else
-                {
-                    List<String> list = ReflectionUtils.getEnchantmentsLore(stack);
-
-                    for (Enchantment ench : Enchantment.values())
-                    {
-                        stack.removeEnchantment(ench);
-                    }
-
-                    ItemMeta meta = stack.getItemMeta();
-
-                    if (meta.hasLore())
-                    {
-                        list.add("");
-                        list.addAll(meta.getLore());
-                    }
-
-                    meta.setLore(list);
-                    stack.setItemMeta(meta);
-
-                    if (offer.canAfford(player1))
-                    {/* Works differently for older versions */
-                        ReflectionUtils.setEnchantGlint(stack, true, false);
-                    }
-                }
-
-                return stack;
-            }, (player1) ->
-            {
-                Token priceToken = offer.price.getToken();
-                int first_param = offer.boughtAmount();
-                int second_param = offer.price.getAmount();
-                String third_param = TranslationUtils.getMessage(priceToken.getTypeName(), player1);
-                String fourth_param = offer.canAfford(player1) ? "§a✔" : "§c✘";
-                int i = offer.affordingAmount(player1);
-                i = (i < 1 ? 1 : i);
-                int fifth_param = offer.boughtAmount() * i;
-                int sixth_param = offer.priceOfFullAffording(i, player1);
-                int seventh_param = offer.amountOfPrice(player1);
-                String eight_param = offer.canAfford(player1) ? "§6" : "§c";
-                String ninth_param = priceToken.getColor().toString();
-                return offer.stackable() ? TranslationUtils.getMessage("shop.buy_item_stackable.desc", player1, first_param, second_param, third_param, fourth_param, fifth_param, sixth_param, seventh_param, eight_param, ninth_param) : TranslationUtils.getMessage("shop.buy_item_unstackable.desc", player1, first_param, second_param, third_param, fourth_param, seventh_param, eight_param, ninth_param);
-            }, (player1) ->
-            {
-                return TranslationUtils.getMessage("menu.item_title", player1, (offer instanceof MultiOffer && ((MultiOffer)offer).getName() != null ? ((MultiOffer)offer).getName() : ReflectionUtils.getStackName(offer.getDisplayItem(player1))));
-            });
-            tItem.dontResetLore();
-            translatableInv.setItem(offer.slot, tItem);
-            map.put(offer.slot, offer);
-        }
-
-        return map;
-    }
-
-    public static List<MerchantRecipe> convertToRecipes(Player player, List<Offer> offers)
-    {
-        List<MerchantRecipe> recipeList = new ArrayList();
-
-        for (Offer offer : offers)
-        {
-            if (offer.noClassic)
-            {
-                continue;
-            }
-
-            MerchantRecipe recipe = new MerchantRecipe(adjustForRecipe(player, offer.result, offer.colorize), 0x7fffffff);
-            recipe.setIngredients(Arrays.asList(new ItemStack(offer.price.getMaterial(), offer.price.getAmount())));
-            recipeList.add(recipe);
-        }
-
-        return recipeList;
-    }
-
-    public static ItemStack adjustForRecipe(Player player, ItemStack original, boolean colorize)
-    {
-        ItemStack colored = original.clone();
-
-        if (player != null && colorize)
-        {
-            EwPlayer ewplayer = PlayerUtils.getEwPlayer(player);
-
             if (ewplayer.getArena() != null && ewplayer.getTeam() != null)
             {
-                Colorizer.colorizeItem(colored, ewplayer.getTeam().getType().woolColor());
+                Colorizer.colorizeItem(adjusted, ewplayer.getTeam().getType().woolColor());
             }
         }
 
-        if (colored.getItemMeta().isUnbreakable())
+        if (adjusted.getItemMeta().isUnbreakable())
         {
-            ItemMeta meta = colored.getItemMeta();
+            ItemMeta meta = adjusted.getItemMeta();
             meta.addItemFlags(ItemFlag.HIDE_UNBREAKABLE);
-            colored.setItemMeta(meta);
+            adjusted.setItemMeta(meta);
         }
 
-        return colored;
+        if (!isDisplay && !result.inheritsNameDesc())
+        {
+            return adjusted;
+        }
+
+        if (isDisplay)
+        {
+            if (EggWars.serverVersion.ordinal() >= Versions.V_1_20_R4.ordinal())
+            {
+                ReflectionUtils.setEnchantGlint(adjusted, this.canAfford(player), false);
+            }
+            else
+            {
+                List<String> list = ReflectionUtils.getEnchantmentsLore(adjusted);
+
+                for (Enchantment ench : Enchantment.values())
+                {
+                    adjusted.removeEnchantment(ench);
+                }
+
+                ItemMeta meta = adjusted.getItemMeta();
+
+                if (meta.hasLore())
+                {
+                    list.add("");
+                    list.addAll(meta.getLore());
+                }
+
+                meta.setLore(list);
+                adjusted.setItemMeta(meta);
+
+                if (this.canAfford(player))
+                {/* Works differently for older versions */
+                    ReflectionUtils.setEnchantGlint(adjusted, true, false);
+                }
+            }
+        }
+
+        if (!this.descTranslation.isEmpty() && TranslationUtils.messageExists(this.descTranslation, player))
+        {
+            TranslatableItem.addLoreNoReset(adjusted, TranslationUtils.getMessage(this.descTranslation, player));
+        }
+
+        String name = ReflectionUtils.getStackName(adjusted);
+
+        if (!this.nameTranslation.isEmpty() && TranslationUtils.messageExists(this.nameTranslation, player))
+        {
+            name = TranslationUtils.getMessage(this.nameTranslation, player);
+        }
+
+        if (isDisplay)
+        {
+            Token priceToken = this.price.getToken();
+            int first_param = this.boughtAmount();
+            int second_param = this.price.getAmount();
+            String third_param = TranslationUtils.getMessage(priceToken.getTypeName(), player);
+            String fourth_param = this.canAfford(player) ? "§a✔" : "§c✘";
+            int seventh_param = Price.amountOf(this.price, player);
+            String eight_param = this.canAfford(player) ? "§6" : "§c";
+            String ninth_param = priceToken.getColor().toString();
+
+            if (this.stackable())
+            {
+                int i = this.affordingAmount(player);
+                i = (i < 1 ? 1 : i);
+                int fifth_param = this.boughtAmount() * i;
+                int sixth_param = this.priceOfFullAffording(i, player);
+                TranslatableItem.addLoreNoReset(adjusted, TranslationUtils.getMessage("shop.buy_item_stackable.desc", player, first_param, second_param, third_param, fourth_param, fifth_param, sixth_param, seventh_param, eight_param, ninth_param));
+            }
+            else
+            {
+                TranslatableItem.addLoreNoReset(adjusted, TranslationUtils.getMessage("shop.buy_item_unstackable.desc", player, first_param, second_param, third_param, fourth_param, seventh_param, eight_param, ninth_param));
+            }
+
+            TranslatableItem.setName(adjusted, TranslationUtils.getMessage("menu.item_title", player, name));
+        }
+        else
+        {
+            TranslatableItem.setName(adjusted, "§r" + name);
+        }
+
+        return adjusted;
     }
 }

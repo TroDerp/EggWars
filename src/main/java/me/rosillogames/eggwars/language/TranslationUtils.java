@@ -1,6 +1,7 @@
 package me.rosillogames.eggwars.language;
 
 import java.util.ArrayList;
+import javax.annotation.Nullable;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -88,25 +89,37 @@ public class TranslationUtils
         return TranslationUtils.getMessage("misc.seconds", lang, 0);
     }
 
-    public static void sendMessage(String msg, CommandSender sender)
+    public static void sendMessage(String msg, @Nullable CommandSender sender)
     {
         sendMessagePrefix(msg, sender, true, new Object[0]);
     }
 
-    public static void sendMessage(String msg, CommandSender sender, Object... args)
+    public static void sendMessage(String msg, @Nullable CommandSender sender, Object... args)
     {
         sendMessagePrefix(msg, sender, true, args);
     }
 
-    public static void sendMessagePrefix(String msg, CommandSender sender, boolean prefix, Object... args)
+    public static void sendMessagePrefix(String msg, @Nullable CommandSender sender, boolean prefix, Object... args)
     {
         Language lang = (sender != null && sender instanceof Player) ? LanguageManager.getPlayerLanguage((Player)sender) : LanguageManager.getDefaultLanguage();
         sender.sendMessage(lang != null ? MessageFactory.factGetMessages(lang.getOrDefault(msg), prefix, args) : new String[] {msg});
     }
 
-    public static boolean hasMessage(String msg, Player player)
+    public static boolean messageExists(String msg, @Nullable Player player)
     {
-        return (player != null ? LanguageManager.getPlayerLanguage(player) : LanguageManager.getDefaultLanguage()).has(msg);
+        boolean exists = false;
+
+        if (player != null)
+        {
+            exists = LanguageManager.getPlayerLanguage(player).has(msg);
+        }
+
+        if (!exists)
+        {
+            return LanguageManager.getDefaultLanguage().has(msg);
+        }
+
+        return true;
     }
 
     public static String getMessage(String msg)
@@ -119,17 +132,17 @@ public class TranslationUtils
         return getMessage(msg, LanguageManager.getDefaultLanguage(), args);
     }
 
-    public static String getMessage(String msg, Player player)
+    public static String getMessage(String msg, @Nullable Player player)
     {
         return getMessage(msg, (player != null ? LanguageManager.getPlayerLanguage(player) : LanguageManager.getDefaultLanguage()));
     }
 
-    public static String getMessage(String msg, Player player, Object... args)
+    public static String getMessage(String msg, @Nullable Player player, Object... args)
     {
         return getMessage(msg, (player != null ? LanguageManager.getPlayerLanguage(player) : LanguageManager.getDefaultLanguage()), args);
     }
 
-    public static String getMessage(String msg, Language lang, Object... args)
+    public static String getMessage(String msg, @Nullable Language lang, Object... args)
     {
         return lang != null ? MessageFactory.factGetMessage(lang.getOrDefault(msg), args) : msg;
     }

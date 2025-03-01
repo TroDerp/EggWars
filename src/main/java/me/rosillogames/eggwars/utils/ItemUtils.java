@@ -2,14 +2,10 @@ package me.rosillogames.eggwars.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Map;
+import java.util.List;
 import java.util.logging.Level;
-import javax.annotation.Nullable;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -18,20 +14,21 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import com.google.gson.JsonObject;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.enums.Versions;
+import me.rosillogames.eggwars.menu.SerializingItems;
+import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class ItemUtils
 {
-    public static NamespacedKey genType;
-    public static NamespacedKey genLevel;
-    public static NamespacedKey openMenu;
-    public static NamespacedKey arenaId;
+    private static String COUNT_TAG_KEY = null;
+    public static EwNamespace<String> genType;
+    public static EwNamespace<Integer> genLevel;
+    public static EwNamespace<String> arenaId;
 
     public static int countItems(Player player, Material material)
     {
@@ -59,34 +56,45 @@ public class ItemUtils
         return i;
     }
 
-    public static void removeItems(Player player, Material material, int i)
+    public static void setOptionalHUDItem(EwPlayer player, int slot, ItemStack stack)
+    {
+        player.getPlayer().getInventory().setItem(slot, stack);
+    }
+
+    public static void removeItems(Player player, Material material, int amount)
     {
         org.bukkit.inventory.PlayerInventory inv = player.getInventory();
-        ArrayList<Map.Entry<Integer, ItemStack>> list = new ArrayList(inv.all(material).entrySet());
-        Collections.sort(list, (obj0, obj1) -> ((ItemStack)((Map.Entry)obj0).getValue()).getAmount() - ((ItemStack)((Map.Entry)obj1).getValue()).getAmount());
-        int j = 0;
+        List<Pair<Integer, ItemStack>> list = new ArrayList();//Don't use inv.all(Material)!! it doesn't select offhand or armor
 
-        do
+        for (int i = 0; i < inv.getSize(); i++)
         {
-            if (i <= 0)
+            ItemStack stack = inv.getItem(i);
+
+            if (stack != null && stack.getType().equals(material))
             {
-                break;
+                list.add(new Pair(i, stack));
             }
+        }
 
-            int slot = list.get(j).getKey().intValue();
+        Collections.sort(list, (obj0, obj1) -> obj0.getRight().getAmount() - obj1.getRight().getAmount());
+        boolean offHandChanged = false;
+
+        for (int j = 0; amount > 0; ++j)
+        {
+            int slot = list.get(j).getLeft().intValue();
             ItemStack itemstack = inv.getItem(slot);
-            boolean flag = true;
+            boolean isConsumed = true;//if the item has become empty, to skip to next item
 
-            while (i > 0 && flag)
+            while (amount > 0 && isConsumed)
             {
-                i--;
+                amount--;
 
                 if (itemstack.getAmount() <= 1)
                 {
                     itemstack.setType(Material.AIR);
                     inv.setItem(slot, itemstack);
-                    flag = false;
-                    player.updateInventory();
+                    isConsumed = false;
+                    player.updateInventory();//update for the item replaced by air
                 }
                 else
                 {
@@ -94,11 +102,18 @@ public class ItemUtils
                 }
             }
 
-            j++;
+            if (slot == inv.getSize() - 1)
+            {
+                offHandChanged = true;
+            }
         }
-        while (true);
 
-        player.updateInventory();
+        player.updateInventory();//update for the item that has lost some of the amount
+
+        if (offHandChanged)
+        {//Small hack because off-hand didn't update visually
+            inv.setItemInOffHand(inv.getItemInOffHand());
+        }
     }
 
     public static Material getItemType(String id)
@@ -125,9 +140,14 @@ public class ItemUtils
 
     public static ItemStack getItemLegacy(JsonObject jsonObject)
     {
-        if (!jsonObject.has("Count"))
+        if (COUNT_TAG_KEY == null)
         {
-            jsonObject.addProperty("Count", 1);
+            COUNT_TAG_KEY = EggWars.serverVersion.ordinal() >= Versions.V_1_20_R4.ordinal() ? "count" : "Count";
+        }
+
+        if (!jsonObject.has(COUNT_TAG_KEY))
+        {
+            jsonObject.addProperty(COUNT_TAG_KEY, 1);
         }
 
         return ReflectionUtils.parseItemStack(jsonObject);
@@ -199,29 +219,14 @@ public class ItemUtils
 
     public static void setOpensMenu(ItemStack stack, MenuType menu)
     {
-        ItemMeta meta = stack.getItemMeta();
-        meta.getPersistentDataContainer().set(openMenu, PersistentDataType.STRING, menu.toString());
-        stack.setItemMeta(meta);
+        SerializingItems.OPEN_MENU.setItemReference(stack, menu);
     }
 
     public static MenuType getOpensMenu(ItemStack stack)
     {
         try
         {
-            return MenuType.parse(getPersistentData(stack, openMenu, PersistentDataType.STRING));
-        }
-        catch (Exception ex)
-        {
-            return null;
-        }
-    }
-
-    @Nullable
-    public static <T, Z> Z getPersistentData(ItemStack stack, NamespacedKey key, PersistentDataType<T, Z> type)
-    {
-        try
-        {
-            return stack.getItemMeta().getPersistentDataContainer().get(key, type);
+            return SerializingItems.OPEN_MENU.getItemReference(stack);
         }
         catch (Exception ex)
         {
@@ -236,8 +241,7 @@ public class ItemUtils
         return colored;
     }
 
-    @SuppressWarnings({"deprecation", "removal"})
-    public static ItemStack hideStackAttributes(ItemStack itemstack)
+    public static ItemStack makeMenuItem(ItemStack itemstack)
     {
         ItemMeta meta = itemstack.getItemMeta();
         meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
@@ -245,9 +249,6 @@ public class ItemUtils
 
         if (EggWars.serverVersion.ordinal() >= Versions.V_1_20_R4.ordinal())
         {
-            meta.addAttributeModifier(Attribute.values()[0], new AttributeModifier("dummy", 0, AttributeModifier.Operation.ADD_NUMBER));
-            meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
-            //the things above only affects paper because HIDE_ATTRIBUTES is not working there (paper's #10655)
             meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
             meta.setMaxStackSize(99);
         }
@@ -260,7 +261,6 @@ public class ItemUtils
         return itemstack;
     }
 
-    //add shield to offhand?
     public static ItemStack getSlot(Player player, EquipmentSlot slot)
     {
         if (slot == EquipmentSlot.HEAD)
@@ -278,6 +278,10 @@ public class ItemUtils
         else if (slot == EquipmentSlot.FEET)
         {
             return player.getInventory().getBoots();
+        }
+        else if (slot == EquipmentSlot.OFF_HAND)
+        {
+            return player.getInventory().getItemInOffHand();
         }
 
         return player.getInventory().getItemInMainHand();
@@ -301,137 +305,13 @@ public class ItemUtils
         {
             player.getInventory().setBoots(item);
         }
+        else if (slot == EquipmentSlot.OFF_HAND)
+        {
+            player.getInventory().setItemInOffHand(item);
+        }
         else
         {
             player.getInventory().setItemInMainHand(item);
         }
-    }
-
-    public static EquipmentSlot getTradeSlot(Player player, ItemStack item)
-    {
-        Material mat = item.getType();
-
-        //Leather & Gold
-        if (mat == Material.LEATHER_HELMET || mat == Material.GOLDEN_HELMET)
-        {
-            Material armor = player.getInventory().getHelmet() != null ? player.getInventory().getHelmet().getType() : Material.AIR;
-            return (armor == Material.CHAINMAIL_HELMET || armor == Material.IRON_HELMET || armor == Material.DIAMOND_HELMET || armor == Material.NETHERITE_HELMET) ? EquipmentSlot.HAND : EquipmentSlot.HEAD;
-        }
-
-        if (mat == Material.LEATHER_CHESTPLATE || mat == Material.GOLDEN_CHESTPLATE)
-        {
-            Material armor = player.getInventory().getChestplate() != null ? player.getInventory().getChestplate().getType() : Material.AIR;
-            return (armor == Material.CHAINMAIL_CHESTPLATE || armor == Material.IRON_CHESTPLATE || armor == Material.DIAMOND_CHESTPLATE || armor == Material.NETHERITE_CHESTPLATE) ? EquipmentSlot.HAND : EquipmentSlot.CHEST;
-        }
-
-        if (mat == Material.LEATHER_LEGGINGS || mat == Material.GOLDEN_LEGGINGS)
-        {
-            Material armor = player.getInventory().getLeggings() != null ? player.getInventory().getLeggings().getType() : Material.AIR;
-            return (armor == Material.CHAINMAIL_LEGGINGS || armor == Material.IRON_LEGGINGS || armor == Material.DIAMOND_LEGGINGS || armor == Material.NETHERITE_LEGGINGS) ? EquipmentSlot.HAND : EquipmentSlot.LEGS;
-        }
-
-        if (mat == Material.LEATHER_BOOTS || mat == Material.GOLDEN_BOOTS)
-        {
-            Material armor = player.getInventory().getBoots() != null ? player.getInventory().getBoots().getType() : Material.AIR;
-            return (armor == Material.CHAINMAIL_BOOTS || armor == Material.IRON_BOOTS || armor == Material.DIAMOND_BOOTS || armor == Material.NETHERITE_BOOTS) ? EquipmentSlot.HAND : EquipmentSlot.FEET;
-        }
-
-        //Chain
-        if (mat == Material.CHAINMAIL_HELMET)
-        {
-            Material armor = player.getInventory().getHelmet() != null ? player.getInventory().getHelmet().getType() : Material.AIR;
-            return (armor == Material.IRON_HELMET || armor == Material.DIAMOND_HELMET || armor == Material.NETHERITE_HELMET) ? EquipmentSlot.HAND : EquipmentSlot.HEAD;
-        }
-
-        if (mat == Material.CHAINMAIL_CHESTPLATE)
-        {
-            Material armor = player.getInventory().getChestplate() != null ? player.getInventory().getChestplate().getType() : Material.AIR;
-            return (armor == Material.IRON_CHESTPLATE || armor == Material.DIAMOND_CHESTPLATE || armor == Material.NETHERITE_CHESTPLATE) ? EquipmentSlot.HAND : EquipmentSlot.CHEST;
-        }
-
-        if (mat == Material.CHAINMAIL_LEGGINGS)
-        {
-            Material armor = player.getInventory().getLeggings() != null ? player.getInventory().getLeggings().getType() : Material.AIR;
-            return (armor == Material.IRON_LEGGINGS || armor == Material.DIAMOND_LEGGINGS || armor == Material.NETHERITE_LEGGINGS) ? EquipmentSlot.HAND : EquipmentSlot.LEGS;
-        }
-
-        if (mat == Material.CHAINMAIL_BOOTS)
-        {
-            Material armor = player.getInventory().getBoots() != null ? player.getInventory().getBoots().getType() : Material.AIR;
-            return (armor == Material.IRON_BOOTS || armor == Material.DIAMOND_BOOTS || armor == Material.NETHERITE_BOOTS) ? EquipmentSlot.HAND : EquipmentSlot.FEET;
-        }
-
-        //Iron
-        if (mat == Material.IRON_HELMET)
-        {
-            Material armor = player.getInventory().getHelmet() != null ? player.getInventory().getHelmet().getType() : Material.AIR;
-            return (armor == Material.DIAMOND_HELMET || armor == Material.NETHERITE_HELMET) ? EquipmentSlot.HAND : EquipmentSlot.HEAD;
-        }
-
-        if (mat == Material.IRON_CHESTPLATE)
-        {
-            Material armor = player.getInventory().getChestplate() != null ? player.getInventory().getChestplate().getType() : Material.AIR;
-            return (armor == Material.DIAMOND_CHESTPLATE || armor == Material.NETHERITE_CHESTPLATE) ? EquipmentSlot.HAND : EquipmentSlot.CHEST;
-        }
-
-        if (mat == Material.IRON_LEGGINGS)
-        {
-            Material armor = player.getInventory().getLeggings() != null ? player.getInventory().getLeggings().getType() : Material.AIR;
-            return (armor == Material.DIAMOND_LEGGINGS || armor == Material.NETHERITE_LEGGINGS) ? EquipmentSlot.HAND : EquipmentSlot.LEGS;
-        }
-
-        if (mat == Material.IRON_BOOTS)
-        {
-            Material armor = player.getInventory().getBoots() != null ? player.getInventory().getBoots().getType() : Material.AIR;
-            return (armor == Material.DIAMOND_BOOTS || armor == Material.NETHERITE_BOOTS) ? EquipmentSlot.HAND : EquipmentSlot.FEET;
-        }
-
-        //Diamond
-        if (mat == Material.DIAMOND_HELMET)
-        {
-            Material armor = player.getInventory().getHelmet() != null ? player.getInventory().getHelmet().getType() : Material.AIR;
-            return (armor == Material.NETHERITE_HELMET) ? EquipmentSlot.HAND : EquipmentSlot.HEAD;
-        }
-
-        if (mat == Material.DIAMOND_CHESTPLATE)
-        {
-            Material armor = player.getInventory().getChestplate() != null ? player.getInventory().getChestplate().getType() : Material.AIR;
-            return (armor == Material.NETHERITE_CHESTPLATE) ? EquipmentSlot.HAND : EquipmentSlot.CHEST;
-        }
-
-        if (mat == Material.DIAMOND_LEGGINGS)
-        {
-            Material armor = player.getInventory().getLeggings() != null ? player.getInventory().getLeggings().getType() : Material.AIR;
-            return (armor == Material.NETHERITE_LEGGINGS) ? EquipmentSlot.HAND : EquipmentSlot.LEGS;
-        }
-
-        if (mat == Material.DIAMOND_BOOTS)
-        {
-            Material armor = player.getInventory().getBoots() != null ? player.getInventory().getBoots().getType() : Material.AIR;
-            return (armor == Material.NETHERITE_BOOTS) ? EquipmentSlot.HAND : EquipmentSlot.FEET;
-        }
-
-        //Netherite
-        if (mat == Material.NETHERITE_HELMET)
-        {
-            return EquipmentSlot.HEAD;
-        }
-
-        if (mat == Material.NETHERITE_CHESTPLATE)
-        {
-            return EquipmentSlot.CHEST;
-        }
-
-        if (mat == Material.NETHERITE_LEGGINGS)
-        {
-            return EquipmentSlot.LEGS;
-        }
-
-        if (mat == Material.NETHERITE_BOOTS)
-        {
-            return EquipmentSlot.FEET;
-        }
-
-        return EquipmentSlot.HAND;
     }
 }

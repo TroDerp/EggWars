@@ -4,7 +4,6 @@ import javax.annotation.Nullable;
 
 public enum MenuType
 {
-    LEAVE_ARENA("leave_arena"),//TODO: remove this one if item identifiers get added
     TEAM_SELECTION("team_selection"),
     VOTING("voting"),
     ITEM_VOTING("item_voting"),

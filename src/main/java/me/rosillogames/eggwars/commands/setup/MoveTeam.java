@@ -48,7 +48,7 @@ public class MoveTeam extends CommandArg
         {
             team2 = TeamType.byId(args[2]);
         }
-        catch (IllegalArgumentException illegalArgumentException)
+        catch (IllegalArgumentException exc)
         {
             TranslationUtils.sendMessage("commands.error.team_does_not_exist", commandSender, args[2]);
             return false;

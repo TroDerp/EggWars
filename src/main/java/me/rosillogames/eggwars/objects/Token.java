@@ -8,7 +8,7 @@ import me.rosillogames.eggwars.language.TranslationUtils;
 public class Token
 {
     private final Material material;
-    private final ChatColor color;
+    private final ChatColor color;//Maybe add support for special colors?
     private final String name;
 
     public Token(Material matIn, ChatColor colorIn, String nameIn)

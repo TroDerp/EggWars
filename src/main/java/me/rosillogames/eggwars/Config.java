@@ -17,11 +17,11 @@ import me.rosillogames.eggwars.enums.Versions;
 import me.rosillogames.eggwars.managers.ArenaManager;
 import me.rosillogames.eggwars.managers.GeneratorManager;
 import me.rosillogames.eggwars.managers.KitManager;
+import me.rosillogames.eggwars.menu.VotingMenus;
 import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.LobbySigns;
 import me.rosillogames.eggwars.utils.Locations;
 import me.rosillogames.eggwars.utils.TeamUtils;
-import me.rosillogames.eggwars.utils.VoteUtils;
 
 public class Config
 {
@@ -34,12 +34,13 @@ public class Config
     public boolean balanceTeams = false;
     public boolean shareTeamEC = false;
     public boolean useBelowBlock = true;
-    //Version check for APSS is for an issue with item.setThrower(UUID) not being in early 1.16
+    //There's a version check for APSS for an issue with item.setThrower(UUID) not being in early 1.16
     public boolean enableAPSS = true;
     public boolean keepInv = false;
     public boolean dropInv = false;
     public boolean publicSpectChat = true;
     public boolean bestAssistIsKiller = false;
+    public boolean opensForeignShops = true;
     public ModeOption enableAssists = ModeOption.TEAM;
     public int dmgForgetTime = 20;
     public int respawnDelay = 4;
@@ -103,6 +104,7 @@ public class Config
         fileConf.addDefault("game.player.respawn_delay", 4);
         fileConf.addDefault("game.player.invincible_time", 10);
         fileConf.addDefault("game.player.allow_starving", false);
+        fileConf.addDefault("game.player.opens_foreign_shops", true);
         fileConf.addDefault("game.assists.enable", ModeOption.TEAM.toString());
         fileConf.addDefault("game.assists.grant_kill_to_best", false);
         fileConf.addDefault("game.assists.forget_time", 20);
@@ -159,6 +161,7 @@ public class Config
         fileConf.addDefault("generator.fast_items", false);
         fileConf.addDefault("generator.use_below_block", true);
         fileConf.addDefault("generator.enable_apss", true);
+        fileConf.addDefault("generator.close_ui_on_upgrade", true);
 
         fileConf.addDefault("spectator.can_stay_at_game", true);
         fileConf.addDefault("spectator.can_enter_ingame", false);
@@ -260,14 +263,15 @@ public class Config
         this.keepInv = fileConf.getBoolean("game.player.keep_inventory");
         this.finishingTime = fileConf.getInt("game.finishing_time");
         this.invincibleTime = fileConf.getInt("game.player.invincible_time");
-        String keepEgg = fileConf.getString("game.keep_abandoned_eggs");
+        String keepEgg = fileConf.getString("game.keep_abandoned_eggs").toLowerCase();
         this.keepTeamEgg = (byte)("never".equals(keepEgg) ? 0 : "when_team_leaves".equals(keepEgg) ? 1 : 2);
+        this.opensForeignShops = fileConf.getBoolean("game.player.opens_foreign_shops", true);
         EggWars.languageManager().loadConfig();
         LobbySigns.loadConfig();
         TeamUtils.loadConfig();
         KitManager.loadConfig();
         ArenaManager.loadConfig();
-        VoteUtils.loadConfig();
+        VotingMenus.loadConfig();
         GeneratorManager.loadConfig();
 
         this.breakableBlocks.clear();

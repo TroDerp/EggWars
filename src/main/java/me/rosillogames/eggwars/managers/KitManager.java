@@ -18,10 +18,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.MenuType;
+import me.rosillogames.eggwars.menu.KitsMenu;
 import me.rosillogames.eggwars.objects.Kit;
-import me.rosillogames.eggwars.objects.KitsMenu;
 import me.rosillogames.eggwars.player.EwPlayer;
-import me.rosillogames.eggwars.player.inventory.InventoryController;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.GsonHelper;
 import me.rosillogames.eggwars.utils.ItemUtils;
@@ -29,6 +28,7 @@ import me.rosillogames.eggwars.utils.Pair;
 
 public class KitManager
 {
+    private static final String KITS_FILE = "custom/kits.json";
     private static TranslatableItem invItem;
     public static int cooldownSeconds;
     private final List<Kit> kits = new ArrayList();
@@ -41,7 +41,7 @@ public class KitManager
     public static void loadConfig()
     {
         ItemStack stack = ItemUtils.getItemOrDefault(EggWars.instance.getConfig().getString("inventory.kit_selection.item"), Material.PAPER);
-        ItemUtils.hideStackAttributes(stack);
+        ItemUtils.makeMenuItem(stack);
         ItemUtils.setOpensMenu(stack, MenuType.KIT_SELECTION);
         invItem = TranslatableItem.translatableNameLore(stack, "gameplay.kits.item_lore", "gameplay.kits.item_name");
         cooldownSeconds = EggWars.instance.getConfig().getInt("kits.cooldown_time");
@@ -49,7 +49,7 @@ public class KitManager
 
     public static ItemStack getInvItem(Player player)
     {
-        return invItem.getTranslated(player);
+        return invItem.apply(player);
     }
 
     public void loadKits()
@@ -59,62 +59,67 @@ public class KitManager
 
         try
         {
-            EggWars.instance.saveCustomResource("custom/kits.json", null, false);
-            BufferedReader bufferedReader13 = Files.newBufferedReader((new File(EggWars.instance.getDataFolder(), "custom/kits.json")).toPath());
-            JsonElement jsonelement = GsonHelper.parse(bufferedReader13);
-            JsonObject kitjson = GsonHelper.convertToJsonObject(jsonelement, "kits");
-            JsonObject kitsobj = GsonHelper.getAsJsonObject(kitjson, "kits");
+            EggWars.instance.saveCustomResource(KITS_FILE, null, false);
+            BufferedReader buffer = Files.newBufferedReader((new File(EggWars.instance.getDataFolder(), "custom/kits.json")).toPath());
+            JsonObject fileJson = GsonHelper.convertToJsonObject(GsonHelper.parse(buffer), "kits");
 
-            for (Map.Entry<String, JsonElement> entry : kitsobj.entrySet())
+            if (TradingManager.isConfigCompatible(fileJson, KITS_FILE))
             {
-                String key = entry.getKey();
+                JsonObject kitsobj = GsonHelper.getAsJsonObject(fileJson, "kits");
 
-                try
+                for (Map.Entry<String, JsonElement> entry : kitsobj.entrySet())
                 {
-                    JsonObject kit = (JsonObject)GsonHelper.convertToJsonObject(entry.getValue(), "kit");
-                    ItemStack displayItem = ItemUtils.getItemLegacy(GsonHelper.getAsJsonObject(kit, "display_item"));
+                    String key = entry.getKey();
 
-                    if (displayItem == null || displayItem.getType().equals(Material.AIR))
+                    try
                     {
-                        displayItem = new ItemStack(Material.BARRIER);
+                        JsonObject kit = (JsonObject)GsonHelper.convertToJsonObject(entry.getValue(), "kit");
+                        ItemStack displayItem = ItemUtils.getItemLegacy(GsonHelper.getAsJsonObject(kit, "display_item"));
+
+                        if (displayItem == null || displayItem.getType().equals(Material.AIR))
+                        {
+                            displayItem = new ItemStack(Material.BARRIER);
+                        }
+
+                        ItemUtils.makeMenuItem(displayItem);
+                        List<Pair<EquipmentSlot, ItemStack>> items = Lists.<Pair<EquipmentSlot, ItemStack>>newArrayList();
+                        JsonArray itemlist = GsonHelper.getAsJsonArray(kit, "items", new JsonArray());
+
+                        for (int i = 0; i < itemlist.size(); ++i)
+                        {
+                            JsonObject itemjson = (JsonObject)GsonHelper.convertToJsonObject(itemlist.get(i), "items");
+                            ItemStack item = ItemUtils.getItemLegacy(GsonHelper.getAsJsonObject(itemjson, "item"));
+
+                            if (item == null || item.getType().equals(Material.AIR))
+                            {
+                                continue;
+                            }
+
+                            EquipmentSlot slot = null;
+
+                            try
+                            {
+                                slot = EquipmentSlot.valueOf(GsonHelper.getAsString(itemjson, "custom_slot").toUpperCase());
+                            }
+                            catch (Exception ex)
+                            {
+                            }
+
+                            items.add(new Pair(slot, item));
+                        }
+
+                        int cooldown = GsonHelper.getAsInt(kit, "cooldown_time", -1);
+                        int price = GsonHelper.getAsInt(kit, "price", 0);
+                        this.kits.add(new Kit(items, key, displayItem, price, cooldown));
                     }
-
-                    ItemUtils.hideStackAttributes(displayItem);
-                    List<Pair<EquipmentSlot, ItemStack>> items = Lists.<Pair<EquipmentSlot, ItemStack>>newArrayList();
-                    JsonArray itemlist = GsonHelper.getAsJsonArray(kit, "items", new JsonArray());
-
-                    for (int i = 0; i < itemlist.size(); ++i)
+                    catch (Exception ex)
                     {
-                        JsonObject itemjson = (JsonObject)GsonHelper.convertToJsonObject(itemlist.get(i), "items");
-                        ItemStack item = ItemUtils.getItemLegacy(GsonHelper.getAsJsonObject(itemjson, "item"));
-
-                        if (item == null || item.getType().equals(Material.AIR))
-                        {
-                            continue;
-                        }
-
-                        EquipmentSlot slot = null;
-
-                        try
-                        {
-                            slot = EquipmentSlot.valueOf(GsonHelper.getAsString(itemjson, "custom_slot").toUpperCase());
-                        }
-                        catch (Exception ex)
-                        {
-                        }
-
-                        items.add(new Pair(slot, item));
+                        EggWars.instance.getLogger().log(Level.WARNING, "Error loading kit \"" + key + "\":", ex);
                     }
-
-                    int cooldown = GsonHelper.getAsInt(kit, "cooldown_time", -1);
-                    int price = GsonHelper.getAsInt(kit, "price", 0);
-                    this.kits.add(new Kit(items, key, displayItem, price, cooldown));
-                }
-                catch (Exception ex)
-                {
-                    EggWars.instance.getLogger().log(Level.WARNING, "Error loading kit \"" + key + "\":", ex);
                 }
             }
+
+            buffer.close();
         }
         catch (Exception ex1)
         {
@@ -146,11 +151,6 @@ public class KitManager
     public KitsMenu getKitsMenu()
     {
         return this.kitsMenu;
-    }
-
-    public void openKitsInv(Player player, int page)
-    {
-        InventoryController.openInventory(player, kitsMenu.getInventory(page), MenuType.KIT_SELECTION).setExtraData(page);
     }
 
     public static boolean buyKit(EwPlayer ewplayer, Kit kit)

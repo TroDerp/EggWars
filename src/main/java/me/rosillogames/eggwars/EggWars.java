@@ -25,6 +25,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -64,13 +65,16 @@ import me.rosillogames.eggwars.managers.GeneratorManager;
 import me.rosillogames.eggwars.managers.KitManager;
 import me.rosillogames.eggwars.managers.TokenManager;
 import me.rosillogames.eggwars.managers.TradingManager;
+import me.rosillogames.eggwars.menu.SerializingItems;
 import me.rosillogames.eggwars.objects.ArenaSign;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.Colorizer;
 import me.rosillogames.eggwars.utils.ConfigAccessor;
+import me.rosillogames.eggwars.utils.EwNamespace;
 import me.rosillogames.eggwars.utils.GsonHelper;
 import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.LobbySigns;
+import me.rosillogames.eggwars.utils.TeamUtils;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class EggWars extends JavaPlugin
@@ -101,7 +105,7 @@ public class EggWars extends JavaPlugin
     @Override
     public void onDisable()
     {
-        if (!serverVersion.isAllowedVersion())
+        if (Versions.OTHER.equals(serverVersion))
         {
             return;
         }
@@ -124,9 +128,9 @@ public class EggWars extends JavaPlugin
         instance = this;
         EGGWARS_VERSION = this.getDescription().getVersion();
         String s = this.getServer().getClass().getPackage().getName();
-        serverVersion = Versions.get(s.substring(s.lastIndexOf('.') + 1), this.getServer().getBukkitVersion());
+        serverVersion = Versions.get(s.substring(s.lastIndexOf('.') + 1), this.getServer().getBukkitVersion().replaceFirst("-R0.1-SNAPSHOT", ""));
 
-        if (!serverVersion.isAllowedVersion())
+        if (Versions.OTHER.equals(serverVersion))
         {
             Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[EggWars] " + ChatColor.RESET + "Incompatible version! Currently supported: " + Versions.SUPPORTED_TEXT);
             Bukkit.shutdown();
@@ -184,10 +188,12 @@ public class EggWars extends JavaPlugin
 
     private void loadNamespaces()
     {
-        ItemUtils.genType = new NamespacedKey(this, "GEN_TYPE");
-        ItemUtils.genLevel = new NamespacedKey(this, "GEN_LEVEL");
-        ItemUtils.openMenu = new NamespacedKey(this, "OPEN_MENU");
-        ItemUtils.arenaId = new NamespacedKey(this, "ARENA_ID");
+        ItemUtils.genType = new EwNamespace("GEN_TYPE", PersistentDataType.STRING);
+        ItemUtils.genLevel = new EwNamespace("GEN_LEVEL", PersistentDataType.INTEGER);
+        ItemUtils.arenaId = new EwNamespace("ARENA_ID", PersistentDataType.STRING);
+        TeamUtils.teamTypeKey = new EwNamespace("TEAM_TYPE_ID", PersistentDataType.STRING);
+        SerializingItems.typeKey = new EwNamespace("serialized_item", PersistentDataType.STRING);
+        SerializingItems.valueKey = new NamespacedKey(this, "ser_item_value");
     }
 
     private void loadLists()
@@ -199,7 +205,7 @@ public class EggWars extends JavaPlugin
 
     private void eventRegister()
     {
-        PluginManager pluginmanager = getServer().getPluginManager();
+        PluginManager pluginmanager = this.getServer().getPluginManager();
         pluginmanager.registerEvents(new BlockBreakListener(), this);
         pluginmanager.registerEvents(new BlockPlaceListener(), this);
         pluginmanager.registerEvents(new EggWarsListener(), this);

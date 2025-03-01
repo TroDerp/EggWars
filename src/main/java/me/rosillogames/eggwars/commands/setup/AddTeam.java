@@ -40,7 +40,7 @@ public class AddTeam extends CommandArg
         {
             teamType = TeamType.byId(args[1]);
         }
-        catch (IllegalArgumentException illegalArgumentException)
+        catch (IllegalArgumentException exc)
         {
             TranslationUtils.sendMessage("commands.error.team_does_not_exist", commandSender, args[1]);
             return false;

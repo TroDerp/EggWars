@@ -2,81 +2,153 @@ package me.rosillogames.eggwars.managers;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.bukkit.Material;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.shop.Category;
-import me.rosillogames.eggwars.arena.shop.Merchant;
 import me.rosillogames.eggwars.arena.shop.MultiOffer;
 import me.rosillogames.eggwars.arena.shop.Offer;
+import me.rosillogames.eggwars.arena.shop.TradeResult;
 import me.rosillogames.eggwars.enums.ItemType;
+import me.rosillogames.eggwars.enums.Versions;
+import me.rosillogames.eggwars.menu.ProfileMenus;
+import me.rosillogames.eggwars.menu.ShopMenu;
+import me.rosillogames.eggwars.objects.AutoEquipEntry;
 import me.rosillogames.eggwars.objects.Price;
-import me.rosillogames.eggwars.player.EwPlayerMenu;
+import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.GsonHelper;
 import me.rosillogames.eggwars.utils.ItemUtils;
-import me.rosillogames.eggwars.utils.Pair;
 
 public class TradingManager
 {
+    private static final String TRADES_FILE = "custom/trades.json";
     public static final String SPEC_TRADES_FILE = "trades_specific.json";
-    private final List<Category> merchants = new ArrayList();
+    private final Map<ItemType, ShopMenu> shopsPerType = new EnumMap<ItemType, ShopMenu>(ItemType.class);
+    private final Map<String, AutoEquipEntry> autoEquips = new HashMap<String, AutoEquipEntry>();
 
     public TradingManager()
     {
+        for (ItemType type : ItemType.values())
+        {
+            this.shopsPerType.put(type, new ShopMenu(type));
+        }
     }
 
-    public List<Category> getMerchants()
+    public Map<ItemType, ShopMenu> getShops()
     {
-        return new ArrayList(this.merchants);
+        return new EnumMap(this.shopsPerType);
+    }
+
+    public void openEggWarsShop(EwPlayer player, ItemType type)
+    {
+        this.shopsPerType.get(type).addOpener(player);
     }
 
     public void loadTrades()
     {
-        this.merchants.clear();
-        EggWars.instance.getLogger().log(Level.INFO, "Loading data for main trades...");
+        for (ShopMenu shop : this.shopsPerType.values())
+        {
+            shop.resetClear();
+        }
+
+        this.autoEquips.clear();
+        EggWars.instance.getLogger().log(Level.INFO, "Loading data for eggwars shop...");
 
         try
         {
-            EggWars.instance.saveCustomResource("custom/trades.json", null, false);
+            EggWars.instance.saveCustomResource(TRADES_FILE, null, false);
             BufferedReader buffer = Files.newBufferedReader((new File(EggWars.instance.getDataFolder(), "custom/trades.json")).toPath());
-            JsonObject shop = GsonHelper.getAsJsonObject(GsonHelper.convertToJsonObject(GsonHelper.parse(buffer), "trades"), "shop");
+            JsonObject fileJson = GsonHelper.convertToJsonObject(GsonHelper.parse(buffer), "trades");
 
-            for (Map.Entry<String, JsonElement> entry : shop.entrySet())
+            if (isConfigCompatible(fileJson, TRADES_FILE))
             {
-                String name = entry.getKey();
+                JsonObject equipJson = GsonHelper.getAsJsonObject(fileJson, "auto_equip_configurations");
+
+                for (Map.Entry<String, JsonElement> entry : equipJson.entrySet())
+                {
+                    String name = entry.getKey();
+
+                    try
+                    {
+                        AutoEquipEntry conf = loadAutoEquip(GsonHelper.convertToJsonObject(entry.getValue(), "auto_equip_entry"));
+
+                        if (conf != null)
+                        {
+                            this.autoEquips.put(name, conf);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        EggWars.instance.getLogger().log(Level.WARNING, "Error loading auto equipping config for \"" + name + "\": ", ex);
+                    }
+                }
+
+                JsonObject shopJson = GsonHelper.getAsJsonObject(fileJson, "shop");
 
                 try
                 {
-                    Category category = loadCategory(GsonHelper.convertToJsonObject(entry.getValue(), "category"));
-
-                    if (!category.isEmpty())
+                    for (ItemType type : ItemType.values())
                     {
-                        this.merchants.add(category);
+                        ShopMenu shopMenu = this.shopsPerType.get(type);
+                        JsonObject tierJson = GsonHelper.getAsJsonObject(shopJson, type.toString());
+        
+                        for (Map.Entry<String, JsonElement> entry : tierJson.entrySet())
+                        {
+                            String name = entry.getKey();
+        
+                            try
+                            {
+                                Category category = this.loadCategory(name, GsonHelper.convertToJsonObject(entry.getValue(), "category"));
+        
+                                if (!category.isEmpty())
+                                {
+                                    shopMenu.addCategory(name, category);
+                                }
+                            }
+                            catch (Exception ex1)
+                            {
+                                EggWars.instance.getLogger().log(Level.WARNING, "Error loading trade category \"" + name + "\" for " + type.toString() + " tier: ", ex1);
+                            }
+                        }
                     }
                 }
-                catch (Exception ex1)
+                catch (Exception ex2)
                 {
-                    EggWars.instance.getLogger().log(Level.WARNING, "Error loading trade category \"" + name + "\": ", ex1);
+                    EggWars.instance.getLogger().log(Level.WARNING, "Error loading shop merchants: ", ex2);
                 }
             }
 
             buffer.close();
         }
-        catch (Exception ex2)
+        catch (IOException ex2)
         {
-            EggWars.instance.getLogger().log(Level.WARNING, "Error loading main trades: ", ex2);
+            EggWars.instance.getLogger().log(Level.WARNING, "Error loading trades.json: ", ex2);
         }
     }
 
-    public static Category loadCategory(JsonObject categoryJson)
+    public Category loadSpecialCategory(File folder, ItemType type) throws IOException
+    {
+        BufferedReader buffer = Files.newBufferedReader((new File(folder, SPEC_TRADES_FILE)).toPath());
+        JsonObject shopJson = GsonHelper.getAsJsonObject(GsonHelper.convertToJsonObject(GsonHelper.parse(buffer), "special_category"), "tiers");
+        JsonObject tierJson = GsonHelper.getAsJsonObject(shopJson, type.toString());
+        Category category = this.loadCategory("special", tierJson);
+        buffer.close();
+        return category;//Error loading special shop category for arena \"
+    }
+
+    private Category loadCategory(String catName, JsonObject categoryJson)
     {
         ItemStack displayItem = ItemUtils.getItemLegacy(GsonHelper.getAsJsonObject(categoryJson, "display_item"));
 
@@ -85,123 +157,185 @@ public class TradingManager
             displayItem = new ItemStack(Material.BARRIER);
         }
 
-        Category category = new Category(displayItem, GsonHelper.getAsString(categoryJson, "translation_key"));
-        JsonObject typesJson = GsonHelper.getAsJsonObject(categoryJson, "types");
-        Merchant defMerch = loadMerchant(GsonHelper.getAsJsonObject(typesJson, "default"), null);
+        JsonObject armorSlots = GsonHelper.getAsJsonObject(categoryJson, "viewable_equipment", new JsonObject());
+        Map<EquipmentSlot, Integer> armor = new EnumMap(EquipmentSlot.class);
 
-        for (ItemType type : ItemType.values())
+        for (Map.Entry<String, JsonElement> entry : armorSlots.entrySet())
         {
-            category.setMerchant(type, loadMerchant(GsonHelper.getAsJsonObject(typesJson, type.toString()), defMerch));
-        }
+            String name = entry.getKey();
 
-        return category;
-    }
-
-    private static Merchant loadMerchant(JsonObject tradesJson, Merchant def)//def null check?
-    {
-        JsonArray armorSlots = GsonHelper.getAsJsonArray(tradesJson, "armor_slots", new JsonArray());
-        int[] armor = null;//these can be null
-
-        if (armorSlots.size() >= 4)
-        {
-            armor = new int[4];
-
-            for (int i = 0; i < 4; ++i)
+            if ("hand".equalsIgnoreCase(name))
             {
-                armor[i] = GsonHelper.convertToInt(armorSlots.get(i), "armor_slot");
+                continue;
+            }
+
+            try
+            {
+                armor.put(EquipmentSlot.valueOf(name.toUpperCase()), GsonHelper.convertToInt(entry.getValue(), "slot"));
+            }
+            catch (Exception ex)
+            {
+                EggWars.instance.getLogger().log(Level.WARNING, "Error loading viewable slot " + name + ": ", ex);
+                continue;
             }
         }
 
-        if (def != null && armor == null && def.getArmorSlots() != null)
+        ProfileMenus.MenuSize size = ProfileMenus.MenuSize.parse(GsonHelper.getAsString(categoryJson, "menu_size", null), null);
+
+        if (size == null)//this cannot be null
         {
-            armor = def.getArmorSlots();
+            size = ProfileMenus.MenuSize.FULL;
         }
 
-        EwPlayerMenu.MenuSize size = EwPlayerMenu.MenuSize.parse(GsonHelper.getAsString(tradesJson, "menu_size", null), null);
+        Category category = new Category(size, armor, displayItem, GsonHelper.getAsString(categoryJson, "translation_key"));
+        JsonObject offers = GsonHelper.getAsJsonObject(categoryJson, "offers");
 
-        if (def != null && size == null && def.getSize() != null)
+        for (Map.Entry<String, JsonElement> entry : offers.entrySet())
         {
-            size = def.getSize();
-        }
-        else if (size == null)//this cannot be null
-        {
-            size = EwPlayerMenu.MenuSize.FULL;
-        }
-
-        Merchant merchant = new Merchant(size, armor);
-        JsonArray offers = GsonHelper.getAsJsonArray(tradesJson, "offers", new JsonArray());
-
-        for (int i = 0; i < offers.size(); ++i)
-        {
-            JsonObject offerjson = (JsonObject)GsonHelper.convertToJsonObject(offers.get(i), "offers");
+            String offName = String.format("%s:%s", catName, entry.getKey());
+            JsonObject offerjson = GsonHelper.convertToJsonObject(entry.getValue(), "offer");
 
             try
             {
                 Price price = Price.parse(GsonHelper.getAsJsonObject(offerjson, "price"));
-                JsonObject result = GsonHelper.getAsJsonObject(offerjson, "result");
-                ItemStack resultItem = ItemUtils.getItemLegacy(GsonHelper.getAsJsonObject(result, "item"));
-                int slot = GsonHelper.getAsInt(offerjson, "slot");
-                boolean isDuplicate = GsonHelper.getAsBoolean(offerjson, "is_duplicate", false);
+                JsonObject resultjson = GsonHelper.getAsJsonObject(offerjson, "result");
+                TradeResult result = this.getResult(resultjson);
 
-                if (resultItem == null || resultItem.getType().equals(Material.AIR))
+                if (result == null)
                 {
                     continue;
                 }
 
-                List<Pair<Boolean, ItemStack>> multiResults = new ArrayList();
+                int slot = GsonHelper.getAsInt(offerjson, "slot");
+                boolean isDuplicate = GsonHelper.getAsBoolean(offerjson, "is_duplicate", false);
+                List<TradeResult> multiResults = new ArrayList();
+                JsonArray array = GsonHelper.getAsJsonArray(offerjson, "multi_results", new JsonArray());
 
-                if (offerjson.has("multi_results"))
+                for (int j = 0; j < array.size(); ++j)
                 {
-                    JsonArray array = GsonHelper.getAsJsonArray(offerjson, "multi_results");
+                    TradeResult multiResult = this.getResult(GsonHelper.convertToJsonObject(array.get(j), "items"));
 
-                    for (int j = 0; j < array.size(); ++j)
+                    if (multiResult == null)
                     {
-                        JsonObject result1 = (JsonObject)GsonHelper.convertToJsonObject(array.get(j), "items");
-                        ItemStack resultItem1 = ItemUtils.getItemLegacy(GsonHelper.getAsJsonObject(result1, "item"));
-
-                        if (resultItem1 == null || resultItem1.getType().equals(Material.AIR))
-                        {
-                            continue;
-                        }
-
-                        multiResults.add(new Pair(GsonHelper.getAsBoolean(result1, "use_team_color", false), resultItem1));
+                        continue;
                     }
+
+                    multiResults.add(multiResult);
                 }
 
                 Offer offer;
 
                 if (!multiResults.isEmpty())
                 {
-                    offer = new MultiOffer(slot, GsonHelper.getAsString(offerjson, "name", null), multiResults, resultItem, price);
+                    offer = new MultiOffer(slot, result, multiResults, price);
                 }
                 else
                 {
-                    offer = new Offer(slot, resultItem, price, isDuplicate);
+                    offer = new Offer(slot, result, price, isDuplicate);
                 }
 
-                if (GsonHelper.getAsBoolean(result, "use_team_color", false))
-                {
-                    offer.colorize = true;
-                }
-
-                merchant.addOffer(offer);
+                offer.setNameTranlation(GsonHelper.getAsString(offerjson, "translate_name", ""));
+                offer.setDescTranlation(GsonHelper.getAsString(offerjson, "translate_desc", ""));
+                category.addOffer(offName, offer);
             }
             catch (Exception ex)
             {
-                EggWars.instance.getLogger().log(Level.WARNING, "Error loading offer " + i + ": ", ex);
+                EggWars.instance.getLogger().log(Level.WARNING, "Error loading offer " + offName + ": ", ex);
                 continue;
             }
         }
 
-        //Comment this merchant condition to make it always add offers from default
-        if (def != null && /* merchant.isEmpty() && */ !def.isEmpty())
+        return category;
+    }
+
+    private TradeResult getResult(JsonObject resultJ)
+    {
+        ItemStack resultItem = ItemUtils.getItemLegacy(GsonHelper.getAsJsonObject(resultJ, "item"));
+
+        if (resultItem == null || resultItem.getType().equals(Material.AIR))
         {
-            for (Offer offer : def.getOffers())
+            return null;
+        }
+
+        TradeResult result = new TradeResult(resultItem);
+        result.setUsesTeamColor(GsonHelper.getAsBoolean(resultJ, "use_team_color", false));
+        String equip = GsonHelper.getAsString(resultJ, "equipment_config", "");
+
+        if (resultJ.has("equipment_config") && this.autoEquips.containsKey(equip))
+        {
+            result.setAutoEquip(this.autoEquips.get(equip));
+        }
+
+        result.setInheritsNameDesc(GsonHelper.getAsBoolean(resultJ, "keep_info_when_bought", false));
+        return result;
+    }
+
+    private static AutoEquipEntry loadAutoEquip(JsonObject entryJson) throws Exception
+    {
+        String slotArg = GsonHelper.getAsString(entryJson, "slot");
+        EquipmentSlot slot = EquipmentSlot.valueOf(slotArg.toUpperCase());
+
+        if (slot == null || slot == EquipmentSlot.HAND)
+        {
+            return null;
+        }
+
+        boolean replaceEnchs = GsonHelper.getAsBoolean(entryJson, "replace_enchanted");
+        JsonArray replaces = GsonHelper.getAsJsonArray(entryJson, "replace", new JsonArray());
+        List<Material> doesReplace = new ArrayList();
+        List<Material> doesNotReplace = new ArrayList();
+
+        for (int i = 0; i < replaces.size(); ++i)
+        {
+            String item = GsonHelper.convertToString(replaces.get(i), "item_type");
+
+            if (item.equals("*"))
             {
-                merchant.addOffer(offer);
+                return new AutoEquipEntry(slot, replaceEnchs);
+            }
+
+            Material gotMaterial = null;
+            boolean negate = false;
+
+            if (item.startsWith("!"))
+            {
+                gotMaterial = ItemUtils.getItemType(item.replaceFirst("!", ""));
+                negate = true;
+            }
+            else
+            {
+                gotMaterial = ItemUtils.getItemType(item);
+            }
+
+            if (gotMaterial != null && gotMaterial != Material.AIR)
+            {
+                (negate ? doesNotReplace : doesReplace).add(gotMaterial);
             }
         }
 
-        return merchant;
+        return new AutoEquipEntry(slot, doesReplace, doesNotReplace, replaceEnchs);
+    }
+
+    public static boolean isConfigCompatible(JsonObject fileJson, String name)
+    {
+        JsonArray formatvs = GsonHelper.getAsJsonArray(fileJson, "format_versions", new JsonArray());
+        String[] versions = new String[formatvs.size()];
+
+        for (int i = 0; i < versions.length; i++)
+        {
+            versions[i] = GsonHelper.convertToString(formatvs.get(i), "format_version"); 
+        }
+
+        if (versions.length != 0 && !EggWars.serverVersion.isFormatCompatible(versions))
+        {
+            EggWars.instance.getLogger().log(Level.WARNING, "File " + name + " is not compatible with "
+                + "this server version! Your server is currently compatible with files with versions "
+                + Versions.getCompatibleList(new String[] {String.valueOf(EggWars.serverVersion.getFormatVersion())})
+                + " and this one is meant for versions " + Versions.getCompatibleList(versions)
+                + "! Skipping...");
+            return false;
+        }
+
+        return true;
     }
 }

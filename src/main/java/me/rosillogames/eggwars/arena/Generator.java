@@ -1,9 +1,11 @@
 package me.rosillogames.eggwars.arena;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import javax.annotation.Nullable;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -13,8 +15,11 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.BoundingBox;
@@ -23,13 +28,12 @@ import com.google.common.collect.Lists;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.menu.EwMenu;
+import me.rosillogames.eggwars.menu.ProfileMenus;
+import me.rosillogames.eggwars.menu.SerializingItems;
 import me.rosillogames.eggwars.objects.Price;
 import me.rosillogames.eggwars.objects.Token;
 import me.rosillogames.eggwars.player.EwPlayer;
-import me.rosillogames.eggwars.player.EwPlayerMenu;
-import me.rosillogames.eggwars.player.inventory.InventoryController;
-import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
-import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.Fireworks;
 import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.Locations;
@@ -38,7 +42,7 @@ import me.rosillogames.eggwars.utils.TeamUtils;
 import me.rosillogames.eggwars.utils.WorldController;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
-public class Generator
+public class Generator extends EwMenu
 {
     private static final String TAG_PROGRESS_DOT = "|"/* or "¦" */;
     private static final int TAG_PROGRESS_BAR_LENGHT = 30;
@@ -55,13 +59,13 @@ public class Generator
     private int genTicks;
     @Nullable
     private ArmorStand stand = null;
-    private TranslatableInventory genInv;
     //Awesome Produce Sharing System as described by CubeCraft
     //When more than a single player are next to the generator, its product will be given to the player their turn corresponds with.
     private APSS apss = new APSS();
 
     public Generator(Location loc, int lvl, String typeIn, Arena arenaIn)
     {
+        super(MenuType.GENERATOR_INFO);
         this.block = Locations.toBlock(loc, true);
         this.defLevel = lvl;
         this.level = lvl;
@@ -119,8 +123,7 @@ public class Generator
             this.stand.setAI(false);
             this.stand.setMarker(true);
             this.stand.teleport(this.block.clone().add(0.5, 0.475, 0.5));
-            //Using stringbuilder for optimization
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();//Using stringbuilder for optimization
 
             for (int i = 0; i < TAG_PROGRESS_BAR_LENGHT; ++i)
             {
@@ -138,7 +141,14 @@ public class Generator
             {
                 if (!Generator.this.cachedType.requiresNearbyPlayer() || PlayerUtils.getNearbyPlayerAmount(Generator.this.block, 3.0, Generator.this.arena) >= 1)
                 {
-                    Generator.this.genTicks++;
+                    if (ItemUtils.getNearbyItemCount(Generator.this.block, 2.5, Generator.this.cachedType.droppedToken().getMaterial()) < Generator.this.cachedType.maxItems(Generator.this.level))
+                    {
+                        Generator.this.genTicks++;
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
                 else if (Generator.this.genTicks > 0)
                 {
@@ -153,60 +163,20 @@ public class Generator
                     Generator.this.generate();
                     Generator.this.genTicks = 0;
                 }
-                else
+
+                if (Generator.this.stand != null)
                 {
-                    if (Generator.this.stand != null)
+                    StringBuilder sb = new StringBuilder();
+
+                    for (int i = 0; i < TAG_PROGRESS_BAR_LENGHT; ++i)
                     {
-                        StringBuilder sb = new StringBuilder();
-
-                        for (int i = 0; i < TAG_PROGRESS_BAR_LENGHT; ++i)
-                        {
-                            sb.append(((float)Generator.this.genTicks / (float)tickRate) > ((float)i / (float)TAG_PROGRESS_BAR_LENGHT) ? ChatColor.GREEN : ChatColor.RED).append(TAG_PROGRESS_DOT);
-                        }
-
-                        Generator.this.stand.setCustomName(sb.toString());
+                        sb.append(((float)Generator.this.genTicks / (float)tickRate) > ((float)i / (float)TAG_PROGRESS_BAR_LENGHT) ? ChatColor.GREEN : ChatColor.RED).append(TAG_PROGRESS_DOT);
                     }
+
+                    Generator.this.stand.setCustomName(sb.toString());
                 }
             }
         }).runTaskTimer(EggWars.instance, 0L, this.level != 0 ? 1L : 20L);
-        this.genInv = new TranslatableInventory(27, (player) -> getGeneratorName(player, this.cachedType, this.level, true));
-        TranslatableItem tInfoItem = TranslatableItem.translatableNameLore(new ItemStack(this.cachedType.droppedToken().getMaterial(), this.level <= 0 ? 1 : this.level), (player) ->
-        {
-            Token token = this.cachedType.droppedToken();
-            String interval = TranslationUtils.getMessage("generator.info.interval", player, Double.valueOf((double)this.cachedType.tickRate(this.level) / 20.0));
-            String capacity = TranslationUtils.getMessage("generator.info.capacity", player, token.getColor().toString() + this.cachedType.maxItems(this.level), token.getFormattedName(player));
-            return TranslationUtils.getMessage("generator.info_lore", player, interval, capacity);
-        }, (player) -> getGeneratorName(player, this.cachedType, this.level, false));
-        ItemStack upgradeItem = EggWars.getGeneratorManager().getUpgradeItem();
-        upgradeItem.setAmount((this.isMaxLevel()) ? 1 : this.level + 1);
-        TranslatableItem tUpgradeItem = TranslatableItem.translatableNameLore(upgradeItem, (player) ->
-        {
-            if (!this.isMaxLevel())
-            {
-                int nextLevel = this.level + 1;
-                Token token = this.cachedType.droppedToken();
-                String interval = TranslationUtils.getMessage("generator.info.interval", player, Double.valueOf((double)this.cachedType.tickRate(nextLevel) / 20.0));
-                String capacity = TranslationUtils.getMessage("generator.info.capacity", player, token.getColor().toString() + this.cachedType.maxItems(nextLevel), token.getFormattedName(player));
-                Price price = this.cachedType.getPriceFor(nextLevel);
-                String cost = TranslationUtils.getMessage("generator.info.cost", player, price.getToken().getColor().toString() + price.getAmount(), price.getToken().getFormattedName(player));
-                return TranslationUtils.getMessage("generator.upgrade.lore_normal", player, interval, capacity, cost);
-            }
-
-            return TranslationUtils.getMessage("generator.upgrade.lore_max", player);
-        }, (player) ->
-        {
-            if (this.isMaxLevel())
-            {
-                return TranslationUtils.getMessage("generator.upgrade.name_max", player);
-            }
-
-            return TranslationUtils.getMessage("generator.upgrade.name_normal", player, getGeneratorName(player, this.cachedType, this.level + 1, false));
-        });
-
-        this.genInv.setItem(11, tInfoItem);
-        this.genInv.setItem(15, tUpgradeItem);
-        this.genInv.setItem(22, EwPlayerMenu.getCloseItem());
-        InventoryController.updateInventories((p) -> p.getArena() == this.arena && ((Location)p.getInv().getExtraData()[0]).equals(this.getBlock()), this.genInv, MenuType.GENERATOR_INFO);
     }
 
     public void stop()
@@ -227,9 +197,9 @@ public class Generator
     {
         this.stop();
         this.genTicks = 0;
-        this.genInv = null;
         this.tickTask = null;
         this.level = this.defLevel;
+        this.closeForEveryone(false);
     }
 
     private void generate()
@@ -240,12 +210,6 @@ public class Generator
         }
 
         ItemStack stack = new ItemStack(this.cachedType.droppedToken().getMaterial(), 1);
-
-        if (ItemUtils.getNearbyItemCount(this.block, 2.5, stack.getType()) >= this.cachedType.maxItems(this.level))
-        {
-            return;
-        }
-
         final Item itemEnt = this.block.getWorld().dropItem(this.getBlock().add(0.5, 0.2, 0.5), stack);
 
         if (EggWars.config.enableAPSS)
@@ -319,11 +283,6 @@ public class Generator
         this.block.setWorld(this.arena.getWorld());
     }
 
-    public void openInventory(Player player)
-    {
-        InventoryController.openInventory(player, this.genInv, MenuType.GENERATOR_INFO).setExtraData(this.getBlock());
-    }
-
     public boolean tryUpgrade(Player playerIn)
     {
         if (this.isMaxLevel())
@@ -369,6 +328,16 @@ public class Generator
             }
         }).runTaskLater(EggWars.instance, 2L);
         this.updateSign();
+
+        if (EggWars.instance.getConfig().getBoolean("generator.close_ui_on_upgrade"))
+        {
+            this.closeForEveryone(true);
+        }
+        else
+        {
+            this.sendMenuUpdate(true);
+        }
+
         return true;
     }
 
@@ -403,11 +372,102 @@ public class Generator
                 }
 
                 this.updateSign();
+                this.sendMenuUpdate(true);
             }
             else
             {
-                this.genInv = null;
+                this.closeForEveryone(false);
             }
+        }
+    }
+
+    @Nullable
+    @Override
+    public Inventory translateToPlayer(EwPlayer ewPlyr, boolean reopen)
+    {
+        if (!this.hasCachedType())
+        {
+            return null;
+        }
+
+        Inventory mcInventory;
+        Player player = ewPlyr.getPlayer();
+
+        if (ewPlyr.getMenu() == this && !reopen)
+        {
+            mcInventory = this.openers.get(ewPlyr);
+        }
+        else
+        {
+            mcInventory = Bukkit.createInventory(null, 27, getGeneratorName(player, this.cachedType, this.level, true));
+        } 
+
+        ItemStack infoItem = new ItemStack(this.cachedType.droppedToken().getMaterial(), (this.level <= 0) ? 1 : this.level);
+        infoItem.setAmount((this.level <= 0) ? 1 : this.level);
+        ItemMeta infoMeta = infoItem.getItemMeta();
+        infoMeta.setDisplayName(getGeneratorName(player, this.cachedType, this.level, false));
+        infoMeta.setLore(this.getInfoLore(player, this.level, false));
+        infoItem.setItemMeta(infoMeta);
+        mcInventory.setItem(11, infoItem);
+        ItemStack upgradeItem = EggWars.getGeneratorManager().getUpgradeItem().clone();
+        upgradeItem.setAmount(this.isMaxLevel() ? 1 : (this.level + 1));
+        ItemMeta upgradeMeta = infoItem.getItemMeta();
+
+        if (!this.isMaxLevel())
+        {
+            upgradeMeta.setDisplayName(TranslationUtils.getMessage("generator.upgrade.name", player, getGeneratorName(player, this.cachedType, this.level + 1, false)));
+            upgradeMeta.setLore(this.getInfoLore(player, this.level + 1, true));
+        }
+        else
+        {
+            upgradeMeta.setDisplayName(TranslationUtils.getMessage("generator.upgraded_max.name", player));
+            upgradeMeta.setLore(Arrays.asList(TranslationUtils.getMessage("generator.upgraded_max.lore", player).split("\n")));
+        }
+
+        upgradeItem.setItemMeta(upgradeMeta);
+        SerializingItems.UPGRADE_GEN.setItemReference(upgradeItem, null);
+        mcInventory.setItem(15, upgradeItem);
+        mcInventory.setItem(22, ProfileMenus.getCloseItem().apply(player));
+         return mcInventory;
+    }
+
+    public List<String> getInfoLore(Player player, int level, boolean upgrade)
+    {
+        String interval = TranslationUtils.getMessage("generator.info.interval", player, new Object[] { Double.valueOf(this.cachedType.tickRate(level) / 20.0D) });
+        String capacity = TranslationUtils.getMessage("generator.info.capacity", player, new Object[] { String.valueOf(this.cachedType.droppedToken().getColor().toString()) + this.cachedType.maxItems(level), this.cachedType.droppedToken().getFormattedName(player) });
+
+        if (upgrade)
+        {
+            Price price = this.cachedType.getPriceFor(level);
+            String cost = TranslationUtils.getMessage("generator.info.cost", player, new Object[] { String.valueOf(price.getToken().getColor().toString()) + price.getAmount(), price.getToken().getFormattedName(player) });
+            return Arrays.asList(TranslationUtils.getMessage("generator.upgrade.lore", player, new Object[] { interval, capacity, cost }).split("\n"));
+        }
+
+        return Arrays.asList(TranslationUtils.getMessage("generator.info_lore", player, new Object[] { interval, capacity }).split("\n"));
+    }
+
+
+    @Override
+    public void clickInventory(InventoryClickEvent clickEvent, EwPlayer player)
+    {
+        ItemStack currItem = clickEvent.getCurrentItem();
+        SerializingItems type = SerializingItems.getReferenceType(currItem);
+
+        if (SerializingItems.CLOSE_OR_BACK.equals(type))
+        {
+            clickEvent.setCurrentItem(null);
+            this.closeForOpener(player);
+            return;
+        }
+
+        if (!this.hasCachedType() || !player.getArena().getStatus().isGame())
+        {
+            return;
+        }
+
+        if (SerializingItems.UPGRADE_GEN.equals(type))
+        {
+            this.tryUpgrade(player.getPlayer());
         }
     }
 

@@ -34,7 +34,7 @@ public class SetWaitingLobby extends CommandArg
 
         arena.setLobby(player.getLocation());
         TranslationUtils.sendMessage("commands.setWaitingLobby.success", commandSender, arena.getName());
-        arena.getSetupGUI().updateBasicSetupInv();
+        arena.getSetupGUI().updateBasicsMenu();
         arena.sendToDo(player);
         return true;
     }

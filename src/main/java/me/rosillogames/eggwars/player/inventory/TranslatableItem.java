@@ -2,6 +2,7 @@ package me.rosillogames.eggwars.player.inventory;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -9,7 +10,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.google.common.collect.Lists;
 import me.rosillogames.eggwars.language.TranslationUtils;
 
-public class TranslatableItem
+public class TranslatableItem implements Function<Player, ItemStack>/* This is fruitin' genius! */
 {
     private final Translatable<ItemStack> item;
     @Nullable
@@ -39,7 +40,7 @@ public class TranslatableItem
         this.resetLore = false;
     }
 
-    public void setName(Translatable<String> nameIn)
+    public void setNameTranslatable(Translatable<String> nameIn)
     {
         this.name = nameIn;
     }
@@ -61,7 +62,14 @@ public class TranslatableItem
         this.lore.add(translatable);
     }
 
-    public ItemStack getTranslated(Player player)
+    /**
+     * Builds and translates this item to the given player argument language.
+     *
+     * @param player the bukkit player instance
+     * @return the built item stack
+     */
+    @Override
+    public ItemStack apply(Player player)
     {
         List<String> translatedLore = Lists.<String>newArrayList();
 
@@ -77,10 +85,12 @@ public class TranslatableItem
             translatedLore.addAll(Arrays.asList(translated.split("\\n")));
         }
 
+        ItemStack stack = this.item.translate(player);
+
         if (!this.resetLore)
         {
             List<String> fullLore = Lists.<String>newArrayList();
-            ItemMeta meta = this.item.translate(player).getItemMeta();
+            ItemMeta meta = stack.getItemMeta();
 
             if (meta.getLore() != null)
             {
@@ -98,7 +108,6 @@ public class TranslatableItem
             translatedLore = fullLore;
         }
 
-        ItemStack stack = this.item.translate(player);
         ItemMeta meta = stack.getItemMeta();
 
         if (this.name != null)
@@ -121,20 +130,13 @@ public class TranslatableItem
 
     public boolean equalsItem(ItemStack stack, Player player)
     {
-        return stack.equals(this.getTranslated(player));
-    }
-
-    public static TranslatableItem translatableName(ItemStack rawIn, String name)
-    {
-        TranslatableItem translatableitem = new TranslatableItem(rawIn.clone());
-        translatableitem.setName((player) -> TranslationUtils.getMessage(name, player));
-        return translatableitem;
+        return stack.equals(this.apply(player));
     }
 
     public static TranslatableItem translatableNameLore(ItemStack rawIn, String lore, String name)
     {
         TranslatableItem translatableitem = new TranslatableItem(rawIn.clone());
-        translatableitem.setName((player) -> TranslationUtils.getMessage(name, player));
+        translatableitem.setNameTranslatable((player) -> TranslationUtils.getMessage(name, player));
         translatableitem.addLoreString(lore, true);
         return translatableitem;
     }
@@ -142,7 +144,7 @@ public class TranslatableItem
     public static TranslatableItem translatableNameLore(ItemStack rawIn, Translatable<String> lore, Translatable<String> name)
     {
         TranslatableItem translatableitem = new TranslatableItem(rawIn.clone());
-        translatableitem.setName(name);
+        translatableitem.setNameTranslatable(name);
         translatableitem.addLoreTranslatable(lore);
         return translatableitem;
     }
@@ -150,9 +152,83 @@ public class TranslatableItem
     public static TranslatableItem fullTranslatable(Translatable<ItemStack> itemIn, Translatable<String> lore, Translatable<String> name)
     {
         TranslatableItem translatableitem = new TranslatableItem(itemIn);
-        translatableitem.setName(name);
+        translatableitem.setNameTranslatable(name);
         translatableitem.addLoreTranslatable(lore);
         return translatableitem;
+    }
+
+    public static void setName(ItemStack stackIn, String nameIn)
+    {
+        ItemMeta meta = stackIn.getItemMeta();
+
+        if (nameIn != null && !nameIn.isEmpty())
+        {
+            meta.setDisplayName(nameIn);
+        }
+
+        stackIn.setItemMeta(meta);
+    }
+
+    private static List<String> getLoreList(String... loreIn)
+    {
+        List<String> loreOut = Lists.<String>newArrayList();
+
+        for (String line : loreIn)
+        {
+            if (line.isEmpty())
+            {
+                continue;
+            }
+
+            loreOut.addAll(Arrays.asList(line.split("\\n")));
+        }
+
+        return loreOut;
+    }
+
+    public static void setLore(ItemStack stackIn, String... loreIn)
+    {
+        ItemMeta meta = stackIn.getItemMeta();
+        meta.setLore(getLoreList(loreIn));
+        stackIn.setItemMeta(meta);
+    }
+
+    public static void addLoreNoReset(ItemStack stackIn, String... loreIn)
+    {
+        List<String> fullLore = Lists.<String>newArrayList();
+        ItemMeta meta = stackIn.getItemMeta();
+
+        if (meta.getLore() != null)
+        {
+            for (String lore0 : meta.getLore())
+            {
+                fullLore.add(lore0);
+            }
+        }
+
+        fullLore.addAll(getLoreList(loreIn));
+        meta.setLore(fullLore);
+        stackIn.setItemMeta(meta);
+    }
+
+    public static ItemStack fullyTranslate(ItemStack rawIn, String name, String lore, Player player)
+    {
+        ItemStack clone = rawIn.clone();
+        ItemMeta rawMeta = clone.getItemMeta();
+        rawMeta.setDisplayName(TranslationUtils.getMessage(name, player));
+        String tLore = TranslationUtils.getMessage(lore, player);
+
+        if (!tLore.isEmpty())
+        {
+            rawMeta.setLore(Arrays.asList(TranslationUtils.getMessage(tLore, player).split("\\n")));
+        }
+        else
+        {
+            rawMeta.setLore(Lists.<String>newArrayList());//resets lore
+        }
+
+        clone.setItemMeta(rawMeta);
+        return clone;
     }
 
     public static interface Translatable<T>

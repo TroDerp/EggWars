@@ -177,7 +177,7 @@ public class SignListener implements Listener
                     }
                     else
                     {
-                        gen.openInventory(event.getPlayer());
+                        gen.addOpener(ewplayer);
                     }
                 }//cancel ANY interaction when performing gen action
 
@@ -237,7 +237,7 @@ public class SignListener implements Listener
             }
             else
             {
-                arena1.joinArena(ewplayer, true, true);
+                arena1.joinArena(ewplayer, false, true);
             }
 
             return;

@@ -1,12 +1,13 @@
 package me.rosillogames.eggwars.arena;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
+import java.util.function.Function;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -17,48 +18,54 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.menu.EwMenu;
+import me.rosillogames.eggwars.menu.ProfileMenus;
+import me.rosillogames.eggwars.menu.SerializingItems;
+import me.rosillogames.eggwars.menu.TranslatableMenu;
+import me.rosillogames.eggwars.menu.ProfileMenus.MenuSize;
 import me.rosillogames.eggwars.objects.ArenaSign;
 import me.rosillogames.eggwars.objects.Cage;
 import me.rosillogames.eggwars.player.EwPlayer;
-import me.rosillogames.eggwars.player.EwPlayerMenu;
-import me.rosillogames.eggwars.player.inventory.InventoryController;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.LobbySigns;
 import me.rosillogames.eggwars.utils.Locations;
-import me.rosillogames.eggwars.utils.PlayerUtils;
+import me.rosillogames.eggwars.utils.Pair;
 import me.rosillogames.eggwars.utils.TeamUtils;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class SetupGUI
 {
-    //private static TranslatableInventory generatorsInv;
-    //private static Map<String, TranslatableInventory> generatorLevelInvs = new HashMap();
+    private static TranslatableMenu selectGenTypeMenu;
+    private static Map<GeneratorType, TranslatableMenu> selectGenLvlMenus = new HashMap();
     private final Arena arena;
-    private TranslatableInventory basicSetupInv;
-    private TranslatableInventory teamsSetupInv;
-    private final Map<Integer, TeamType> teamsSlots = new HashMap();
-    private final Map<TeamType, TranslatableInventory> teamInvs = new EnumMap(TeamType.class);
+    private TranslatableMenu arenaMenu;
+    private TranslatableMenu basicsMenu;
+    private TranslatableMenu teamsMenu;
+    private final Map<TeamType, TranslatableMenu> editTeamMenus = new EnumMap(TeamType.class);
 
     public SetupGUI(Arena arenaIn)
     {
         this.arena = arenaIn;
-        this.updateBasicSetupInv();
+        this.updateBasicsMenu();
         TranslatableInventory teamsInv = new TranslatableInventory(36, "setup.gui.teams.title");
 
         for (TeamType teamtype : TeamType.values())
         {
-            TranslatableItem tItem = new TranslatableItem((player) ->
+            this.updateTeamInv(teamtype, false);
+            int ordinal = teamtype.ordinal();
+            int slot = (9 * ((ordinal / 7) + 1)) + ((ordinal % 7) + 1);
+            teamsInv.setItem(slot, (player) ->
             {
                 Team team = this.arena.getTeams().get(teamtype);
                 ItemStack stack = ItemUtils.tryColorizeByTeam(teamtype, new ItemStack(Material.WHITE_WOOL, 1));
+                SerializingItems.SETUP_TEAM.setItemReference(stack, teamtype);
                 int to_conf = 1;//don't change this! negative items (INCLUDING zero) don't work anymore
 
                 if (team != null)
@@ -90,13 +97,7 @@ public class SetupGUI
                 }
 
                 stack.setAmount(to_conf);
-                return stack;
-            });
-
-            tItem.setName((player) -> TranslationUtils.getMessage("setup.gui.teams.team.item_name", player, TeamUtils.translateTeamType(teamtype, player, false)));
-            tItem.addLoreTranslatable((player) ->
-            {
-                Team team = this.arena.getTeams().get(teamtype);
+                TranslatableItem.setName(stack, TranslationUtils.getMessage("setup.gui.teams.team.item_name", player, TeamUtils.translateTeamType(teamtype, player, false)));
                 StringBuilder todoLore = new StringBuilder();
                 String clickLore;
 
@@ -141,27 +142,27 @@ public class SetupGUI
                     clickLore = TranslationUtils.getMessage("setup.gui.teams.team.click.created", player);
                 }
 
-                return TranslationUtils.getMessage("setup.gui.teams.team.item_lore", player, todoLore.toString(), clickLore);
+                TranslatableItem.setLore(stack, TranslationUtils.getMessage("setup.gui.teams.team.item_lore", player, todoLore.toString(), clickLore));
+                return stack;
             });
-            this.updateTeamInv(teamtype, false);
-            int ordinal = teamtype.ordinal();
-            int slot = (9 * ((ordinal / 7) + 1)) + ((ordinal % 7) + 1);
-            this.teamsSlots.put(slot, teamtype);
-            teamsInv.setItem(slot, tItem);
         }
 
-        teamsInv.setItem(31, EwPlayerMenu.getCloseItem());
-        this.teamsSetupInv = teamsInv;
+        teamsInv.setItem(31, ProfileMenus.getCloseItem());
+        this.teamsMenu = new TranslatableMenu(MenuType.SETUP_TEAMS, Listener::setupClick);
+        this.teamsMenu.setParent(arenaMenu);
+        this.teamsMenu.addPage(teamsInv);
     }
 
-    public void updateBasicSetupInv()
+    public void updateBasicsMenu()
     {
-        if (this.basicSetupInv == null)
+        if (this.basicsMenu == null)
         {
-            this.basicSetupInv = new TranslatableInventory(27, "setup.gui.basic.title");
+            this.basicsMenu = new TranslatableMenu(MenuType.BASIC_SETTINGS, Listener::setupClick);
+            this.basicsMenu.addPage(new TranslatableInventory(27, "setup.gui.basic.title"));
+            this.basicsMenu.setParent(arenaMenu);
         }
 
-        TranslatableInventory tInv = this.basicSetupInv;
+        TranslatableInventory tInv = this.basicsMenu.getPage(0);
         tInv.setItem(4, TranslatableItem.translatableNameLore(new ItemStack(Material.WRITABLE_BOOK, 1), "setup.gui.basic.todo.item_lore", "setup.gui.basic.todo.item_name"));
         tInv.setItem(10, getLocationSetting("setup.gui.basic.lobby", this.arena.getLobby(), Material.SANDSTONE));
         tInv.setItem(12, getLocationSetting("setup.gui.basic.center", this.arena.getCenter(), Material.RED_SANDSTONE));
@@ -169,43 +170,49 @@ public class SetupGUI
         tInv.setItem(14, getLocationSetting("setup.gui.basic.bounds_start", bounds.getStart(), bounds.getStart() != null ? Material.STRUCTURE_VOID : Material.BARRIER));
         tInv.setItem(15, getLocationSetting("setup.gui.basic.bounds_end", bounds.getEnd(), bounds.getEnd() != null ? Material.STRUCTURE_VOID : Material.BARRIER));
         tInv.setItem(16, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.TARGET, 1), (player) -> TranslationUtils.getMessage("setup.gui.basic.bounds_info.item_lore", player, (bounds.getStart() == null && bounds.getEnd() == null ? "" : TranslationUtils.getMessage("setup.gui.basic.bounds_info.remove", player))), (player) -> TranslationUtils.getMessage("setup.gui.basic.bounds_info.item_name", player)));
-        tInv.setItem(22, EwPlayerMenu.getCloseItem());
-        InventoryController.updateInventories((p) -> this.arena.equals(((Arena)p.getInv().getExtraData()[0])), tInv, MenuType.BASIC_SETTINGS);
+        tInv.setItem(22, ProfileMenus.getCloseItem());
+        this.basicsMenu.sendMenuUpdate(false);
     }
 
     protected void updateTeamInv(TeamType type, boolean sendUpdate)
     {
-        Predicate<EwPlayer> invPredicate = (p) -> this.arena.equals(((Arena)p.getInv().getExtraData()[0])) && type.equals(((TeamType)p.getInv().getExtraData()[1]));
         Team team = this.arena.getTeams().get(type);
+        TranslatableMenu singleTeamM;
 
         if (team != null)
         {
-            TranslatableInventory teamInv = this.teamInvs.get(type);
+            singleTeamM = this.editTeamMenus.get(type);
 
-            if (teamInv == null)
+            if (singleTeamM == null)
             {
-                teamInv = new TranslatableInventory(27, (player) -> TranslationUtils.getMessage("setup.gui.team.title", player, TeamUtils.translateTeamType(team.getType(), player, false)));
+                singleTeamM = new TranslatableMenu(MenuType.SETUP_SINGLE_TEAM, Listener::setupClick);
+                singleTeamM.addPage(new TranslatableInventory(27, (player) -> TranslationUtils.getMessage("setup.gui.team.title", player, TeamUtils.translateTeamType(team.getType(), player, false))));
+                singleTeamM.setParent(this.teamsMenu);
+                singleTeamM.setExtraData(type);
+                this.editTeamMenus.put(type, singleTeamM);
             }
 
+            TranslatableInventory teamInv = singleTeamM.getPage(0);
             teamInv.setItem(10, getLocationSetting("setup.gui.team.villager", team.getVillager(), Material.VILLAGER_SPAWN_EGG));
             teamInv.setItem(12, getMultipleSetting("setup.gui.team.cages", team.getCages(), Material.GLASS, team.getCages().size(), this.arena.getMaxTeamPlayers()));
             teamInv.setItem(14, getLocationSetting("setup.gui.team.respawn", team.getRespawn(), Material.RED_WOOL));
             teamInv.setItem(16, getLocationSetting("setup.gui.team.egg", team.getEgg(), Material.DRAGON_EGG));
-            teamInv.setItem(22, EwPlayerMenu.getCloseItem());
-            this.teamInvs.put(type, teamInv);
+            teamInv.setItem(22, ProfileMenus.getCloseItem());
 
             if (sendUpdate)
             {
-                InventoryController.updateInventories(invPredicate, teamInv, MenuType.SETUP_SINGLE_TEAM);
+                this.teamsMenu.sendMenuUpdate(false);
+                singleTeamM.sendMenuUpdate(false);
             }
         }
         else
         {
-            this.teamInvs.remove(type);
+            singleTeamM = this.editTeamMenus.remove(type);
 
             if (sendUpdate)
             {
-                InventoryController.closeInventories(invPredicate, MenuType.SETUP_SINGLE_TEAM, 1);
+                this.teamsMenu.sendMenuUpdate(false);
+                singleTeamM.closeForEveryone(true);
             }
         }
     }
@@ -216,71 +223,69 @@ public class SetupGUI
         ItemMeta meta = stack.getItemMeta();
         meta.setDisplayName(TranslationUtils.getMessage("setup.gui.item_name", player, this.arena.getName()));
         meta.setLore(Arrays.asList(TranslationUtils.getMessage("setup.gui.item_lore", player, this.arena.getName()).split("\\n")));
-        meta.getPersistentDataContainer().set(ItemUtils.arenaId, PersistentDataType.STRING, this.arena.getId());
+        ItemUtils.arenaId.setTo(meta, this.arena.getId());
         stack.setItemMeta(meta);
         ItemUtils.setOpensMenu(stack, MenuType.ARENA_SETUP);
         return stack;
     }
 
-    public void openArenaGUI(Player player)
+    public void openArenaGUI(EwPlayer player)
     {
-        TranslatableInventory tInv = new TranslatableInventory(36, "setup.gui.arena.title");
-        tInv.setItem(11, TranslatableItem.translatableNameLore(new ItemStack(Material.CRAFTING_TABLE, 1), "setup.gui.arena.basic.item_lore", "setup.gui.arena.basic.item_name"));
-        tInv.setItem(13, TranslatableItem.translatableNameLore(new ItemStack(Material.BLACK_BANNER, 1), "setup.gui.arena.teams.item_lore", "setup.gui.arena.teams.item_name"));
-        tInv.setItem(15, TranslatableItem.translatableNameLore(new ItemStack(Material.OAK_SIGN, 1), "setup.gui.arena.generators.item_lore", "setup.gui.arena.generators.item_name"));
-
-        for (TranslatableItem item : tInv.getContents().values())
+        if (this.arenaMenu == null)
         {
-            if (this.arena.getStatus() != ArenaStatus.SETTING)
-            {
-                item.addLoreString("commands.error.arena_needs_edit_mode", true);
-            }
-            else if (this.arena != EggWars.getArenaManager().getArenaByWorld(player.getWorld()))
-            {
-                item.addLoreString("commands.error.not_in_arena_world", true);
-            }
+            this.arenaMenu = new TranslatableMenu(MenuType.ARENA_SETUP, Listener::setupClick);
+            TranslatableInventory tInv = new TranslatableInventory(36, "setup.gui.arena.title");
+            ItemStack stack = new ItemStack(Material.CRAFTING_TABLE, 1);
+            ItemUtils.setOpensMenu(stack, MenuType.BASIC_SETTINGS);
+            tInv.setItem(11, TranslatableItem.translatableNameLore(stack, "setup.gui.arena.basic.item_lore", "setup.gui.arena.basic.item_name"));
+            stack = new ItemStack(Material.BLACK_BANNER, 1);
+            ItemUtils.setOpensMenu(stack, MenuType.SETUP_TEAMS);
+            tInv.setItem(13, TranslatableItem.translatableNameLore(stack, "setup.gui.arena.teams.item_lore", "setup.gui.arena.teams.item_name"));
+            stack = new ItemStack(Material.OAK_SIGN, 1);
+            ItemUtils.setOpensMenu(stack, MenuType.SELECT_GENERATOR);
+            tInv.setItem(15, TranslatableItem.translatableNameLore(stack, "setup.gui.arena.generators.item_lore", "setup.gui.arena.generators.item_name"));
+            tInv.setItem(31, ProfileMenus.getCloseItem());
+            this.arenaMenu.addPage(tInv);
         }
 
-        tInv.setItem(31, EwPlayerMenu.getCloseItem());
-        InventoryController.openInventory(player, tInv, MenuType.ARENA_SETUP).setExtraData(this.arena);
+        this.arenaMenu.addOpener(player);
     }
 
-    private void openBasicSetupGUI(Player player)
+    private void openBasicSetupGUI(EwPlayer player)
     {
-        InventoryController.openInventory(player, this.basicSetupInv, MenuType.BASIC_SETTINGS).setExtraData(this.arena);
+        this.basicsMenu.addOpener(player);
     }
 
-    private void openTeamsSetupGUI(Player player)
+    private void openTeamsSetupGUI(EwPlayer player)
     {
-        InventoryController.openInventory(player, this.teamsSetupInv, MenuType.SETUP_TEAMS).setExtraData(this.arena);
+        this.teamsMenu.addOpener(player);
     }
 
-    private void openSingleTeamSetupGUI(Player player, TeamType teamType)
+    private void openSingleTeamSetupGUI(EwPlayer player, TeamType teamType)
     {
-        InventoryController.openInventory(player, this.teamInvs.get(teamType), MenuType.SETUP_SINGLE_TEAM).setExtraData(this.arena, teamType);
+        this.editTeamMenus.get(teamType).addOpener(player);
     }
 
-    private static TranslatableItem getLocationSetting(String tKey, Location setting, Material mat)
+    private static Function<Player, ItemStack> getLocationSetting(String tKey, Location setting, Material mat)
     {
-        TranslatableItem settingItem = new TranslatableItem(new ItemStack(mat, 1));
-        settingItem.setName((player) -> TranslationUtils.getMessage(tKey + ".item_name", player));
-        settingItem.addLoreTranslatable((player) ->
+        return (pl) ->
         {
+            ItemStack stack = new ItemStack(mat, 1);
+            TranslatableItem.setName(stack, TranslationUtils.getMessage(tKey + ".item_name", pl));
             String settingLore;
 
             if (setting != null)
             {
-                settingLore = TranslationUtils.getMessage("setup.gui.location_desc.set", player, setting.getBlockX(), setting.getBlockY(), setting.getBlockZ());
+                settingLore = TranslationUtils.getMessage("setup.gui.location_desc.set", pl, setting.getBlockX(), setting.getBlockY(), setting.getBlockZ());
             }
             else
             {
-                settingLore = TranslationUtils.getMessage("setup.gui.location_desc.unset", player);
+                settingLore = TranslationUtils.getMessage("setup.gui.location_desc.unset", pl);
             }
 
-            return TranslationUtils.getMessage(tKey + ".item_lore", player, settingLore);
-        });
-
-        return settingItem;
+            TranslatableItem.setLore(stack, TranslationUtils.getMessage(tKey + ".item_lore", pl, settingLore));
+            return stack;
+        };
     }
 
     /* TODO
@@ -290,17 +295,12 @@ public class SetupGUI
      * "setup.gui.cages.cage.item_name": "Cage {0}",
      * "setup.gui.cages.cage.item_lore": "&7Cage settings:\n&f\n&7Location: {0}\n&7Mirror Structure: {1}\n&7Rotate Structure: {2}\n\n&3Click to open settings\n&4Shift click to remove this cage"
      */
-    private static TranslatableItem getMultipleSetting(String tKey, Collection<Cage> setting, Material mat, int set, int toSet)
+    private static Function<Player, ItemStack> getMultipleSetting(String tKey, Collection<Cage> setting, Material mat, int set, int toSet)
     {
-        TranslatableItem settingItem = new TranslatableItem((player) ->
+        return (pl) ->
         {
-            ItemStack stack = new ItemStack(mat, (toSet - set) <= 0 ? 1 : (toSet - set));
-            return stack;
-        });
-
-        settingItem.setName((player) -> TranslationUtils.getMessage(tKey + ".item_name", player));
-        settingItem.addLoreTranslatable((player) ->
-        {
+            ItemStack stack = new ItemStack(mat, (toSet - set) <= 1 ? 1 : (toSet - set));
+            TranslatableItem.setName(stack, TranslationUtils.getMessage(tKey + ".item_name", pl));
             StringBuilder settingLore = new StringBuilder();
 
             if (setting != null && !setting.isEmpty())
@@ -308,249 +308,275 @@ public class SetupGUI
                 for (Cage cage : setting)
                 {
                     Location loc = cage.getLocation();
-                    settingLore.append(TranslationUtils.getMessage("setup.gui.multi_locations.value", player, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+                    settingLore.append(TranslationUtils.getMessage("setup.gui.multi_locations.value", pl, loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
                 }
             }
             else
             {
-                settingLore.append(TranslationUtils.getMessage("setup.gui.multi_locations.none_set", player));
+                settingLore.append(TranslationUtils.getMessage("setup.gui.multi_locations.none_set", pl));
             }
 
-            return TranslationUtils.getMessage(tKey + ".item_lore", player, TranslationUtils.getMessage("setup.gui.multi_locations.desc", player, set, toSet, settingLore.toString()));
-        });
-        return settingItem;
+            TranslatableItem.setLore(stack, TranslationUtils.getMessage(tKey + ".item_lore", pl, TranslationUtils.getMessage("setup.gui.multi_locations.desc", pl, set, toSet, settingLore.toString())));
+            return stack;
+        };
     }
 
-    private static void openGeneratorsSetupGUI(Player player1, int page)
+    private static void openGeneratorTypes(EwPlayer ply)
+    {
+        if (selectGenTypeMenu == null)
+        {
+            makeGeneratorsTypesGUI();
+        }
+
+        selectGenTypeMenu.addOpener(ply);
+    }
+
+    public static void makeGeneratorsTypesGUI()
+    {
+        if (selectGenTypeMenu == null)
+        {
+            selectGenTypeMenu = new TranslatableMenu(MenuType.SELECT_GENERATOR, Listener::setupClick);
+            selectGenTypeMenu.setUsable(true);
+            //selectGenTypeMenu.setParent(this.arenaMenu); TODO: not possible, fix later
+        }
+
+        selectGenTypeMenu.clearPages();
+        List<GeneratorType> generators = new ArrayList(EggWars.getGeneratorManager().getGenerators().values());
+        List<ProfileMenus.MenuSize> sizes = ProfileMenus.MenuSize.fromChestSize(generators.size());
+        int counter = 0;
+        int expected = 0;
+
+        for (int page = 0; page < sizes.size(); ++page)
+        {
+            MenuSize size = (MenuSize)sizes.get(page);
+            TranslatableInventory translatableinv = new TranslatableInventory(size.getSlots(), "setup.gui.generators.title");
+            expected += size.getFilledSlots();
+
+            for (int j = 0; j < size.getFilledSlots() && counter < generators.size() && counter <= expected; ++j, ++counter)
+            {
+                GeneratorType type = generators.get(counter);
+                int slot = 9 * (j / 7 + 1) + j % 7 + 1;
+                translatableinv.setItem(slot, (pl) ->
+                {
+                    ItemStack stack = new ItemStack(type.droppedToken().getMaterial(), 1);
+                    SerializingItems.OPEN_GEN_TYPE.setItemReference(stack, type);
+                    String gType = TranslationUtils.getMessage(type.droppedToken().getTypeName(), pl);
+                    TranslatableItem.setName(stack, TranslationUtils.getMessage("setup.gui.generators.type.item_name", pl, gType, type.droppedToken().getColor()));
+                    TranslatableItem.setLore(stack, TranslationUtils.getMessage("setup.gui.generators.type.item_lore", pl, gType));
+                    return stack;
+                });
+            }
+
+            if (page < sizes.size() - 1)
+            {
+                translatableinv.setItem(size.getSlots() - 1, ProfileMenus.getNextItem());
+            }
+
+            if (page > 0)
+            {
+                translatableinv.setItem(size.getSlots() - 9, ProfileMenus.getPreviousItem());
+            }
+
+            translatableinv.setItem(size.getSlots() - 5, ProfileMenus.getCloseItem());
+            selectGenTypeMenu.addPage(translatableinv);
+        }
+
+        selectGenTypeMenu.sendMenuUpdate(true);
+    }
+
+    private static void openGeneratorLevels(EwPlayer ply, GeneratorType type)
+    {
+        if (!selectGenLvlMenus.containsKey(type))
+        {
+            TranslatableMenu menu = new TranslatableMenu(MenuType.SELECT_GENERATOR_LEVEL, Listener::setupClick);
+            menu.setUsable(true);
+            menu.setParent(selectGenTypeMenu);
+            selectGenLvlMenus.put(type, menu);
+            makeGeneratorLevelsGUI(type);
+        }
+
+        selectGenLvlMenus.get(type).addOpener(ply);
+    }
+
+    public static void reloadGeneratorLevelsGUIs()
     {
         Map<String, GeneratorType> generators = EggWars.getGeneratorManager().getGenerators();
-        List<EwPlayerMenu.MenuSize> sizes = EwPlayerMenu.MenuSize.fromChestSize(generators.size());
-        TranslatableInventory tInv = new TranslatableInventory(sizes.get(page).getSlots(), "setup.gui.generators.title");
 
-        if (page < (sizes.size() - 1))
+        for (GeneratorType gentype : selectGenLvlMenus.keySet())
         {
-            tInv.setItem(sizes.get(page).getSlots() - 1, EwPlayerMenu.getNextItem());
-        }
+            TranslatableMenu menu = selectGenLvlMenus.get(gentype);
 
-        if (page > 0)
-        {
-            tInv.setItem(sizes.get(page).getSlots() - 9, EwPlayerMenu.getPreviousItem());
-        }
-
-        tInv.setItem(sizes.get(page).getSlots() - 5, EwPlayerMenu.getCloseItem());
-        Map<Integer, GeneratorType> typeMap = new HashMap<Integer, GeneratorType>();
-        int pages = 0;
-        int counter = 0;
-        int expected = sizes.get(0).getFilledSlots();
-
-        for (Map.Entry<String, GeneratorType> entry : generators.entrySet())
-        {
-            if (counter > expected)
+            if (!generators.containsKey(gentype.getId()))
             {
-                pages++;
-                counter = 0;
-                expected += sizes.get(pages).getFilledSlots();
-            }
+                if (menu.getOpeners().size() > 1)
+                {
+                    menu.closeForEveryone(false);
+                }
 
-            if (pages == page)
+                selectGenLvlMenus.remove(gentype);
+            }
+            else if (!generators.get(gentype.getId()).equals(gentype))
             {
-                int slot = (9 * ((counter / 7) + 1)) + ((counter % 7) + 1);
-                GeneratorType type = entry.getValue();
-                tInv.setItem(slot, TranslatableItem.translatableNameLore(new ItemStack(type.droppedToken().getMaterial(), 1), (player) -> TranslationUtils.getMessage("setup.gui.generators.type.item_lore", player), (player) -> TranslationUtils.getMessage("setup.gui.generators.type.item_name", player, TranslationUtils.getMessage(type.droppedToken().getTypeName(), player), type.droppedToken().getColor())));
-                typeMap.put(slot, type);
+                makeGeneratorLevelsGUI(gentype);
             }
-
-            counter++;
         }
-
-        InventoryController.openInventory(player1, tInv, MenuType.SELECT_GENERATOR).setExtraData(page, typeMap);
     }
 
-    private static void openGeneratorLevelsGUI(Player player, GeneratorType type, int page)
-    {
-        List<EwPlayerMenu.MenuSize> sizes = EwPlayerMenu.MenuSize.fromChestSize(type.getMaxLevel());
-        TranslatableInventory tInv = new TranslatableInventory(sizes.get(page).getSlots(), "setup.gui.gen_level.title");
-
-        if (page < (sizes.size() - 1))
-        {
-            tInv.setItem(sizes.get(page).getSlots() - 1, EwPlayerMenu.getNextItem());
-        }
-
-        if (page > 0)
-        {
-            tInv.setItem(sizes.get(page).getSlots() - 9, EwPlayerMenu.getPreviousItem());
-        }
-
-        tInv.setItem(sizes.get(page).getSlots() - 5, EwPlayerMenu.getCloseItem());
-        Map<Integer, Integer> typeMap = new HashMap<Integer, Integer>();
-        int pages = 0;
+    private static void makeGeneratorLevelsGUI(GeneratorType type)
+    {//Note: Item-level creation loop works differently than others, since the max level is a level that actually exists!
+        TranslatableMenu menu = selectGenLvlMenus.get(type);
+        menu.clearPages();
+        List<ProfileMenus.MenuSize> sizes = ProfileMenus.MenuSize.fromChestSize(type.getMaxLevel() + 1);
         int counter = 0;
-        int expected = sizes.get(0).getFilledSlots();
+        int expected = 0;
 
-        for (int i = 0; i <= type.getMaxLevel(); i++)
+        for (int page = 0; page < sizes.size(); ++page)
         {
-            if (counter > expected)
-            {
-                pages++;
-                counter = 0;
-                expected += sizes.get(pages).getFilledSlots();
-            }
+            MenuSize size = (MenuSize)sizes.get(page);
+            TranslatableInventory translatableinv = new TranslatableInventory(size.getSlots(), "setup.gui.gen_level.title");
+            expected += size.getFilledSlots();
 
-            if (pages == page)
+            for (int j = 0; j < size.getFilledSlots() && counter <= type.getMaxLevel() && counter <= expected; ++j, ++counter)
             {
-                int slot = (9 * ((counter / 7) + 1)) + ((counter % 7) + 1);
-                ItemStack itemstack = new ItemStack(type.droppedToken().getMaterial(), 1);
-                ItemMeta meta = itemstack.getItemMeta();
-                meta.getPersistentDataContainer().set(ItemUtils.genType, PersistentDataType.STRING, type.getId());
-                meta.getPersistentDataContainer().set(ItemUtils.genLevel, PersistentDataType.INTEGER, i);
-                itemstack.setItemMeta(meta);
-                final int fnl = i;
-                TranslatableItem tItem = new TranslatableItem(itemstack);
-                tItem.setName(pl ->
+                ItemStack stack = new ItemStack(type.droppedToken().getMaterial(), 1);
+                SerializingItems.PLACE_GEN.setItemReference(stack, new Pair(type.getId(), counter));
+                final int fnl = counter;
+                TranslatableItem tItem = new TranslatableItem(stack);
+                tItem.setNameTranslatable(pl ->
                 {
                     String lvl = fnl == 0 ? TranslationUtils.getMessage("generator.info.broken", pl) : TranslationUtils.getMessage("generator.info.level", pl, fnl);
                     return TranslationUtils.getMessage("setup.gui.gen_level.level.item_name", pl, TranslationUtils.getMessage(type.droppedToken().getTypeName(), pl), lvl, type.droppedToken().getColor());
                 });
                 tItem.addLoreString("setup.gui.gen_level.level.item_lore", true);
-                tInv.setItem(slot, tItem);
-                typeMap.put(slot, i);
+                int slot = 9 * (j / 7 + 1) + j % 7 + 1;
+                translatableinv.setItem(slot, tItem);
             }
 
-            counter++;
+            if (page < sizes.size() - 1)
+            {
+                translatableinv.setItem(size.getSlots() - 1, ProfileMenus.getNextItem());
+            }
+
+            if (page > 0)
+            {
+                translatableinv.setItem(size.getSlots() - 9, ProfileMenus.getPreviousItem());
+            }
+
+            translatableinv.setItem(size.getSlots() - 5, ProfileMenus.getCloseItem());
+            menu.addPage(translatableinv);
         }
 
-        InventoryController.openInventory(player, tInv, MenuType.SELECT_GENERATOR_LEVEL).setExtraData(page, type, typeMap);
+        menu.sendMenuUpdate(true);
     }
 
     public static class Listener implements org.bukkit.event.Listener
     {
-        @EventHandler
-        public void arenaGui(InventoryClickEvent clickEvent)
+        private static void setupClick(InventoryClickEvent event, EwPlayer ply, EwMenu menu)
         {
-            EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)clickEvent.getWhoClicked());
+            MenuType mType = menu.getMenuType();
+            ItemStack currItem = event.getCurrentItem();
+            SerializingItems type = SerializingItems.getReferenceType(currItem);
 
-            if (ewplayer.getInv() == null || clickEvent.isCancelled() || clickEvent.getCurrentItem() == null || useCloseMenu(clickEvent))
+            if (MenuType.SELECT_GENERATOR.equals(mType))
+            {
+                if (SerializingItems.OPEN_GEN_TYPE.equals(type))
+                {
+                    GeneratorType genType = SerializingItems.OPEN_GEN_TYPE.getItemReference(currItem);
+
+                    if (genType != null)
+                    {
+                        SetupGUI.openGeneratorLevels(ply, genType);
+                    }
+
+                    return;
+                }
+            }
+            else if (MenuType.SELECT_GENERATOR_LEVEL.equals(mType))
+            {
+                if (SerializingItems.PLACE_GEN.equals(type))
+                {
+                    ply.getPlayer().getInventory().addItem(currItem);
+                    return;
+                }
+            }
+
+            Arena arena = EggWars.getArenaManager().getArenaByWorld(ply.getPlayer().getWorld());
+
+            if (!MenuType.isSetupMenu(mType) || arena == null || arena.getStatus() != ArenaStatus.SETTING)
             {
                 return;
             }
 
-            if (ewplayer.getInv().getInventoryType() == MenuType.SELECT_GENERATOR)
+            if (SerializingItems.OPEN_MENU.equals(type))
             {
-                clickEvent.setCancelled(true);
-                int page = (Integer)ewplayer.getInv().getExtraData()[0];
+                MenuType openType = SerializingItems.OPEN_MENU.getItemReference(currItem);
 
-                if (EwPlayerMenu.getNextItem().equalsItem(clickEvent.getCurrentItem(), ewplayer.getPlayer()))
+                if (MenuType.BASIC_SETTINGS.equals(openType))
                 {
-                    clickEvent.setCurrentItem(null);
-                    SetupGUI.openGeneratorsSetupGUI(ewplayer.getPlayer(), page + 1);
+                    arena.getSetupGUI().openBasicSetupGUI(ply);
                     return;
                 }
 
-                if (EwPlayerMenu.getPreviousItem().equalsItem(clickEvent.getCurrentItem(), ewplayer.getPlayer()))
+                if (MenuType.SETUP_TEAMS.equals(openType))
                 {
-                    clickEvent.setCurrentItem(null);
-                    SetupGUI.openGeneratorsSetupGUI(ewplayer.getPlayer(), page - 1);
+                    arena.getSetupGUI().openTeamsSetupGUI(ply);
                     return;
                 }
 
-                Map<Integer, GeneratorType> map = (Map<Integer, GeneratorType>)ewplayer.getInv().getExtraData()[1];
-                GeneratorType generatortype;
-
-                if ((generatortype = map.get(clickEvent.getRawSlot())) != null)
+                if (MenuType.SELECT_GENERATOR.equals(openType))
                 {
-                    clickEvent.setCurrentItem(null);
-                    SetupGUI.openGeneratorLevelsGUI(ewplayer.getPlayer(), generatortype, 0);
+                    SetupGUI.openGeneratorTypes(ply);
                     return;
                 }
-
-                return;
             }
 
-            if (ewplayer.getInv().getInventoryType() == MenuType.SELECT_GENERATOR_LEVEL)
+            if (MenuType.SETUP_TEAMS.equals(mType))
             {
-                clickEvent.setCancelled(true);
-                int page = (Integer)ewplayer.getInv().getExtraData()[0];
-                GeneratorType type = (GeneratorType)ewplayer.getInv().getExtraData()[1];
-
-                if (EwPlayerMenu.getNextItem().equalsItem(clickEvent.getCurrentItem(), ewplayer.getPlayer()))
+                if (SerializingItems.SETUP_TEAM.equals(type))
                 {
-                    clickEvent.setCurrentItem(null);
-                    SetupGUI.openGeneratorLevelsGUI(ewplayer.getPlayer(), type, page + 1);
-                    return;
-                }
+                    TeamType teamtype = SerializingItems.SETUP_TEAM.getItemReference(currItem);
 
-                if (EwPlayerMenu.getPreviousItem().equalsItem(clickEvent.getCurrentItem(), ewplayer.getPlayer()))
-                {
-                    clickEvent.setCurrentItem(null);
-                    SetupGUI.openGeneratorLevelsGUI(ewplayer.getPlayer(), type, page - 1);
-                    return;
-                }
+                    if (teamtype != null)
+                    {
+                        Team team = arena.getTeams().get(teamtype);
+                        event.setCurrentItem(null);
 
-                Map<Integer, Integer> map = (Map<Integer, Integer>)ewplayer.getInv().getExtraData()[2];
+                        if (team == null)
+                        {
+                            arena.addTeam(teamtype);
+                            arena.updateSetupTeam(teamtype);
+                            TranslationUtils.sendMessage("commands.addTeam.success", ply.getPlayer(), teamtype.id());
+                            return;
+                        }
+                        else if (event.isShiftClick())
+                        {
+                            arena.removeTeam(teamtype);
+                            arena.updateSetupTeam(teamtype);
+                            TranslationUtils.sendMessage("commands.removeTeam.success", ply.getPlayer(), teamtype.id());
+                            return;
+                        }
 
-                if (map.get(clickEvent.getRawSlot()) != null)
-                {
-                    ewplayer.getPlayer().getInventory().addItem(clickEvent.getCurrentItem());
-                    return;
-                }
+                        arena.getSetupGUI().openSingleTeamSetupGUI(ply, teamtype);
+                    }
 
-                return;
-            }
-
-            MenuType menu = ewplayer.getInv().getInventoryType();
-
-            if (!MenuType.isSetupMenu(menu))
-            {
-                return;
-            }
-
-            clickEvent.setCancelled(true);
-            Arena arena = (Arena)ewplayer.getInv().getExtraData()[0];
-
-            if (menu == MenuType.ARENA_SETUP)
-            {
-                if (arena.getStatus() != ArenaStatus.SETTING || arena != EggWars.getArenaManager().getArenaByWorld(ewplayer.getPlayer().getWorld()))
-                {
-                    return;
-                }
-
-                if (clickEvent.getRawSlot() == 11)
-                {
-                    clickEvent.setCurrentItem(null);
-                    arena.getSetupGUI().openBasicSetupGUI(ewplayer.getPlayer());
-                    return;
-                }
-
-                if (clickEvent.getRawSlot() == 13)
-                {
-                    clickEvent.setCurrentItem(null);
-                    arena.getSetupGUI().openTeamsSetupGUI(ewplayer.getPlayer());
-                    return;
-                }
-
-                if (clickEvent.getRawSlot() == 15)
-                {
-                    clickEvent.setCurrentItem(null);
-                    SetupGUI.openGeneratorsSetupGUI(ewplayer.getPlayer(), 0);
                     return;
                 }
 
                 return;
             }
-
-            if (menu == MenuType.BASIC_SETTINGS)
+            else if (MenuType.BASIC_SETTINGS.equals(mType))
             {
-                Player player = ewplayer.getPlayer();
+                Player player = ply.getPlayer();
                 boolean flag = false;
 
-                if (clickEvent.getRawSlot() == 4)
+                if (event.getRawSlot() == 4)
                 {
                     arena.sendToDo(player);
                 }
 
-                if (clickEvent.getRawSlot() == 10)
+                if (event.getRawSlot() == 10)
                 {
-                    if (tryTpRightClick(clickEvent, arena.getLobby()))
+                    if (tryTpRightClick(event, arena.getLobby()))
                     {
                         return;
                     }
@@ -560,9 +586,9 @@ public class SetupGUI
                     flag = true;
                 }
 
-                if (clickEvent.getRawSlot() == 12)
+                if (event.getRawSlot() == 12)
                 {
-                    if (tryTpRightClick(clickEvent, arena.getCenter()))
+                    if (tryTpRightClick(event, arena.getCenter()))
                     {
                         return;
                     }
@@ -574,9 +600,9 @@ public class SetupGUI
 
                 Bounds bounds = arena.getBounds();
 
-                if (clickEvent.getRawSlot() == 14)
+                if (event.getRawSlot() == 14)
                 {
-                    if (tryTpRightClick(clickEvent, bounds.getStart()))
+                    if (tryTpRightClick(event, bounds.getStart()))
                     {
                         return;
                     }
@@ -586,9 +612,9 @@ public class SetupGUI
                     flag = true;
                 }
 
-                if (clickEvent.getRawSlot() == 15)
+                if (event.getRawSlot() == 15)
                 {
-                    if (tryTpRightClick(clickEvent, bounds.getEnd()))
+                    if (tryTpRightClick(event, bounds.getEnd()))
                     {
                         return;
                     }
@@ -598,7 +624,7 @@ public class SetupGUI
                     flag = true;
                 }
 
-                if (clickEvent.getRawSlot() == 16 && clickEvent.isShiftClick() && (bounds.getStart() != null || bounds.getEnd() != null))
+                if (event.getRawSlot() == 16 && event.isShiftClick() && (bounds.getStart() != null || bounds.getEnd() != null))
                 {
                     bounds.setBounds(null, null);
                     TranslationUtils.sendMessage("commands.setBounds.success.removed", player, arena.getName());
@@ -607,56 +633,22 @@ public class SetupGUI
 
                 if (flag)
                 {
-                    clickEvent.setCurrentItem(null);
-                    arena.getSetupGUI().updateBasicSetupInv();
+                    event.setCurrentItem(null);
+                    arena.getSetupGUI().updateBasicsMenu();
                 }
 
                 return;
             }
-
-            if (menu == MenuType.SETUP_TEAMS)
+            else if (MenuType.SETUP_SINGLE_TEAM.equals(mType))
             {
-                Map<Integer, TeamType> map = arena.getSetupGUI().teamsSlots;
-                TeamType teamtype;
-
-                if ((teamtype = map.get(clickEvent.getRawSlot())) != null)
-                {
-                    Team team = arena.getTeams().get(teamtype);
-                    clickEvent.setCurrentItem(null);
-
-                    if (team == null)
-                    {
-                        arena.addTeam(teamtype);
-                        arena.updateSetupTeam(teamtype);
-                        TranslationUtils.sendMessage("commands.addTeam.success", ewplayer.getPlayer(), teamtype.id());
-                        return;
-                    }
-                    else if (clickEvent.isShiftClick())
-                    {
-                        arena.removeTeam(teamtype);
-                        arena.updateSetupTeam(teamtype);
-                        TranslationUtils.sendMessage("commands.removeTeam.success", ewplayer.getPlayer(), teamtype.id());
-                        return;
-                    }
-
-                    arena.getSetupGUI().openSingleTeamSetupGUI(ewplayer.getPlayer(), teamtype);
-                    return;
-                }
-
-                return;
-            }
-
-            Player player = ewplayer.getPlayer();
-
-            if (menu == MenuType.SETUP_SINGLE_TEAM)
-            {
-                TeamType teamtype = (TeamType)ewplayer.getInv().getExtraData()[1];
+                Player player = ply.getPlayer();
+                TeamType teamtype = (TeamType)menu.getExtraData()[0];
                 Team team = arena.getTeams().get(teamtype);
                 boolean flag = false;
 
-                if (clickEvent.getRawSlot() == 10)
+                if (event.getRawSlot() == 10)
                 {
-                    if (tryTpRightClick(clickEvent, team.getVillager()))
+                    if (tryTpRightClick(event, team.getVillager()))
                     {
                         return;
                     }
@@ -666,9 +658,9 @@ public class SetupGUI
                     flag = true;
                 }
 
-                if (clickEvent.getRawSlot() == 12)
+                if (event.getRawSlot() == 12)
                 {
-                    if (clickEvent.isShiftClick())
+                    if (event.isShiftClick())
                     {
                         boolean removed = team.removeLastCage();
                         TranslationUtils.sendMessage("commands.removeTeamCage." + (removed ? "success" : "failed"), player, team.getType().id());
@@ -682,9 +674,9 @@ public class SetupGUI
                     flag = true;
                 }
 
-                if (clickEvent.getRawSlot() == 14)
+                if (event.getRawSlot() == 14)
                 {
-                    if (tryTpRightClick(clickEvent, team.getRespawn()))
+                    if (tryTpRightClick(event, team.getRespawn()))
                     {
                         return;
                     }
@@ -694,9 +686,9 @@ public class SetupGUI
                     flag = true;
                 }
 
-                if (clickEvent.getRawSlot() == 16)
+                if (event.getRawSlot() == 16)
                 {
-                    if (tryTpRightClick(clickEvent, team.getEgg()))
+                    if (tryTpRightClick(event, team.getEgg()))
                     {
                         return;
                     }
@@ -708,7 +700,7 @@ public class SetupGUI
 
                 if (flag)
                 {
-                    clickEvent.setCurrentItem(null);
+                    event.setCurrentItem(null);
                     arena.updateSetupTeam(teamtype);
                 }
 
@@ -734,7 +726,7 @@ public class SetupGUI
                     return;
                 }
 
-                String arenaId = ItemUtils.getPersistentData(stack, ItemUtils.arenaId, PersistentDataType.STRING);
+                String arenaId = ItemUtils.arenaId.getFrom(stack.getItemMeta());
 
                 if ((arena = EggWars.getArenaManager().getArenaById(arenaId)) == null)
                 {
@@ -760,19 +752,18 @@ public class SetupGUI
             }
             else if (arena.getStatus().equals(ArenaStatus.SETTING))
             {
-                if (!event.getPlayer().hasPermission("eggwars.genSign.place"))
+                if (!event.getPlayer().hasPermission("eggwars.genSign.place") || !SerializingItems.PLACE_GEN.equals(SerializingItems.getReferenceType(stack)))
                 {
                     return;
                 }
 
-                String type = ItemUtils.getPersistentData(stack, ItemUtils.genType, PersistentDataType.STRING);
-                Integer level = ItemUtils.getPersistentData(stack, ItemUtils.genLevel, PersistentDataType.INTEGER);
+                Pair<String, Integer> pair = SerializingItems.PLACE_GEN.getItemReference(stack);
                 Map<String, GeneratorType> generators = EggWars.getGeneratorManager().getGenerators();
 
-                if (type != null && level != null && generators.containsKey(type) && level <= generators.get(type).getMaxLevel())
+                if (pair != null && generators.containsKey(pair.getLeft()) && pair.getRight() <= generators.get(pair.getLeft()).getMaxLevel())
                 {
                     event.setCancelled(true);
-                    Generator generator = new Generator(event.getClickedBlock().getLocation(), level, type, arena);
+                    Generator generator = new Generator(event.getClickedBlock().getLocation(), pair.getRight(), pair.getLeft(), arena);
                     Generator prevGen = arena.putGenerator(generator);
 
                     if (!generator.equals(prevGen))
@@ -791,21 +782,8 @@ public class SetupGUI
             {
                 click.setCurrentItem(null);
                 Player clicker = (Player)click.getWhoClicked();
-                InventoryController.closeInventory(clicker, 0);
+                clicker.closeInventory();
                 clicker.teleport(Locations.toMiddle(loc));
-                return true;
-            }
-
-            return false;
-        }
-
-        public static boolean useCloseMenu(InventoryClickEvent clickEvent)
-        {
-            if (EwPlayerMenu.getCloseItem().equalsItem(clickEvent.getCurrentItem(), (Player)clickEvent.getWhoClicked()))
-            {
-                clickEvent.setCancelled(true);
-                clickEvent.setCurrentItem(null);
-                InventoryController.closeInventory((Player)clickEvent.getWhoClicked(), 1);
                 return true;
             }
 

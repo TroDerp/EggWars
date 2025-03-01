@@ -57,7 +57,7 @@ public class SetBounds extends CommandArg
             TranslationUtils.sendMessage("commands.setBounds.success", commandSender, arena.getName());
         }
 
-        arena.getSetupGUI().updateBasicSetupInv();
+        arena.getSetupGUI().updateBasicsMenu();
         arena.sendToDo(player);
         return true;
     }

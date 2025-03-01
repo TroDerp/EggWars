@@ -1,19 +1,16 @@
-package me.rosillogames.eggwars.objects;
+package me.rosillogames.eggwars.menu;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import javax.annotation.Nullable;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import me.rosillogames.eggwars.EggWars;
+import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.managers.KitManager;
+import me.rosillogames.eggwars.objects.Kit;
 import me.rosillogames.eggwars.player.EwPlayer;
-import me.rosillogames.eggwars.player.EwPlayerMenu;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.Pair;
@@ -22,19 +19,16 @@ import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
 public class KitsMenu
 {
-    private final List<Map<Integer, Kit>> kitsPerPage;
-    private final List<TranslatableInventory> inventories;
+    private final TranslatableMenu menu;
 
     public KitsMenu()
     {
-        this.kitsPerPage = new ArrayList();
-        this.inventories = new ArrayList();
+        this.menu = new TranslatableMenu(MenuType.KIT_SELECTION);
     }
 
     public void loadGui()
     {
-        this.inventories.clear();
-        this.kitsPerPage.clear();
+        this.menu.clearPages();
 
         final List<Kit> kits = EggWars.getKitManager().getKits();
         int counter = 0;
@@ -49,8 +43,7 @@ public class KitsMenu
 
         for (int page = 0; page < pages; ++page)
         {
-            TranslatableInventory translatableinv = new TranslatableInventory(EwPlayerMenu.MenuSize.FULL.getSlots(), "menu.kits.menu_title");
-            Map<Integer, Kit> pageKits = new HashMap();
+            TranslatableInventory translatableinv = new TranslatableInventory(ProfileMenus.MenuSize.FULL.getSlots(), "menu.kits.menu_title");
             boolean hasNineEntries = page == (pages - 1) && (kits.size() - counter) <= 9;
             int entries = hasNineEntries ? 9 : 15;
 
@@ -60,36 +53,30 @@ public class KitsMenu
                 int columns = entries / 3;
                 int slotPos = 9 * ((j / columns) + 1) + (j % columns) + (hasNineEntries ? 3 : 2 /* this is for centering */);
                 translatableinv.setItem(slotPos, getKitItem(kit));
-                pageKits.put(slotPos, kit);
             }
 
             if (page < (pages - 1))
             {
-                translatableinv.setItem(26, EwPlayerMenu.getNextItem());
+                translatableinv.setItem(26, ProfileMenus.getNextItem());
             }
 
             if (page > 0)
             {
-                translatableinv.setItem(18, EwPlayerMenu.getPreviousItem());
+                translatableinv.setItem(18, ProfileMenus.getPreviousItem());
             }
 
             translatableinv.setItem(46, getDeselectItem());
-            translatableinv.setItem(49, EwPlayerMenu.getCloseItem());
+            translatableinv.setItem(49, ProfileMenus.getCloseItem());
             translatableinv.setItem(52, getPointsItem());
-            this.inventories.add(page, translatableinv);
-            this.kitsPerPage.add(page, pageKits);
+            this.menu.addPage(translatableinv);
         }
+
+        this.menu.sendMenuUpdate(true);
     }
 
-    @Nullable
-    public Kit getKit(int page, int slot)
+    public void openKitsMenu(EwPlayer player)
     {
-        return this.kitsPerPage.get(page).get(slot);
-    }
-
-    public TranslatableInventory getInventory(int page)
-    {
-        return this.inventories.get(page);
+        this.menu.addOpener(player);
     }
 
     public static TranslatableItem getDeselectItem()
@@ -104,6 +91,7 @@ public class KitsMenu
                 ReflectionUtils.setEnchantGlint(stack, true, false);
             }
 
+            SerializingItems.SELECT_KIT.setItemReference(stack, null);
             return stack;
         }, (player) -> TranslationUtils.getMessage("menu.kits.deselect.item_lore", player), (player) -> TranslationUtils.getMessage("menu.kits.deselect.item_name", player));
     }
@@ -125,6 +113,7 @@ public class KitsMenu
                 ReflectionUtils.setEnchantGlint(stack, true, false);
             }
 
+            SerializingItems.SELECT_KIT.setItemReference(stack, kit);
             return stack;
         }, (player) ->
         {

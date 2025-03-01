@@ -1,9 +1,12 @@
 package me.rosillogames.eggwars.arena;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,9 +20,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.util.Vector;
+import com.google.common.collect.Sets;
 import me.rosillogames.eggwars.EggWars;
+import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.menu.EwMenu;
 import me.rosillogames.eggwars.objects.Cage;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.Locations;
@@ -33,7 +40,8 @@ public class Team
     private final Set<Entity> villager = new HashSet();
     private final Arena arena;
     private final List<Cage> cages = new ArrayList();
-    private final Inventory teamChest;
+    private final Map<Vector, Set<EwPlayer>> activeEChests = new HashMap();
+    private final EwMenu teamChest;
     private Location egg;
     private Location villagerLoc;
     private Location respawn;
@@ -43,7 +51,15 @@ public class Team
     {
         this.arena = arena;
         this.type = color;
-        this.teamChest = Bukkit.createInventory(null, InventoryType.ENDER_CHEST);
+        Inventory enderChest = Bukkit.createInventory(null, InventoryType.ENDER_CHEST);
+        this.teamChest = new EwMenu(MenuType.TEAM_ENDER_CHEST)
+        {
+            @Nullable
+            public Inventory translateToPlayer(EwPlayer player, boolean reopen)
+            {
+                return enderChest;
+            }
+        };
     }
 
     public void setArenaWorld()
@@ -190,9 +206,56 @@ public class Team
         this.type = typeIn;
     }
 
-    public Inventory getEnderChest()
+    public EwMenu getEnderChest()
     {
         return this.teamChest;
+    }
+
+    public void addEChester(Vector vec, EwPlayer pl)
+    {
+        if (this.activeEChests.containsKey(vec))
+        {
+            this.activeEChests.get(vec).add(pl);
+            return;
+        }
+
+        this.activeEChests.put(vec, Sets.newHashSet(pl));
+    }
+
+    @Nullable
+    public Vector removeEChester(EwPlayer pl)
+    {
+        Vector vec = null;
+
+        for (Map.Entry<Vector, Set<EwPlayer>> entry : this.activeEChests.entrySet())
+        {
+            if (entry.getValue().contains(pl))
+            {
+                vec = entry.getKey();
+            }
+        }
+
+        if (vec != null)
+        {
+            this.activeEChests.get(vec).remove(pl);
+
+            if (this.activeEChests.get(vec).size() <= 0)
+            {
+                this.activeEChests.remove(vec);
+            }
+        }
+
+        return vec;
+    }
+
+    public boolean isEChestActive(Vector vec)
+    {
+        if (this.activeEChests.containsKey(vec))
+        {
+            return this.activeEChests.get(vec).size() > 1;
+        }
+
+        return false;
     }
 
     public boolean canJoin()
@@ -269,6 +332,7 @@ public class Team
         vill.setCollidable(false);
         vill.setCustomName(TranslationUtils.getMessage("gameplay.villager.name"));
         vill.setCustomNameVisible(true);//If something is riding this villager, name tag won't display for some reason
+        TeamUtils.teamTypeKey.setTo(vill, this.getType().id());
         this.villager.add(vill);
 
         ArmorStand blw = middleLoc.getWorld().spawn(middleLoc.clone().add(0.0, 1.715, 0.0), ArmorStand.class);
@@ -351,7 +415,8 @@ public class Team
         this.players.clear();
         this.removeCages();
         this.egg.getBlock().setType(Material.AIR);
-        this.teamChest.clear();
+        this.activeEChests.clear();
+        this.teamChest.translateToPlayer(null, false).clear()/* Weird hack to reset inventory */;
 
         //removeFromScore
         for (EwPlayer ewplayer : this.arena.getPlayers())

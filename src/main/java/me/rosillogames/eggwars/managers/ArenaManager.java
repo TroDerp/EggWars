@@ -11,8 +11,8 @@ import org.bukkit.inventory.ItemStack;
 import com.google.common.collect.Sets;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
-import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.menu.SerializingItems;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.ItemUtils;
 
@@ -29,14 +29,14 @@ public class ArenaManager
     public static void loadConfig()
     {
         ItemStack stack = ItemUtils.getItemOrDefault(EggWars.instance.getConfig().getString("inventory.leave.item"), Material.RED_DYE);
-        ItemUtils.hideStackAttributes(stack);
-        ItemUtils.setOpensMenu(stack, MenuType.LEAVE_ARENA);
+        ItemUtils.makeMenuItem(stack);
+        SerializingItems.LEAVE_ARENA.setItemReference(stack, null);
         leaveItem = TranslatableItem.translatableNameLore(stack, "gameplay.leave.item_lore", "gameplay.leave.item_name");
     }
 
     public static ItemStack getLeaveItem(Player player)
     {
-        return leaveItem.getTranslated(player);
+        return leaveItem.apply(player);
     }
 
     public static Arena loadArena(File arenaFolderIn)

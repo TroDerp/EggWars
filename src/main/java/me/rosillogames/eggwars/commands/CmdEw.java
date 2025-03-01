@@ -263,7 +263,7 @@ public class CmdEw implements TabExecutor
                 return false;
             }
 
-            arena.joinArena(player, true, true);
+            arena.joinArena(player, false, true);
             return true;
         }
 
@@ -424,7 +424,7 @@ public class CmdEw implements TabExecutor
                 return false;
             }
 
-            ewplayer.getMenu().openMainInv();
+            ewplayer.getProfile().openMainInv();
             return true;
         }
 
@@ -479,7 +479,7 @@ public class CmdEw implements TabExecutor
                 }
                 else if (randomarena.getStatus().equals(ArenaStatus.IN_GAME) && EggWars.config.canSpectJoin)
                 {
-                    randomarena.joinArena(PlayerUtils.getEwPlayer((Player)sender), true, true);
+                    randomarena.joinArena(PlayerUtils.getEwPlayer((Player)sender), false, true);
                     return true;
                 }
             }

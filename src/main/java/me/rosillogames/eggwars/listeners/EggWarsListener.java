@@ -5,12 +5,12 @@ import org.bukkit.event.Listener;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Scoreboards;
+import me.rosillogames.eggwars.arena.SetupGUI;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.enums.ReloadType;
 import me.rosillogames.eggwars.events.EwPlayerChangeLangEvent;
 import me.rosillogames.eggwars.events.EwPluginReloadEvent;
 import me.rosillogames.eggwars.player.EwPlayer;
-import me.rosillogames.eggwars.player.inventory.InventoryController;
 
 public class EggWarsListener implements Listener
 {
@@ -21,18 +21,11 @@ public class EggWarsListener implements Listener
         {
             for (EwPlayer player : EggWars.players)
             {
-                player.getMenu().loadLangGui();
+                player.getProfile().loadLangGui();
 
-                if (player.getInv() != null)
+                if (player.getMenu() != null && player.getMenu().getMenuType() != MenuType.LANGUAGES)
                 {
-                    if (player.getInv().getInventoryType() == MenuType.LANGUAGES)
-                    {
-                        InventoryController.closeInventory(player.getPlayer(), 1);//add warning?
-                    }
-                    else
-                    {
-                        player.getInv().updateHandler(null, true);
-                    }
+                    player.getMenu().sendMenuUpdate(true);
                 }
             }
 
@@ -42,26 +35,10 @@ public class EggWarsListener implements Listener
             }
         }
 
-        if (event.getReloadType() == ReloadType.KITS || event.getReloadType() == ReloadType.ALL)
-        {
-            for (EwPlayer player : EggWars.players)
-            {
-                if (player.getInv() != null && player.getInv().getInventoryType() == MenuType.KIT_SELECTION)
-                {
-                    InventoryController.closeInventory(player.getPlayer(), 1);//add warning?
-                }
-            }
-        }
-
         if (event.getReloadType() == ReloadType.GENERATORS || event.getReloadType() == ReloadType.ALL)
         {
-            for (EwPlayer player : EggWars.players)
-            {
-                if (player.getInv() != null && (player.getInv().getInventoryType() == MenuType.GENERATOR_INFO || player.getInv().getInventoryType() == MenuType.SELECT_GENERATOR_LEVEL || player.getInv().getInventoryType() == MenuType.SELECT_GENERATOR))
-                {
-                    InventoryController.closeInventory(player.getPlayer(), 0);//add warning?
-                }
-            }
+            SetupGUI.makeGeneratorsTypesGUI();
+            SetupGUI.reloadGeneratorLevelsGUIs();
         }
     }
 
@@ -69,11 +46,11 @@ public class EggWarsListener implements Listener
     public void onPlayerChangeLang(EwPlayerChangeLangEvent event)
     {
         EwPlayer ewplayer = event.getPlayer();
-        ewplayer.getMenu().loadLangGui();
+        ewplayer.getProfile().loadLangGui();
 
-        if (ewplayer.getInv() != null)
+        if (ewplayer.getMenu() != null)
         {
-            ewplayer.getInv().updateHandler(null, true);
+            ewplayer.getMenu().sendUpdateTo(ewplayer, true);
         }
 
         if (ewplayer.getArena() != null)

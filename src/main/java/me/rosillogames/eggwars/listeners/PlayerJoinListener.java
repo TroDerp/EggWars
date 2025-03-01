@@ -106,7 +106,7 @@ public class PlayerJoinListener implements Listener
             }
             else
             {
-                arena.joinArena(ewplayer, true, true);
+                arena.joinArena(ewplayer, false, true);
             }
         }
     }

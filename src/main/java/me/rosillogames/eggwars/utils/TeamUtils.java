@@ -19,18 +19,19 @@ import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 public class TeamUtils implements Listener
 {
     private static TranslatableItem invItem;
+    public static EwNamespace<String> teamTypeKey;
 
     public static void loadConfig()
     {
         ItemStack stack = ItemUtils.getItemOrDefault(EggWars.instance.getConfig().getString("inventory.team_selection.item"), Material.NETHER_STAR);
-        ItemUtils.hideStackAttributes(stack);
+        ItemUtils.makeMenuItem(stack);
         ItemUtils.setOpensMenu(stack, MenuType.TEAM_SELECTION);
         invItem = TranslatableItem.translatableNameLore(stack, "gameplay.teams.item_lore", "gameplay.teams.item_name");
     }
 
     public static ItemStack getInvItem(Player player)
     {
-        return invItem.getTranslated(player);
+        return invItem.apply(player);
     }
 
     public static String translateTeamType(TeamType type, Player player, boolean allowBold)

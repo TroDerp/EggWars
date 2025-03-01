@@ -305,6 +305,7 @@ public class Reflections_1_20_0 implements Reflections
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void sendActionBar(Player player, String s, Integer integer, Integer integer1, Integer integer2)
     {
         try

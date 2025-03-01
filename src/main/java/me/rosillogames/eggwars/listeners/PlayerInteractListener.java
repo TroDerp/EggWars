@@ -11,16 +11,18 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.persistence.PersistentDataType;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.MenuType;
+import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.menu.SerializingItems;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.LobbySigns;
 import me.rosillogames.eggwars.utils.PlayerUtils;
+import me.rosillogames.eggwars.utils.TeamUtils;
 
 public class PlayerInteractListener implements Listener
 {
@@ -34,7 +36,7 @@ public class PlayerInteractListener implements Listener
 
         Villager villager = (Villager)event.getRightClicked();
 
-        if (!TranslationUtils.getMessage("gameplay.villager.name").equals(villager.getCustomName()))
+        if (!TeamUtils.teamTypeKey.isInHolder(villager))
         {
             return;
         }
@@ -50,15 +52,18 @@ public class PlayerInteractListener implements Listener
 
         EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
 
-        if (!ewplayer.isInArena() || ewplayer.isEliminated())
+        if (!ewplayer.isInArena() || ewplayer.isEliminated() || !ewplayer.getArena().getStatus().equals(ArenaStatus.IN_GAME))
         {
             return;
         }
 
-        if (ewplayer.getArena().getStatus().equals(ArenaStatus.IN_GAME))
+        if (EggWars.config.opensForeignShops || ewplayer.getTeam().getType().equals(TeamType.byId(TeamUtils.teamTypeKey.getFrom(villager))))
         {
-            ewplayer.getArena().openVillagerInv(event.getPlayer(), 0);
-            return;
+            EggWars.getTradingManager().openEggWarsShop(ewplayer, ewplayer.getArena().getItemType());
+        }
+        else
+        {
+            TranslationUtils.sendMessage("gameplay.villager.different_team", (Player)event.getPlayer());
         }
     }
 
@@ -87,7 +92,7 @@ public class PlayerInteractListener implements Listener
         if (ItemUtils.getOpensMenu(itemstack) == MenuType.KIT_SELECTION)
         {
             event.setCancelled(true);
-            EggWars.getKitManager().openKitsInv(ewplayer.getPlayer(), 0);
+            EggWars.getKitManager().getKitsMenu().openKitsMenu(ewplayer);
         }
     }
 
@@ -121,7 +126,7 @@ public class PlayerInteractListener implements Listener
         if (ItemUtils.getOpensMenu(itemstack) == MenuType.TEAM_SELECTION)
         {
             event.setCancelled(true);
-            ewplayer.getArena().openTeamInv(ewplayer.getPlayer());
+            ewplayer.getArena().openTeamInv(ewplayer);
         }
     }
 
@@ -155,7 +160,7 @@ public class PlayerInteractListener implements Listener
         if (ItemUtils.getOpensMenu(itemstack) == MenuType.VOTING)
         {
             event.setCancelled(true);
-            ewplayer.getArena().openVoteInv(ewplayer.getPlayer());
+            ewplayer.getArena().getVotingMenus().openMainMenu(ewplayer);
         }
     }
 
@@ -172,24 +177,19 @@ public class PlayerInteractListener implements Listener
             return;
         }
 
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
+        EwPlayer player = PlayerUtils.getEwPlayer(event.getPlayer());
 
-        if (!ewplayer.isInArena())
-        {
-            return;
-        }
-
-        if (ewplayer.isEliminated())
+        if (!player.isInArena())
         {
             return;
         }
 
         ItemStack itemstack = event.getPlayer().getInventory().getItemInMainHand();
 
-        if (ItemUtils.getOpensMenu(itemstack) == MenuType.LEAVE_ARENA)
+        if (SerializingItems.LEAVE_ARENA.equals(SerializingItems.getReferenceType(itemstack)))
         {
             event.setCancelled(true);
-            ewplayer.getArena().leaveArena(ewplayer, true, false);
+            player.getArena().leaveArena(player, true, player.isEliminated());
         }
     }
 
@@ -241,9 +241,9 @@ public class PlayerInteractListener implements Listener
         }
 
         Player player = event.getPlayer();
-        ItemStack stack;
+        ItemStack stack = player.getInventory().getItemInMainHand();
 
-        if ((stack = player.getInventory().getItemInMainHand()) == null)
+        if (stack == null || !player.hasPermission("eggwars.setup"))
         {
             return;
         }
@@ -251,7 +251,7 @@ public class PlayerInteractListener implements Listener
         if (ItemUtils.getOpensMenu(stack) == MenuType.ARENA_SETUP)
         {
             event.setCancelled(true);
-            String arenaId = ItemUtils.getPersistentData(stack, ItemUtils.arenaId, PersistentDataType.STRING);
+            String arenaId = ItemUtils.arenaId.getFrom(stack.getItemMeta());
             Arena arena;
             Arena idArena = EggWars.getArenaManager().getArenaById(arenaId);
             Arena worldArena = EggWars.getArenaManager().getArenaByWorld(player.getWorld());
@@ -281,7 +281,7 @@ public class PlayerInteractListener implements Listener
                 arena = idArena;
             }
 
-            arena.getSetupGUI().openArenaGUI(player);
+            arena.getSetupGUI().openArenaGUI(PlayerUtils.getEwPlayer(player));
         }
     }
 

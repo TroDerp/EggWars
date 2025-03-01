@@ -1,17 +1,19 @@
 package me.rosillogames.eggwars.player.inventory;
 
 import java.util.Map;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 import com.google.common.collect.Maps;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem.Translatable;
 
 public class TranslatableInventory
 {
-    private Map<Integer, TranslatableItem> contents = Maps.<Integer, TranslatableItem>newHashMap();
+    private Map<Integer, Function<Player, ItemStack>> contents = Maps.<Integer, Function<Player, ItemStack>>newHashMap();
     private int size;
     private Translatable<String> title;
 
@@ -27,7 +29,7 @@ public class TranslatableInventory
         this.title = titleIn;
     }
 
-    public void setItem(int slot, TranslatableItem item)
+    public void setItem(int slot, Function<Player, ItemStack> item)
     {
         if (slot < 0 || slot >= this.size)
         {
@@ -44,7 +46,7 @@ public class TranslatableInventory
     }
 
     @Nullable
-    public TranslatableItem getItem(int slot)
+    public Function<Player, ItemStack> getItem(int slot)
     {
         return this.contents.get(slot);
     }
@@ -63,15 +65,15 @@ public class TranslatableInventory
     {
         Inventory mcInventory = Bukkit.createInventory(null, this.size, this.title.translate(player));
 
-        for (Map.Entry<Integer, TranslatableItem> entry : this.contents.entrySet())
+        for (Map.Entry<Integer, Function<Player, ItemStack>> entry : this.contents.entrySet())
         {
-            mcInventory.setItem(entry.getKey(), entry.getValue().getTranslated(player));
+            mcInventory.setItem(entry.getKey(), entry.getValue().apply(player));
         }
 
         return mcInventory;
     }
 
-    public Map<Integer, TranslatableItem> getContents()
+    public Map<Integer, Function<Player, ItemStack>> getContents()
     {
         return this.contents;
     }
