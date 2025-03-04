@@ -36,8 +36,6 @@ public class Offer
      * for different amounts.
      **/
     private final boolean noClassic;
-    private String nameTranslation = "";
-    private String descTranslation = "";
 
     public Offer(int slotIn, TradeResult resultIn, Price priceIn, boolean noClassic)
     {
@@ -45,16 +43,6 @@ public class Offer
         this.result = resultIn;
         this.price = priceIn;
         this.noClassic = noClassic;
-    }
-
-    public void setNameTranlation(String tKey)
-    {
-        this.nameTranslation = tKey;
-    }
-
-    public void setDescTranlation(String tKey)
-    {
-        this.descTranslation = tKey;
     }
 
     public ItemStack getDisplayItem(Player player)
@@ -237,16 +225,19 @@ public class Offer
             }
         }
 
-        if (!this.descTranslation.isEmpty() && TranslationUtils.messageExists(this.descTranslation, player))
+        String descTranslation = result.getDescTranslation();
+
+        if (!descTranslation.isEmpty() && TranslationUtils.messageExists(descTranslation, player))
         {
-            TranslatableItem.addLoreNoReset(adjusted, TranslationUtils.getMessage(this.descTranslation, player));
+            TranslatableItem.addLoreNoReset(adjusted, TranslationUtils.getMessage(descTranslation, player));
         }
 
         String name = ReflectionUtils.getStackName(adjusted);
+        String nameTranslation = result.getNameTranslation();
 
-        if (!this.nameTranslation.isEmpty() && TranslationUtils.messageExists(this.nameTranslation, player))
+        if (!nameTranslation.isEmpty() && TranslationUtils.messageExists(nameTranslation, player))
         {
-            name = TranslationUtils.getMessage(this.nameTranslation, player);
+            name = TranslationUtils.getMessage(nameTranslation, player);
         }
 
         if (isDisplay)

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.logging.Level;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -241,6 +243,7 @@ public class ItemUtils
         return colored;
     }
 
+    @SuppressWarnings({"deprecation", "removal"})
     public static ItemStack makeMenuItem(ItemStack itemstack)
     {
         ItemMeta meta = itemstack.getItemMeta();
@@ -249,6 +252,12 @@ public class ItemUtils
 
         if (EggWars.serverVersion.ordinal() >= Versions.V_1_20_R4.ordinal())
         {
+            if (EggWars.fixPaperOBC && EggWars.serverVersion.ordinal() == Versions.V_1_21_R3.ordinal())
+            {
+                meta.addAttributeModifier(Attribute.values()[0], new AttributeModifier("dummy", 0, AttributeModifier.Operation.ADD_NUMBER));
+                meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
+            }
+
             meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
             meta.setMaxStackSize(99);
         }

@@ -234,8 +234,6 @@ public class TradingManager
                     offer = new Offer(slot, result, price, isDuplicate);
                 }
 
-                offer.setNameTranlation(GsonHelper.getAsString(offerjson, "translate_name", ""));
-                offer.setDescTranlation(GsonHelper.getAsString(offerjson, "translate_desc", ""));
                 category.addOffer(offName, offer);
             }
             catch (Exception ex)
@@ -261,11 +259,15 @@ public class TradingManager
         result.setUsesTeamColor(GsonHelper.getAsBoolean(resultJ, "use_team_color", false));
         String equip = GsonHelper.getAsString(resultJ, "equipment_config", "");
 
-        if (resultJ.has("equipment_config") && this.autoEquips.containsKey(equip))
+        /* If the item has no equipment config assigned but there's an equipment config 
+         * with no name (empty string), that equipment config will be used. */
+        if (this.autoEquips.containsKey(equip))
         {
             result.setAutoEquip(this.autoEquips.get(equip));
         }
 
+        result.setNameTranslation(GsonHelper.getAsString(resultJ, "translate_name", ""));
+        result.setDescTranslation(GsonHelper.getAsString(resultJ, "translate_desc", ""));
         result.setInheritsNameDesc(GsonHelper.getAsBoolean(resultJ, "keep_info_when_bought", false));
         return result;
     }

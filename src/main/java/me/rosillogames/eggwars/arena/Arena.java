@@ -71,17 +71,17 @@ public class Arena
     private HealthType healthType = HealthType.NORMAL;
     private final Map<EwPlayer, ItemType> itemsVotes = new HashMap();
     private final Map<EwPlayer, HealthType> healthVotes = new HashMap();
-    //TODO: setup new menus when arena does init, depending if it's setup it will load SetupGUI or this one with voting, etc...
     private TeamsMenu teamSelectMenu;
     private VotingMenus votingMenus;
+    /** The arena's specific shop category **/
     @Nullable
-    public Category specialTrades;//TODO
+    private Category specificShop;
     private boolean forced = false;
     private boolean saving = false;
     private int currCountdown;
 
     //Constant stored settings
-    public /*TODO: was private */ boolean customTrades = false;
+    private boolean customTrades = false;
     private Location lobby;
     private Location center;
     private Bounds boundaries;
@@ -219,7 +219,7 @@ public class Arena
 
     public void loadShop()
     {
-        this.specialTrades = null;
+        this.specificShop = null;
 
         if (this.customTrades)
         {
@@ -227,14 +227,20 @@ public class Arena
 
             try
             {
-                this.specialTrades = EggWars.getTradingManager().loadSpecialCategory(this.arenaFolder, this.itemType);
-                this.specialTrades.buildMenu();
+                this.specificShop = EggWars.getTradingManager().loadSpecialCategory(this.arenaFolder, this.itemType);
+                this.specificShop.buildMenu();
             }
             catch (Exception ex)
             {
                 EggWars.instance.getLogger().log(Level.WARNING, "Error loading special shop category for arena \"" + this.getName() + "\": ", ex);
             }
         }
+    }
+
+    @Nullable
+    public Category getSpecificShop()
+    {
+        return this.specificShop;
     }
 
     public Map<Location, BlockState> getReplacedBlocks()
@@ -758,11 +764,7 @@ public class Arena
             this.world.removePluginChunkTickets(EggWars.instance);
         }
 
-        if (!enterSetup)
-        {
-            this.getWorld().setGameRule(GameRule.RANDOM_TICK_SPEED, Integer.valueOf(0));
-        }
-
+        this.getWorld().setGameRule(GameRule.RANDOM_TICK_SPEED, Integer.valueOf(enterSetup ? 3 : 0));
         this.itemType = ItemType.NORMAL;
         this.healthType = HealthType.NORMAL;
         this.setStatus(enterSetup ? ArenaStatus.SETTING : ArenaStatus.WAITING);
@@ -1005,7 +1007,7 @@ public class Arena
             fconfig.set("Team." + id + ".Respawn", Locations.toString(team.getRespawn(), true));
         }
 
-        int c = 1;
+        int c = 1;/*TODO: starts with 1 due to an old removed behaviour, see if we can set this to 0*/
         fconfig.set("Generator", null);
 
         for (Generator generator : this.generators.values())

@@ -17,6 +17,8 @@ import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.ItemUtils;
 
+//TODO: Separate these menus from the arena since they no longer depends on them (only of player)
+// Only when EwPlayer is converted to ArenaPlayer
 public class VotingMenus
 {
     private static TranslatableItem invItem;

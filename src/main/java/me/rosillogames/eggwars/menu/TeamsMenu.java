@@ -29,7 +29,7 @@ public class TeamsMenu extends EwMenu
     private final Map<TeamType, ItemStack> teamItems = Maps.<TeamType, ItemStack>newEnumMap(TeamType.class);
     private ItemStack randomItem;
     private int size;
-    private boolean initialized = false;//dirtySlots ??
+    private boolean initialized = false;
 
     public TeamsMenu()
     {
@@ -111,7 +111,7 @@ public class TeamsMenu extends EwMenu
     @Nullable
     @Override
     public Inventory translateToPlayer(EwPlayer player, boolean reopen)
-    {//TODO Reduce repetitions by adding new static/super methods
+    {//Reduce repetitions by adding new static/super methods?
         if (!this.initialized)
         {
             return null;
@@ -168,7 +168,7 @@ public class TeamsMenu extends EwMenu
 
     @Override
     public void clickInventory(InventoryClickEvent clickEvent, EwPlayer player)
-    {//TODO Reduce repetitions by adding new static/super methods
+    {//Reduce repetitions by adding new static/super methods?
         if (!this.initialized || !player.getArena().getStatus().isLobby())
         {
             return;

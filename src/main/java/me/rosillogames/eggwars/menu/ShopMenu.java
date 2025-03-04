@@ -110,16 +110,13 @@ public class ShopMenu extends EwMenu
 
         mcInventory.setItem(size.getSlots() - 5, ProfileMenus.getCloseItem().apply(player));
         mcInventory.setItem(size.getSlots() - 1, ProfileMenus.getClassicShopItem().apply(player));
+        Category specific = ply.getArena().getSpecificShop();
 
-        if (ply.getArena().customTrades && ply.getArena().specialTrades != null)
+        if (specific != null && specific.isEmpty())
         {
-            if (!ply.getArena().specialTrades.isEmpty())
-            {
-                Category category = ply.getArena().specialTrades;
-                ItemStack stack = ItemUtils.makeMenuItem(category.getDisplayItem().clone());
-                SerializingItems.OPEN_CATEGORY.setItemReference(stack, "special");
-                mcInventory.setItem(4, TranslatableItem.translatableNameLore(stack, category.getTranslation() + ".desc", category.getTranslation() + ".name").apply(player));
-            }
+            ItemStack stack = ItemUtils.makeMenuItem(specific.getDisplayItem().clone());
+            SerializingItems.OPEN_CATEGORY.setItemReference(stack, "special");
+            mcInventory.setItem(4, TranslatableItem.translatableNameLore(stack, specific.getTranslation() + ".desc", specific.getTranslation() + ".name").apply(player));
         }
 
         return mcInventory;

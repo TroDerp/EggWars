@@ -21,16 +21,19 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import com.google.gson.JsonObject;
+import me.rosillogames.eggwars.EggWars;
 
 public class Reflections_1_21 implements Reflections
 {
     private final boolean isNewVersion;
     private final boolean isEvenNewer;
+    private final boolean fixPaperNames;
 
     public Reflections_1_21(byte v)
     {
         this.isNewVersion = v > 0;
         this.isEvenNewer = v > 1;
+        this.fixPaperNames = v == 2 && EggWars.fixPaperOBC;
     }
 
     @Override
@@ -64,12 +67,12 @@ public class Reflections_1_21 implements Reflections
     {
         try
         {
-            Class cHoldLookA = this.getNMSClass("core.HolderLookup").getDeclaredClasses()[0];
+            Class cHoldLookA = this.getNMSClass("core.HolderLookup").getDeclaredClasses()[this.fixPaperNames ? 1 : 0];
             Object holdLookA = this.getNMSClass("server.MinecraftServer").getMethod("getDefaultRegistryAccess").invoke(null);
             Class cItemStack = this.getNMSClass("world.item.ItemStack");
             Object itemNbt = this.getNMSClass("nbt.MojangsonParser").getMethod("a", String.class).invoke(null, json.toString());
             Class cNBTBase = this.getNMSClass("nbt.NBTBase");
-            Optional stack = (Optional)cItemStack.getMethod("a", cHoldLookA, cNBTBase).invoke(null, holdLookA, itemNbt);
+            Optional stack = (Optional)cItemStack.getMethod(this.fixPaperNames ? "parse" : "a", cHoldLookA, cNBTBase).invoke(null, holdLookA, itemNbt);
 
             if (stack.isPresent())
             {

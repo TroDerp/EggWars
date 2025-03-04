@@ -7,9 +7,11 @@ import me.rosillogames.eggwars.objects.AutoEquipEntry;
 public class TradeResult
 {
     private final ItemStack result;
-    private boolean colorize;
+    private boolean colorize = false;
     @Nullable
     private AutoEquipEntry autoEquip;
+    private String nameTranslation = "";
+    private String descTranslation = "";
     private boolean inheritNameDesc = false;
 
     public TradeResult(ItemStack resultIn)
@@ -41,6 +43,26 @@ public class TradeResult
     public void setAutoEquip(AutoEquipEntry conf)
     {
         this.autoEquip = conf;
+    }
+
+    public String getNameTranslation()
+    {
+        return this.nameTranslation;
+    }
+
+    public void setNameTranslation(String tKey)
+    {
+        this.nameTranslation = tKey;
+    }
+
+    public String getDescTranslation()
+    {
+        return this.descTranslation;
+    }
+
+    public void setDescTranslation(String tKey)
+    {
+        this.descTranslation = tKey;
     }
 
     public boolean inheritsNameDesc()
