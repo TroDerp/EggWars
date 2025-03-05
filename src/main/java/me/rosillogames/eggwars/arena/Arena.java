@@ -228,7 +228,7 @@ public class Arena
             try
             {
                 this.specificShop = EggWars.getTradingManager().loadSpecialCategory(this.arenaFolder, this.itemType);
-                this.specificShop.buildMenu();
+                this.specificShop.buildMenu();//Encapsulated null exception
             }
             catch (Exception ex)
             {

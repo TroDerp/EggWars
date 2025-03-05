@@ -141,9 +141,15 @@ public class TradingManager
     public Category loadSpecialCategory(File folder, ItemType type) throws IOException
     {
         BufferedReader buffer = Files.newBufferedReader((new File(folder, SPEC_TRADES_FILE)).toPath());
-        JsonObject shopJson = GsonHelper.getAsJsonObject(GsonHelper.convertToJsonObject(GsonHelper.parse(buffer), "special_category"), "tiers");
-        JsonObject tierJson = GsonHelper.getAsJsonObject(shopJson, type.toString());
-        Category category = this.loadCategory("special", tierJson);
+        JsonObject specCategJson = GsonHelper.convertToJsonObject(GsonHelper.parse(buffer), "special_category");
+        Category category = null;
+
+        if (isConfigCompatible(specCategJson, SPEC_TRADES_FILE))
+        {
+            JsonObject tierJson = GsonHelper.getAsJsonObject(GsonHelper.getAsJsonObject(specCategJson, "category_tiers"), type.toString());
+            category = this.loadCategory("special", tierJson);
+        }
+
         buffer.close();
         return category;//Error loading special shop category for arena \"
     }

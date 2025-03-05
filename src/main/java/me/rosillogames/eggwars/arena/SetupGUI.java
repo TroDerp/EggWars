@@ -104,7 +104,7 @@ public class SetupGUI
                 if (team == null)
                 {
                     todoLore.append(TranslationUtils.getMessage("setup.gui.teams.team.todo.create", player));
-                    clickLore = TranslationUtils.getMessage("setup.gui.teams.team.click.uncreated", player);
+                    clickLore = TranslationUtils.getMessage("setup.gui.teams.team.click.create", player);
                 }
                 else
                 {
@@ -139,7 +139,7 @@ public class SetupGUI
                         todoLore.append(TranslationUtils.getMessage("setup.gui.teams.team.todo.done", player));
                     }
 
-                    clickLore = TranslationUtils.getMessage("setup.gui.teams.team.click.created", player);
+                    clickLore = TranslationUtils.getMessage("setup.gui.teams.team.click.manage", player);
                 }
 
                 TranslatableItem.setLore(stack, TranslationUtils.getMessage("setup.gui.teams.team.item_lore", player, todoLore.toString(), clickLore));
