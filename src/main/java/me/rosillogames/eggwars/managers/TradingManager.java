@@ -194,6 +194,7 @@ public class TradingManager
         }
 
         Category category = new Category(size, armor, displayItem, GsonHelper.getAsString(categoryJson, "translation_key"));
+        List<Integer> usedSlots = new ArrayList();
         JsonObject offers = GsonHelper.getAsJsonObject(categoryJson, "offers");
 
         for (Map.Entry<String, JsonElement> entry : offers.entrySet())
@@ -213,6 +214,16 @@ public class TradingManager
                 }
 
                 int slot = GsonHelper.getAsInt(offerjson, "slot");
+
+                if (usedSlots.contains(Integer.valueOf(slot)))
+                {
+                    throw new IllegalStateException("Duplicate input slot!");
+                }
+                else if (slot >= size.getSlots())
+                {
+                    throw new IllegalStateException("The input slot is outside the menu!");
+                }
+
                 boolean isDuplicate = GsonHelper.getAsBoolean(offerjson, "is_duplicate", false);
                 List<TradeResult> multiResults = new ArrayList();
                 JsonArray array = GsonHelper.getAsJsonArray(offerjson, "multi_results", new JsonArray());

@@ -253,7 +253,7 @@ public class ItemUtils
         if (EggWars.serverVersion.ordinal() >= Versions.V_1_20_R4.ordinal())
         {
             if (EggWars.fixPaperOBC && EggWars.serverVersion.ordinal() == Versions.V_1_21_R3.ordinal())
-            {
+            {//this only affects paper because HIDE_ATTRIBUTES is not working there (paper's issue #10655)
                 meta.addAttributeModifier(Attribute.values()[0], new AttributeModifier("dummy", 0, AttributeModifier.Operation.ADD_NUMBER));
                 meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
             }

@@ -149,8 +149,20 @@ public class SetupGUI
 
         teamsInv.setItem(31, ProfileMenus.getCloseItem());
         this.teamsMenu = new TranslatableMenu(MenuType.SETUP_TEAMS, Listener::setupClick);
-        this.teamsMenu.setParent(arenaMenu);
+        this.teamsMenu.setParent(this.arenaMenu);
         this.teamsMenu.addPage(teamsInv);
+    }
+
+    public void closeAllGuis()
+    {
+        this.arenaMenu.closeForEveryone(false);
+        this.basicsMenu.closeForEveryone(false);
+        this.teamsMenu.closeForEveryone(false);
+
+        for (TranslatableMenu menu : this.editTeamMenus.values())
+        {
+            menu.closeForEveryone(false);
+        }//What about gen menus? add arena check predicate?
     }
 
     public void updateBasicsMenu()
@@ -159,7 +171,7 @@ public class SetupGUI
         {
             this.basicsMenu = new TranslatableMenu(MenuType.BASIC_SETTINGS, Listener::setupClick);
             this.basicsMenu.addPage(new TranslatableInventory(27, "setup.gui.basic.title"));
-            this.basicsMenu.setParent(arenaMenu);
+            this.basicsMenu.setParent(this.arenaMenu);
         }
 
         TranslatableInventory tInv = this.basicsMenu.getPage(0);

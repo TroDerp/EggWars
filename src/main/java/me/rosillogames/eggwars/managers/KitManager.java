@@ -60,7 +60,7 @@ public class KitManager
         try
         {
             EggWars.instance.saveCustomResource(KITS_FILE, null, false);
-            BufferedReader buffer = Files.newBufferedReader((new File(EggWars.instance.getDataFolder(), "custom/kits.json")).toPath());
+            BufferedReader buffer = Files.newBufferedReader((new File(EggWars.instance.getDataFolder(), KITS_FILE)).toPath());
             JsonObject fileJson = GsonHelper.convertToJsonObject(GsonHelper.parse(buffer), "kits");
 
             if (TradingManager.isConfigCompatible(fileJson, KITS_FILE))

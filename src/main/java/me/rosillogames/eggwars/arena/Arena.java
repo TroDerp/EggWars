@@ -768,6 +768,7 @@ public class Arena
         this.itemType = ItemType.NORMAL;
         this.healthType = HealthType.NORMAL;
         this.setStatus(enterSetup ? ArenaStatus.SETTING : ArenaStatus.WAITING);
+        this.setupGUI.closeAllGuis();
 
         if (this.teamSelectMenu == null)
         {

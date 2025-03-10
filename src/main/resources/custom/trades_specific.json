@@ -1,4 +1,5 @@
 {
+  "format_versions": ["10", "11", "12", "13"],
   "category_tiers": {
     "hardcore": {
       "translation_key": "shop.special",
