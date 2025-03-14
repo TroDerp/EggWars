@@ -177,7 +177,7 @@ public class SignListener implements Listener
                     }
                     else
                     {
-                        gen.addOpener(ewplayer);
+                        ewplayer.getMenuPlayer().openMenu(gen);
                     }
                 }//cancel ANY interaction when performing gen action
 

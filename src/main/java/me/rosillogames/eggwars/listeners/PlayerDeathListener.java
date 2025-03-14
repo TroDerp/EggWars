@@ -116,7 +116,7 @@ public class PlayerDeathListener implements Listener
             }
 
             //Reward points message for killer comes before elimination message
-            PlayerUtils.addPoints(killerPlayer, fk ? EggWars.instance.getConfig().getInt("game.points.on_final_kill") : EggWars.instance.getConfig().getInt("game.points.on_kill"));
+            PlayerUtils.addPoints(killerPlayer.getPlayer(), fk ? EggWars.instance.getConfig().getInt("game.points.on_final_kill") : EggWars.instance.getConfig().getInt("game.points.on_kill"));
         }
         else
         {
@@ -259,7 +259,7 @@ public class PlayerDeathListener implements Listener
             TranslationUtils.sendMessage("gameplay.ingame.invincible", pl.getPlayer(), TranslationUtils.translateTime(pl.getPlayer(), EggWars.config.invincibleTime, true));
         }
 
-        Kit plKit = pl.getKit();
+        Kit plKit = PlayerUtils.getSelectedKit(pl.getPlayer());
 
         if (plKit != null && plKit.cooldownTime() >= 0)
         {

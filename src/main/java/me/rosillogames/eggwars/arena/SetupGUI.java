@@ -30,7 +30,7 @@ import me.rosillogames.eggwars.menu.TranslatableMenu;
 import me.rosillogames.eggwars.menu.ProfileMenus.MenuSize;
 import me.rosillogames.eggwars.objects.ArenaSign;
 import me.rosillogames.eggwars.objects.Cage;
-import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.player.MenuPlayer;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.ItemUtils;
@@ -147,16 +147,23 @@ public class SetupGUI
             });
         }
 
-        teamsInv.setItem(31, ProfileMenus.getCloseItem());
+        teamsInv.setItem(31, ProfileMenus::getCloseItem);
         this.teamsMenu = new TranslatableMenu(MenuType.SETUP_TEAMS, Listener::setupClick);
-        this.teamsMenu.setParent(this.arenaMenu);
         this.teamsMenu.addPage(teamsInv);
     }
 
     public void closeAllGuis()
     {
-        this.arenaMenu.closeForEveryone(false);
-        this.basicsMenu.closeForEveryone(false);
+        if (this.arenaMenu != null)
+        {
+            this.arenaMenu.closeForEveryone(false);
+        }
+
+        if (this.basicsMenu != null)
+        {
+            this.basicsMenu.closeForEveryone(false);
+        }
+
         this.teamsMenu.closeForEveryone(false);
 
         for (TranslatableMenu menu : this.editTeamMenus.values())
@@ -171,7 +178,6 @@ public class SetupGUI
         {
             this.basicsMenu = new TranslatableMenu(MenuType.BASIC_SETTINGS, Listener::setupClick);
             this.basicsMenu.addPage(new TranslatableInventory(27, "setup.gui.basic.title"));
-            this.basicsMenu.setParent(this.arenaMenu);
         }
 
         TranslatableInventory tInv = this.basicsMenu.getPage(0);
@@ -182,7 +188,7 @@ public class SetupGUI
         tInv.setItem(14, getLocationSetting("setup.gui.basic.bounds_start", bounds.getStart(), bounds.getStart() != null ? Material.STRUCTURE_VOID : Material.BARRIER));
         tInv.setItem(15, getLocationSetting("setup.gui.basic.bounds_end", bounds.getEnd(), bounds.getEnd() != null ? Material.STRUCTURE_VOID : Material.BARRIER));
         tInv.setItem(16, TranslatableItem.fullTranslatable((player) -> new ItemStack(Material.TARGET, 1), (player) -> TranslationUtils.getMessage("setup.gui.basic.bounds_info.item_lore", player, (bounds.getStart() == null && bounds.getEnd() == null ? "" : TranslationUtils.getMessage("setup.gui.basic.bounds_info.remove", player))), (player) -> TranslationUtils.getMessage("setup.gui.basic.bounds_info.item_name", player)));
-        tInv.setItem(22, ProfileMenus.getCloseItem());
+        tInv.setItem(22, ProfileMenus::getCloseItem);
         this.basicsMenu.sendMenuUpdate(false);
     }
 
@@ -199,7 +205,6 @@ public class SetupGUI
             {
                 singleTeamM = new TranslatableMenu(MenuType.SETUP_SINGLE_TEAM, Listener::setupClick);
                 singleTeamM.addPage(new TranslatableInventory(27, (player) -> TranslationUtils.getMessage("setup.gui.team.title", player, TeamUtils.translateTeamType(team.getType(), player, false))));
-                singleTeamM.setParent(this.teamsMenu);
                 singleTeamM.setExtraData(type);
                 this.editTeamMenus.put(type, singleTeamM);
             }
@@ -209,7 +214,7 @@ public class SetupGUI
             teamInv.setItem(12, getMultipleSetting("setup.gui.team.cages", team.getCages(), Material.GLASS, team.getCages().size(), this.arena.getMaxTeamPlayers()));
             teamInv.setItem(14, getLocationSetting("setup.gui.team.respawn", team.getRespawn(), Material.RED_WOOL));
             teamInv.setItem(16, getLocationSetting("setup.gui.team.egg", team.getEgg(), Material.DRAGON_EGG));
-            teamInv.setItem(22, ProfileMenus.getCloseItem());
+            teamInv.setItem(22, ProfileMenus::getCloseItem);
 
             if (sendUpdate)
             {
@@ -241,7 +246,7 @@ public class SetupGUI
         return stack;
     }
 
-    public void openArenaGUI(EwPlayer player)
+    public void openArenaGUI(MenuPlayer player)
     {
         if (this.arenaMenu == null)
         {
@@ -256,26 +261,26 @@ public class SetupGUI
             stack = new ItemStack(Material.OAK_SIGN, 1);
             ItemUtils.setOpensMenu(stack, MenuType.SELECT_GENERATOR);
             tInv.setItem(15, TranslatableItem.translatableNameLore(stack, "setup.gui.arena.generators.item_lore", "setup.gui.arena.generators.item_name"));
-            tInv.setItem(31, ProfileMenus.getCloseItem());
+            tInv.setItem(31, ProfileMenus::getCloseItem);
             this.arenaMenu.addPage(tInv);
         }
 
-        this.arenaMenu.addOpener(player);
+        player.openMenu(this.arenaMenu);
     }
 
-    private void openBasicSetupGUI(EwPlayer player)
+    private void openBasicSetupGUI(MenuPlayer player)
     {
-        this.basicsMenu.addOpener(player);
+        player.openMenu(this.basicsMenu);
     }
 
-    private void openTeamsSetupGUI(EwPlayer player)
+    private void openTeamsSetupGUI(MenuPlayer player)
     {
-        this.teamsMenu.addOpener(player);
+        player.openMenu(this.teamsMenu);
     }
 
-    private void openSingleTeamSetupGUI(EwPlayer player, TeamType teamType)
+    private void openSingleTeamSetupGUI(MenuPlayer player, TeamType teamType)
     {
-        this.editTeamMenus.get(teamType).addOpener(player);
+        player.openMenu(this.editTeamMenus.get(teamType));
     }
 
     private static Function<Player, ItemStack> getLocationSetting(String tKey, Location setting, Material mat)
@@ -333,14 +338,14 @@ public class SetupGUI
         };
     }
 
-    private static void openGeneratorTypes(EwPlayer ply)
+    private static void openGeneratorTypes(MenuPlayer ply)
     {
         if (selectGenTypeMenu == null)
         {
             makeGeneratorsTypesGUI();
         }
 
-        selectGenTypeMenu.addOpener(ply);
+        ply.openMenu(selectGenTypeMenu);
     }
 
     public static void makeGeneratorsTypesGUI()
@@ -389,25 +394,24 @@ public class SetupGUI
                 translatableinv.setItem(size.getSlots() - 9, ProfileMenus.getPreviousItem());
             }
 
-            translatableinv.setItem(size.getSlots() - 5, ProfileMenus.getCloseItem());
+            translatableinv.setItem(size.getSlots() - 5, ProfileMenus::getCloseItem);
             selectGenTypeMenu.addPage(translatableinv);
         }
 
         selectGenTypeMenu.sendMenuUpdate(true);
     }
 
-    private static void openGeneratorLevels(EwPlayer ply, GeneratorType type)
+    private static void openGeneratorLevels(MenuPlayer ply, GeneratorType type)
     {
         if (!selectGenLvlMenus.containsKey(type))
         {
             TranslatableMenu menu = new TranslatableMenu(MenuType.SELECT_GENERATOR_LEVEL, Listener::setupClick);
             menu.setUsable(true);
-            menu.setParent(selectGenTypeMenu);
             selectGenLvlMenus.put(type, menu);
             makeGeneratorLevelsGUI(type);
         }
 
-        selectGenLvlMenus.get(type).addOpener(ply);
+        ply.openMenu(selectGenLvlMenus.get(type));
     }
 
     public static void reloadGeneratorLevelsGUIs()
@@ -474,7 +478,7 @@ public class SetupGUI
                 translatableinv.setItem(size.getSlots() - 9, ProfileMenus.getPreviousItem());
             }
 
-            translatableinv.setItem(size.getSlots() - 5, ProfileMenus.getCloseItem());
+            translatableinv.setItem(size.getSlots() - 5, ProfileMenus::getCloseItem);
             menu.addPage(translatableinv);
         }
 
@@ -483,7 +487,7 @@ public class SetupGUI
 
     public static class Listener implements org.bukkit.event.Listener
     {
-        private static void setupClick(InventoryClickEvent event, EwPlayer ply, EwMenu menu)
+        private static void setupClick(InventoryClickEvent event, MenuPlayer ply, EwMenu menu)
         {
             MenuType mType = menu.getMenuType();
             ItemStack currItem = event.getCurrentItem();

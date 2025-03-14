@@ -34,6 +34,7 @@ import me.rosillogames.eggwars.menu.SerializingItems;
 import me.rosillogames.eggwars.objects.Price;
 import me.rosillogames.eggwars.objects.Token;
 import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.player.MenuPlayer;
 import me.rosillogames.eggwars.utils.Fireworks;
 import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.Locations;
@@ -383,7 +384,7 @@ public class Generator extends EwMenu
 
     @Nullable
     @Override
-    public Inventory translateToPlayer(EwPlayer ewPlyr, boolean reopen)
+    public Inventory translateToPlayer(MenuPlayer menuPly, boolean reopen)
     {
         if (!this.hasCachedType())
         {
@@ -391,11 +392,11 @@ public class Generator extends EwMenu
         }
 
         Inventory mcInventory;
-        Player player = ewPlyr.getPlayer();
+        Player player = menuPly.getPlayer();
 
-        if (ewPlyr.getMenu() == this && !reopen)
+        if (menuPly.getMenu() == this && !reopen)
         {
-            mcInventory = this.openers.get(ewPlyr);
+            mcInventory = menuPly.getCurrentInventory();
         }
         else
         {
@@ -427,7 +428,7 @@ public class Generator extends EwMenu
         upgradeItem.setItemMeta(upgradeMeta);
         SerializingItems.UPGRADE_GEN.setItemReference(upgradeItem, null);
         mcInventory.setItem(15, upgradeItem);
-        mcInventory.setItem(22, ProfileMenus.getCloseItem().apply(player));
+        mcInventory.setItem(22, ProfileMenus.getCloseItem(player));
          return mcInventory;
     }
 
@@ -448,7 +449,7 @@ public class Generator extends EwMenu
 
 
     @Override
-    public void clickInventory(InventoryClickEvent clickEvent, EwPlayer player)
+    public void clickInventory(InventoryClickEvent clickEvent, MenuPlayer player)
     {
         ItemStack currItem = clickEvent.getCurrentItem();
         SerializingItems type = SerializingItems.getReferenceType(currItem);
@@ -460,7 +461,7 @@ public class Generator extends EwMenu
             return;
         }
 
-        if (!this.hasCachedType() || !player.getArena().getStatus().isGame())
+        if (!this.hasCachedType() || !player.getEwPlayer().getArena().getStatus().isGame())
         {
             return;
         }

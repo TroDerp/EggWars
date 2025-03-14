@@ -1,11 +1,8 @@
 package me.rosillogames.eggwars.database;
 
 import java.util.HashMap;
-import javax.annotation.Nullable;
-import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.Mode;
 import me.rosillogames.eggwars.enums.StatType;
-import me.rosillogames.eggwars.objects.Kit;
 
 public class PlayerData
 {
@@ -113,10 +110,9 @@ public class PlayerData
         return this.locale;
     }
 
-    @Nullable
-    public Kit getKit()
+    public String getKit()
     {
-        return EggWars.getKitManager().getKit(this.currentKit);
+        return this.currentKit;
     }
 
     public int getPoints()

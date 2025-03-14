@@ -20,11 +20,11 @@ import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.menu.KitsMenu;
 import me.rosillogames.eggwars.objects.Kit;
-import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.GsonHelper;
 import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.Pair;
+import me.rosillogames.eggwars.utils.PlayerUtils;
 
 public class KitManager
 {
@@ -153,27 +153,27 @@ public class KitManager
         return this.kitsMenu;
     }
 
-    public static boolean buyKit(EwPlayer ewplayer, Kit kit)
+    public static boolean buyKit(Player ply, Kit kit)
     {
-        boolean flag = ewplayer.getPlayer().hasPermission("eggwars.freekits");
+        boolean flag = ply.getPlayer().hasPermission("eggwars.freekits") || kit.price() <= 0;
 
-        if (ewplayer.getPoints() < kit.price() && !flag)
+        if (!flag && PlayerUtils.getPoints(ply) < kit.price())
         {
             return false;
         }
 
-        EggWars.getDB().getPlayerData(ewplayer.getPlayer()).unlockKit(kit.id());
+        EggWars.getDB().getPlayerData(ply.getPlayer()).unlockKit(kit.id());
 
         if (!flag)
         {
-            ewplayer.setPoints(ewplayer.getPoints() - kit.price());
+            PlayerUtils.setPoints(ply, PlayerUtils.getPoints(ply) - kit.price());
         }
 
         return true;
     }
 
-    public static boolean canBuy(EwPlayer ewplayer, Kit kit)
+    public static boolean canBuy(Player ply, Kit kit)
     {
-        return ewplayer.getPlayer().hasPermission("eggwars.freekits") || ewplayer.getPoints() >= kit.price();
+        return ply.getPlayer().hasPermission("eggwars.freekits") || PlayerUtils.getPoints(ply) >= kit.price();
     }
 }

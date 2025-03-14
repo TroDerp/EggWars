@@ -24,7 +24,7 @@ import me.rosillogames.eggwars.menu.EwMenu;
 import me.rosillogames.eggwars.menu.MenuClickListener;
 import me.rosillogames.eggwars.menu.ProfileMenus;
 import me.rosillogames.eggwars.menu.SerializingItems;
-import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.player.MenuPlayer;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.ItemUtils;
@@ -81,7 +81,7 @@ public class Category extends EwMenu
     {
         //build merchant menu
         TranslatableInventory tInv = new TranslatableInventory(this.size.getSlots(), this.translationKey + ".title");
-        tInv.setItem(this.size.getSlots() - 5, ProfileMenus.getCloseItem());
+        tInv.setItem(this.size.getSlots() - 5, ProfileMenus::getCloseItem);
 
         for (Map.Entry<EquipmentSlot, Integer> entry : this.displayArmor.entrySet())
         {
@@ -117,7 +117,7 @@ public class Category extends EwMenu
         }
     }
 
-    public void openTrading(EwPlayer player)
+    public void openTrading(MenuPlayer player)
     {
         try
         {
@@ -137,7 +137,7 @@ public class Category extends EwMenu
             }
             else
             {
-                this.addOpener(player);
+                player.openMenu(this);
             }
         }
         catch (Exception exception)
@@ -166,13 +166,13 @@ public class Category extends EwMenu
 
     @Nullable
     @Override
-    public Inventory translateToPlayer(EwPlayer player, boolean reopen)
+    public Inventory translateToPlayer(MenuPlayer player, boolean reopen)
     {
         Inventory mcInventory;
 
         if (player.getMenu() == this && !reopen)
         {
-            mcInventory = this.openers.get(player);
+            mcInventory = player.getCurrentInventory();
             mcInventory.clear();
 
             for (Map.Entry<Integer, Function<Player, ItemStack>> entry : this.inventory.getContents().entrySet())
@@ -189,9 +189,9 @@ public class Category extends EwMenu
     }
 
     @Override
-    public void clickInventory(InventoryClickEvent clickEvent, EwPlayer player)
+    public void clickInventory(InventoryClickEvent clickEvent, MenuPlayer player)
     {
-        if (MenuClickListener.listenGeneric(clickEvent, player, this) || !player.isInArena())
+        if (MenuClickListener.listenGeneric(clickEvent, player, this))
         {
             return;
         }

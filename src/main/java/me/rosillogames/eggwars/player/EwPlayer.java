@@ -5,21 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.arena.Team;
-import me.rosillogames.eggwars.dependencies.VaultEconomy;
 import me.rosillogames.eggwars.enums.Mode;
 import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.enums.TeamType;
-import me.rosillogames.eggwars.events.EwPlayerChangeLangEvent;
-import me.rosillogames.eggwars.menu.EwMenu;
 import me.rosillogames.eggwars.menu.ProfileMenus;
 import me.rosillogames.eggwars.objects.AttackInstance;
 import me.rosillogames.eggwars.objects.Cooldown;
-import me.rosillogames.eggwars.objects.Kit;
 
 public class EwPlayer
 {
@@ -34,8 +29,7 @@ public class EwPlayer
     @Nullable
     private TempGameData outsideDat;
     @Nullable
-    private EwMenu menu;
-    private int menuPage;
+    private MenuPlayer menuPlayer;
     private final ProfileMenus profile;
     private final Cooldown invincibleRemain = new Cooldown();
     private final Cooldown lastDamagerRemain = new Cooldown();
@@ -57,7 +51,7 @@ public class EwPlayer
         this.eliminated = false;
         this.joining = false;
         this.outsideDat = null;
-        this.menu = null;
+        this.menuPlayer = null;
         this.lastDamager = null;
         this.lastDamagerTeam = null;
         this.profile = new ProfileMenus(this);
@@ -146,35 +140,24 @@ public class EwPlayer
     }
 
     @Nullable
-    public EwMenu getMenu()
+    public MenuPlayer getMenuPlayer()
     {
-        return this.menu;
+        if (this.menuPlayer == null)
+        {
+            this.menuPlayer = new MenuPlayer(this);
+        }
+
+        return this.menuPlayer;
     }
 
-    public void setMenu(EwMenu menu)
+    public void setMenuPlayer(MenuPlayer menu)
     {
-        this.menu = menu;
-    }
-
-    public int getMenuPage()
-    {
-        return this.menuPage;
-    }
-
-    public void setMenuPage(int page)
-    {
-        this.menuPage = page;
+        this.menuPlayer = menu;
     }
 
     public ProfileMenus getProfile()
     {
         return this.profile;
-    }
-
-    @Nullable
-    public Kit getKit()
-    {
-        return EggWars.getDB().getPlayerData(this.player).getKit();
     }
 
     public boolean isInvincible()
@@ -190,18 +173,6 @@ public class EwPlayer
     public void clearInvincible()
     {
         this.invincibleRemain.clear();
-    }
-
-    public boolean hasKit(Kit kit)
-    {
-        if (kit.price() <= 0)
-        {
-            return true;
-        }
-        else
-        {
-            return EggWars.getDB().getPlayerData(this.player).hasKit(kit.id());
-        }
     }
 
     public void setLastDamager(EwPlayer ewplayer, float damage)
@@ -273,30 +244,6 @@ public class EwPlayer
         return this.lastDamagerTeam;
     }
 
-    public int getPoints()
-    {
-        if (EggWars.config.vault)
-        {
-            int i = VaultEconomy.getBalance(this.player);
-            EggWars.getDB().getPlayerData(this.player).setPoints(i);
-            return i;
-        }
-        else
-        {
-            return EggWars.getDB().getPlayerData(this.player).getPoints();
-        }
-    }
-
-    public void setPoints(int i)
-    {
-        if (EggWars.config.vault)
-        {
-            VaultEconomy.setPoints(this.player, i);
-        }
-
-        EggWars.getDB().getPlayerData(this.player).setPoints(i);
-    }
-
     public float getVotePower()
     {
         return this.votePower;
@@ -326,25 +273,6 @@ public class EwPlayer
     public void setTrackedPlayer(@Nullable EwPlayer player)
     {
         this.trackedPlayer = player;
-    }
-
-    public String getLangId()
-    {
-        return EggWars.getDB().getPlayerData(this.player).getLocale();
-    }
-
-    public void setLangId(String langCode)
-    {
-        EggWars.getDB().getPlayerData(this.player).setLocale(langCode);
-
-        try
-        {
-            EwPlayerChangeLangEvent ewplayerchangelangevent = new EwPlayerChangeLangEvent(this);
-            Bukkit.getPluginManager().callEvent(ewplayerchangelangevent);
-        }
-        catch (LinkageError linkageerror)
-        {
-        }
     }
 
     public class IngameStats

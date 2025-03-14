@@ -20,6 +20,7 @@ import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.enums.Versions;
 import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.player.MenuPlayer;
 import me.rosillogames.eggwars.utils.PlayerUtils;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
@@ -74,10 +75,10 @@ public class InventoryListener implements Listener
 
         EwPlayer ewply = PlayerUtils.getEwPlayer((Player)openEvent.getPlayer());
 
-        if (ewply != null && ewply.getTeam() != null && openEvent.getInventory().getType() == InventoryType.ENDER_CHEST && ewply.getMenu() == null && EggWars.config.shareTeamEC)
+        if (ewply != null && ewply.getTeam() != null && openEvent.getInventory().getType() == InventoryType.ENDER_CHEST && EggWars.config.shareTeamEC)
         {
             openEvent.setCancelled(true);
-            ewply.getTeam().getEnderChest().addOpener(ewply);
+            ewply.getMenuPlayer().openMenu(ewply.getTeam().getEnderChest());
             Block block = ReflectionUtils.getEndChestBlock(ewply.getPlayer());
 
             if (block != null && block.getState() instanceof EnderChest)
@@ -109,9 +110,11 @@ public class InventoryListener implements Listener
             return;
         }
 
-        if (ewply.getMenu() != null)
+        MenuPlayer menuply = ewply.getMenuPlayer();
+
+        if (menuply.getMenu() != null)
         {
-            if (ewply.getMenu().getMenuType() == MenuType.TEAM_ENDER_CHEST)
+            if (menuply.getMenu().getMenuType() == MenuType.TEAM_ENDER_CHEST)
             {
                 Vector vec = ewply.getTeam().removeEChester(ewply);
 
@@ -126,9 +129,9 @@ public class InventoryListener implements Listener
                 }
             }
 
-            if (event.getInventory().equals(ewply.getMenu().getPlayerInv(ewply)))
+            if (event.getInventory().equals(menuply.getCurrentInventory()))
             {//Closing inventory will not equal actual menu inventory when it's updating using re-open.
-                ewply.getMenu().removeOpener(ewply);
+                menuply.getMenu().removeOpener(menuply);
             }
 
             return;
@@ -140,15 +143,10 @@ public class InventoryListener implements Listener
     @EventHandler
     public void shopDrag(InventoryDragEvent dragEvent)
     {
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)dragEvent.getWhoClicked());
+        MenuPlayer menuply = PlayerUtils.getEwPlayer((Player)dragEvent.getWhoClicked()).getMenuPlayer();
 
         // Check cancelled to prevent collision with other plugins.
-        if (ewplayer.getMenu() == null || dragEvent.isCancelled())
-        {
-            return;
-        }
-
-        if (!ewplayer.getMenu().isUsable() || !ewplayer.isInArena())
+        if (menuply.getMenu() == null || dragEvent.isCancelled() || !menuply.getMenu().isUsable())
         {
             return;
         }
@@ -169,17 +167,17 @@ public class InventoryListener implements Listener
     @EventHandler
     public void newMenus(InventoryClickEvent clickEvent)
     {
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)clickEvent.getWhoClicked());
+        MenuPlayer menuply = PlayerUtils.getEwPlayer((Player)clickEvent.getWhoClicked()).getMenuPlayer();
 
         // Check cancelled to prevent collision with other plugins.
-        if (ewplayer.getMenu() != null && !clickEvent.isCancelled())
+        if (menuply.getMenu() != null && !clickEvent.isCancelled())
         {
-            if (ewplayer.getMenu().getMenuType() == MenuType.TEAM_ENDER_CHEST)
+            if (menuply.getMenu().getMenuType() == MenuType.TEAM_ENDER_CHEST)
             {//Should I add a field instead to check this?
                 return;
             }
 
-            if (ewplayer.getMenu().isUsable())
+            if (menuply.getMenu().isUsable())
             {
                 if (clickEvent.getAction() == InventoryAction.DROP_ONE_CURSOR || clickEvent.getAction() == InventoryAction.DROP_ALL_CURSOR)
                 {
@@ -205,7 +203,7 @@ public class InventoryListener implements Listener
                 return;
             }
 
-            ewplayer.getMenu().clickInventory(clickEvent, ewplayer);
+            menuply.getMenu().clickInventory(clickEvent, menuply);
             return;
         }
     }

@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import me.rosillogames.eggwars.enums.MenuType;
-import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.player.MenuPlayer;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 
 public class TranslatableMenu extends EwMenu
@@ -53,26 +53,6 @@ public class TranslatableMenu extends EwMenu
         this.inventories.clear();
     }
 
-    @Override
-    public boolean addOpener(EwPlayer player)
-    {
-        boolean flag = super.addOpener(player);
-
-        if (flag)
-        {
-            player.setMenuPage(0);
-        }
-
-        return flag;
-    }
-
-    @Override
-    public void removeOpener(EwPlayer player)
-    {
-        super.removeOpener(player);
-        player.setMenuPage(0);
-    }
-
     public boolean isPagedMenu()
     {
         return this.inventories.size() > 1;
@@ -80,14 +60,14 @@ public class TranslatableMenu extends EwMenu
 
     @Nullable
     @Override
-    public Inventory translateToPlayer(EwPlayer player, boolean reopen)
+    public Inventory translateToPlayer(MenuPlayer player, boolean reopen)
     {
         Inventory mcInventory;
-        int page = Math.min(player.getMenuPage(), this.inventories.size() - 1);
+        int page = Math.min(player.getCurrentPage(), this.inventories.size() - 1);
 
         if (player.getMenu() == this && !reopen)
         {
-            mcInventory = this.openers.get(player);
+            mcInventory = player.getCurrentInventory();
             mcInventory.clear();
 
             for (Map.Entry<Integer, Function<Player, ItemStack>> entry : this.inventories.get(page).getContents().entrySet())
@@ -104,7 +84,7 @@ public class TranslatableMenu extends EwMenu
     }
 
     @Override
-    public void clickInventory(InventoryClickEvent clickEvent, EwPlayer player)
+    public void clickInventory(InventoryClickEvent clickEvent, MenuPlayer player)
     {
         this.listener.listenClick(clickEvent, player, this);
     }

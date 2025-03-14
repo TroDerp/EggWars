@@ -17,6 +17,7 @@ import me.rosillogames.eggwars.language.Language;
 import me.rosillogames.eggwars.language.LanguageManager;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.player.MenuPlayer;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.ItemUtils;
@@ -35,11 +36,8 @@ public class ProfileMenus
         this.player = playerIn;
         this.mainMenu = new TranslatableMenu(MenuType.MENU);
         this.statsMenu = new TranslatableMenu(MenuType.STATS);
-        this.statsMenu.setParent(this.mainMenu);
         this.settingsMenu = new TranslatableMenu(MenuType.SETTINGS);
-        this.settingsMenu.setParent(this.mainMenu);
         this.langsMenu = new TranslatableMenu(MenuType.LANGUAGES);
-        this.langsMenu.setParent(this.mainMenu);
     }
 
     public void loadGuis()
@@ -49,7 +47,7 @@ public class ProfileMenus
         tInv.setItem(11, this.getProfileItem());
         tInv.setItem(15, getSettingsItem());
         tInv.setItem(33, getKitsItem());
-        tInv.setItem(tInv.getSize() - 5, getCloseItem());
+        tInv.setItem(tInv.getSize() - 5, ProfileMenus::getCloseItem);
         this.mainMenu.addPage(tInv);
         this.mainMenu.sendMenuUpdate(true);
         this.loadStatsGui();
@@ -68,14 +66,14 @@ public class ProfileMenus
         tInv.setItem(31, getStatItem(Material.GOLDEN_APPLE, StatType.WINS));
         tInv.setItem(33, TranslatableItem.translatableNameLore(ItemUtils.makeMenuItem(new ItemStack(Material.EMERALD)), (player) ->
         {
-            int points = PlayerUtils.getEwPlayer(player).getPoints();
+            int points = PlayerUtils.getPoints(player);
             return TranslationUtils.getMessage("menu.stats.points.item_lore", player, points);
         }, (player) ->
         {
-            int points = PlayerUtils.getEwPlayer(player).getPoints();
+            int points = PlayerUtils.getPoints(player);
             return TranslationUtils.getMessage("menu.stats.points.item_name", player, points);
         }));
-        tInv.setItem(tInv.getSize() - 5, getCloseItem());
+        tInv.setItem(tInv.getSize() - 5, ProfileMenus::getCloseItem);
         this.statsMenu.addPage(tInv);
         this.statsMenu.sendMenuUpdate(true);
     }
@@ -87,7 +85,7 @@ public class ProfileMenus
         ItemStack stack = new ItemStack(Material.BEACON);
         ItemUtils.setOpensMenu(stack, MenuType.LANGUAGES);
         tInv.setItem(22, TranslatableItem.translatableNameLore(ItemUtils.makeMenuItem(stack), "menu.settings.languages.item_lore", "menu.settings.languages.item_name"));
-        tInv.setItem(tInv.getSize() - 5, getCloseItem());
+        tInv.setItem(tInv.getSize() - 5, ProfileMenus::getCloseItem);
         this.settingsMenu.addPage(tInv);
         this.settingsMenu.sendMenuUpdate(true);
     }
@@ -127,7 +125,7 @@ public class ProfileMenus
                 translatableinv.setItem(menusize.getSlots() - 9, ProfileMenus.getPreviousItem());
             }
 
-            translatableinv.setItem(menusize.getSlots() - 5, getCloseItem());
+            translatableinv.setItem(menusize.getSlots() - 5, ProfileMenus::getCloseItem);
             this.langsMenu.addPage(translatableinv);
         }
 
@@ -148,7 +146,7 @@ public class ProfileMenus
 
     public TranslatableItem getLanguageItem(Language language)
     {
-        ItemStack stack = ItemUtils.makeMenuItem(new ItemStack(this.player.getLangId().equals(language.getLocale()) ? Material.WRITTEN_BOOK : Material.WRITABLE_BOOK));
+        ItemStack stack = ItemUtils.makeMenuItem(new ItemStack(PlayerUtils.getLangId(this.player.getPlayer()).equals(language.getLocale()) ? Material.WRITTEN_BOOK : Material.WRITABLE_BOOK));
         SerializingItems.SELECT_LANGUAGE.setItemReference(stack, language.getLocale());
 
         if (language.equals(LanguageManager.getDefaultLanguage()))
@@ -167,22 +165,22 @@ public class ProfileMenus
 
     public void openMainInv()
     {
-        this.mainMenu.addOpener(this.player);
+        this.player.getMenuPlayer().openMenu(this.mainMenu);
     }
 
     public void openStatsInv()
     {
-        this.statsMenu.addOpener(this.player);
+        this.player.getMenuPlayer().openMenu(this.statsMenu);
     }
 
     public void openSettingsInv()
     {
-        this.settingsMenu.addOpener(this.player);
+        this.player.getMenuPlayer().openMenu(this.settingsMenu);
     }
 
     public void openLanguageInv()
     {
-        this.langsMenu.addOpener(this.player);
+        this.player.getMenuPlayer().openMenu(this.langsMenu);
     }
 
     public TranslatableItem getProfileItem()
@@ -210,11 +208,15 @@ public class ProfileMenus
     }
 
     //TODO When MenuPlayer gets added, the translation to player will detect if this is a "close" or "go back" button.
-    public static TranslatableItem getCloseItem()
+    public static ItemStack getCloseItem(Player player)
     {
         ItemStack stack = new ItemStack(Material.BOOK);
         SerializingItems.CLOSE_OR_BACK.setItemReference(stack, null);
-        return TranslatableItem.translatableNameLore(stack, "menu.close.item_lore", "menu.close.item_name");
+        MenuPlayer menuply = PlayerUtils.getEwPlayer(player).getMenuPlayer();
+        String key = menuply != null && !menuply.getParentTree().isEmpty() ? "back" : "close";
+        TranslatableItem.setName(stack, TranslationUtils.getMessage("menu." + key + ".item_name", player));
+        TranslatableItem.setLore(stack, TranslationUtils.getMessage("menu." + key + ".item_lore", player));
+        return stack;
     }
 
     public static TranslatableItem getNextItem()

@@ -15,6 +15,7 @@ import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.managers.KitManager;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.ItemUtils;
+import me.rosillogames.eggwars.utils.PlayerUtils;
 import me.rosillogames.eggwars.utils.TeamUtils;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 
@@ -133,9 +134,9 @@ public class Starting
                 player.setExp(0.0F);
                 player.getInventory().clear();
 
-                if (ewplayer.getKit() != null)
+                if (PlayerUtils.getSelectedKit(player) != null)
                 {
-                    ewplayer.getKit().equip(player);
+                    PlayerUtils.getSelectedKit(player).equip(player);
                 }
             }
         }

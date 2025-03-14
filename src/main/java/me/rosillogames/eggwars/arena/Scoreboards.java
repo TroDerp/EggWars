@@ -9,6 +9,7 @@ import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.utils.PlayerUtils;
 import me.rosillogames.eggwars.utils.TeamUtils;
 
 @SuppressWarnings("deprecation")
@@ -63,7 +64,7 @@ public class Scoreboards
         objective = scoreboard.registerNewObjective("lobby", "dummy", "lobby");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
         objective.setDisplayName(TranslationUtils.getMessage("gameplay.scoreboard.lobby.name", ewplayer.getPlayer()));
-        setScoreboard(TranslationUtils.getMessage("gameplay.scoreboard.lobby.data", ewplayer.getPlayer(), new Object[] {this.arena.getPlayers().size(), ewplayer.getPoints(), this.arena.getMaxPlayers(), this.arena.getName()}).split("\\n"), objective);
+        setScoreboard(TranslationUtils.getMessage("gameplay.scoreboard.lobby.data", ewplayer.getPlayer(), new Object[] {this.arena.getPlayers().size(), PlayerUtils.getPoints(ewplayer.getPlayer()), this.arena.getMaxPlayers(), this.arena.getName()}).split("\\n"), objective);
         ewplayer.getPlayer().setScoreboard(scoreboard);
     }
 
@@ -89,7 +90,7 @@ public class Scoreboards
             }
         }
 
-        setBelowScoreboard(TranslationUtils.getMessage("gameplay.scoreboard.ingame.data", ewplayer.getPlayer(), new Object[] {this.arena.getAlivePlayers().size(), ewplayer.getPoints(), this.arena.getName()}).split("\\n"), objective);
+        setBelowScoreboard(TranslationUtils.getMessage("gameplay.scoreboard.ingame.data", ewplayer.getPlayer(), new Object[] {this.arena.getAlivePlayers().size(), PlayerUtils.getPoints(ewplayer.getPlayer()), this.arena.getName()}).split("\\n"), objective);
         Objective objective1 = scoreboard.getObjective("kills");
 
         if (objective1 != null)

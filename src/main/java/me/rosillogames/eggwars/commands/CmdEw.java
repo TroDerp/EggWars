@@ -309,7 +309,6 @@ public class CmdEw implements TabExecutor
                 return false;
             }
 
-            EwPlayer ewplayer = PlayerUtils.getEwPlayer((Player)sender);
             Language lang = EggWars.languageManager().getLanguages().get(args[1]);
 
             if (args[1].equals(LanguageManager.DEFAULT_NAME))
@@ -323,7 +322,7 @@ public class CmdEw implements TabExecutor
                 return false;
             }
 
-            String prevLang = ewplayer.getLangId();
+            String prevLang = PlayerUtils.getLangId((Player)sender);
             String newLang = lang.getLocale();
 
             if (prevLang.equals(newLang))
@@ -332,7 +331,7 @@ public class CmdEw implements TabExecutor
                 return false;
             }
 
-            ewplayer.setLangId(newLang);
+            PlayerUtils.setLangId((Player)sender, newLang);
             TranslationUtils.sendMessage("commands.lang.success", sender, prevLang, newLang);
             return true;
         }

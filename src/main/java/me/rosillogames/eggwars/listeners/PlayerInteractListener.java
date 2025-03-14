@@ -59,7 +59,7 @@ public class PlayerInteractListener implements Listener
 
         if (EggWars.config.opensForeignShops || ewplayer.getTeam().getType().equals(TeamType.byId(TeamUtils.teamTypeKey.getFrom(villager))))
         {
-            EggWars.getTradingManager().openEggWarsShop(ewplayer, ewplayer.getArena().getItemType());
+            ewplayer.getMenuPlayer().openMenu(EggWars.getTradingManager().getEggWarsShop(ewplayer.getArena().getItemType()));
         }
         else
         {
@@ -80,19 +80,12 @@ public class PlayerInteractListener implements Listener
             return;
         }
 
-        EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
-
-        if (!ewplayer.isInArena() || ewplayer.isEliminated())
-        {
-            return;
-        }
-
         ItemStack itemstack = event.getPlayer().getInventory().getItemInMainHand();
 
         if (ItemUtils.getOpensMenu(itemstack) == MenuType.KIT_SELECTION)
         {
             event.setCancelled(true);
-            EggWars.getKitManager().getKitsMenu().openKitsMenu(ewplayer);
+            EggWars.getKitManager().getKitsMenu().openKitsMenu(PlayerUtils.getEwPlayer(event.getPlayer()).getMenuPlayer());
         }
     }
 
@@ -126,7 +119,7 @@ public class PlayerInteractListener implements Listener
         if (ItemUtils.getOpensMenu(itemstack) == MenuType.TEAM_SELECTION)
         {
             event.setCancelled(true);
-            ewplayer.getArena().openTeamInv(ewplayer);
+            ewplayer.getMenuPlayer().openMenu(ewplayer.getArena().getTeamSelectionMenu());
         }
     }
 
@@ -160,7 +153,7 @@ public class PlayerInteractListener implements Listener
         if (ItemUtils.getOpensMenu(itemstack) == MenuType.VOTING)
         {
             event.setCancelled(true);
-            ewplayer.getArena().getVotingMenus().openMainMenu(ewplayer);
+            ewplayer.getArena().getVotingMenus().openMainMenu(ewplayer.getMenuPlayer());
         }
     }
 
@@ -281,7 +274,7 @@ public class PlayerInteractListener implements Listener
                 arena = idArena;
             }
 
-            arena.getSetupGUI().openArenaGUI(PlayerUtils.getEwPlayer(player));
+            arena.getSetupGUI().openArenaGUI(PlayerUtils.getEwPlayer(player).getMenuPlayer());
         }
     }
 

@@ -10,7 +10,7 @@ import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.managers.KitManager;
 import me.rosillogames.eggwars.objects.Kit;
-import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.player.MenuPlayer;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.Pair;
@@ -66,7 +66,7 @@ public class KitsMenu
             }
 
             translatableinv.setItem(46, getDeselectItem());
-            translatableinv.setItem(49, ProfileMenus.getCloseItem());
+            translatableinv.setItem(49, ProfileMenus::getCloseItem);
             translatableinv.setItem(52, getPointsItem());
             this.menu.addPage(translatableinv);
         }
@@ -74,19 +74,18 @@ public class KitsMenu
         this.menu.sendMenuUpdate(true);
     }
 
-    public void openKitsMenu(EwPlayer player)
+    public void openKitsMenu(MenuPlayer player)
     {
-        this.menu.addOpener(player);
+        player.openMenu(this.menu);
     }
 
     public static TranslatableItem getDeselectItem()
     {
         return TranslatableItem.fullTranslatable((player) ->
         {
-            EwPlayer ewplayer = PlayerUtils.getEwPlayer(player);
             ItemStack stack = new ItemStack(Material.BARRIER);
 
-            if (ewplayer.getKit() == null)
+            if (PlayerUtils.getSelectedKit(player) == null)
             {
                 ReflectionUtils.setEnchantGlint(stack, true, false);
             }
@@ -100,7 +99,6 @@ public class KitsMenu
     {
         return TranslatableItem.fullTranslatable((player) ->
         {
-            EwPlayer ewplayer = PlayerUtils.getEwPlayer(player);
             ItemStack stack = kit.displayItem().clone();
 
             for (Enchantment ench : stack.getEnchantments().keySet())
@@ -108,7 +106,7 @@ public class KitsMenu
                 stack.removeEnchantment(ench);
             }
 
-            if (ewplayer.getKit() == kit)
+            if (PlayerUtils.getSelectedKit(player) == kit)
             {
                 ReflectionUtils.setEnchantGlint(stack, true, false);
             }
@@ -117,17 +115,20 @@ public class KitsMenu
             return stack;
         }, (player) ->
         {
-            EwPlayer ewplayer = PlayerUtils.getEwPlayer(player);
             String kit_desc = TranslationUtils.getMessage("menu.kits.kit_lore.desc", player, TranslationUtils.getMessage(kit.getDesc(), player));
             String lock;
 
-            if (ewplayer.hasKit(kit))
+            if (PlayerUtils.hasKit(player, kit))
             {
                 lock = TranslationUtils.getMessage("menu.kits.kit_lore.unlocked", player, TranslationUtils.translateTime(player, EggWars.getDB().getPlayerData(player).timeSinceKit(kit.id()), false));
             }
+            else if (kit.price() > 0)
+            {
+                lock = TranslationUtils.getMessage("menu.kits.kit_lore.price", player, ((KitManager.canBuy(player, kit) ? "&a" : "&c") + kit.price()));
+            }
             else
             {
-                lock = TranslationUtils.getMessage("menu.kits.kit_lore.price", player, ((KitManager.canBuy(ewplayer, kit) ? "&a" : "&c") + kit.price()));
+                lock = TranslationUtils.getMessage("menu.kits.kit_lore.price_free", player);
             }
 
             String contents = "";
@@ -138,7 +139,7 @@ public class KitsMenu
                 contents = contents + TranslationUtils.getMessage("menu.kits.kit_lore.content", player, pair.getRight().getAmount(), itemName, (!pair.getRight().getEnchantments().isEmpty() ? TranslationUtils.getMessage("menu.kits.kit_lore.enchanted", player) : ""));
             }
 
-            String selection = TranslationUtils.getMessage("menu.kits.kit_lore." + (ewplayer.getKit() == kit ? "selected" : ewplayer.hasKit(kit) ? "select" : KitManager.canBuy(ewplayer, kit) ? "buy" : "cant_afford"), player);
+            String selection = TranslationUtils.getMessage("menu.kits.kit_lore." + (PlayerUtils.getSelectedKit(player) == kit ? "selected" : PlayerUtils.hasKit(player, kit) ? "select" : KitManager.canBuy(player, kit) ? "buy" : "cant_afford"), player);
             return TranslationUtils.getMessage("menu.kits.kit_lore.full", player, kit_desc, lock, contents, selection);
         }, (player) -> TranslationUtils.getMessage("menu.item_title", player, TranslationUtils.getMessage(kit.getName(), player)));
     }
@@ -147,7 +148,7 @@ public class KitsMenu
     {
         return TranslatableItem.translatableNameLore(new ItemStack(Material.SUNFLOWER), (player) ->
         {
-            int points = PlayerUtils.getEwPlayer(player).getPoints();
+            int points = PlayerUtils.getPoints(player);
             return TranslationUtils.getMessage("menu.kits.points.item_lore", player, points);
         }, (player) -> TranslationUtils.getMessage("menu.kits.points.item_name", player));
     }

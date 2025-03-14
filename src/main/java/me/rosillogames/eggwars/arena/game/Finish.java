@@ -42,7 +42,7 @@ public class Finish
                 {
                     TranslationUtils.sendMessage("gameplay.ingame.you_win", player);
                     ewpl.getIngameStats().addStat(StatType.WINS, 1);
-                    PlayerUtils.addPoints(ewpl, EggWars.instance.getConfig().getInt("game.points.on_win"));
+                    PlayerUtils.addPoints(player, EggWars.instance.getConfig().getInt("game.points.on_win"));
                 }
 
                 if (!ewpl.isEliminated())

@@ -29,6 +29,7 @@ import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.menu.EwMenu;
 import me.rosillogames.eggwars.objects.Cage;
 import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.player.MenuPlayer;
 import me.rosillogames.eggwars.utils.Locations;
 import me.rosillogames.eggwars.utils.TeamUtils;
 import me.rosillogames.eggwars.utils.WorldController;
@@ -55,7 +56,7 @@ public class Team
         this.teamChest = new EwMenu(MenuType.TEAM_ENDER_CHEST)
         {
             @Nullable
-            public Inventory translateToPlayer(EwPlayer player, boolean reopen)
+            public Inventory translateToPlayer(MenuPlayer player, boolean reopen)
             {
                 return enderChest;
             }

@@ -9,14 +9,15 @@ import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.managers.KitManager;
 import me.rosillogames.eggwars.objects.Kit;
-import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.player.MenuPlayer;
 import me.rosillogames.eggwars.utils.ItemUtils;
+import me.rosillogames.eggwars.utils.PlayerUtils;
 
 public interface MenuClickListener
 {
-    public void listenClick(InventoryClickEvent event, EwPlayer player, EwMenu menu);
+    public void listenClick(InventoryClickEvent event, MenuPlayer player, EwMenu menu);
 
-    public static boolean listenGeneric(InventoryClickEvent event, EwPlayer player, EwMenu menu)
+    public static boolean listenGeneric(InventoryClickEvent event, MenuPlayer player, EwMenu menu)
     {//What if every serialized item is its own listener? with context param (MenuContext, UseContext...)
         ItemStack currItem = event.getCurrentItem();
         SerializingItems type = SerializingItems.getReferenceType(currItem);
@@ -32,7 +33,7 @@ public interface MenuClickListener
         {
             if (SerializingItems.PREVIOUS_PAGE.equals(type))
             {
-                player.setMenuPage(player.getMenuPage() - 1);
+                player.setCurrentPage(player.getCurrentPage() - 1);
                 event.setCurrentItem(null);
                 menu.sendUpdateTo(player, true);
                 return true;
@@ -40,7 +41,7 @@ public interface MenuClickListener
 
             if (SerializingItems.NEXT_PAGE.equals(type))
             {
-                player.setMenuPage(player.getMenuPage() + 1);
+                player.setCurrentPage(player.getCurrentPage() + 1);
                 event.setCurrentItem(null);
                 menu.sendUpdateTo(player, true);
                 return true;
@@ -53,25 +54,25 @@ public interface MenuClickListener
 
             if (opensMenu == MenuType.MENU)
             {
-                player.getProfile().openMainInv();
+                player.getEwPlayer().getProfile().openMainInv();
                 return true;
             }
 
             if (opensMenu == MenuType.STATS)
             {
-                player.getProfile().openStatsInv();
+                player.getEwPlayer().getProfile().openStatsInv();
                 return true;
             }
 
             if (opensMenu == MenuType.SETTINGS)
             {
-                player.getProfile().openSettingsInv();
+                player.getEwPlayer().getProfile().openSettingsInv();
                 return true;
             }
 
             if (opensMenu == MenuType.LANGUAGES)
             {
-                player.getProfile().openLanguageInv();
+                player.getEwPlayer().getProfile().openLanguageInv();
                 return true;
             }
 
@@ -82,17 +83,17 @@ public interface MenuClickListener
             }
         }
 
-        if (player.isInArena() && SerializingItems.LEAVE_ARENA.equals(type))
-        {//TODO this is a test
+        if (player.getEwPlayer().isInArena() && SerializingItems.LEAVE_ARENA.equals(type))
+        {
             player.getPlayer().closeInventory();
-            player.getArena().leaveArena(player, true, player.isEliminated());
+            player.getEwPlayer().getArena().leaveArena(player.getEwPlayer(), true, player.getEwPlayer().isEliminated());
             return true;
         }
 
         return false;
     }
 
-    public static void defaultListener(InventoryClickEvent event, EwPlayer player, EwMenu menu)
+    public static void defaultListener(InventoryClickEvent event, MenuPlayer player, EwMenu menu)
     {
         MenuType mType = menu.getMenuType();
         ItemStack currItem = event.getCurrentItem();
@@ -115,14 +116,14 @@ public interface MenuClickListener
                         return;
                     }
 
-                    if (!player.hasKit(kit))
+                    if (!PlayerUtils.hasKit(pl, kit))
                     {
-                        if (KitManager.buyKit(player, kit))
+                        if (KitManager.buyKit(pl, kit))
                         {
                             TranslationUtils.sendMessage("gameplay.kits.bought", pl, kitname);
                             TranslationUtils.sendMessage("gameplay.kits.selected", pl, kitname);
                             pl.playSound(pl.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 100F, 1000F);
-                            EggWars.getDB().getPlayerData(pl).setKit(kit.id());
+                            PlayerUtils.setSelectedKit(pl, kit);
                             menu.sendUpdateTo(player, false);
                             return;
                         }
@@ -134,7 +135,7 @@ public interface MenuClickListener
                     }
                     else
                     {
-                        if (EggWars.getDB().getPlayerData(pl).setKit(kit.id()))
+                        if (PlayerUtils.setSelectedKit(pl, kit))
                         {
                             TranslationUtils.sendMessage("gameplay.kits.selected", pl, kitname);
                             pl.playSound(pl.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100F, 100F);
@@ -148,7 +149,7 @@ public interface MenuClickListener
                         }
                     }
                 }
-                else if (EggWars.getDB().getPlayerData(pl).setKit(""))
+                else if (PlayerUtils.setSelectedKit(pl, null))
                 {
                     TranslationUtils.sendMessage("gameplay.kits.deselected", pl);
                     pl.playSound(pl.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100F, 100F);
@@ -168,7 +169,7 @@ public interface MenuClickListener
 
                 if (langId != null)
                 {
-                    player.setLangId(langId);
+                    PlayerUtils.setLangId(player.getPlayer(), langId);
                     return;
                 }
             }

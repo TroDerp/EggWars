@@ -49,7 +49,7 @@ public class EggInteractListener implements Listener
 
         if (!ewplayer.isInArena())
         {
-            Arena arena = EggWars.getArenaManager().getArenaByWorld(ewplayer.getPlayer().getWorld());
+            Arena arena = EggWars.getArenaManager().getArenaByWorld(event.getPlayer().getWorld());
 
             if (arena != null && arena.getStatus() != ArenaStatus.SETTING)
             {
@@ -93,7 +93,7 @@ public class EggInteractListener implements Listener
 
             if (event.getHand() == EquipmentSlot.HAND)
             {
-                TranslationUtils.sendMessage("gameplay.ingame.cant_destroy_your_egg", ewplayer.getPlayer());
+                TranslationUtils.sendMessage("gameplay.ingame.cant_destroy_your_egg", event.getPlayer());
             }
 
             return;
@@ -118,18 +118,18 @@ public class EggInteractListener implements Listener
 
         for (EwPlayer player : arena.getPlayers())
         {
-            TranslationUtils.sendMessage("gameplay.ingame.team_egg_destroyed", player.getPlayer(), TeamUtils.translateTeamType(team.getType(), player.getPlayer(), false), TeamUtils.colorizePlayerName(ewplayer));
-            player.getPlayer().playSound(player.getPlayer().getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 100F, 1.0F);
+            TranslationUtils.sendMessage("gameplay.ingame.team_egg_destroyed", event.getPlayer(), TeamUtils.translateTeamType(team.getType(), event.getPlayer(), false), TeamUtils.colorizePlayerName(ewplayer));
+            event.getPlayer().playSound(event.getPlayer().getLocation(), Sound.ENTITY_LIGHTNING_BOLT_THUNDER, 100F, 1.0F);
 
             if (player.getTeam() == team)
             {
-                ReflectionUtils.sendTitle(player.getPlayer(), 5, 20, 5, "", TranslationUtils.getMessage("gameplay.ingame.your_egg_destroyed", player.getPlayer()));
-                TranslationUtils.sendMessage("gameplay.ingame.your_egg_destroyed", player.getPlayer());
+                ReflectionUtils.sendTitle(event.getPlayer(), 5, 20, 5, "", TranslationUtils.getMessage("gameplay.ingame.your_egg_destroyed", event.getPlayer()));
+                TranslationUtils.sendMessage("gameplay.ingame.your_egg_destroyed", event.getPlayer());
             }
         }
 
         event.getClickedBlock().setType(Material.AIR);
-        PlayerUtils.addPoints(ewplayer, EggWars.instance.getConfig().getInt("game.points.on_egg"));
+        PlayerUtils.addPoints(event.getPlayer(), EggWars.instance.getConfig().getInt("game.points.on_egg"));
         arena.getScores().updateScores(false);
     }
 

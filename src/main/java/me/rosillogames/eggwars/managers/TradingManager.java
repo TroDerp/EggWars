@@ -27,7 +27,6 @@ import me.rosillogames.eggwars.menu.ProfileMenus;
 import me.rosillogames.eggwars.menu.ShopMenu;
 import me.rosillogames.eggwars.objects.AutoEquipEntry;
 import me.rosillogames.eggwars.objects.Price;
-import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.GsonHelper;
 import me.rosillogames.eggwars.utils.ItemUtils;
 
@@ -46,14 +45,9 @@ public class TradingManager
         }
     }
 
-    public Map<ItemType, ShopMenu> getShops()
+    public ShopMenu getEggWarsShop(ItemType type)
     {
-        return new EnumMap(this.shopsPerType);
-    }
-
-    public void openEggWarsShop(EwPlayer player, ItemType type)
-    {
-        this.shopsPerType.get(type).addOpener(player);
+        return this.shopsPerType.get(type);
     }
 
     public void loadTrades()

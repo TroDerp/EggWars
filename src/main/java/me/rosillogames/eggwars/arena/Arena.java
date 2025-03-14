@@ -1041,9 +1041,10 @@ public class Arena
         }
     }
 
-    public void openTeamInv(EwPlayer player)
+    @Nullable
+    public TeamsMenu getTeamSelectionMenu()
     {
-        this.teamSelectMenu.addOpener(player);
+        return this.teamSelectMenu;
     }
 
     public VotingMenus getVotingMenus()

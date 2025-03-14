@@ -8,9 +8,10 @@ import me.rosillogames.eggwars.arena.Scoreboards;
 import me.rosillogames.eggwars.arena.SetupGUI;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.enums.ReloadType;
-import me.rosillogames.eggwars.events.EwPlayerChangeLangEvent;
+import me.rosillogames.eggwars.events.PlayerChangeEwLangEvent;
 import me.rosillogames.eggwars.events.EwPluginReloadEvent;
 import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.utils.PlayerUtils;
 
 public class EggWarsListener implements Listener
 {
@@ -23,9 +24,9 @@ public class EggWarsListener implements Listener
             {
                 player.getProfile().loadLangGui();
 
-                if (player.getMenu() != null && player.getMenu().getMenuType() != MenuType.LANGUAGES)
+                if (player.getMenuPlayer().getMenu() != null && player.getMenuPlayer().getMenu().getMenuType() != MenuType.LANGUAGES)
                 {
-                    player.getMenu().sendMenuUpdate(true);
+                    player.getMenuPlayer().getMenu().sendMenuUpdate(true);
                 }
             }
 
@@ -43,14 +44,14 @@ public class EggWarsListener implements Listener
     }
 
     @EventHandler
-    public void onPlayerChangeLang(EwPlayerChangeLangEvent event)
+    public void onPlayerChangeLang(PlayerChangeEwLangEvent event)
     {
-        EwPlayer ewplayer = event.getPlayer();
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
         ewplayer.getProfile().loadLangGui();
 
-        if (ewplayer.getMenu() != null)
+        if (ewplayer.getMenuPlayer().getMenu() != null)
         {
-            ewplayer.getMenu().sendUpdateTo(ewplayer, true);
+            ewplayer.getMenuPlayer().getMenu().sendUpdateTo(ewplayer.getMenuPlayer(), true);
         }
 
         if (ewplayer.getArena() != null)

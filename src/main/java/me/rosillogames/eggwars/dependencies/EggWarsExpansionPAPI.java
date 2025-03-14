@@ -159,7 +159,7 @@ public class EggWarsExpansionPAPI extends PlaceholderExpansion
         }
         else if (params.equalsIgnoreCase("points"))
         {
-            return Integer.valueOf(PlayerUtils.getEwPlayer(player).getPoints()).toString();
+            return Integer.valueOf(PlayerUtils.getPoints(player)).toString();
         }
         else//stat placeholders
         {

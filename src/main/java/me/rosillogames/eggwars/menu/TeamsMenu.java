@@ -19,6 +19,7 @@ import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.enums.TeamType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.player.MenuPlayer;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.TeamUtils;
@@ -110,7 +111,7 @@ public class TeamsMenu extends EwMenu
 
     @Nullable
     @Override
-    public Inventory translateToPlayer(EwPlayer player, boolean reopen)
+    public Inventory translateToPlayer(MenuPlayer player, boolean reopen)
     {//Reduce repetitions by adding new static/super methods?
         if (!this.initialized)
         {
@@ -121,7 +122,7 @@ public class TeamsMenu extends EwMenu
 
         if (player.getMenu() == this && !reopen)
         {
-            mcInventory = this.openers.get(player);
+            mcInventory = player.getCurrentInventory();
         }
         else
         {
@@ -129,13 +130,14 @@ public class TeamsMenu extends EwMenu
         }
 
         int i = 0;
+        EwPlayer ewply = player.getEwPlayer();
 
         for (TeamType type : this.teamItems.keySet())
         {
             ItemStack stack = this.teamItems.get(type).clone();
-            Team team = player.getArena().getTeams().get(type);
+            Team team = ewply.getArena().getTeams().get(type);
             ItemMeta meta = stack.getItemMeta();
-            meta.setDisplayName(TranslationUtils.getMessage("teams.team.item_name", player.getPlayer(), TeamUtils.translateTeamType(type, player.getPlayer(), false), team.getPlayers().size(), player.getArena().getMaxTeamPlayers()));
+            meta.setDisplayName(TranslationUtils.getMessage("teams.team.item_name", player.getPlayer(), TeamUtils.translateTeamType(type, player.getPlayer(), false), team.getPlayers().size(), ewply.getArena().getMaxTeamPlayers()));
             List<String> tLore = Lists.<String>newArrayList();
 
             for (EwPlayer teampl : team.getPlayers())
@@ -146,7 +148,7 @@ public class TeamsMenu extends EwMenu
             meta.setLore(tLore);
             stack.setItemMeta(meta);
             
-            if (team.equals(player.getTeam()))
+            if (team.equals(ewply.getTeam()))
             {
                 ReflectionUtils.setEnchantGlint(stack, true, true);
             }
@@ -157,7 +159,7 @@ public class TeamsMenu extends EwMenu
 
         ItemStack randTeam = TranslatableItem.fullyTranslate(this.randomItem, "teams.random.item_name", "teams.random.item_lore", player.getPlayer());
 
-        if (player.getTeam() != null)
+        if (ewply.getTeam() != null)
         {
             ReflectionUtils.setEnchantGlint(randTeam, false, true);
         }
@@ -167,9 +169,9 @@ public class TeamsMenu extends EwMenu
     }
 
     @Override
-    public void clickInventory(InventoryClickEvent clickEvent, EwPlayer player)
+    public void clickInventory(InventoryClickEvent clickEvent, MenuPlayer player)
     {//Reduce repetitions by adding new static/super methods?
-        if (!this.initialized || !player.getArena().getStatus().isLobby())
+        if (!this.initialized || !player.getEwPlayer().getArena().getStatus().isLobby())
         {
             return;
         }
@@ -181,7 +183,7 @@ public class TeamsMenu extends EwMenu
 
         if (SerializingItems.JOIN_TEAM.equals(type))
         {
-            this.playerChangeTeam(player, player.getArena().getTeams().get(type.getItemReference(currItem)));
+            this.playerChangeTeam(player.getEwPlayer(), player.getEwPlayer().getArena().getTeams().get(type.getItemReference(currItem)));
         }
     }
 }

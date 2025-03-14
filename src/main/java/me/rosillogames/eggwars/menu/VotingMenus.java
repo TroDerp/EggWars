@@ -13,6 +13,7 @@ import me.rosillogames.eggwars.enums.ItemType;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.player.MenuPlayer;
 import me.rosillogames.eggwars.player.inventory.TranslatableInventory;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.ItemUtils;
@@ -40,9 +41,7 @@ public class VotingMenus
         this.healthVotes = (type) -> arenaIn.getVotesForHealth(type);
         this.mainMenu = new TranslatableMenu(MenuType.VOTING, this::clickInventory);
         this.tradesMenu = new TranslatableMenu(MenuType.ITEM_VOTING, this::clickInventory);
-        this.tradesMenu.setParent(this.mainMenu);
         this.healthMenu = new TranslatableMenu(MenuType.HEALTH_VOTING, this::clickInventory);
-        this.healthMenu.setParent(this.mainMenu);
     }
 
     public static void loadConfig()
@@ -80,12 +79,13 @@ public class VotingMenus
         return invItem.apply(player);
     }
 
-    private void clickInventory(InventoryClickEvent event, EwPlayer player, EwMenu menu)
+    private void clickInventory(InventoryClickEvent event, MenuPlayer player, EwMenu menu)
     {
         ItemStack currItem = event.getCurrentItem();
         SerializingItems type = SerializingItems.getReferenceType(currItem);
+        EwPlayer ewpl = player.getEwPlayer();
 
-        if (!player.isInArena() || (!player.getArena().getStatus().equals(ArenaStatus.STARTING_GAME) && !player.getArena().getStatus().isLobby()))
+        if (!ewpl.isInArena() || (!ewpl.getArena().getStatus().equals(ArenaStatus.STARTING_GAME) && !ewpl.getArena().getStatus().isLobby()))
         {
             return;
         }
@@ -94,11 +94,11 @@ public class VotingMenus
         {
             ItemType iType = SerializingItems.VOTE_ITEM_TYPE.getItemReference(currItem);
 
-            if (player.getArena().playerVoteItem(iType, player))
+            if (ewpl.getArena().playerVoteItem(iType, ewpl))
             {
-                for (EwPlayer ewplayer1 : player.getArena().getPlayers())
+                for (EwPlayer ewplayer1 : ewpl.getArena().getPlayers())
                 {
-                    VotingMenus.sendItemVotedMessage(player, ewplayer1, iType);
+                    VotingMenus.sendItemVotedMessage(ewpl, ewplayer1, iType);
                 }
 
                 menu.sendMenuUpdate(false);
@@ -111,11 +111,11 @@ public class VotingMenus
         {
             HealthType hType = SerializingItems.VOTE_HEALTH_TYPE.getItemReference(currItem);
 
-            if (player.getArena().playerVoteHealth(hType, player))
+            if (ewpl.getArena().playerVoteHealth(hType, ewpl))
             {
-                for (EwPlayer ewplayer1 : player.getArena().getPlayers())
+                for (EwPlayer ewplayer1 : ewpl.getArena().getPlayers())
                 {
-                    VotingMenus.sendHealthVotedMessage(player, ewplayer1, hType);
+                    VotingMenus.sendHealthVotedMessage(ewpl, ewplayer1, hType);
                 }
 
                 menu.sendMenuUpdate(false);
@@ -168,7 +168,7 @@ public class VotingMenus
     {
         this.mainMenu.clearPages();
         TranslatableInventory tInv1 = new TranslatableInventory(27, "voting.menu_title");
-        tInv1.setItem(22, ProfileMenus.getCloseItem());
+        tInv1.setItem(22, ProfileMenus::getCloseItem);
         tInv1.setItem(11, tradesVoteItem);
         tInv1.setItem(15, healthVoteItem);
         this.mainMenu.addPage(tInv1);
@@ -181,7 +181,7 @@ public class VotingMenus
             tInv2.setItem(slot + (i * 3), this.getTradesVoteItem(ItemType.values()[i]));
         }
 
-        tInv2.setItem(22, ProfileMenus.getCloseItem());
+        tInv2.setItem(22, ProfileMenus::getCloseItem);
         this.tradesMenu.addPage(tInv2);
         this.healthMenu.clearPages();
         TranslatableInventory tInv3 = new TranslatableInventory(27, "voting.health.menu_title");
@@ -191,23 +191,23 @@ public class VotingMenus
             tInv3.setItem(slot + (i * 2), this.getHealthVoteItem(HealthType.values()[i]));
         }
 
-        tInv3.setItem(22, ProfileMenus.getCloseItem());
+        tInv3.setItem(22, ProfileMenus::getCloseItem);
         this.healthMenu.addPage(tInv3);
     }
 
-    public void openMainMenu(EwPlayer player)
+    public void openMainMenu(MenuPlayer player)
     {
-        this.mainMenu.addOpener(player);
+        player.openMenu(this.mainMenu);
     }
 
-    public void openTradesMenu(EwPlayer player)
+    public void openTradesMenu(MenuPlayer player)
     {
-        this.tradesMenu.addOpener(player);
+        player.openMenu(this.tradesMenu);
     }
 
-    public void openHealthMenu(EwPlayer player)
+    public void openHealthMenu(MenuPlayer player)
     {
-        this.healthMenu.addOpener(player);
+        player.openMenu(this.healthMenu);
     }
 
     private TranslatableItem getTradesVoteItem(ItemType type)

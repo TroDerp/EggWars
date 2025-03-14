@@ -10,14 +10,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.shop.Category;
 import me.rosillogames.eggwars.enums.ItemType;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.menu.ProfileMenus.MenuSize;
-import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.player.MenuPlayer;
 import me.rosillogames.eggwars.player.inventory.TranslatableItem;
 import me.rosillogames.eggwars.utils.ItemUtils;
 
@@ -48,13 +47,12 @@ public class ShopMenu extends EwMenu
 
     public void addCategory(String name, Category categ)
     {
-        categ.setParent(this);
         categ.buildMenu();
         this.categories.put(name, categ);
         this.categoryOrdinal.add(name);
     }
 
-    public void openShopCategory(EwPlayer ply, String name)
+    public void openShopCategory(MenuPlayer ply, String name)
     {
         Category categ = this.categories.get(name);
 
@@ -70,17 +68,17 @@ public class ShopMenu extends EwMenu
 
     @Nullable
     @Override
-    public Inventory translateToPlayer(EwPlayer ply, boolean reopen)
+    public Inventory translateToPlayer(MenuPlayer ply, boolean reopen)
     {
         List<MenuSize> sizes = MenuSize.fromChestSize(categories.size());
-        int page = Math.min(ply.getMenuPage(), sizes.size() - 1);//limit page by available ones
+        int page = Math.min(ply.getCurrentPage(), sizes.size() - 1);//limit page by available ones
         MenuSize size = (MenuSize)sizes.get(page);
 
         Inventory mcInventory;
 
         if (ply.getMenu() == this && !reopen)
         {
-            mcInventory = this.openers.get(ply);
+            mcInventory = ply.getCurrentInventory();
         }
         else
         {
@@ -108,9 +106,9 @@ public class ShopMenu extends EwMenu
             mcInventory.setItem(0, ProfileMenus.getPreviousItem().apply(player));
         }
 
-        mcInventory.setItem(size.getSlots() - 5, ProfileMenus.getCloseItem().apply(player));
+        mcInventory.setItem(size.getSlots() - 5, ProfileMenus.getCloseItem(player));
         mcInventory.setItem(size.getSlots() - 1, ProfileMenus.getClassicShopItem().apply(player));
-        Category specific = ply.getArena().getSpecificShop();
+        Category specific = ply.getEwPlayer().getArena().getSpecificShop();
 
         if (specific != null && specific.isEmpty())
         {
@@ -131,9 +129,9 @@ public class ShopMenu extends EwMenu
     }
 
     @Override
-    public void clickInventory(InventoryClickEvent clickEvent, EwPlayer player)
+    public void clickInventory(InventoryClickEvent clickEvent, MenuPlayer player)
     {
-        if (MenuClickListener.listenGeneric(clickEvent, player, this) || !player.isInArena())
+        if (MenuClickListener.listenGeneric(clickEvent, player, this))
         {
             return;
         }

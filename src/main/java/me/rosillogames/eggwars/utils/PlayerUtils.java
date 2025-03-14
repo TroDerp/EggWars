@@ -14,7 +14,10 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
+import me.rosillogames.eggwars.dependencies.VaultEconomy;
+import me.rosillogames.eggwars.events.PlayerChangeEwLangEvent;
 import me.rosillogames.eggwars.language.TranslationUtils;
+import me.rosillogames.eggwars.objects.Kit;
 import me.rosillogames.eggwars.player.EwPlayer;
 import me.rosillogames.eggwars.utils.reflection.ReflectionUtils;
 import ru.tehkode.permissions.PermissionUser;
@@ -116,8 +119,32 @@ public class PlayerUtils
         return count;
     }
 
+    public static int getPoints(Player player)
+    {
+        if (EggWars.config.vault)
+        {
+            int i = VaultEconomy.getBalance(player);
+            EggWars.getDB().getPlayerData(player).setPoints(i);
+            return i;
+        }
+        else
+        {
+            return EggWars.getDB().getPlayerData(player).getPoints();
+        }
+    }
+
+    public static void setPoints(Player player, int i)
+    {
+        if (EggWars.config.vault)
+        {
+            VaultEconomy.setPoints(player, i);
+        }
+
+        EggWars.getDB().getPlayerData(player).setPoints(i);
+    }
+
     /** Adds the specified amount of points to the player and sends a message **/
-    public static void addPoints(EwPlayer ewplayer, int i)
+    public static void addPoints(Player player, int i)
     {
         if (i <= 0)
         {
@@ -125,17 +152,52 @@ public class PlayerUtils
         }
 
         float mul = EggWars.config.pointMultiplier;
-        int j = i;
-        String m = "";
+        String msg = "";
 
-        if (ewplayer.getPlayer().hasPermission("eggwars.multpoints") && mul != 1.0F)
+        if (player.hasPermission("eggwars.multpoints") && mul != 1.0F)
         {
-            j = (int)((float)i * mul);
-            m = TranslationUtils.getMessage("gameplay.misc.points_multiplied", ewplayer.getPlayer(), Float.valueOf(mul));
+            i = (int)((float)i * mul);
+            msg = TranslationUtils.getMessage("gameplay.misc.points_multiplied", player, Float.valueOf(mul));
         }
 
-        ewplayer.setPoints(ewplayer.getPoints() + j);
-        TranslationUtils.sendMessage("gameplay.misc.add_points", ewplayer.getPlayer(), Integer.valueOf(j), m);
+        setPoints(player, getPoints(player) + i);
+        TranslationUtils.sendMessage("gameplay.misc.add_points", player, Integer.valueOf(i), msg);
+    }
+
+    public static boolean hasKit(Player player, Kit kit)
+    {
+        return EggWars.getDB().getPlayerData(player).hasKit(kit.id());
+    }
+
+    @Nullable
+    public static Kit getSelectedKit(Player player)
+    {
+        return EggWars.getKitManager().getKit(EggWars.getDB().getPlayerData(player).getKit());
+    }
+
+    public static boolean setSelectedKit(Player player, Kit kit)
+    {
+        return EggWars.getDB().getPlayerData(player).setKit(kit == null ? "" : kit.id());
+    }
+
+    public static String getLangId(Player player)
+    {
+        return EggWars.getDB().getPlayerData(player).getLocale();
+    }
+
+    public static void setLangId(Player player, String langCode)
+    {
+        String prevLang = getLangId(player);
+        EggWars.getDB().getPlayerData(player).setLocale(langCode);
+
+        try
+        {
+            PlayerChangeEwLangEvent ewplayerchangelangevent = new PlayerChangeEwLangEvent(player, prevLang);
+            Bukkit.getPluginManager().callEvent(ewplayerchangelangevent);
+        }
+        catch (LinkageError linkageerror)
+        {
+        }
     }
 
     public static void tpToLobby(Player player, boolean sendBungee)
