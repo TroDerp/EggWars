@@ -173,7 +173,7 @@ public class PlayerDeathListener implements Listener
             {//it has to be executed later due to a bug
                 diedPlayer.getPlayer().spigot().respawn();
             }
-        }).runTaskLater(EggWars.instance, 0L);
+        }).runTaskLater(EggWars.instance, 1L);//Wait 1 tick to try to fix another bug
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)

@@ -85,6 +85,8 @@ public class Arena
     private Location lobby;
     private Location center;
     private Bounds boundaries;
+    /** The Y coordinate where the void is (players get killed when they are in this Y or below) */
+    private Integer voidHeight;
     private int maxTeamPlayers;
     /** Min players required to start game */
     private int minPlayers;
@@ -118,6 +120,7 @@ public class Arena
         this.lobby = null;
         this.center = null;
         this.boundaries = new Bounds(null, null);
+        this.voidHeight = null;
         this.maxTeamPlayers = 0;
         this.minPlayers = 0;
         this.startCountdown = -1;
@@ -149,6 +152,7 @@ public class Arena
         loadIfPresent(fileconf, "Lobby", this::setLobby);
         loadIfPresent(fileconf, "Center", this::setCenter);
         this.boundaries = Bounds.deserialize(fileconf.getString("Bounds"));
+        this.voidHeight = ConfigAccessor.getNullableInt(fileconf, "VoidHeight", null);
         this.maxTeamPlayers = fileconf.getInt("MaxPlayersPerTeam");
         this.minPlayers = fileconf.getInt("MinPlayers");
         this.startCountdown = fileconf.getInt("StartCountdown", -1);
@@ -396,6 +400,17 @@ public class Arena
     public Bounds getBounds()
     {
         return this.boundaries;
+    }
+
+    @Nullable
+    public Integer getVoidHeight()
+    {
+        return this.voidHeight;
+    }
+
+    public void setVoidHeight(@Nullable Integer i)
+    {
+        this.voidHeight = i;
     }
 
     /**
@@ -987,6 +1002,7 @@ public class Arena
         fconfig.set("FullCountdown", Integer.valueOf(this.fullCountdown));
         fconfig.set("ReleaseCountdown", Integer.valueOf(this.releaseCountdown));
         fconfig.set("Bounds", Bounds.serialize(this.boundaries));
+        fconfig.set("VoidHeight", this.voidHeight);
         fconfig.set("Lobby", Locations.toString(this.lobby, true));
         fconfig.set("Center", Locations.toString(this.center, true));
         fconfig.set("ArenaSpecificTrades", Boolean.valueOf(this.customTrades));

@@ -36,7 +36,7 @@ public class SetBounds extends CommandArg
 
         Bounds bounds = arena.getBounds();
 
-        if (args.length == 2 && args[1].equals("remove"))
+        if (args.length == 2 && args[1].equalsIgnoreCase("remove"))
         {
             bounds.setBounds(null, null);
             TranslationUtils.sendMessage("commands.setBounds.success.removed", commandSender, arena.getName());
@@ -67,12 +67,9 @@ public class SetBounds extends CommandArg
     {
         List<String> list = new ArrayList();
 
-        if (args.length == 2)
+        if (args.length == 2 && "remove".startsWith(args[1].toLowerCase()))
         {
-            if ("remove".toLowerCase().startsWith(args[1].toLowerCase()))
-            {
-                list.add("remove");
-            }
+            list.add("remove");
         }
 
         return list;

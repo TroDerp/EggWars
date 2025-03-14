@@ -1,14 +1,18 @@
 package me.rosillogames.eggwars.utils;
 
+import static org.bukkit.util.NumberConversions.toInt;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.logging.Level;
+import javax.annotation.Nullable;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 public class ConfigAccessor
 {
@@ -145,5 +149,12 @@ public class ConfigAccessor
         {
             this.plugin.saveResource(this.fileName, false);
         }
+    }
+
+    @Nullable
+    public static Integer getNullableInt(FileConfiguration config, @NotNull String path, @Nullable Integer def)
+    {
+        Object val = config.get(path, def);
+        return (val instanceof Integer) ? toInt(val) : def;
     }
 }

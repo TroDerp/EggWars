@@ -31,6 +31,7 @@ import me.rosillogames.eggwars.commands.setup.SetTeamCageAdd;
 import me.rosillogames.eggwars.commands.setup.SetTeamCageRemove;
 import me.rosillogames.eggwars.commands.setup.SetTeamRespawn;
 import me.rosillogames.eggwars.commands.setup.SetTeamVillager;
+import me.rosillogames.eggwars.commands.setup.SetVoidHeight;
 import me.rosillogames.eggwars.commands.setup.TeamList;
 import me.rosillogames.eggwars.commands.setup.ToggleEditMode;
 import me.rosillogames.eggwars.commands.setup.TpArena;
@@ -56,6 +57,7 @@ public class CmdSetup implements TabExecutor
         this.mainArgs.put("setWaitingLobby", new SetWaitingLobby());
         this.mainArgs.put("setMaxPlayersPerTeam", new SetMaxPlayersPerTeam());
         this.mainArgs.put("setMinPlayers", new SetMinPlayers());
+        this.mainArgs.put("setVoidHeight", new SetVoidHeight());
         this.mainArgs.put("moveTeam", new MoveTeam());
         this.mainArgs.put("setTeamEgg", new SetTeamEgg());
         this.mainArgs.put("setTeamRespawn", new SetTeamRespawn());

@@ -4,6 +4,8 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
+
+import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.StatType;
 import me.rosillogames.eggwars.player.EwPlayer;
@@ -22,34 +24,42 @@ public class PlayerMoveListener implements Listener
             return;
         }
 
-        if (ewplayer.isInArena() && !ewplayer.isJoining() && !ewplayer.isEliminated())
+        if (ewplayer.isInArena() && !ewplayer.isJoining())
         {
-            if (ewplayer.getArena().getStatus().isLobby() && ewplayer.getPlayer().getLocation().getY() < (ewplayer.getArena().getLobby().getY() < 0.0 ? -65.0 : 1.0))
+            Arena arena = ewplayer.getArena();
+
+            if (!ewplayer.getPlayer().getWorld().equals(arena.getWorld()))
             {
-                ewplayer.getPlayer().setFallDistance(0.0f);
-                ewplayer.getPlayer().teleport(ewplayer.getArena().getLobby());
-            }
-            else if (ewplayer.getArena().getStatus().equals(ArenaStatus.IN_GAME) && ewplayer.getPlayer().getLocation().getY() < -65.0)
-            {
-                //insta kill
-                ReflectionUtils.killOutOfWorld(ewplayer.getPlayer());
+                ewplayer.setJoining(true);
+                arena.leaveArena(ewplayer, true, false);
+                return;
             }
 
-            if (!ewplayer.getPlayer().getWorld().equals(ewplayer.getArena().getWorld()))
-            {
-                ewplayer.getArena().leaveArena(ewplayer, true, false);
-            }
-        }
+            double voidY = arena.getVoidHeight() == null ? -65.0 : arena.getVoidHeight().doubleValue();
 
-        if (ewplayer.isInArena() && (ewplayer.isEliminated() || ewplayer.getArena().getStatus().equals(ArenaStatus.FINISHING)) && ewplayer.getPlayer().getLocation().getY() < (ewplayer.getArena().getCenter().getY() < 0.0 ? -65.0 : 1.0))
-        {
-            ewplayer.getPlayer().teleport(ewplayer.getArena().getCenter());
+            if (ewplayer.getPlayer().getLocation().getY() <= voidY)
+            {
+                if (arena.getStatus().isLobby())
+                {
+                    ewplayer.getPlayer().setFallDistance(0.0F);
+                    ewplayer.getPlayer().teleport(arena.getLobby());
+                }
+                else if (ewplayer.isEliminated() || arena.getStatus().equals(ArenaStatus.FINISHING) || arena.getStatus().equals(ArenaStatus.STARTING_GAME))
+                {
+                    ewplayer.getPlayer().setFallDistance(0.0F);
+                    ewplayer.getPlayer().teleport(arena.getCenter());
+                }
+                else if (arena.getStatus().equals(ArenaStatus.IN_GAME))
+                {
+                    ReflectionUtils.killOutOfWorld(ewplayer.getPlayer());//insta kill
+                }
+            }
         }
 
         Location f = event.getFrom();
         Location t = event.getTo();
 
-        if (event.getTo() == null || event.getFrom() == null)
+        if (f == null || t == null)
         {
             return;
         }
