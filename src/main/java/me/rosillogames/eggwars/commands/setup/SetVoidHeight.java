@@ -13,19 +13,19 @@ public class SetVoidHeight extends CommandArg
 {
     public SetVoidHeight()
     {
-        super(true);
+        super("setVoidHeight", true);
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
         if (args.length != 2)
         {
-            TranslationUtils.sendMessage("commands.setVoidHeight.usage", commandSender);
+            this.sendUsage(sender);
             return false;
         }
 
-        Player player = (Player)commandSender;
+        Player player = (Player)sender;
         Arena arena;
 
         if ((arena = Arena.checkEditArena(player)) == null)
@@ -41,7 +41,7 @@ public class SetVoidHeight extends CommandArg
         }
         else if (!NumericUtils.isInteger(args[1]) || Integer.parseInt(args[1]) < 1)
         {
-            TranslationUtils.sendMessage("commands.error.invalid_number", commandSender);
+            TranslationUtils.sendMessage("commands.error.invalid_number", sender);
             return false;
         }
         else
@@ -50,7 +50,7 @@ public class SetVoidHeight extends CommandArg
         }
 
         arena.setVoidHeight(value);
-        TranslationUtils.sendMessage("commands.setVoidHeight.success", commandSender, arena.getName());
+        TranslationUtils.sendMessage("commands.setVoidHeight.success", sender, arena.getName());
         arena.sendToDo(player);
         return true;
     }

@@ -29,14 +29,19 @@ public class CmdEw implements TabExecutor
 
     public CmdEw()
     {
-        this.mainArgs.put("forceStart", new ForceStart());
-        this.mainArgs.put("help", new Help());
-        this.mainArgs.put("join", new Join());
-        this.mainArgs.put("lang", new Lang());
-        this.mainArgs.put("lobby", new Lobby());
-        this.mainArgs.put("menu", new Menu());
-        this.mainArgs.put("randomJoin", new RandomJoin());
-        this.mainArgs.put("reload", new Reload());
+        this.addArg(new ForceStart());
+        this.addArg(new Help());
+        this.addArg(new Join());
+        this.addArg(new Lang());
+        this.addArg(new Lobby());
+        this.addArg(new Menu());
+        this.addArg(new RandomJoin());
+        this.addArg(new Reload());
+    }
+
+    private void addArg(CommandArg argument)
+    {
+        this.mainArgs.put(argument.getName(), argument);
     }
 
     @Override
@@ -109,11 +114,71 @@ public class CmdEw implements TabExecutor
         return null;
     }
 
+    public class Help extends CommandArg
+    {
+        public Help()
+        {
+            super("help", false);
+        }
+
+        @Override
+        public boolean execute(CommandSender sender, String[] args)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            if (args.length == 2 && CmdEw.this.fixArg(args[1]) != null)
+            {
+                builder.append("\n" + CmdEw.this.mainArgs.get(CmdEw.this.fixArg(args[1])).getInfo(sender));
+            }
+            else
+            {
+                for (CommandArg arg : CmdEw.this.mainArgs.values())
+                {
+                    builder.append("\n" + arg.getInfo(sender));
+                }
+            }
+
+            TranslationUtils.sendMessage("commands.ew.help", sender, builder.toString());
+            return true;
+        }
+
+        @Override
+        public List<String> getCompleteArgs(CommandSender sender, String[] args)
+        {
+            if (args.length == 2)
+            {
+                List<String> list = new ArrayList();
+
+                for (String key : CmdEw.this.mainArgs.keySet())
+                {
+                    if (key.toLowerCase().startsWith(args[1].toLowerCase()))
+                    {
+                        list.add(key);
+                    }
+                }
+
+                return list;
+            }
+
+            return new ArrayList();
+        }
+
+        public String getInfo(CommandSender sender)
+        {
+            return TranslationUtils.getMessage("commands.ew.help.info", sender, TranslationUtils.getMessage(this.getSyntaxTKey(), sender));
+        }
+
+        public String getSyntaxTKey()
+        {
+            return "commands.ew.help.syntax";
+        }
+    }
+
     public static class ForceStart extends CommandArg
     {
         public ForceStart()
         {
-            super(false);
+            super("forceStart", false);
         }
 
         @Override
@@ -128,7 +193,7 @@ public class CmdEw implements TabExecutor
 
             if (arena == null)
             {
-                TranslationUtils.sendMessage("commands.force_start.usage", sender);
+                this.sendUsage(sender);
                 return false;
             }
 
@@ -139,18 +204,18 @@ public class CmdEw implements TabExecutor
             }
 
             if (arena.forceStart())
-            {
-                TranslationUtils.sendMessage("commands.force_start.success", sender, arena.getName());
+            {//TODO Changed all force_start to forceStart
+                TranslationUtils.sendMessage("commands.forceStart.success", sender, arena.getName());
                 return true;
             }
 
             if (!arena.getStatus().isLobby())
             {
-                TranslationUtils.sendMessage("commands.force_start.failed.not_in_lobby", sender);
+                TranslationUtils.sendMessage("commands.forceStart.failed.not_in_lobby", sender);
                 return false;
             }
 
-            TranslationUtils.sendMessage("commands.force_start.failed.not_enough_players", sender);
+            TranslationUtils.sendMessage("commands.forceStart.failed.not_enough_players", sender);
             return false;
         }
 
@@ -180,32 +245,16 @@ public class CmdEw implements TabExecutor
         }
     }
 
-    public static class Help extends CommandArg
-    {
-        public Help()
-        {
-            super(false);
-        }
-
-        @Override
-        public boolean execute(CommandSender sender, String[] args)
-        {
-            TranslationUtils.sendMessage("commands.ew.help", sender);
-            return true;
-        }
-
-        @Override
-        public List<String> getCompleteArgs(CommandSender commandSender, String[] args)
-        {
-            return new ArrayList();
-        }
-    }
-
     public static class Join extends CommandArg
     {
+        public Join(String name)
+        {
+            super(name, true);
+        }
+
         public Join()
         {
-            super(true);
+            this("join");
         }
 
         @Override
@@ -213,7 +262,7 @@ public class CmdEw implements TabExecutor
         {
             if (args.length <= 1)
             {
-                TranslationUtils.sendMessage("commands.join.usage", sender);
+                this.sendUsage(sender);
                 return false;
             }
 
@@ -297,7 +346,7 @@ public class CmdEw implements TabExecutor
     {
         public Lang()
         {
-            super(true);
+            super("lang", true);
         }
 
         @Override
@@ -305,7 +354,7 @@ public class CmdEw implements TabExecutor
         {
             if (args.length <= 1)
             {
-                TranslationUtils.sendMessage("commands.lang.usage", sender);
+                this.sendUsage(sender);
                 return false;
             }
 
@@ -371,7 +420,7 @@ public class CmdEw implements TabExecutor
     {
         public Lobby()
         {
-            super(true);
+            super("lobby", true);
         }
 
         @Override
@@ -408,7 +457,7 @@ public class CmdEw implements TabExecutor
     {
         public Menu()
         {
-            super(true);
+            super("menu", true);
         }
 
         @Override
@@ -442,6 +491,11 @@ public class CmdEw implements TabExecutor
 
     public static class RandomJoin extends Join //same join permission
     {
+        public RandomJoin()
+        {
+            super("randomJoin");
+        }
+
         @Override
         public boolean execute(CommandSender sender, String[] args)
         {
@@ -498,7 +552,7 @@ public class CmdEw implements TabExecutor
     {
         public Reload()
         {
-            super(false);
+            super("reload", false);
         }
 
         @Override
@@ -506,7 +560,7 @@ public class CmdEw implements TabExecutor
         {
             if (args.length == 1)
             {
-                TranslationUtils.sendMessage("commands.reload.usage", sender);
+                this.sendUsage(sender);
                 return false;
             }
 
@@ -520,7 +574,7 @@ public class CmdEw implements TabExecutor
                 return true;
             }
 
-            TranslationUtils.sendMessage("commands.reload.usage", sender);
+            this.sendUsage(sender);
             return false;
         }
 

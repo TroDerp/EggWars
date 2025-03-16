@@ -14,19 +14,19 @@ public class AddTeam extends CommandArg
 {
     public AddTeam()
     {
-        super(true);
+        super("addTeam", true);
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
         if (args.length != 2)
         {
-            TranslationUtils.sendMessage("commands.addTeam.usage", commandSender);
+            this.sendUsage(sender);
             return false;
         }
 
-        Player player = (Player)commandSender;
+        Player player = (Player)sender;
         Arena arena;
 
         if ((arena = Arena.checkEditArena(player)) == null)
@@ -42,18 +42,18 @@ public class AddTeam extends CommandArg
         }
         catch (IllegalArgumentException exc)
         {
-            TranslationUtils.sendMessage("commands.error.team_does_not_exist", commandSender, args[1]);
+            TranslationUtils.sendMessage("commands.error.team_does_not_exist", sender, args[1]);
             return false;
         }
 
         if (arena.getTeams().containsKey(teamType))
         {
-            TranslationUtils.sendMessage("commands.error.team_already_exists", commandSender, teamType.id());
+            TranslationUtils.sendMessage("commands.error.team_already_exists", sender, teamType.id());
             return false;
         }
 
         arena.addTeam(teamType);
-        TranslationUtils.sendMessage("commands.addTeam.success", commandSender, teamType.id());
+        TranslationUtils.sendMessage("commands.addTeam.success", sender, teamType.id());
         arena.updateSetupTeam(teamType);
         arena.sendToDo(player);
         return true;

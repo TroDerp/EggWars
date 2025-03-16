@@ -7,13 +7,12 @@ import org.bukkit.entity.Player;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.commands.CommandArg;
-import me.rosillogames.eggwars.language.TranslationUtils;
 
 public class TpArena extends CommandArg
 {
     public TpArena()
     {
-        super(true);
+        super("tpArena", true);
     }
 
     @Override
@@ -21,7 +20,7 @@ public class TpArena extends CommandArg
     {
         if (args.length < 2)
         {
-            TranslationUtils.sendMessage("commands.tpArena.usage", sender);
+            this.sendUsage(sender);
             return false;
         }
 

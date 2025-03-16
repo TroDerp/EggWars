@@ -13,19 +13,19 @@ public class SetCountdownFull extends CommandArg
 {
     public SetCountdownFull()
     {
-        super(true);
+        super("setFullCountdown", true);
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
         if (args.length != 2)
         {
-            TranslationUtils.sendMessage("commands.setFullCountdown.usage", commandSender);
+            this.sendUsage(sender);
             return false;
         }
 
-        Player player = (Player)commandSender;
+        Player player = (Player)sender;
         Arena arena;
 
         if ((arena = Arena.checkEditArena(player)) == null)
@@ -36,12 +36,12 @@ public class SetCountdownFull extends CommandArg
         //this count down can be set to -1, to disable it because the feature is now optional
         if (!NumericUtils.isInteger(args[1]))
         {
-            TranslationUtils.sendMessage("commands.error.invalid_number", commandSender);
+            TranslationUtils.sendMessage("commands.error.invalid_number", sender);
             return false;
         }
 
         arena.setFullCountdown(Integer.parseInt(args[1]));
-        TranslationUtils.sendMessage("commands.setFullCountdown.success", commandSender, arena.getName());
+        TranslationUtils.sendMessage("commands.setFullCountdown.success", sender, arena.getName());
         arena.sendToDo(player);
         return true;
     }

@@ -11,20 +11,20 @@ public class SetBungeeLobby extends CommandArg
 {
     public SetBungeeLobby()
     {
-        super(false);
+        super("setBungeeLobby", false);
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
         if (args.length != 2)
         {
-            TranslationUtils.sendMessage("commands.setBungeeLobby.usage", commandSender);
+            this.sendUsage(sender);
             return false;
         }
 
         EggWars.bungee.setLobby(args[1]);
-        TranslationUtils.sendMessage("commands.setBungeeLobby.success", commandSender, args[1]);
+        TranslationUtils.sendMessage("commands.setBungeeLobby.success", sender, args[1]);
         return true;
     }
 

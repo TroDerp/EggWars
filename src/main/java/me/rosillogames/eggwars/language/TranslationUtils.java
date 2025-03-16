@@ -132,14 +132,14 @@ public class TranslationUtils
         return getMessage(msg, LanguageManager.getDefaultLanguage(), args);
     }
 
-    public static String getMessage(String msg, @Nullable Player player)
+    public static String getMessage(String msg, @Nullable CommandSender sender)
     {
-        return getMessage(msg, (player != null ? LanguageManager.getPlayerLanguage(player) : LanguageManager.getDefaultLanguage()));
+        return getMessage(msg, ((sender != null && sender instanceof Player) ? LanguageManager.getPlayerLanguage((Player)sender) : LanguageManager.getDefaultLanguage()));
     }
 
-    public static String getMessage(String msg, @Nullable Player player, Object... args)
+    public static String getMessage(String msg, @Nullable CommandSender sender, Object... args)
     {
-        return getMessage(msg, (player != null ? LanguageManager.getPlayerLanguage(player) : LanguageManager.getDefaultLanguage()), args);
+        return getMessage(msg, ((sender != null && sender instanceof Player) ? LanguageManager.getPlayerLanguage((Player)sender) : LanguageManager.getDefaultLanguage()), args);
     }
 
     public static String getMessage(String msg, @Nullable Language lang, Object... args)

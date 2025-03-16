@@ -7,13 +7,12 @@ import org.bukkit.entity.Player;
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.commands.CommandArg;
-import me.rosillogames.eggwars.language.TranslationUtils;
 
 public class GetGuiItem extends CommandArg
 {
     public GetGuiItem()
     {
-        super(true);
+        super("getGuiItem", true);
     }
 
     @Override
@@ -21,7 +20,7 @@ public class GetGuiItem extends CommandArg
     {
         if (args.length < 2)
         {
-            TranslationUtils.sendMessage("commands.getGuiItem.usage", sender);
+            this.sendUsage(sender);
             return false;
         }
 

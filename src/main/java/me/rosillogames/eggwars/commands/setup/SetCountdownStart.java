@@ -13,19 +13,19 @@ public class SetCountdownStart extends CommandArg
 {
     public SetCountdownStart()
     {
-        super(true);
+        super("setStartCountdown", true);
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
         if (args.length != 2)
         {
-            TranslationUtils.sendMessage("commands.setStartCountdown.usage", commandSender);
+            this.sendUsage(sender);
             return false;
         }
 
-        Player player = (Player)commandSender;
+        Player player = (Player)sender;
         Arena arena;
 
         if ((arena = Arena.checkEditArena(player)) == null)
@@ -35,12 +35,12 @@ public class SetCountdownStart extends CommandArg
 
         if (!NumericUtils.isInteger(args[1]) || Integer.parseInt(args[1]) < 0)
         {
-            TranslationUtils.sendMessage("commands.error.invalid_number", commandSender);
+            TranslationUtils.sendMessage("commands.error.invalid_number", sender);
             return false;
         }
 
         arena.setStartCountdown(Integer.parseInt(args[1]));
-        TranslationUtils.sendMessage("commands.setStartCountdown.success", commandSender, arena.getName());
+        TranslationUtils.sendMessage("commands.setStartCountdown.success", sender, arena.getName());
         arena.sendToDo(player);
         return true;
     }

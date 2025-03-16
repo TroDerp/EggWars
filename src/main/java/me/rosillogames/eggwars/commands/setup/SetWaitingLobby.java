@@ -12,19 +12,19 @@ public class SetWaitingLobby extends CommandArg
 {
     public SetWaitingLobby()
     {
-        super(true);
+        super("setWaitingLobby", true);
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
         if (args.length != 1)
         {
-            TranslationUtils.sendMessage("commands.setWaitingLobby.usage", commandSender);
+            this.sendUsage(sender);
             return false;
         }
 
-        Player player = (Player)commandSender;
+        Player player = (Player)sender;
         Arena arena;
 
         if ((arena = Arena.checkEditArena(player)) == null)
@@ -33,7 +33,7 @@ public class SetWaitingLobby extends CommandArg
         }
 
         arena.setLobby(player.getLocation());
-        TranslationUtils.sendMessage("commands.setWaitingLobby.success", commandSender, arena.getName());
+        TranslationUtils.sendMessage("commands.setWaitingLobby.success", sender, arena.getName());
         arena.getSetupGUI().updateBasicsMenu();
         arena.sendToDo(player);
         return true;

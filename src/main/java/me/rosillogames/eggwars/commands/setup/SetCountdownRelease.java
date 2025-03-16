@@ -13,19 +13,19 @@ public class SetCountdownRelease extends CommandArg
 {
     public SetCountdownRelease()
     {
-        super(true);
+        super("setReleaseCountdown", true);
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
         if (args.length != 2)
         {
-            TranslationUtils.sendMessage("commands.setReleaseCountdown.usage", commandSender);
+            this.sendUsage(sender);
             return false;
         }
 
-        Player player = (Player)commandSender;
+        Player player = (Player)sender;
         Arena arena;
 
         if ((arena = Arena.checkEditArena(player)) == null)
@@ -35,12 +35,12 @@ public class SetCountdownRelease extends CommandArg
 
         if (!NumericUtils.isInteger(args[1]) || Integer.parseInt(args[1]) < 0)
         {
-            TranslationUtils.sendMessage("commands.error.invalid_number", commandSender);
+            TranslationUtils.sendMessage("commands.error.invalid_number", sender);
             return false;
         }
 
         arena.setReleaseCountdown(Integer.parseInt(args[1]));
-        TranslationUtils.sendMessage("commands.setReleaseCountdown.success", commandSender, arena.getName());
+        TranslationUtils.sendMessage("commands.setReleaseCountdown.success", sender, arena.getName());
         arena.sendToDo(player);
         return true;
     }

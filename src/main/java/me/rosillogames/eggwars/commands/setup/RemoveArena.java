@@ -19,7 +19,7 @@ public class RemoveArena extends CommandArg
 {
     public RemoveArena()
     {
-        super(false);
+        super("removeArena", false);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class RemoveArena extends CommandArg
     {
         if (args.length < 2)
         {
-            TranslationUtils.sendMessage("commands.removeArena.usage", sender);
+            this.sendUsage(sender);
             return false;
         }
 

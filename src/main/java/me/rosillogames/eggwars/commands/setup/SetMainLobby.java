@@ -12,15 +12,15 @@ public class SetMainLobby extends CommandArg
 {
     public SetMainLobby()
     {
-        super(true);
+        super("setMainLobby", true);
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
-        Player player = (Player)commandSender;
+        Player player = (Player)sender;
         EggWars.config.setMainLobby(player.getLocation());
-        TranslationUtils.sendMessage("commands.setMainLobby.success", commandSender);
+        TranslationUtils.sendMessage("commands.setMainLobby.success", sender);
         return true;
     }
 

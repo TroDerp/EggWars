@@ -16,7 +16,7 @@ public class ToggleEditMode extends CommandArg
 {
     public ToggleEditMode()
     {
-        super(false);
+        super("toggleEditMode", false);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class ToggleEditMode extends CommandArg
     {
         if (args.length < 2)
         {
-            TranslationUtils.sendMessage("commands.toggleEditMode.usage", sender);
+            this.sendUsage(sender);
             return false;
         }
 
@@ -49,7 +49,7 @@ public class ToggleEditMode extends CommandArg
                 return false;
             }
 
-            TranslationUtils.sendMessage("commands.toggleEditMode.success.saving", sender, new Object[] {arena.getName()});
+            TranslationUtils.sendMessage("commands.toggleEditMode.saving", sender, new Object[] {arena.getName()});
             (new BukkitRunnable()
             {
                 public void run()
@@ -72,7 +72,7 @@ public class ToggleEditMode extends CommandArg
         }
         else
         {
-            TranslationUtils.sendMessage("commands.toggleEditMode.success.preparing", sender, arena.getName());
+            TranslationUtils.sendMessage("commands.toggleEditMode.preparing", sender, arena.getName());
             arena.reset(true);//TODO can sometimes fail!?
 
             if (sender instanceof Player)
@@ -80,7 +80,7 @@ public class ToggleEditMode extends CommandArg
                 ((Player)sender).teleport(arena.getLobby() != null ? arena.getLobby() : arena.getWorld().getSpawnLocation());
             }
 
-            TranslationUtils.sendMessage("commands.toggleEditMode.success", sender, arena.getName());
+            TranslationUtils.sendMessage("commands.toggleEditMode.success.enabled", sender, arena.getName());
         }
 
         return true;

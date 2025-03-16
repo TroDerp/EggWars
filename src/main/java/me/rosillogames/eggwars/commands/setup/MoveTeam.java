@@ -15,19 +15,19 @@ public class MoveTeam extends CommandArg
 {
     public MoveTeam()
     {
-        super(true);
+        super("moveTeam", true);
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
         if (args.length != 3)
         {
-            TranslationUtils.sendMessage("commands.moveTeam.usage", commandSender);
+            this.sendUsage(sender);
             return false;
         }
 
-        Player player = (Player)commandSender;
+        Player player = (Player)sender;
         Arena arena;
 
         if ((arena = Arena.checkEditArena(player)) == null)
@@ -35,7 +35,7 @@ public class MoveTeam extends CommandArg
             return false;
         }
 
-        TeamType team1 = TeamUtils.typeByIdAndValidateForArena(arena, args[1], commandSender);
+        TeamType team1 = TeamUtils.typeByIdAndValidateForArena(arena, args[1], sender);
 
         if (team1 == null)
         {
@@ -50,16 +50,16 @@ public class MoveTeam extends CommandArg
         }
         catch (IllegalArgumentException exc)
         {
-            TranslationUtils.sendMessage("commands.error.team_does_not_exist", commandSender, args[2]);
+            TranslationUtils.sendMessage("commands.error.team_does_not_exist", sender, args[2]);
             return false;
         }
 
         boolean switched = arena.moveTeam(team1, team2);
-        TranslationUtils.sendMessage("commands.moveTeam.success", commandSender, team1.id(), team2.id());
+        TranslationUtils.sendMessage("commands.moveTeam.success", sender, team1.id(), team2.id());
 
         if (switched)
         {
-            TranslationUtils.sendMessage("commands.moveTeam.success", commandSender, team2.id(), team1.id());
+            TranslationUtils.sendMessage("commands.moveTeam.success", sender, team2.id(), team1.id());
         }
 
         arena.sendToDo(player);

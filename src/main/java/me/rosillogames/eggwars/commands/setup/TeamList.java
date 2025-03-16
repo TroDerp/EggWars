@@ -23,7 +23,7 @@ public class TeamList extends CommandArg
 {
     public TeamList()
     {
-        super(true);
+        super("teamList", true);
     }
 
     @Override

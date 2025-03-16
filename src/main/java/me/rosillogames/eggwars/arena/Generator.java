@@ -461,7 +461,7 @@ public class Generator extends EwMenu
             return;
         }
 
-        if (!this.hasCachedType() || !player.getEwPlayer().getArena().getStatus().isGame())
+        if (!this.hasCachedType() || !this.arena.getStatus().isGame())
         {
             return;
         }

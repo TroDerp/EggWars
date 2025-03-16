@@ -15,19 +15,19 @@ public class SetTeamRespawn extends CommandArg
 {
     public SetTeamRespawn()
     {
-        super(true);
+        super("setTeamRespawn", true);
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
         if (args.length != 2)
         {
-            TranslationUtils.sendMessage("commands.setTeamRespawn.usage", commandSender);
+            this.sendUsage(sender);
             return false;
         }
 
-        Player player = (Player)commandSender;
+        Player player = (Player)sender;
         Arena arena;
 
         if ((arena = Arena.checkEditArena(player)) == null)
@@ -35,7 +35,7 @@ public class SetTeamRespawn extends CommandArg
             return false;
         }
 
-        TeamType teamtype = TeamUtils.typeByIdAndValidateForArena(arena, args[1], commandSender);
+        TeamType teamtype = TeamUtils.typeByIdAndValidateForArena(arena, args[1], sender);
 
         if (teamtype == null)
         {
@@ -43,7 +43,7 @@ public class SetTeamRespawn extends CommandArg
         }
 
         arena.getTeams().get(teamtype).setRespawn(player.getLocation());
-        TranslationUtils.sendMessage("commands.setTeamRespawn.success", commandSender, teamtype.id());
+        TranslationUtils.sendMessage("commands.setTeamRespawn.success", sender, teamtype.id());
         arena.updateSetupTeam(teamtype);
         arena.sendToDo(player);
         return true;

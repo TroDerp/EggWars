@@ -12,7 +12,6 @@ import me.rosillogames.eggwars.commands.setup.AddTeam;
 import me.rosillogames.eggwars.commands.setup.CloneArena;
 import me.rosillogames.eggwars.commands.setup.CreateArena;
 import me.rosillogames.eggwars.commands.setup.GetGuiItem;
-import me.rosillogames.eggwars.commands.setup.Help;
 import me.rosillogames.eggwars.commands.setup.MoveTeam;
 import me.rosillogames.eggwars.commands.setup.RemoveArena;
 import me.rosillogames.eggwars.commands.setup.RemoveTeam;
@@ -43,33 +42,38 @@ public class CmdSetup implements TabExecutor
 
     public CmdSetup()
     {
-        this.mainArgs.put("help", new Help());
-        this.mainArgs.put("createArena", new CreateArena());
-        this.mainArgs.put("cloneArena", new CloneArena());
-        this.mainArgs.put("removeArena", new RemoveArena());
-        this.mainArgs.put("addTeam", new AddTeam());
-        this.mainArgs.put("removeTeam", new RemoveTeam());
-        this.mainArgs.put("setBounds", new SetBounds());
-        this.mainArgs.put("setCenter", new SetCenter());
-        this.mainArgs.put("setStartCountdown", new SetCountdownStart());
-        this.mainArgs.put("setFullCountdown", new SetCountdownFull());
-        this.mainArgs.put("setReleaseCountdown", new SetCountdownRelease());
-        this.mainArgs.put("setWaitingLobby", new SetWaitingLobby());
-        this.mainArgs.put("setMaxPlayersPerTeam", new SetMaxPlayersPerTeam());
-        this.mainArgs.put("setMinPlayers", new SetMinPlayers());
-        this.mainArgs.put("setVoidHeight", new SetVoidHeight());
-        this.mainArgs.put("moveTeam", new MoveTeam());
-        this.mainArgs.put("setTeamEgg", new SetTeamEgg());
-        this.mainArgs.put("setTeamRespawn", new SetTeamRespawn());
-        this.mainArgs.put("setTeamVillager", new SetTeamVillager());
-        this.mainArgs.put("addTeamCage", new SetTeamCageAdd());
-        this.mainArgs.put("removeTeamCage", new SetTeamCageRemove());
-        this.mainArgs.put("setMainLobby", new SetMainLobby());
-        this.mainArgs.put("tpArena", new TpArena());
-        this.mainArgs.put("teamList", new TeamList());
-        this.mainArgs.put("toggleEditMode", new ToggleEditMode());
-        this.mainArgs.put("setBungeeLobby", new SetBungeeLobby());
-        this.mainArgs.put("getGuiItem", new GetGuiItem());
+        this.addArg(new Help());
+        this.addArg(new CreateArena());
+        this.addArg(new CloneArena());
+        this.addArg(new RemoveArena());
+        this.addArg(new AddTeam());
+        this.addArg(new RemoveTeam());
+        this.addArg(new SetBounds());
+        this.addArg(new SetCenter());
+        this.addArg(new SetCountdownStart());
+        this.addArg(new SetCountdownFull());
+        this.addArg(new SetCountdownRelease());
+        this.addArg(new SetWaitingLobby());
+        this.addArg(new SetMaxPlayersPerTeam());
+        this.addArg(new SetMinPlayers());
+        this.addArg(new SetVoidHeight());
+        this.addArg(new MoveTeam());
+        this.addArg(new SetTeamEgg());
+        this.addArg(new SetTeamRespawn());
+        this.addArg(new SetTeamVillager());
+        this.addArg(new SetTeamCageAdd());
+        this.addArg(new SetTeamCageRemove());
+        this.addArg(new SetMainLobby());
+        this.addArg(new TpArena());
+        this.addArg(new TeamList());
+        this.addArg(new ToggleEditMode());
+        this.addArg(new SetBungeeLobby());
+        this.addArg(new GetGuiItem());
+    }
+
+    private void addArg(CommandArg argument)
+    {
+        this.mainArgs.put(argument.getName(), argument);
     }
 
     @Override
@@ -137,5 +141,65 @@ public class CmdSetup implements TabExecutor
         }
 
         return null;
+    }
+
+    public class Help extends CommandArg
+    {
+        public Help()
+        {
+            super("help", false);
+        }
+
+        @Override
+        public boolean execute(CommandSender sender, String[] args)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            if (args.length == 2 && CmdSetup.this.fixArg(args[1]) != null)
+            {
+                builder.append("\n" + CmdSetup.this.mainArgs.get(CmdSetup.this.fixArg(args[1])).getInfo(sender));
+            }
+            else
+            {
+                for (CommandArg arg : CmdSetup.this.mainArgs.values())
+                {
+                    builder.append("\n" + arg.getInfo(sender));
+                }
+            }
+
+            TranslationUtils.sendMessage("commands.setup.help", sender, builder.toString());
+            return true;
+        }
+
+        @Override
+        public List<String> getCompleteArgs(CommandSender sender, String[] args)
+        {
+            if (args.length == 2)
+            {
+                List<String> list = new ArrayList();
+
+                for (String key : CmdSetup.this.mainArgs.keySet())
+                {
+                    if (key.toLowerCase().startsWith(args[1].toLowerCase()))
+                    {
+                        list.add(key);
+                    }
+                }
+
+                return list;
+            }
+
+            return new ArrayList();
+        }
+
+        public String getInfo(CommandSender sender)
+        {
+            return TranslationUtils.getMessage("commands.setup.help.info", sender, TranslationUtils.getMessage(this.getSyntaxTKey(), sender));
+        }
+
+        public String getSyntaxTKey()
+        {
+            return "commands.setup.help.syntax";
+        }
     }
 }

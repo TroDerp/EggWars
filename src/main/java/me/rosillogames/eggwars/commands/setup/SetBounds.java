@@ -14,19 +14,19 @@ public class SetBounds extends CommandArg
 {
     public SetBounds()
     {
-        super(true);
+        super("setBounds", true);
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
         if (args.length != 7 && args.length != 2)
         {
-            TranslationUtils.sendMessage("commands.setBounds.usage", commandSender);
+            this.sendUsage(sender);
             return false;
         }
 
-        Player player = (Player)commandSender;
+        Player player = (Player)sender;
         Arena arena;
 
         if ((arena = Arena.checkEditArena(player)) == null)
@@ -39,7 +39,7 @@ public class SetBounds extends CommandArg
         if (args.length == 2 && args[1].equalsIgnoreCase("remove"))
         {
             bounds.setBounds(null, null);
-            TranslationUtils.sendMessage("commands.setBounds.success.removed", commandSender, arena.getName());
+            TranslationUtils.sendMessage("commands.setBounds.success.removed", sender, arena.getName());
         }
         else
         {
@@ -49,12 +49,12 @@ public class SetBounds extends CommandArg
             }
             catch (NumberFormatException ex)
             {
-                TranslationUtils.sendMessage("commands.error.invalid_number", commandSender);
-                TranslationUtils.sendMessage("commands.setBounds.usage", commandSender);
+                TranslationUtils.sendMessage("commands.error.invalid_number", sender);
+                this.sendUsage(sender);
                 return false;
             }
 
-            TranslationUtils.sendMessage("commands.setBounds.success", commandSender, arena.getName());
+            TranslationUtils.sendMessage("commands.setBounds.success", sender, arena.getName());
         }
 
         arena.getSetupGUI().updateBasicsMenu();

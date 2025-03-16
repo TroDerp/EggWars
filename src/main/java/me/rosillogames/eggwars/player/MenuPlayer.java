@@ -2,7 +2,6 @@ package me.rosillogames.eggwars.player;
 
 import java.util.List;
 import javax.annotation.Nullable;
-
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import com.google.common.collect.Lists;

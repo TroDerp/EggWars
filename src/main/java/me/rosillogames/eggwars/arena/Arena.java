@@ -86,6 +86,7 @@ public class Arena
     private Location center;
     private Bounds boundaries;
     /** The Y coordinate where the void is (players get killed when they are in this Y or below) */
+    @Nullable
     private Integer voidHeight;
     private int maxTeamPlayers;
     /** Min players required to start game */
@@ -907,6 +908,12 @@ public class Arena
         if (!this.boundaries.areComplete())
         {
             todoList.add(TranslationUtils.getMessage("setup.todo.set_boundaries", player, new Object[] {this.getName()}));
+            optCount++;
+        }
+
+        if (this.voidHeight == null)
+        {
+            todoList.add(TranslationUtils.getMessage("setup.todo.set_void_height", player, new Object[] {this.getName()}));
             optCount++;
         }
 

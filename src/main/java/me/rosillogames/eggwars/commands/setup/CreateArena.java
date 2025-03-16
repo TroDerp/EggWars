@@ -18,30 +18,30 @@ public class CreateArena extends CommandArg
 {
     public CreateArena()
     {
-        super(true);
+        super("createArena", true);
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
         if (EggWars.bungee.isEnabled())
         {
-            TranslationUtils.sendMessage("commands.error.bungee_mode", commandSender);
+            TranslationUtils.sendMessage("commands.error.bungee_mode", sender);
             return false;
         }
 
         if (args.length < 2)
         {
-            TranslationUtils.sendMessage("commands.createArena.usage", commandSender);
+            this.sendUsage(sender);
             return false;
         }
 
-        Player player = (Player)commandSender;
+        Player player = (Player)sender;
         String name = ArenaManager.formulateName(args, 1);
 
         if (EggWars.getArenaManager().getArenaByName(name) != null)
         {
-            TranslationUtils.sendMessage("commands.error.arena_already_exists", commandSender, name);
+            TranslationUtils.sendMessage("commands.error.arena_already_exists", sender, name);
             return false;
         }
         else
@@ -62,7 +62,7 @@ public class CreateArena extends CommandArg
             player.teleport(arena.getWorld().getSpawnLocation());
             player.setGameMode(GameMode.CREATIVE);
             player.getInventory().addItem(arena.getSetupGUI().getItem(player));
-            TranslationUtils.sendMessage("commands.createArena.success", commandSender, arena.getName());
+            TranslationUtils.sendMessage("commands.createArena.success", sender, arena.getName());
             EggWars.getArenaManager().addArena(arena);
             arena.sendToDo(player);
             return false;

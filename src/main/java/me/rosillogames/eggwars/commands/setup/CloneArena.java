@@ -15,15 +15,15 @@ public class CloneArena extends CommandArg
 {
     public CloneArena()
     {
-        super(false);
+        super("cloneArena", false);
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
         if (args.length < 3)
         {
-            TranslationUtils.sendMessage("commands.cloneArena.usage", commandSender);
+            this.sendUsage(sender);
             return false;
         }
 
@@ -31,13 +31,13 @@ public class CloneArena extends CommandArg
 
         if (arena == null)
         {
-            TranslationUtils.sendMessage("commands.error.arena_does_not_exist", commandSender, args[1]);
+            TranslationUtils.sendMessage("commands.error.arena_does_not_exist", sender, args[1]);
             return false;
         }
 
         if (!arena.isSetup())
         {
-            TranslationUtils.sendMessage("commands.error.arena_not_set_up", commandSender, arena.getName());
+            TranslationUtils.sendMessage("commands.error.arena_not_set_up", sender, arena.getName());
             return false;
         }
 
@@ -45,22 +45,22 @@ public class CloneArena extends CommandArg
 
         if (EggWars.getArenaManager().getArenaById(ArenaManager.getValidArenaID(cloneName)) != null)
         {
-            TranslationUtils.sendMessage("commands.error.arena_already_exists", commandSender, cloneName);
+            TranslationUtils.sendMessage("commands.error.arena_already_exists", sender, cloneName);
             return false;
         }
         else
         {
-            TranslationUtils.sendMessage("commands.cloneArena.cloning", commandSender, arena.getName(), cloneName);
+            TranslationUtils.sendMessage("commands.cloneArena.cloning", sender, arena.getName(), cloneName);
             File cloneFile = new File(EggWars.arenasFolder, ArenaManager.getValidArenaID(cloneName));
 
             if (WorldController.copyFiles(arena.arenaFolder, cloneFile))
             {
                 EggWars.getArenaManager().addArena(new Arena(cloneFile, cloneName));
-                TranslationUtils.sendMessage("commands.cloneArena.success", commandSender, arena.getName(), cloneName);
+                TranslationUtils.sendMessage("commands.cloneArena.success", sender, arena.getName(), cloneName);
             }
             else
             {
-                TranslationUtils.sendMessage("commands.cloneArena.failed", commandSender, arena.getName(), cloneName);
+                TranslationUtils.sendMessage("commands.cloneArena.failed", sender, arena.getName(), cloneName);
             }
 
             return false;

@@ -207,7 +207,6 @@ public class ProfileMenus
         return TranslatableItem.translatableNameLore(ItemUtils.makeMenuItem(stack), "menu.kits.item_lore", "menu.kits.item_name");
     }
 
-    //TODO When MenuPlayer gets added, the translation to player will detect if this is a "close" or "go back" button.
     public static ItemStack getCloseItem(Player player)
     {
         ItemStack stack = new ItemStack(Material.BOOK);

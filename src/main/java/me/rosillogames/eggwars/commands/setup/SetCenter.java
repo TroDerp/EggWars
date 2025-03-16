@@ -12,19 +12,19 @@ public class SetCenter extends CommandArg
 {
     public SetCenter()
     {
-        super(true);
+        super("setCenter", true);
     }
 
     @Override
-    public boolean execute(CommandSender commandSender, String[] args)
+    public boolean execute(CommandSender sender, String[] args)
     {
         if (args.length != 1)
         {
-            TranslationUtils.sendMessage("commands.setCenter.usage", commandSender);
+            this.sendUsage(sender);
             return false;
         }
 
-        Player player = (Player)commandSender;
+        Player player = (Player)sender;
         Arena arena;
 
         if ((arena = Arena.checkEditArena(player)) == null)
@@ -33,7 +33,7 @@ public class SetCenter extends CommandArg
         }
 
         arena.setCenter(player.getLocation());
-        TranslationUtils.sendMessage("commands.setCenter.success", commandSender, arena.getName());
+        TranslationUtils.sendMessage("commands.setCenter.success", sender, arena.getName());
         arena.getSetupGUI().updateBasicsMenu();
         arena.sendToDo(player);
         return true;

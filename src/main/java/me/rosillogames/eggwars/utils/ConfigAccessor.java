@@ -1,7 +1,6 @@
 package me.rosillogames.eggwars.utils;
 
 import static org.bukkit.util.NumberConversions.toInt;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -155,6 +154,12 @@ public class ConfigAccessor
     public static Integer getNullableInt(FileConfiguration config, @NotNull String path, @Nullable Integer def)
     {
         Object val = config.get(path, def);
+
+        if (val == null && def == null)
+        {
+            return null;
+        }
+
         return (val instanceof Integer) ? toInt(val) : def;
     }
 }

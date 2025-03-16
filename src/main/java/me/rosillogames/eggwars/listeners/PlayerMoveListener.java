@@ -4,7 +4,6 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.enums.StatType;
