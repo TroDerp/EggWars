@@ -2,6 +2,7 @@ package me.rosillogames.eggwars.listeners;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.TNTPrimed;
@@ -13,10 +14,14 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
+
 import me.rosillogames.eggwars.EggWars;
 import me.rosillogames.eggwars.arena.Arena;
 import me.rosillogames.eggwars.enums.ArenaStatus;
 import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.utils.ItemUtils;
 import me.rosillogames.eggwars.utils.PlayerUtils;
 
 public class EntityHurtListener implements Listener
@@ -199,5 +204,38 @@ public class EntityHurtListener implements Listener
         }
 
         return;
+    }
+
+    @EventHandler
+    public void itemFrameBreak(HangingBreakEvent event)
+    {
+        if (!(event.getEntity() instanceof ItemFrame) || !ItemUtils.genType.isInHolder(event.getEntity()))
+        {
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void itemFrameBreakBy(HangingBreakByEntityEvent event)
+    {
+        if (!(event.getEntity() instanceof ItemFrame) || !ItemUtils.genType.isInHolder(event.getEntity()))
+        {
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void itemFrameImmunity(EntityDamageEvent dmgEvent)
+    {
+        if (!(dmgEvent.getEntity() instanceof ItemFrame) || !ItemUtils.genType.isInHolder(dmgEvent.getEntity()))
+        {
+            return;
+        }
+
+        dmgEvent.setCancelled(true);
     }
 }

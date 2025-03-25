@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.file.FileConfiguration;
 import me.rosillogames.eggwars.dependencies.DependencyUtils;
+import me.rosillogames.eggwars.enums.GeneratorDisplay;
 import me.rosillogames.eggwars.enums.ModeOption;
 import me.rosillogames.eggwars.enums.Versions;
 import me.rosillogames.eggwars.managers.ArenaManager;
@@ -33,6 +34,7 @@ public class Config
     public boolean showKills = true;
     public boolean balanceTeams = false;
     public boolean shareTeamEC = false;
+    public GeneratorDisplay generatorDisplay = GeneratorDisplay.SIGNS;
     public boolean useBelowBlock = true;
     //There's a version check for APSS for an issue with item.setThrower(UUID) not being in early 1.16
     public boolean enableAPSS = true;
@@ -158,6 +160,7 @@ public class Config
 
         fileConf.addDefault("kits.cooldown_time", 120);
 
+        fileConf.addDefault("generator.display_mode", GeneratorDisplay.SIGNS.toString());
         fileConf.addDefault("generator.fast_items", false);
         fileConf.addDefault("generator.use_below_block", true);
         fileConf.addDefault("generator.enable_apss", true);
@@ -252,6 +255,7 @@ public class Config
         this.respawnDelay = fileConf.getInt("game.player.respawn_delay");
         this.hidePlayers = fileConf.getBoolean("plugin.hide_players");
         this.alwaysTpToLobby = fileConf.getBoolean("plugin.always_teleport_to_lobby");
+        this.generatorDisplay = GeneratorDisplay.getOrDefault(fileConf.getString("generator.display_mode"), GeneratorDisplay.SIGNS);
         this.useBelowBlock = fileConf.getBoolean("generator.use_below_block");
         this.enableAPSS = fileConf.getBoolean("generator.enable_apss") && EggWars.serverVersion.ordinal() >= Versions.V_1_16_R3.ordinal();
         this.vault = fileConf.getBoolean("plugin.vault") && DependencyUtils.vault();

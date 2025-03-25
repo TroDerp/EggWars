@@ -63,6 +63,7 @@ import me.rosillogames.eggwars.listeners.TickClock;
 import me.rosillogames.eggwars.managers.ArenaManager;
 import me.rosillogames.eggwars.managers.GeneratorManager;
 import me.rosillogames.eggwars.managers.KitManager;
+import me.rosillogames.eggwars.managers.GenDisplayManager;
 import me.rosillogames.eggwars.managers.TokenManager;
 import me.rosillogames.eggwars.managers.TradingManager;
 import me.rosillogames.eggwars.menu.SerializingItems;
@@ -95,6 +96,7 @@ public class EggWars extends JavaPlugin
     private GeneratorManager generatorManager;
     private TradingManager tradingManager;
     private LanguageManager languageManager;
+    private GenDisplayManager genDisplayManager;
     private Database database;
     private Gson gson;
 
@@ -169,6 +171,7 @@ public class EggWars extends JavaPlugin
         this.tokenManager.loadTokens();
         this.generatorManager.loadGenerators();
         this.tradingManager.loadTrades();
+        this.genDisplayManager.loadDisplays();
 
         for (Player player : Bukkit.getOnlinePlayers())
         {
@@ -183,6 +186,7 @@ public class EggWars extends JavaPlugin
         this.tokenManager = new TokenManager();
         this.generatorManager = new GeneratorManager();
         this.tradingManager = new TradingManager();
+        this.genDisplayManager = new GenDisplayManager();
         this.database = new Database(this);
     }
 
@@ -436,6 +440,11 @@ public class EggWars extends JavaPlugin
     public static TradingManager getTradingManager()
     {
         return instance.tradingManager;
+    }
+
+    public static GenDisplayManager getGenDisplayManager()
+    {
+        return instance.genDisplayManager;
     }
 
     public static Database getDB()

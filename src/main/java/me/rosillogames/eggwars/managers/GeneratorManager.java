@@ -62,8 +62,7 @@ public class GeneratorManager
         {
             EggWars.instance.saveCustomResource("custom/generators.json", null, false);
             BufferedReader reader = Files.newBufferedReader((new File(EggWars.instance.getDataFolder(), "custom/generators.json")).toPath());
-            JsonElement jsonelement = GsonHelper.parse(reader);
-            JsonObject generatorsjson = GsonHelper.convertToJsonObject(jsonelement, "generators");
+            JsonObject generatorsjson = GsonHelper.parse(reader);
             int defDropRate = GsonHelper.getAsInt(generatorsjson, "default_drop_rate", 20);
             int defMaxItems = GsonHelper.getAsInt(generatorsjson, "default_max_items", 25);
             JsonObject generatorslist = GsonHelper.getAsJsonObject(generatorsjson, "generators");

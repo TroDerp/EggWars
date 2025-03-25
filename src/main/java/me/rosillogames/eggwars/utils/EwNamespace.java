@@ -55,6 +55,22 @@ public class EwNamespace<T>
         this.setTo(holder.getPersistentDataContainer(), value);
     }
 
+    public boolean valueEquals(PersistentDataHolder holder, T value)
+    {
+        return this.valueEquals(holder.getPersistentDataContainer(), value);
+    }
+
+    public boolean valueEquals(PersistentDataContainer container, T value)
+    {
+        if (this.isContainedBy(container))
+        {
+            T gotVal = this.getFrom(container);
+            return (gotVal == null && value == null) || (gotVal != null && gotVal.equals(value));
+        }
+
+        return false;
+    }
+
     /* Sample by spigot, transformed to use sub-containers. Should new PersistentDataTypes
      * be used for eggwars?
     public class UUIDTagType implements PersistentDataType<PersistentDataContainer, UUID>

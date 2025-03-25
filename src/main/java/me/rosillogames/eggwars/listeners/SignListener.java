@@ -3,12 +3,14 @@ package me.rosillogames.eggwars.listeners;
 import java.util.Map;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -22,6 +24,7 @@ import me.rosillogames.eggwars.enums.Versions;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.objects.ArenaSign;
 import me.rosillogames.eggwars.player.EwPlayer;
+import me.rosillogames.eggwars.player.MenuPlayer;
 import me.rosillogames.eggwars.utils.LobbySigns;
 import me.rosillogames.eggwars.utils.NumericUtils;
 import me.rosillogames.eggwars.utils.PlayerUtils;
@@ -32,6 +35,20 @@ public class SignListener implements Listener
     {
         //TODO: remove the update every second all arena signs? it will be necessary to be called from elsewhere
         this.updateClock();
+    }
+
+    public void updateClock()
+    {
+        (new BukkitRunnable()
+        {
+            public void run()
+            {
+                for (ArenaSign ewsign : EggWars.signs)
+                {
+                    ewsign.update();
+                }
+            }
+        }).runTaskTimer(EggWars.instance, 0L, 20L);
     }
 
     @EventHandler
@@ -122,7 +139,7 @@ public class SignListener implements Listener
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void click(PlayerInteractEvent event)
+    public void clickSign(PlayerInteractEvent event)
     {
         if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getHand() != EquipmentSlot.HAND || event.useInteractedBlock() == Result.DENY)
         {
@@ -163,24 +180,8 @@ public class SignListener implements Listener
                 return;
             }
 
-            Vector vector = clickLoc.toVector();
-
-            if (arena.getGenerators().containsKey(vector) || (EggWars.config.useBelowBlock && arena.getGenerators().containsKey(vector = vector.setY(vector.getBlockY() + 1))))
+            if (clickGenerator(clickLoc.toVector(), arena, ewplayer.getMenuPlayer()))
             {
-                Generator gen = arena.getGenerators().get(vector);
-
-                if (gen.hasCachedType())
-                {
-                    if (event.getPlayer().isSneaking())
-                    {
-                        gen.tryUpgrade(event.getPlayer());
-                    }
-                    else
-                    {
-                        ewplayer.getMenuPlayer().openMenu(gen);
-                    }
-                }//cancel ANY interaction when performing gen action
-
                 event.setCancelled(true);
                 return;
             }
@@ -244,17 +245,59 @@ public class SignListener implements Listener
         }
     }
 
-    public void updateClock()
+    @EventHandler
+    public void clickItemFrame(PlayerInteractEntityEvent event)
     {
-        (new BukkitRunnable()
+        if (!(event.getRightClicked() instanceof ItemFrame))
         {
-            public void run()
+            return;
+        }
+
+        EwPlayer ewplayer = PlayerUtils.getEwPlayer(event.getPlayer());
+
+        if (!ewplayer.isInArena())
+        {
+            return;
+        }
+
+        ItemFrame frame = (ItemFrame)event.getRightClicked();
+        Arena arena = EggWars.getArenaManager().getArenaByWorld(frame.getWorld());
+
+        if (arena == null || !arena.getStatus().equals(ArenaStatus.IN_GAME))
+        {
+            return;
+        }
+
+        if (clickGenerator(frame.getLocation().getBlock().getLocation().toVector(), arena, ewplayer.getMenuPlayer()))
+        {
+            event.setCancelled(true);
+            return;
+        }
+
+        return;
+    }
+
+    public static boolean clickGenerator(Vector vector, Arena arena, MenuPlayer mply)
+    {
+        if (arena.getGenerators().containsKey(vector) || (EggWars.config.useBelowBlock && arena.getGenerators().containsKey(vector = vector.setY(vector.getBlockY() + 1))))
+        {
+            Generator gen = arena.getGenerators().get(vector);
+
+            if (gen.hasCachedType())
             {
-                for (ArenaSign ewsign : EggWars.signs)
+                if (mply.getPlayer().isSneaking())
                 {
-                    ewsign.update();
+                    gen.tryUpgrade(mply.getPlayer());
                 }
-            }
-        }).runTaskTimer(EggWars.instance, 0L, 20L);
+                else
+                {
+                    mply.openMenu(gen);
+                }
+            }//cancel ANY interaction when performing gen action
+
+            return true;
+        }
+
+        return false;
     }
 }

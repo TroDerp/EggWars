@@ -15,6 +15,7 @@ public enum ReloadType
         EggWars.getTokenManager().loadTokens();
         EggWars.getGeneratorManager().loadGenerators();
         EggWars.getTradingManager().loadTrades();
+        EggWars.getGenDisplayManager().loadDisplays();
     }),
     CONFIG("config", sender ->
     {
@@ -32,11 +33,16 @@ public enum ReloadType
     {
         EggWars.getTokenManager().loadTokens();
         EggWars.getGeneratorManager().loadGenerators();
+        EggWars.getGenDisplayManager().loadDisplays();
     }),
     TRADES("trades", sender ->
     {
         EggWars.getTokenManager().loadTokens();
         EggWars.getTradingManager().loadTrades();
+    }),
+    GENERATOR_IMAGESS("generator_images", sender ->
+    {
+        EggWars.getGenDisplayManager().loadDisplays();
     });
 
     private final String nameKey;

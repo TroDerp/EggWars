@@ -10,10 +10,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.Location;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -26,6 +28,7 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.Vector;
 import com.google.common.collect.Lists;
 import me.rosillogames.eggwars.EggWars;
+import me.rosillogames.eggwars.enums.GeneratorDisplay;
 import me.rosillogames.eggwars.enums.MenuType;
 import me.rosillogames.eggwars.language.TranslationUtils;
 import me.rosillogames.eggwars.menu.EwMenu;
@@ -63,6 +66,9 @@ public class Generator extends EwMenu
     //Awesome Produce Sharing System as described by CubeCraft
     //When more than a single player are next to the generator, its product will be given to the player their turn corresponds with.
     private APSS apss = new APSS();
+    private ItemFrame poster;
+    @Nullable
+    private BlockState signSnapshot = null;
 
     public Generator(Location loc, int lvl, String typeIn, Arena arenaIn)
     {
@@ -141,7 +147,7 @@ public class Generator extends EwMenu
             public void run()
             {
                 if (!Generator.this.cachedType.requiresNearbyPlayer() || PlayerUtils.getNearbyPlayerAmount(Generator.this.block, 3.0, Generator.this.arena) >= 1)
-                {
+                {//TODO prevent spectators from increasinggen ticks
                     if (ItemUtils.getNearbyItemCount(Generator.this.block, 2.5, Generator.this.cachedType.droppedToken().getMaterial()) < Generator.this.cachedType.maxItems(Generator.this.level))
                     {
                         Generator.this.genTicks++;
@@ -197,6 +203,16 @@ public class Generator extends EwMenu
     public void reset()
     {
         this.stop();
+        this.poster = null;
+
+        if (this.signSnapshot != null)
+        {
+            this.poster = null;
+            this.block.getBlock().setType(this.signSnapshot.getType());
+            this.block.getBlock().setBlockData(this.signSnapshot.getBlockData());
+            this.signSnapshot = null;
+        }
+
         this.genTicks = 0;
         this.tickTask = null;
         this.level = this.defLevel;
@@ -266,16 +282,41 @@ public class Generator extends EwMenu
     @SuppressWarnings("deprecation")
     public void updateSign()
     {
-        if (this.block.getBlock().getState() instanceof Sign && this.hasCachedType())
+        if (this.hasCachedType())
         {
-            Sign sign = (Sign)this.block.getBlock().getState();
-            Token token = this.cachedType.droppedToken();
-            Object[] args = new Object[] {token.getFormattedName((Player)null), this.level != 0 ? TranslationUtils.getMessage("generator.sign.level", new Object[] {Integer.valueOf(this.level)}) : TranslationUtils.getMessage("generator.sign.broken")};
-            sign.setLine(0, TranslationUtils.getMessage("generator.sign.line_1", args));
-            sign.setLine(1, TranslationUtils.getMessage("generator.sign.line_2", args));
-            sign.setLine(2, TranslationUtils.getMessage("generator.sign.line_3", args));
-            sign.setLine(3, TranslationUtils.getMessage("generator.sign.line_4", args));
-            sign.update();
+            if (this.block.getBlock().getState() instanceof Sign)
+            {
+                Sign sign = (Sign)this.block.getBlock().getState();
+                Token token = this.cachedType.droppedToken();
+                Object[] args = new Object[] {token.getFormattedName((Player)null), this.level != 0 ? TranslationUtils.getMessage("generator.sign.level", new Object[] {Integer.valueOf(this.level)}) : TranslationUtils.getMessage("generator.sign.broken")};
+                sign.setLine(0, TranslationUtils.getMessage("generator.sign.line_1", args));
+                sign.setLine(1, TranslationUtils.getMessage("generator.sign.line_2", args));
+                sign.setLine(2, TranslationUtils.getMessage("generator.sign.line_3", args));
+                sign.setLine(3, TranslationUtils.getMessage("generator.sign.line_4", args));
+                sign.update();
+
+                if (this.arena.getStatus().isGame() && EggWars.config.generatorDisplay == GeneratorDisplay.ITEM_FRAMES)
+                {
+                    this.signSnapshot = this.block.getBlock().getState().copy();
+                    this.updatePoster();
+                }
+            }
+            else
+            {
+                this.updatePoster();
+            }
+        }
+    }
+
+    public void updatePoster()
+    {
+        if (this.poster == null || this.poster.isDead())
+        {
+            this.poster = EggWars.getGenDisplayManager().putPoster(this.cachedType, this.level, this.block.getWorld(), this.block);
+        }
+        else
+        {
+            EggWars.getGenDisplayManager().updatePoster(this.poster, this.cachedType, this.level);
         }
     }
 

@@ -60,7 +60,10 @@ public class ItemUtils
 
     public static void setOptionalHUDItem(EwPlayer player, int slot, ItemStack stack)
     {
-        player.getPlayer().getInventory().setItem(slot, stack);
+        if (slot != -1)
+        {
+            player.getPlayer().getInventory().setItem(slot, stack);
+        }
     }
 
     public static void removeItems(Player player, Material material, int amount)
